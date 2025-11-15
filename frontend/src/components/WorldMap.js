@@ -1,24 +1,27 @@
 import React, { memo, useState, useEffect, useRef } from 'react';
-import {
-  ComposableMap,
-  Geographies,
-  Geography,
-  ZoomableGroup
-} from 'react-simple-maps';
-import { easeCubicInOut } from 'd3-ease';
-import { convertNumericToAlpha3 } from '../data/isoMapping';
+import Globe from 'react-globe.gl';
 
-const geoUrl = "https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json";
+// Color palette
+const COLORS = {
+  ocean: '#A8DADC',
+  land: '#F1FAEE',
+  hover: '#E9EDC9',
+  selected: '#FCBF49',
+  correct: '#06D6A0',
+  incorrect: '#EF476F',
+  border: '#457B9D',
+  text: '#1D3557'
+};
 
-// Continent view configurations with center coordinates and zoom levels
+// Continent center coordinates (lat, lng, altitude)
 const CONTINENT_VIEWS = {
-  'Africa': { center: [20, 0], zoom: 4.5 },
-  'Asia': { center: [90, 30], zoom: 3.5 },
-  'Europe': { center: [15, 52], zoom: 5.5 },
-  'North America': { center: [-100, 50], zoom: 4 },
-  'South America': { center: [-60, -15], zoom: 4.5 },
-  'Oceania': { center: [135, -25], zoom: 5 },
-  'default': { center: [0, 20], zoom: 1 }
+  'Africa': { lat: 0, lng: 20, altitude: 1.5 },
+  'Asia': { lat: 30, lng: 90, altitude: 1.5 },
+  'Europe': { lat: 52, lng: 15, altitude: 1.3 },
+  'North America': { lat: 50, lng: -100, altitude: 1.5 },
+  'South America': { lat: -15, lng: -60, altitude: 1.5 },
+  'Oceania': { lat: -25, lng: 135, altitude: 1.5 },
+  'default': { lat: 0, lng: 0, altitude: 2.5 }
 };
 
 const WorldMap = ({
@@ -26,152 +29,307 @@ const WorldMap = ({
   highlightedCountries = [],
   targetCountry = null,
   showHint = false,
-  continent = null
+  continent = null,
+  correctlyAnsweredCountries = [],
+  gameStatus = 'playing'
 }) => {
-  const [position, setPosition] = useState({ coordinates: [0, 20], zoom: 1 });
-  const [isAnimating, setIsAnimating] = useState(false);
+  const globeEl = useRef();
+  const [countries, setCountries] = useState({ features: [] });
+  const [hoverD, setHoverD] = useState(null);
   const previousContinentRef = useRef(null);
-  const positionRef = useRef(position);
+  const [feedbackMessage, setFeedbackMessage] = useState(null);
+  const [clickedCountry, setClickedCountry] = useState(null);
 
-  // Keep position ref updated
+  // Load country data
   useEffect(() => {
-    positionRef.current = position;
-    console.log('📍 Position updated:', position);
-  }, [position]);
+    fetch('https://raw.githubusercontent.com/vasturiano/react-globe.gl/master/example/datasets/ne_110m_admin_0_countries.geojson')
+      .then(res => res.json())
+      .then(data => {
+        setCountries(data);
+        console.log('🌍 Loaded country data:', data.features.length, 'countries');
+      })
+      .catch(err => console.error('Error loading country data:', err));
+  }, []);
 
-  // Animate to continent when it changes
+  // Show feedback message when game status changes
   useEffect(() => {
+    if (gameStatus === 'correct') {
+      setFeedbackMessage('✓ Correct!');
+      const timer = setTimeout(() => {
+        setFeedbackMessage(null);
+        setClickedCountry(null);
+      }, 2000);
+      return () => clearTimeout(timer);
+    } else if (gameStatus === 'incorrect') {
+      setFeedbackMessage('✗ Try Again!');
+      const timer = setTimeout(() => {
+        setFeedbackMessage(null);
+        setClickedCountry(null);
+      }, 1500);
+      return () => clearTimeout(timer);
+    }
+  }, [gameStatus]);
+
+  // Rotate to continent when it changes
+  useEffect(() => {
+    if (!globeEl.current) return;
+
     console.log('🌍 Continent changed:', {
       newContinent: continent,
       previousContinent: previousContinentRef.current,
-      willAnimate: continent && continent !== previousContinentRef.current
+      willRotate: continent && continent !== previousContinentRef.current
     });
 
     if (continent && continent !== previousContinentRef.current) {
-      console.log('✅ Triggering animation from', previousContinentRef.current, 'to', continent);
+      console.log('✅ Triggering rotation from', previousContinentRef.current, 'to', continent);
       previousContinentRef.current = continent;
       const targetView = CONTINENT_VIEWS[continent] || CONTINENT_VIEWS['default'];
       console.log('🎯 Target view:', targetView);
-      animateToPosition(targetView.center, targetView.zoom);
+
+      // Smoothly transition to the continent
+      globeEl.current.pointOfView(
+        {
+          lat: targetView.lat,
+          lng: targetView.lng,
+          altitude: targetView.altitude
+        },
+        1000 // 1 second transition
+      );
     }
   }, [continent]);
 
-  const animateToPosition = (targetCenter, targetZoom) => {
-    setIsAnimating(true);
-    const startPosition = { ...positionRef.current }; // Use ref to get current position
-    console.log('🚀 Starting animation:', {
-      from: startPosition,
-      to: { center: targetCenter, zoom: targetZoom }
+  // Get country fill color based on game state
+  const getCountryColor = (country) => {
+    const iso3 = country.properties.ISO_A3;
+
+    // Correctly answered countries are green
+    if (correctlyAnsweredCountries.includes(iso3)) {
+      return COLORS.correct;
+    }
+
+    // Hinted countries (target and neighbors)
+    if (showHint && highlightedCountries.includes(iso3)) {
+      return COLORS.selected;
+    }
+
+    // Default land color
+    return COLORS.land;
+  };
+
+  // Get border color based on hover and game status
+  const getBorderColor = (country) => {
+    const iso3 = country.properties.ISO_A3;
+
+    // If this country was just clicked and got a result
+    if (clickedCountry === iso3) {
+      if (gameStatus === 'correct') return COLORS.correct;
+      if (gameStatus === 'incorrect') return COLORS.incorrect;
+    }
+
+    // If hovering over this country
+    if (country === hoverD) {
+      return COLORS.selected; // Highlight border on hover
+    }
+
+    // Default border color
+    return COLORS.border;
+  };
+
+  // Handle country click
+  const handlePolygonClick = (polygon) => {
+    if (!polygon || !polygon.properties) return;
+
+    const iso3 = polygon.properties.ISO_A3;
+    const name = polygon.properties.NAME;
+
+    console.log('🖱️ Clicked country:', {
+      name,
+      iso3,
+      properties: polygon.properties
     });
-    const duration = 1000; // 1 second
-    const startTime = Date.now();
 
-    const animate = () => {
-      const elapsed = Date.now() - startTime;
-      const progress = Math.min(elapsed / duration, 1);
-      const eased = easeCubicInOut(progress);
-
-      // Interpolate coordinates and zoom
-      const newCoordinates = [
-        startPosition.coordinates[0] + (targetCenter[0] - startPosition.coordinates[0]) * eased,
-        startPosition.coordinates[1] + (targetCenter[1] - startPosition.coordinates[1]) * eased
-      ];
-      const newZoom = startPosition.zoom + (targetZoom - startPosition.zoom) * eased;
-
-      setPosition({
-        coordinates: newCoordinates,
-        zoom: newZoom
-      });
-
-      if (progress < 1) {
-        requestAnimationFrame(animate);
-      } else {
-        console.log('✅ Animation complete. Final position:', {
-          coordinates: newCoordinates,
-          zoom: newZoom
-        });
-        setIsAnimating(false);
-      }
-    };
-
-    requestAnimationFrame(animate);
+    setClickedCountry(iso3);
+    onCountryClick(iso3);
   };
 
-  const getCountryFill = (geo) => {
-    const numericCode = geo.id;
-    const alpha3Code = convertNumericToAlpha3(numericCode);
-
-    // If hint is shown, highlight target country and neighbors
-    if (showHint && highlightedCountries.includes(alpha3Code)) {
-      if (targetCountry && alpha3Code === targetCountry) {
-        return "#4CAF50"; // Green for target country
-      }
-      return "#FFC107"; // Yellow for neighboring countries
-    }
-
-    return "#E0E0E0"; // Default gray
+  // Manual rotation controls
+  const rotateLeft = () => {
+    if (!globeEl.current) return;
+    const currentView = globeEl.current.pointOfView();
+    globeEl.current.pointOfView({
+      lng: currentView.lng - 30,
+      lat: currentView.lat,
+      altitude: currentView.altitude
+    }, 500);
   };
 
-  const handleMoveEnd = (newPosition) => {
-    console.log('👆 User moved map (handleMoveEnd):', newPosition, 'isAnimating:', isAnimating);
-    if (!isAnimating) {
-      setPosition(newPosition);
-    }
+  const rotateRight = () => {
+    if (!globeEl.current) return;
+    const currentView = globeEl.current.pointOfView();
+    globeEl.current.pointOfView({
+      lng: currentView.lng + 30,
+      lat: currentView.lat,
+      altitude: currentView.altitude
+    }, 500);
+  };
+
+  const zoomIn = () => {
+    if (!globeEl.current) return;
+    const currentView = globeEl.current.pointOfView();
+    globeEl.current.pointOfView({
+      lng: currentView.lng,
+      lat: currentView.lat,
+      altitude: Math.max(currentView.altitude - 0.3, 0.5)
+    }, 500);
+  };
+
+  const zoomOut = () => {
+    if (!globeEl.current) return;
+    const currentView = globeEl.current.pointOfView();
+    globeEl.current.pointOfView({
+      lng: currentView.lng,
+      lat: currentView.lat,
+      altitude: Math.min(currentView.altitude + 0.3, 3)
+    }, 500);
   };
 
   return (
-    <div style={{ width: '100%', maxWidth: '900px', margin: '0 auto' }}>
-      <ComposableMap
-        projection="geoMercator"
-        projectionConfig={{
-          scale: 120
+    <div style={{ position: 'relative', width: '100%', height: '600px' }}>
+      <Globe
+        ref={globeEl}
+        globeImageUrl="//unpkg.com/three-globe/example/img/earth-blue-marble.jpg"
+        backgroundImageUrl="//unpkg.com/three-globe/example/img/night-sky.png"
+        atmosphereColor={COLORS.ocean}
+        atmosphereAltitude={0.15}
+
+        polygonsData={countries.features}
+        polygonCapColor={getCountryColor}
+        polygonSideColor={() => COLORS.land}
+        polygonStrokeColor={getBorderColor}
+        polygonStrokeWidth={1.5}
+        polygonAltitude={d => d === hoverD ? 0.015 : 0.008}
+        polygonCapMaterial={(d) => {
+          // Create semi-transparent material to show Earth underneath
+          return { opacity: 0.7, transparent: true };
         }}
-      >
-        <ZoomableGroup
-          center={position.coordinates}
-          zoom={position.zoom}
-          onMoveEnd={handleMoveEnd}
-          minZoom={1}
-          maxZoom={8}
-        >
-          <Geographies geography={geoUrl}>
-            {({ geographies }) =>
-              geographies.map((geo) => (
-                <Geography
-                  key={geo.rsmKey}
-                  geography={geo}
-                  onClick={() => {
-                    const numericCode = geo.id;
-                    const alpha3Code = convertNumericToAlpha3(numericCode);
-                    console.log('🖱️ Clicked country:', {
-                      numericId: numericCode,
-                      alpha3Id: alpha3Code,
-                      name: geo.properties?.name,
-                      properties: geo.properties
-                    });
-                    onCountryClick(alpha3Code);
-                  }}
-                  fill={getCountryFill(geo)}
-                  stroke="#FFFFFF"
-                  strokeWidth={0.5}
-                  style={{
-                    default: { outline: 'none' },
-                    hover: {
-                      fill: '#2196F3',
-                      outline: 'none',
-                      cursor: 'pointer'
-                    },
-                    pressed: {
-                      fill: '#1976D2',
-                      outline: 'none'
-                    },
-                  }}
-                />
-              ))
-            }
-          </Geographies>
-        </ZoomableGroup>
-      </ComposableMap>
+        polygonLabel={({ properties: d }) => `
+          <div style="background: ${COLORS.text}; color: white; padding: 8px 12px; border-radius: 4px; font-family: system-ui; font-weight: bold;">
+            ${d.NAME}
+          </div>
+        `}
+        onPolygonHover={setHoverD}
+        onPolygonClick={handlePolygonClick}
+        polygonsTransitionDuration={300}
+
+        enablePointerInteraction={true}
+        width={900}
+        height={600}
+      />
+
+      {/* Control buttons */}
+      <div style={{
+        position: 'absolute',
+        bottom: '20px',
+        right: '20px',
+        display: 'flex',
+        flexDirection: 'column',
+        gap: '10px',
+        zIndex: 10
+      }}>
+        <div style={{ display: 'flex', gap: '10px' }}>
+          <button
+            onClick={rotateLeft}
+            style={{
+              padding: '10px 15px',
+              backgroundColor: COLORS.border,
+              color: 'white',
+              border: 'none',
+              borderRadius: '4px',
+              cursor: 'pointer',
+              fontSize: '18px',
+              fontWeight: 'bold',
+              boxShadow: '0 2px 4px rgba(0,0,0,0.2)'
+            }}
+            title="Rotate Left"
+          >
+            ← Rotate
+          </button>
+          <button
+            onClick={rotateRight}
+            style={{
+              padding: '10px 15px',
+              backgroundColor: COLORS.border,
+              color: 'white',
+              border: 'none',
+              borderRadius: '4px',
+              cursor: 'pointer',
+              fontSize: '18px',
+              fontWeight: 'bold',
+              boxShadow: '0 2px 4px rgba(0,0,0,0.2)'
+            }}
+            title="Rotate Right"
+          >
+            Rotate →
+          </button>
+        </div>
+        <div style={{ display: 'flex', gap: '10px' }}>
+          <button
+            onClick={zoomIn}
+            style={{
+              padding: '10px 15px',
+              backgroundColor: COLORS.border,
+              color: 'white',
+              border: 'none',
+              borderRadius: '4px',
+              cursor: 'pointer',
+              fontSize: '18px',
+              fontWeight: 'bold',
+              boxShadow: '0 2px 4px rgba(0,0,0,0.2)'
+            }}
+            title="Zoom In"
+          >
+            + Zoom
+          </button>
+          <button
+            onClick={zoomOut}
+            style={{
+              padding: '10px 15px',
+              backgroundColor: COLORS.border,
+              color: 'white',
+              border: 'none',
+              borderRadius: '4px',
+              cursor: 'pointer',
+              fontSize: '18px',
+              fontWeight: 'bold',
+              boxShadow: '0 2px 4px rgba(0,0,0,0.2)'
+            }}
+            title="Zoom Out"
+          >
+            - Zoom
+          </button>
+        </div>
+      </div>
+
+      {/* Feedback message overlay */}
+      {feedbackMessage && (
+        <div style={{
+          position: 'absolute',
+          top: '20px',
+          left: '50%',
+          transform: 'translateX(-50%)',
+          backgroundColor: gameStatus === 'correct' ? COLORS.correct : COLORS.incorrect,
+          color: 'white',
+          padding: '15px 30px',
+          borderRadius: '8px',
+          fontSize: '24px',
+          fontWeight: 'bold',
+          fontFamily: 'system-ui',
+          boxShadow: '0 4px 6px rgba(0,0,0,0.3)',
+          zIndex: 100
+        }}>
+          {feedbackMessage}
+        </div>
+      )}
     </div>
   );
 };
