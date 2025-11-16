@@ -6,21 +6,30 @@
   <title>Animated Candle</title>
   <style>
     :root {
+      /* Candle configuration */
+      --candle-width: 34px;
+      --candle-height: var(--flame-height);
+      --candle-gap: 50px;
+
+      /* Flame configuration */
       --flame-height: 100px;
+      --flame-width: 20px;
+      --flame-bottom-offset: 6px;
       --shadow-height: 40px;
-      --wick-height: 50px;
-      --candle-count: 5;
+
+      /* Wick configuration */
+      --wick-width: 20px;
+      --wick-height: 60px;
+
+      /* Colors */
       --color-orange: #ff6a00;
-      --color-orange-yellow: #ff9224;
       --color-dark: #2c2b39;
       --color-blue-dark: #30537d;
       --color-blue-light: #76daff;
-      --color-yellow: #fbf348;
-      --color-yellow-grey: #58523a;
     }
 
     body {
-      background: #eae7e7;
+      background: #1a1818;
       display: flex;
       justify-content: center;
       align-items: flex-end;
@@ -33,58 +42,40 @@
 
     #candle-container {
       display: flex;
-      gap: 50px;
+      gap: var(--candle-gap);
       align-items: flex-end;
       padding-bottom: 50px;
     }
 
     .candle {
-      width: 34px;
+      width: var(--candle-width);
       position: relative;
-      height: 80vh;
-      max-height: 600px;
-      animation: blink 0.1s infinite;
+      height: var(--candle-height);
     }
 
-    .candle.no-flame {
-      animation: none;
-    }
-
-    /* Wick wrapper */
-    .wick-wrapper {
+    /* Wick */
+    .wick {
       position: absolute;
-      top: -35px;
+      bottom: 0;
       left: 50%;
       transform: translateX(-50%);
-      width: 45px;
-      height: 160px;
+      width: var(--wick-width);
+      height: var(--wick-height);
       pointer-events: none;
-      z-index: 20;
-    }
-
-    .wick-svg {
-      width: 100%;
-      height: 100%;
-      display: block;
-    }
-
-    .wick-svg svg {
-      width: 100%;
-      height: 100%;
+      z-index: 1;
     }
 
     /* Flame */
     .flame {
-      width: 20px;
+      width: var(--flame-width);
       height: var(--flame-height);
       margin: 0 auto;
       position: relative;
-      animation: move 3s infinite, move-left 3s infinite;
-      transform-origin: 50% 90%;
+      z-index: 2;
     }
 
     .flame .top {
-      width: 20px;
+      width: var(--flame-width);
       height: 100%;
       position: absolute;
       top: 0; left: 0;
@@ -102,7 +93,6 @@
         0 0 100px 10px var(--color-orange),
         0 -10px 2px 4px white,
         0 -5px 3px 3px white;
-      animation: flame-up 4s infinite;
     }
 
     .flame .shadows {
@@ -124,7 +114,7 @@
     .flame .bottom {
       transform: scale(0.9);
       position: absolute;
-      bottom: 6px;
+      bottom: var(--flame-bottom-offset);
       left: 9px;
       width: 1px;
       height: 8px;
@@ -144,33 +134,6 @@
         0 2px 10px 12px var(--color-blue-light);
     }
 
-    /* Animations */
-    @keyframes move {
-      0% { transform: skewX(2deg) skewY(5deg); }
-      50% { transform: skewX(-2deg) skewY(0deg); }
-      100% { transform: skewX(2deg) skewY(5deg); }
-    }
-
-    @keyframes move-left {
-      50% { transform: skewX(3deg); }
-    }
-
-    @keyframes flame-up {
-      50% {
-        box-shadow:
-          0 0 0 3px white,
-          0 -25px 1px 2px white,
-          0 -28px 2px 3px gold,
-          0 -35px 5px 4px var(--color-orange),
-          0 0 100px 10px var(--color-orange),
-          0 -10px 2px 4px white,
-          0 -5px 3px 3px white;
-      }
-    }
-
-    @keyframes blink {
-      90% { opacity: 0.95; }
-    }
   </style>
 </head>
 
@@ -178,41 +141,69 @@
   <div id="candle-container"></div>
 
   <script>
+    // CONFIGURATION - Easy to adjust
     const config = {
-      candleCount: null,
-      minCandles: 3,
-      maxCandles: 8,
-      flameProbability: 0.7,
-      gap: 50
+      // Number of candles
+      flameCount: 5,    // Number of lit candles (with flames)
+      wickCount: 3,     // Number of unlit candles (wicks only)
+
+      // Candle dimensions (optional - defaults to CSS variables)
+      candleWidth: null,    // e.g., '40px'
+      candleHeight: null,   // e.g., '70vh'
+      candleGap: null,      // e.g., '60px'
+
+      // Flame dimensions (optional - defaults to CSS variables)
+      flameHeight: null,    // e.g., '120px'
+      flameWidth: null,     // e.g., '25px'
+
+      // Wick dimensions (optional - defaults to CSS variables)
+      wickHeight: null,     // e.g., '70px'
+      wickWidth: null       // e.g., '25px'
     };
 
-    const candleCount = config.candleCount !== null
-      ? config.candleCount
-      : Math.floor(Math.random() * (config.maxCandles - config.minCandles + 1)) + config.minCandles;
-
-    document.documentElement.style.setProperty('--candle-count', candleCount);
+    // Apply configuration
     const container = document.getElementById('candle-container');
-    container.style.gap = `${config.gap}px`;
+    const root = document.documentElement;
 
-    for (let i = 0; i < candleCount; i++) {
-      const hasFlame = Math.random() < config.flameProbability;
+    // Apply custom dimensions if specified
+    if (config.candleWidth) root.style.setProperty('--candle-width', config.candleWidth);
+    if (config.candleHeight) root.style.setProperty('--candle-height', config.candleHeight);
+    if (config.candleGap) root.style.setProperty('--candle-gap', config.candleGap);
+    if (config.flameHeight) root.style.setProperty('--flame-height', config.flameHeight);
+    if (config.flameWidth) root.style.setProperty('--flame-width', config.flameWidth);
+    if (config.wickHeight) root.style.setProperty('--wick-height', config.wickHeight);
+    if (config.wickWidth) root.style.setProperty('--wick-width', config.wickWidth);
+
+    // Create array of candle types
+    const candleTypes = [
+      ...Array(config.flameCount).fill('flame'),
+      ...Array(config.wickCount).fill('wick')
+    ];
+
+    // Shuffle array to randomize order
+    for (let i = candleTypes.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [candleTypes[i], candleTypes[j]] = [candleTypes[j], candleTypes[i]];
+    }
+
+    // Create candles
+    for (let i = 0; i < candleTypes.length; i++) {
+      const hasFlame = candleTypes[i] === 'flame';
 
       const candle = document.createElement('div');
-      candle.className = hasFlame ? 'candle' : 'candle no-flame';
+      candle.className = 'candle';
 
       if (hasFlame) {
         candle.innerHTML = `
           <div class="flame">
             <div class="shadows"></div>
             <div class="top"></div>
-            <div class="middle"></div>
             <div class="bottom"></div>
           </div>
         `;
       } else {
         candle.innerHTML = `
-<path id="wick" class="st51" d="M50.1,360.2c0,0,3.1-5.6,0-25.4c0,0-1.7-4.9,6.3-11.8c0,0,4.9,0,2.4,3.8c-2.4,3.8,0.7,2.1-1,5.6
-	s-2.4,5.2-0.3,14.3c2.1,9,0,1.7,0,1.7s2.1,3.1,1,12.5C58.4,360.9,56.7,365.5,50.1,360.2z"></path>
+          <img src="wick3.svg" class="wick">
         `;
       }
 
