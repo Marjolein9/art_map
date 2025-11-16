@@ -1,16 +1,20 @@
 import React, { memo, useState, useEffect, useRef } from 'react';
 import Globe from 'react-globe.gl';
 
-// Color palette
+// Space theme color palette
 const COLORS = {
-  ocean: '#A8DADC',
+  ocean: '#0a1128',
   land: '#F1FAEE',
-  hover: '#E9EDC9',
-  selected: '#FCBF49',
+  hover: '#5bc0be',
+  selected: '#6fffe9',
   correct: '#06D6A0',
-  incorrect: '#EF476F',
-  border: '#457B9D',
-  text: '#1D3557'
+  incorrect: '#ff006e',
+  border: '#5bc0be',
+  text: '#1D3557',
+  tooltipBg: '#1c2541',
+  tooltipText: '#ffffff',
+  buttonBg: '#3a506b',
+  glow: 'rgba(91, 192, 190, 0.6)'
 };
 
 // Continent center coordinates (lat, lng, altitude)
@@ -199,7 +203,7 @@ const WorldMap = ({
         ref={globeEl}
         globeImageUrl="//unpkg.com/three-globe/example/img/earth-blue-marble.jpg"
         backgroundImageUrl="//unpkg.com/three-globe/example/img/night-sky.png"
-        atmosphereColor={COLORS.ocean}
+        atmosphereColor={COLORS.hover}
         atmosphereAltitude={0.15}
 
         polygonsData={countries.features}
@@ -213,7 +217,7 @@ const WorldMap = ({
           return { opacity: 0.7, transparent: true };
         }}
         polygonLabel={({ properties: d }) => `
-          <div style="background: ${COLORS.text}; color: white; padding: 8px 12px; border-radius: 4px; font-family: system-ui; font-weight: bold;">
+          <div style="background: ${COLORS.tooltipBg}; color: ${COLORS.tooltipText}; padding: 8px 12px; border-radius: 4px; font-family: system-ui; font-weight: bold; box-shadow: 0 0 10px ${COLORS.glow}; border: 2px solid ${COLORS.border};">
             ${d.NAME}
           </div>
         `}
@@ -241,14 +245,15 @@ const WorldMap = ({
             onClick={rotateLeft}
             style={{
               padding: '10px 15px',
-              backgroundColor: COLORS.border,
+              backgroundColor: COLORS.buttonBg,
               color: 'white',
-              border: 'none',
+              border: `2px solid ${COLORS.border}`,
               borderRadius: '4px',
               cursor: 'pointer',
               fontSize: '18px',
               fontWeight: 'bold',
-              boxShadow: '0 2px 4px rgba(0,0,0,0.2)'
+              boxShadow: `0 0 10px ${COLORS.glow}`,
+              transition: 'all 0.3s ease'
             }}
             title="Rotate Left"
           >
@@ -258,14 +263,15 @@ const WorldMap = ({
             onClick={rotateRight}
             style={{
               padding: '10px 15px',
-              backgroundColor: COLORS.border,
+              backgroundColor: COLORS.buttonBg,
               color: 'white',
-              border: 'none',
+              border: `2px solid ${COLORS.border}`,
               borderRadius: '4px',
               cursor: 'pointer',
               fontSize: '18px',
               fontWeight: 'bold',
-              boxShadow: '0 2px 4px rgba(0,0,0,0.2)'
+              boxShadow: `0 0 10px ${COLORS.glow}`,
+              transition: 'all 0.3s ease'
             }}
             title="Rotate Right"
           >
@@ -277,14 +283,15 @@ const WorldMap = ({
             onClick={zoomIn}
             style={{
               padding: '10px 15px',
-              backgroundColor: COLORS.border,
+              backgroundColor: COLORS.buttonBg,
               color: 'white',
-              border: 'none',
+              border: `2px solid ${COLORS.border}`,
               borderRadius: '4px',
               cursor: 'pointer',
               fontSize: '18px',
               fontWeight: 'bold',
-              boxShadow: '0 2px 4px rgba(0,0,0,0.2)'
+              boxShadow: `0 0 10px ${COLORS.glow}`,
+              transition: 'all 0.3s ease'
             }}
             title="Zoom In"
           >
@@ -294,14 +301,15 @@ const WorldMap = ({
             onClick={zoomOut}
             style={{
               padding: '10px 15px',
-              backgroundColor: COLORS.border,
+              backgroundColor: COLORS.buttonBg,
               color: 'white',
-              border: 'none',
+              border: `2px solid ${COLORS.border}`,
               borderRadius: '4px',
               cursor: 'pointer',
               fontSize: '18px',
               fontWeight: 'bold',
-              boxShadow: '0 2px 4px rgba(0,0,0,0.2)'
+              boxShadow: `0 0 10px ${COLORS.glow}`,
+              transition: 'all 0.3s ease'
             }}
             title="Zoom Out"
           >
@@ -324,7 +332,10 @@ const WorldMap = ({
           fontSize: '24px',
           fontWeight: 'bold',
           fontFamily: 'system-ui',
-          boxShadow: '0 4px 6px rgba(0,0,0,0.3)',
+          boxShadow: gameStatus === 'correct'
+            ? `0 0 20px rgba(6, 214, 160, 0.8), 0 4px 6px rgba(0,0,0,0.3)`
+            : `0 0 20px rgba(255, 0, 110, 0.8), 0 4px 6px rgba(0,0,0,0.3)`,
+          border: `2px solid ${gameStatus === 'correct' ? COLORS.correct : COLORS.incorrect}`,
           zIndex: 100
         }}>
           {feedbackMessage}

@@ -5,16 +5,19 @@ import GameControls from './components/GameControls';
 
 const API_URL = 'http://localhost:5000/api';
 
-// Color palette
+// Space theme color palette
 const COLORS = {
-  ocean: '#A8DADC',
-  land: '#F1FAEE',
-  hover: '#E9EDC9',
-  selected: '#FCBF49',
+  ocean: '#0a1128',
+  land: '#1c2541',
+  cardBg: 'rgba(28, 37, 65, 0.8)',
+  hover: '#5bc0be',
+  selected: '#6fffe9',
   correct: '#06D6A0',
-  incorrect: '#EF476F',
-  border: '#457B9D',
-  text: '#1D3557'
+  incorrect: '#ff006e',
+  border: '#5bc0be',
+  text: '#ffffff',
+  textSecondary: '#b8c5d6',
+  glow: 'rgba(91, 192, 190, 0.6)'
 };
 
 function App() {
@@ -166,8 +169,10 @@ function App() {
     <div className="App">
       <div style={{
         minHeight: '100vh',
-        backgroundColor: COLORS.ocean,
-        padding: '20px'
+        background: 'linear-gradient(to bottom, #0a1128 0%, #1c2541 25%, #3a506b 50%, #5bc0be 100%)',
+        padding: '20px',
+        position: 'relative',
+        overflow: 'hidden'
       }}>
         <div style={{
           maxWidth: '1200px',
@@ -175,16 +180,16 @@ function App() {
         }}>
           <h1 style={{
             textAlign: 'center',
-            color: COLORS.text,
+            color: '#ffffff',
             marginBottom: '30px',
             fontSize: '2.5em',
-            textShadow: `2px 2px 4px ${COLORS.border}40`
+            textShadow: '0 0 10px rgba(91, 192, 190, 0.8), 0 0 20px rgba(91, 192, 190, 0.6), 2px 2px 4px rgba(0, 0, 0, 0.5)'
           }}>
             🌍 World Map Geography Game
           </h1>
 
           {loading ? (
-            <p style={{ textAlign: 'center', color: COLORS.text, fontSize: '1.2em' }}>Loading game...</p>
+            <p style={{ textAlign: 'center', color: '#ffffff', fontSize: '1.2em' }}>Loading game...</p>
           ) : (
             <>
               <GameControls
@@ -200,11 +205,12 @@ function App() {
               />
 
               <div style={{
-                backgroundColor: COLORS.land,
+                backgroundColor: COLORS.cardBg,
                 borderRadius: '8px',
-                boxShadow: `0 4px 6px ${COLORS.border}60`,
+                boxShadow: `0 0 20px ${COLORS.glow}, 0 4px 6px rgba(0, 0, 0, 0.3)`,
                 padding: '20px',
-                border: `2px solid ${COLORS.border}`
+                border: `2px solid ${COLORS.border}`,
+                backdropFilter: 'blur(10px)'
               }}>
                 <WorldMap
                   onCountryClick={handleCountryClick}
@@ -220,14 +226,15 @@ function App() {
               <div style={{
                 marginTop: '20px',
                 padding: '15px',
-                backgroundColor: COLORS.land,
+                backgroundColor: COLORS.cardBg,
                 borderRadius: '8px',
-                boxShadow: `0 2px 4px ${COLORS.border}40`,
+                boxShadow: `0 0 15px ${COLORS.glow}, 0 2px 4px rgba(0, 0, 0, 0.3)`,
                 textAlign: 'center',
-                border: `2px solid ${COLORS.border}`
+                border: `2px solid ${COLORS.border}`,
+                backdropFilter: 'blur(10px)'
               }}>
-                <h3 style={{ margin: '0 0 10px 0', color: COLORS.text }}>How to Play</h3>
-                <p style={{ margin: 0, color: COLORS.text }}>
+                <h3 style={{ margin: '0 0 10px 0', color: COLORS.text, textShadow: `0 0 10px ${COLORS.glow}` }}>How to Play</h3>
+                <p style={{ margin: 0, color: COLORS.textSecondary }}>
                   The globe automatically rotates to the continent when a new country is selected.
                   Hover over countries to see their names. Click on the correct country.
                   <br />
