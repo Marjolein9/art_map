@@ -58,21 +58,16 @@
       height: var(--candle-height);
     }
 
-    /* Wick */
+    /* Wick - all wicks at same level, half extends below flame bottom */
     .wick {
       position: absolute;
-      bottom: 0;
+      bottom: calc(var(--wick-height) / -2);
       left: 50%;
       transform: translateX(-50%);
       width: var(--wick-width);
       height: var(--wick-height);
       pointer-events: none;
       z-index: 1;
-    }
-
-    /* Wick behind flame - half extends below flame bottom */
-    .wick.behind-flame {
-      bottom: calc(var(--wick-height) / -2);
     }
 
     /* Flame */
@@ -205,7 +200,7 @@
 
       if (hasFlame) {
         candle.innerHTML = `
-          <img src="wick3.svg" class="wick behind-flame">
+          <img src="wick3.svg" class="wick">
           <div class="flame">
             <div class="shadows"></div>
             <div class="top"></div>

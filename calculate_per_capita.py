@@ -10,7 +10,7 @@ print("\n[1/5] Reading USAID disbursements data...")
 
 country_disbursements = {}  # code -> {name, amount}
 sector_disbursements = defaultdict(float)  # sector name -> amount
-country_sector_disbursements = defaultdict(lambda: defaultdict(float))  # country_code -> sector -> amount
+country_category_sector_disbursements = defaultdict(lambda: defaultdict(lambda: defaultdict(float)))  # country_code -> category -> sector -> amount
 total_rows = 0
 
 with open('distribution_per_country.csv', 'r', encoding='utf-8') as f:
@@ -25,7 +25,8 @@ with open('distribution_per_country.csv', 'r', encoding='utf-8') as f:
         if row['Fiscal Year'] == '2021':
             country_code = row['Country Code']
             country_name = row['Country Name']
-            sector_name = row.get('International Sector Name', 'Unknown')
+            category_name = row.get('US Category Name', 'Unknown')
+            sector_name = row.get('US Sector Name', 'Unknown')
 
             # Fix country code mappings
             if country_code == 'SDF':
@@ -46,8 +47,8 @@ with open('distribution_per_country.csv', 'r', encoding='utf-8') as f:
                 # Track by sector
                 sector_disbursements[sector_name] += amount
 
-                # Track by country and sector
-                country_sector_disbursements[country_code][sector_name] += amount
+                # Track by country, category, and sector
+                country_category_sector_disbursements[country_code][category_name][sector_name] += amount
 
             except (ValueError, KeyError):
                 continue
@@ -179,15 +180,15 @@ print("\n" + "="*80)
 print("COMPLETE!")
 print("="*80)
 
-# Step 5: Calculate and save sector analysis by country
+# Step 5: Calculate and save category and sector analysis by country
 print("\n" + "="*80)
-print("STEP 5: SECTOR ANALYSIS BY COUNTRY")
+print("STEP 5: US CATEGORY AND SECTOR ANALYSIS BY COUNTRY")
 print("="*80)
 
-# Calculate per capita by sector for each country
-country_sector_results = []
+# Calculate per capita by category and sector for each country
+country_category_sector_results = []
 
-for country_code, sectors in country_sector_disbursements.items():
+for country_code, categories in country_category_sector_disbursements.items():
     # Get population for this country
     pop_data = country_population.get(country_code)
 
@@ -195,46 +196,49 @@ for country_code, sectors in country_sector_disbursements.items():
         country_name = country_disbursements[country_code]['name']
         population = pop_data['population']
 
-        for sector_name, sector_amount in sectors.items():
-            per_capita = sector_amount / population
+        for category_name, sectors in categories.items():
+            for sector_name, sector_amount in sectors.items():
+                per_capita = sector_amount / population
 
-            country_sector_results.append({
-                'country_code': country_code,
-                'country': country_name,
-                'sector': sector_name,
-                'disbursement': sector_amount,
-                'population': population,
-                'per_capita': per_capita
-            })
+                country_category_sector_results.append({
+                    'country_code': country_code,
+                    'country': country_name,
+                    'category': category_name,
+                    'sector': sector_name,
+                    'disbursement': sector_amount,
+                    'population': population,
+                    'per_capita': per_capita
+                })
 
-# Sort by country, then by sector disbursement (descending)
-country_sector_results.sort(key=lambda x: (x['country_code'], -x['disbursement']))
+# Sort by country, then by disbursement (descending)
+country_category_sector_results.sort(key=lambda x: (x['country_code'], -x['disbursement']))
 
-# Save sector by country results
-sector_output_file = 'usaid_per_capita_by_sector_country_2021.csv'
+# Save category and sector by country results
+sector_output_file = 'usaid_per_capita_by_category_sector_country_2021.csv'
 with open(sector_output_file, 'w', newline='', encoding='utf-8') as f:
     writer = csv.writer(f)
-    writer.writerow(['Country_Code', 'Country', 'Sector', 'Total_Disbursement_USD', 'Population', 'Per_Capita_USD'])
-    for s in country_sector_results:
+    writer.writerow(['Country_Code', 'Country', 'US_Category', 'US_Sector', 'Total_Disbursement_USD', 'Population', 'Per_Capita_USD'])
+    for s in country_category_sector_results:
         writer.writerow([
             s['country_code'],
             s['country'],
+            s['category'],
             s['sector'],
             s['disbursement'],
             int(s['population']),
             f"{s['per_capita']:.2f}"
         ])
 
-print(f"✓ Sector by country analysis saved to: {sector_output_file}")
-print(f"   Total records: {len(country_sector_results):,}")
+print(f"✓ US Category and Sector by country analysis saved to: {sector_output_file}")
+print(f"   Total records: {len(country_category_sector_results):,}")
 
-# Display sample - top 10 country-sector combinations by per capita
-print(f"\nTop 10 country-sector combinations by per capita:")
-sorted_by_per_capita = sorted(country_sector_results, key=lambda x: x['per_capita'], reverse=True)
-print(f"{'Code':<6} {'Country':<25} {'Sector':<30} {'Per Capita':>15}")
-print("-" * 78)
+# Display sample - top 10 country-category-sector combinations by per capita
+print(f"\nTop 10 country-category-sector combinations by per capita:")
+sorted_by_per_capita = sorted(country_category_sector_results, key=lambda x: x['per_capita'], reverse=True)
+print(f"{'Code':<6} {'Country':<20} {'US Category':<25} {'US Sector':<35} {'Per Capita':>12}")
+print("-" * 100)
 for s in sorted_by_per_capita[:10]:
-    print(f"{s['country_code']:<6} {s['country']:<25} {s['sector']:<30} ${s['per_capita']:>14,.2f}")
+    print(f"{s['country_code']:<6} {s['country']:<20} {s['category']:<25} {s['sector']:<35} ${s['per_capita']:>11,.2f}")
 
 print("\n" + "="*80)
 print("ALL COMPLETE!")

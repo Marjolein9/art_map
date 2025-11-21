@@ -1,0 +1,29 @@
+Countries with disbursements but no population data:
+======================================================================
+Code   Country                                          Disbursement
+----------------------------------------------------------------------
+SSN    Sub-Saharan Africa Region                $    133,908,555.00
+MNS    Middle East and North Africa Region      $     89,258,728.00
+WAN    West Africa Region                       $     86,408,705.00
+EUN    Europe Region                            $     47,334,249.00
+EEN    Eastern Europe Region                    $     43,866,588.00
+EUS    Eurasia Region                           $     37,906,472.00
+ENS    Eastern Asia Region                      $     36,630,314.00
+OCN    Oceania Region                           $     35,611,357.00
+EAG    Eastern Africa Region                    $     26,949,229.00
+SAG    Southern Africa Region                   $     23,537,657.00
+ASN    Asia Region                              $     23,024,695.00
+CNA    Central America Region                   $     22,387,949.00
+CRN    Caribbean Region                         $     17,831,061.00
+EAQ    East Asia and Oceania Region             $     12,202,349.00
+SCN    South and Central Asia Region            $     10,107,182.00
+EES    Europe and Eurasia Region                $      6,228,868.00
+WHN    Western Hemisphere Region                $      4,507,939.00
+MEN    Middle East Region                       $      3,353,951.00
+SAN    Southern Asia Region                     $      1,461,172.00
+SMN    South America Region                     $      1,366,941.00
+CCN    Central America and Caribbean Region     $        257,423.00
+SEA    South East Asia Region                   $        252,740.00
+TWN    Taiwan                                   $        175,129.00
+NCN    North and Central America Region         $        164,094.00
+ANS    Asia, Middle East and North Africa Region $          2,750.00
