@@ -1,19 +1,12 @@
 from flask import Flask, jsonify, request
 from flask_cors import CORS
-import sqlite3
 import random
 import os
+from db_utils import get_db_connection
+from config import DATABASE_PATH, PORT, DEBUG
 
 app = Flask(__name__)
 CORS(app)  # Enable CORS for React frontend
-
-# Database connection helper
-def get_db_connection():
-    """Get SQLite database connection"""
-    db_path = os.path.join(os.path.dirname(__file__), 'database.db')
-    conn = sqlite3.connect(db_path)
-    conn.row_factory = sqlite3.Row  # Return rows as dictionaries
-    return conn
 
 @app.route('/api/countries', methods=['GET'])
 def get_countries():
@@ -139,8 +132,7 @@ def health():
 
 if __name__ == '__main__':
     # Check database exists
-    db_path = os.path.join(os.path.dirname(__file__), 'database.db')
-    if not os.path.exists(db_path):
+    if not os.path.exists(DATABASE_PATH):
         print("❌ Database not found! Please run: python3 init_database.py")
         exit(1)
 
@@ -154,5 +146,5 @@ if __name__ == '__main__':
     conn.close()
 
     print(f"🎨 Loaded {artworks_count} artworks from {countries_count} countries")
-    print("🚀 Starting server on http://localhost:5000")
-    app.run(debug=True, port=5000)
+    print(f"🚀 Starting server on http://localhost:{PORT}")
+    app.run(debug=DEBUG, port=PORT)

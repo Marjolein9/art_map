@@ -1,93 +1,19 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import './App.css';
 import WorldMap from './components/WorldMap';
 import ArtworkInfoBar from './components/ArtworkInfoBar';
 import { COLOR_SCHEMES } from './styles/colorSchemes';
-
-const API_URL = 'http://localhost:5000/api';
+import { useQuiz } from './hooks/useQuiz';
 
 function App() {
-  const [targetCountry, setTargetCountry] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [gameStatus, setGameStatus] = useState('playing'); // 'playing', 'correct', 'incorrect'
+  const { targetCountry, loading, gameStatus, handleCountryClick, fetchNewCountry } = useQuiz();
   const [tooltipsEnabled, setTooltipsEnabled] = useState(true);
-  const [selectedColorScheme, setSelectedColorScheme] = useState('vintage'); // Default to vintage theme
+  const [selectedColorScheme, setSelectedColorScheme] = useState('vintage');
 
   // Get current color scheme
   const COLORS = COLOR_SCHEMES[selectedColorScheme];
 
-  // Fetch a random country on mount and when new game is started
-  const fetchRandomCountry = async () => {
-    try {
-      setGameStatus('playing');
-
-      const response = await fetch(`${API_URL}/game/random-country`);
-      const data = await response.json();
-
-      console.log('🎲 Fetched new country:', data.country);
-      setTargetCountry(data.country);
-      setLoading(false);
-    } catch (err) {
-      console.error('Error fetching random country:', err);
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchRandomCountry();
-  }, []);
-
-  useEffect(() => {
-    console.log('🗺️ Target country changed in App:', {
-      country: targetCountry?.name,
-      continent: targetCountry?.continent,
-      subregion: targetCountry?.subregion,
-      iso: targetCountry?.iso
-    });
-  }, [targetCountry]);
-
-  // Handle country click
-  const handleCountryClick = async (countryIso) => {
-    if (gameStatus !== 'playing' || !targetCountry) return;
-
-    console.log('🎯 Checking answer:', {
-      clickedCountry: countryIso,
-      targetCountry: targetCountry.iso,
-      targetName: targetCountry.name
-    });
-
-    try {
-      const response = await fetch(`${API_URL}/game/check-answer`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          selectedCountryIso: countryIso,
-          targetCountryIso: targetCountry.iso
-        })
-      });
-
-      const data = await response.json();
-      console.log('📊 Answer result:', data);
-
-      if (data.correct) {
-        setGameStatus('correct');
-        setTimeout(() => {
-          fetchRandomCountry(); // Auto start new round after 2 seconds
-        }, 2000);
-      } else {
-        setGameStatus('incorrect');
-        setTimeout(() => {
-          setGameStatus('playing');
-        }, 1500);
-      }
-    } catch (err) {
-      console.error('Error checking answer:', err);
-    }
-  };
-
-  // Handle tooltip toggle button
+  // Handle tooltip toggle
   const handleToggleTooltips = () => {
     setTooltipsEnabled(prev => !prev);
   };
@@ -136,8 +62,8 @@ function App() {
                     gameStatus={gameStatus}
                     tooltipsEnabled={tooltipsEnabled}
                     colors={COLORS}
-                    onNewGame={fetchRandomCountry}
-                    onStartOver={fetchRandomCountry}
+                    onNewGame={fetchNewCountry}
+                    onStartOver={fetchNewCountry}
                     onToggleTooltips={handleToggleTooltips}
                     selectedColorScheme={selectedColorScheme}
                     onColorSchemeChange={handleColorSchemeChange}
