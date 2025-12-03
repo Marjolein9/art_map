@@ -277,7 +277,8 @@ const WorldMap = ({
             boxShadow: `0 0 20px ${COLORS.glow}, 0 4px 6px rgba(0,0,0,0.3)`,
             border: overlayStyle.border,
             backdropFilter: 'blur(10px)',
-            zIndex: 100,
+            zIndex: 1000,
+            pointerEvents: 'none',
             transition: 'border 0.3s ease'
           }}>
             {overlayStyle.icon && <span style={{ marginRight: '8px' }}>{overlayStyle.icon}</span>}
