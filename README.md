@@ -1,257 +1,135 @@
-# World Map Geography Game
+# Art Map Quiz
 
-An interactive geography game where you test your knowledge of world countries. Built with Node.js/Express backend and React frontend using react-simple-maps.
+An interactive geography quiz game that displays artwork from different countries and challenges users to identify the country on a 3D globe.
+
+## Overview
+
+This is a full-stack web application combining:
+- **Backend**: Python Flask REST API with SQLite database
+- **Frontend**: React application with 3D globe visualization
+- **Data**: 134 artworks from 84 countries
 
 ## Project Structure
 
 ```
 art_map/
-├── backend/           # Node.js/Express API server
+├── backend/                    # Flask API server
+│   ├── app.py                 # Main Flask application with API routes
+│   ├── init_database.py       # Database initialization script
+│   ├── config.py              # Configuration constants
+│   ├── db_utils.py            # Database helper functions
+│   ├── data/
+│   │   └── regions.json       # ISO3 country code to region mappings
+│   ├── database.db            # SQLite database (generated)
+│   └── requirements.txt       # Python dependencies
+│
+├── frontend/                   # React application
 │   ├── src/
-│   │   ├── server.js  # Main server file
-│   │   ├── data/
-│   │   │   └── countries.js  # Country data with borders
-│   │   ├── routes/    # API routes
-│   │   └── controllers/ # Route controllers
-│   ├── package.json
-│   └── .env.example
-└── frontend/          # React application
-    ├── src/
-    │   ├── App.js     # Main game logic
-    │   └── components/
-    │       ├── WorldMap.js      # Interactive map component
-    │       └── GameControls.js  # Game UI controls
-    ├── public/
-    └── package.json
+│   │   ├── components/        # React UI components
+│   │   ├── services/          # API communication layer
+│   │   ├── hooks/             # Custom React hooks
+│   │   ├── config/            # Configuration files
+│   │   └── App.js            # Main React component
+│   ├── public/
+│   │   └── artwork_images/   # Local artwork image files
+│   └── package.json          # Node.js dependencies
+│
+├── children_combined_with_iso3.csv  # Source data with artwork information
+└── background_work/           # Development files and notes
 ```
-
-## Game Features
-
-### How to Play
-1. The game randomly selects a country for you to find
-2. Click on the correct country on the world map
-3. Use the hint button to see the target country and its neighboring countries highlighted
-4. Track your score and attempts as you play
-
-### Scoring System
-- **Correct answer without hint:** 10 points
-- **Correct answer with hint:** 5 points
-- Game automatically advances to the next country after a correct answer
-
-### Hint System
-- Click "Show Hint" to highlight the target country (green) and all its neighboring countries (yellow)
-- Can only use hint once per country
-- Using a hint reduces the points earned for that country
-
-### Technologies Used
-- **Frontend:**
-  - React with Hooks
-  - react-simple-maps (D3-based mapping library)
-  - d3-geo for map projections
-  - World Atlas TopoJSON data
-
-- **Backend:**
-  - Node.js
-  - Express.js
-  - Country data with 70+ countries and their borders
-```
-
-## Prerequisites
-
-- Node.js (v14 or higher)
-- npm or yarn
 
 ## Getting Started
 
-### 1. Clone the repository
+### Prerequisites
+
+**Backend:**
+- Python 3.7+
+- pip (Python package manager)
+
+**Frontend:**
+- Node.js 14+
+- npm (Node package manager)
+
+### Installation
+
+**1. Backend Setup**
 
 ```bash
-git clone <your-repo-url>
-cd art_map
-```
-
-### 2. Backend Setup
-
-Navigate to the backend directory and install dependencies:
-
-```bash
+# Navigate to backend directory
 cd backend
-npm install
+
+# Install Python dependencies
+pip install -r requirements.txt
+
+# Initialize the database from CSV data
+python3 init_database.py
+
+# Start the Flask server
+python3 app.py
 ```
 
-Create a `.env` file based on `.env.example`:
+The backend will start on http://localhost:5000
+
+**2. Frontend Setup**
 
 ```bash
-cp .env.example .env
-```
-
-Edit the `.env` file with your configuration:
-
-```
-PORT=5000
-NODE_ENV=development
-```
-
-Start the backend server:
-
-```bash
-# Development mode (with auto-restart)
-npm run dev
-
-# Production mode
-npm start
-```
-
-The backend server will run on `http://localhost:5000`
-
-### 3. Frontend Setup
-
-In a new terminal, navigate to the frontend directory and install dependencies:
-
-```bash
+# Navigate to frontend directory
 cd frontend
+
+# Install Node.js dependencies
 npm install
-```
 
-Start the React development server:
-
-```bash
+# Start the React development server
 npm start
 ```
 
-The frontend will run on `http://localhost:3000`
+The frontend will start on http://localhost:3000
 
-## API Endpoints
+## Key Concepts for Beginners
 
-### Game API Routes
+### Flask (Backend Framework)
 
-- `GET /api` - Welcome message
-- `GET /api/health` - Health check endpoint
-- `GET /api/game/random-country` - Get a random country for the game
-- `GET /api/game/countries` - Get all countries data
-- `POST /api/game/check-answer` - Check if selected country is correct
-- `GET /api/game/country-neighbors/:iso` - Get country and its neighbors for hints
+**What is Flask?**
+- Lightweight Python web framework
+- Handles HTTP requests and responses
+- Routes map URLs to Python functions
 
-## Development
-
-### Backend
-
-The backend uses Express.js with the following middleware:
-- `cors` - Enable CORS for frontend communication
-- `express.json()` - Parse JSON request bodies
-- `dotenv` - Environment variable management
-
-To add new routes:
-1. Create route files in `backend/src/routes/`
-2. Create controllers in `backend/src/controllers/`
-3. Import and use them in `server.js`
-
-### Frontend
-
-The frontend uses:
-- **WorldMap component:** Renders the interactive map with click detection and highlighting
-- **GameControls component:** Manages game UI (score, hints, new game)
-- **App.js:** Main game logic and state management
-
-Key features:
-- Interactive country selection with hover effects
-- Color-coded highlighting (green = target, yellow = neighbors, blue = hover)
-- Responsive design with mobile support
-- Automatic game progression
-
-## Running Both Servers
-
-You need to run both the backend and frontend servers simultaneously:
-
-1. Terminal 1 - Backend:
-   ```bash
-   cd backend
-   npm run dev
-   ```
-
-2. Terminal 2 - Frontend:
-   ```bash
-   cd frontend
-   npm start
-   ```
-
-## Building for Production
-
-### Backend
-
-The backend runs directly with Node.js:
-
-```bash
-cd backend
-npm start
+**Example:**
+```python
+@app.route('/api/countries', methods=['GET'])
+def get_countries():
+    # This function runs when someone visits /api/countries
+    return jsonify({'countries': [...]})
 ```
 
-### Frontend
+### React (Frontend Framework)
 
-Build the React app for production:
+**What is React?**
+- JavaScript library for building user interfaces
+- Components are reusable pieces of UI
+- Hooks manage state and side effects
 
-```bash
-cd frontend
-npm run build
-```
+**Key React Concepts:**
+- `useState`: Store data that can change
+- `useEffect`: Run code when something changes
+- Custom Hooks: Reusable logic
 
-The optimized production build will be in the `frontend/build` directory.
+### REST API
 
-## Environment Variables
+**What is a REST API?**
+- Way for frontend and backend to communicate
+- Uses HTTP methods (GET, POST) to request/send data
+- Data exchanged in JSON format
 
-### Backend (.env)
-- `PORT` - Server port (default: 5000)
-- `NODE_ENV` - Environment mode (development/production)
+## Technologies Used
 
-### Frontend (.env)
-- `REACT_APP_API_URL` - Backend API URL (optional, defaults to http://localhost:5000)
+**Backend:**
+- Flask 3.0.0 - Web framework
+- Flask-CORS 4.0.0 - Cross-origin resource sharing
+- SQLite3 - Database
 
-## Game Data
+**Frontend:**
+- React 18+ - UI framework
+- react-globe.gl - 3D globe visualization
 
-The game includes 70+ countries with their ISO codes and neighboring countries. Countries are defined in [backend/src/data/countries.js](backend/src/data/countries.js).
-
-To add more countries:
-1. Add the country data with ISO code and neighbors array
-2. Ensure ISO codes match the World Atlas TopoJSON data
-3. Restart the backend server
-
-## Troubleshooting
-
-### CORS Issues
-If you encounter CORS errors, ensure:
-- The backend server is running
-- CORS is enabled in `backend/src/server.js`
-- The frontend is making requests to the correct backend URL
-
-### Port Already in Use
-If port 5000 or 3000 is already in use:
-- Change the backend port in `.env`
-- Update the API URL in [frontend/src/App.js](frontend/src/App.js) accordingly
-
-### Map Not Loading
-If the map doesn't appear:
-- Check browser console for errors
-- Ensure the World Atlas CDN is accessible
-- Check that react-simple-maps is properly installed
-- Try clearing browser cache
-
-### Countries Not Clickable
-- Ensure the backend server is running
-- Check that the country ISO codes match between backend data and World Atlas
-- Some small territories may not be clickable due to map resolution
-
-## Future Enhancements
-
-- Add difficulty levels (continents, regions)
-- Implement leaderboard with database
-- Add timed challenges
-- Include capital cities mode
-- Add multiplayer support
-- Track user statistics and progress
-- Add more detailed country information
-- Implement streak tracking
-- Add sound effects and animations
-
-## License
-
-ISC
+See backend/README.md and frontend/README.md for detailed documentation.
