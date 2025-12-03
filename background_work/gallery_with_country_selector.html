@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Art Gallery with Country Selector</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Georgia', serif;
+            background: #f5f5f5;
+            color: #333;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .country-selector {
+            background: white;
+            padding: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .selector-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            gap: 20px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .selector-container label {
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .selector-container select {
+            padding: 10px 20px;
+            border: 2px solid #667eea;
+            border-radius: 6px;
+            font-size: 1.1em;
+            cursor: pointer;
+            flex: 1;
+            min-width: 250px;
+        }
+
+        .info-bar {
+            background: white;
+            border-left: 4px solid #667eea;
+            padding: 20px;
+            margin: 20px auto;
+            max-width: 1400px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            display: none;
+        }
+
+        .info-bar.active {
+            display: block;
+        }
+
+        .country-info {
+            margin-bottom: 20px;
+        }
+
+        .country-name {
+            font-size: 2em;
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+
+        .country-code {
+            font-size: 1.2em;
+            color: #764ba2;
+            margin-bottom: 15px;
+        }
+
+        .artworks-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .artwork-card {
+            background: #f9f9f9;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .artwork-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+
+        .artwork-image {
+            width: 100%;
+            height: 250px;
+            object-fit: cover;
+            display: block;
+            background: #e0e0e0;
+        }
+
+        .artwork-details {
+            padding: 15px;
+        }
+
+        .artist-name {
+            font-size: 1.1em;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .work-title {
+            font-size: 0.95em;
+            color: #666;
+            margin-bottom: 10px;
+        }
+
+        .dates {
+            font-size: 0.85em;
+            color: #999;
+        }
+
+        .image-badge {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.75em;
+            margin-top: 8px;
+        }
+
+        .badge-local {
+            background: #4caf50;
+            color: white;
+        }
+
+        .badge-remote {
+            background: #2196f3;
+            color: white;
+        }
+
+        .no-selection {
+            text-align: center;
+            padding: 60px 20px;
+            color: #999;
+            font-size: 1.2em;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .stats {
+            text-align: center;
+            color: #666;
+            margin: 20px 0;
+        }
+
+        @media (max-width: 768px) {
+            .artworks-grid {
+                grid-template-columns: 1fr;
+            }
+
+            h1 {
+                font-size: 1.8em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Art Gallery by Country</h1>
+        <p>Select a country to view artwork images</p>
+    </div>
+
+    <div class="country-selector">
+        <div class="selector-container">
+            <label for="countrySelect">Select Country:</label>
+            <select id="countrySelect">
+                <option value="">-- Choose a Country --</option>
+            </select>
+            <div class="stats" id="stats">Loading...</div>
+        </div>
+    </div>
+
+    <div class="info-bar" id="infoBar">
+        <div class="country-info">
+            <div class="country-name" id="countryName"></div>
+            <div class="country-code" id="countryCode"></div>
+        </div>
+        <div class="artworks-grid" id="artworksGrid"></div>
+    </div>
+
+    <div class="container">
+        <div class="no-selection" id="noSelection">
+            👆 Select a country from the dropdown above to view artwork
+        </div>
+    </div>
+
+    <script>
+        let artworksData = [];
+        let artworksByCountry = {};
+
+        // Load data
+        async function loadData() {
+            try {
+                const response = await fetch('children_combined_with_iso3.json');
+                if (!response.ok) throw new Error('Failed to load data');
+                artworksData = await response.json();
+
+                // Group by country
+                artworksData.forEach(artwork => {
+                    const country = artwork.country;
+                    if (!artworksByCountry[country]) {
+                        artworksByCountry[country] = [];
+                    }
+                    artworksByCountry[country].push(artwork);
+                });
+
+                populateCountrySelector();
+                updateStats();
+            } catch (error) {
+                document.getElementById('stats').textContent = `Error: ${error.message}`;
+                console.error('Error loading data:', error);
+            }
+        }
+
+        // Populate country selector
+        function populateCountrySelector() {
+            const select = document.getElementById('countrySelect');
+            const countries = Object.keys(artworksByCountry).sort();
+
+            countries.forEach(country => {
+                const option = document.createElement('option');
+                option.value = country;
+                option.textContent = `${country} (${artworksByCountry[country].length})`;
+                select.appendChild(option);
+            });
+        }
+
+        // Update stats
+        function updateStats() {
+            const totalCountries = Object.keys(artworksByCountry).length;
+            const totalArtworks = artworksData.length;
+            const localImages = artworksData.filter(a => a.is_local === 'true').length;
+
+            document.getElementById('stats').textContent =
+                `${totalCountries} countries | ${totalArtworks} artworks | ${localImages} local images`;
+        }
+
+        // Display artworks for selected country
+        function displayCountryArtworks(country) {
+            if (!country) {
+                document.getElementById('infoBar').classList.remove('active');
+                document.getElementById('noSelection').style.display = 'block';
+                return;
+            }
+
+            const artworks = artworksByCountry[country];
+            if (!artworks || artworks.length === 0) {
+                document.getElementById('infoBar').classList.remove('active');
+                document.getElementById('noSelection').style.display = 'block';
+                return;
+            }
+
+            // Hide no selection message
+            document.getElementById('noSelection').style.display = 'none';
+
+            // Get ISO3 code (from first artwork of this country)
+            const iso3 = artworks[0].iso3 || 'N/A';
+
+            // Update country info
+            document.getElementById('countryName').textContent = country;
+            document.getElementById('countryCode').textContent = `ISO3: ${iso3}`;
+
+            // Render artworks
+            const grid = document.getElementById('artworksGrid');
+            grid.innerHTML = '';
+
+            artworks.forEach(artwork => {
+                const card = document.createElement('div');
+                card.className = 'artwork-card';
+
+                const imagePath = artwork.image_path || artwork.work_url;
+                const isLocal = artwork.is_local === 'true';
+                const artistName = artwork.artist_name || 'Unknown Artist';
+                const workTitle = artwork.work_title || 'Untitled';
+                const birthDate = artwork.birth_date || '?';
+                const deathDate = artwork.death_date || '?';
+
+                card.innerHTML = `
+                    ${imagePath ? `
+                        <img src="${imagePath}"
+                             alt="${workTitle}"
+                             class="artwork-image"
+                             onerror="this.src='https://via.placeholder.com/250x250?text=Image+Not+Available'">
+                    ` : `
+                        <div class="artwork-image" style="display: flex; align-items: center; justify-content: center; background: #e0e0e0; color: #999;">
+                            No Image Available
+                        </div>
+                    `}
+                    <div class="artwork-details">
+                        <div class="artist-name">${artistName}</div>
+                        <div class="work-title">${workTitle}</div>
+                        <div class="dates">${birthDate.split('-')[0]} – ${deathDate.split('-')[0]}</div>
+                        ${imagePath ? `<span class="image-badge ${isLocal ? 'badge-local' : 'badge-remote'}">
+                            ${isLocal ? 'Local' : 'Remote'}
+                        </span>` : ''}
+                    </div>
+                `;
+
+                grid.appendChild(card);
+            });
+
+            // Show info bar
+            document.getElementById('infoBar').classList.add('active');
+        }
+
+        // Event listener for country selection
+        document.getElementById('countrySelect').addEventListener('change', (e) => {
+            displayCountryArtworks(e.target.value);
+        });
+
+        // Initialize
+        loadData();
+    </script>
+</body>
+</html>
