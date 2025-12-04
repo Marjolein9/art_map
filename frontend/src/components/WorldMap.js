@@ -16,11 +16,14 @@ const WorldMap = ({
   onStartOver,
   onToggleTooltips,
   selectedColorScheme,
-  onColorSchemeChange
+  onColorSchemeChange,
+  mode = 'quiz',
+  onModeToggle
 }) => {
   const COLORS = colors;
   const globeEl = useRef();
   const [countries, setCountries] = useState({ features: [] });
+  const [countryPaths, setCountryPaths] = useState([]);
   const [hoverD, setHoverD] = useState(null);
   const previousRegionRef = useRef(null);
   const [clickedCountry, setClickedCountry] = useState(null);
@@ -31,6 +34,21 @@ const WorldMap = ({
       .then(res => res.json())
       .then(data => {
         setCountries(data);
+
+        // Convert polygons to paths (border lines only) for consistent rendering
+        const paths = data.features.map(feature => {
+          const coords = feature.geometry.type === 'Polygon'
+            ? feature.geometry.coordinates
+            : feature.geometry.coordinates.flat(); // Handle MultiPolygon
+
+          return {
+            coords: coords,
+            properties: feature.properties,
+            geometry: feature.geometry
+          };
+        });
+
+        setCountryPaths(paths);
         console.log('🌍 Loaded country data:', data.features.length, 'countries');
       })
       .catch(err => console.error('Error loading country data:', err));
@@ -76,8 +94,8 @@ const WorldMap = ({
 
   // Get country fill color based on game state
   const getCountryColor = () => {
-    // All countries use default land color
-    return COLORS.land;
+    // Make countries completely transparent - only show outlines
+    return 'rgba(0, 0, 0, 0)';
   };
 
   // Get border color based on hover and game status
@@ -186,8 +204,8 @@ const WorldMap = ({
   const overlayStyle = getFindOverlayStyle();
 
   return (
-    <div style={{ width: '100%' }}>
-      <div style={{ position: 'relative', width: '100%', height: '600px' }}>
+    <div className="world-map-wrapper">
+      <div className="globe-position-container">
         <Globe
           ref={globeEl}
           globeImageUrl="//unpkg.com/three-globe/example/img/earth-blue-marble.jpg"
@@ -195,16 +213,13 @@ const WorldMap = ({
           atmosphereColor={COLORS.hover}
           atmosphereAltitude={0.15}
 
+          // Use both polygons (for clicking) and paths (for consistent borders)
           polygonsData={countries.features}
-          polygonCapColor={getCountryColor}
-          polygonSideColor={() => COLORS.land}
-          polygonStrokeColor={getBorderColor}
-          polygonStrokeWidth={1.5}
-          polygonAltitude={d => d === hoverD ? 0.015 : 0.008}
-          polygonCapMaterial={(d) => {
-            // Create semi-transparent material to show Earth underneath
-            return { opacity: 0.7, transparent: true };
-          }}
+          polygonCapColor={() => 'rgba(0, 0, 0, 0)'}
+          polygonSideColor={() => 'rgba(0, 0, 0, 0)'}
+          polygonStrokeColor={() => 'rgba(0, 0, 0, 0)'} // Hide polygon borders
+          polygonAltitude={0.001}
+
           polygonLabel={tooltipsEnabled ? ({ properties: d }) => {
             const name = getCountryName(d);
             const iso = getCountryIsoCode(d);
@@ -216,7 +231,35 @@ const WorldMap = ({
           } : undefined}
           onPolygonHover={setHoverD}
           onPolygonClick={handlePolygonClick}
-          polygonsTransitionDuration={300}
+
+          // Use pathsData for consistent border rendering
+          pathsData={countryPaths}
+          pathPoints={d => {
+            const coords = d.coords;
+            // Convert polygon coordinates to path points
+            if (Array.isArray(coords) && Array.isArray(coords[0])) {
+              return coords[0]; // Get outer ring of polygon
+            }
+            return coords;
+          }}
+          pathPointLat={p => p[1]}
+          pathPointLng={p => p[0]}
+          pathColor={d => {
+            const iso3 = getCountryIsoCode(d.properties);
+            if (!iso3) return COLORS.border;
+
+            if (clickedCountry === iso3) {
+              if (gameStatus === 'correct') return COLORS.correct;
+              if (gameStatus === 'incorrect') return COLORS.incorrect;
+            }
+
+            if (d === hoverD) return COLORS.selected;
+            return COLORS.border;
+          }}
+          pathStroke={0.8}
+          pathDashLength={1}
+          pathDashGap={0}
+          pathDashAnimateTime={0}
 
           enablePointerInteraction={true}
           width={900}
@@ -225,53 +268,30 @@ const WorldMap = ({
 
         {/* Find overlay on top of globe */}
         {targetCountryName && (
-          <div style={{
-            position: 'absolute',
-            top: '20px',
-            left: '50%',
-            transform: 'translateX(-50%)',
-            backgroundColor: COLORS.cardBg,
-            color: COLORS.text,
-            padding: '12px 24px',
-            borderRadius: '8px',
-            fontSize: '20px',
-            fontWeight: 'bold',
-            fontFamily: 'system-ui',
-            boxShadow: `0 0 20px ${COLORS.glow}, 0 4px 6px rgba(0,0,0,0.3)`,
-            border: overlayStyle.border,
-            backdropFilter: 'blur(10px)',
-            zIndex: 1000,
-            pointerEvents: 'none',
-            transition: 'border 0.3s ease'
-          }}>
-            {overlayStyle.icon && <span style={{ marginRight: '8px' }}>{overlayStyle.icon}</span>}
+          <div
+            className="find-country-overlay"
+            style={{
+              '--card-bg': COLORS.cardBg,
+              '--text-color': COLORS.text,
+              '--glow-color': COLORS.glow,
+              '--overlay-border': overlayStyle.border
+            }}
+          >
+            {overlayStyle.icon && <span className="icon">{overlayStyle.icon}</span>}
             Find: {targetCountryName}
           </div>
         )}
       </div>
 
       {/* All control buttons - below globe, small, all in one line */}
-      <div style={{
-        display: 'flex',
-        justifyContent: 'center',
-        gap: '6px',
-        marginTop: '10px',
-        flexWrap: 'wrap',
-        alignItems: 'center'
-      }}>
+      <div className="globe-controls">
         <button
           onClick={rotateLeft}
+          className="globe-control-btn"
           style={{
-            padding: '4px 8px',
-            backgroundColor: COLORS.buttonBg,
-            color: 'white',
-            border: `1px solid ${COLORS.border}`,
-            borderRadius: '3px',
-            cursor: 'pointer',
-            fontSize: '11px',
-            fontWeight: 'bold',
-            boxShadow: `0 0 5px ${COLORS.glow}`,
-            transition: 'all 0.3s ease'
+            '--button-bg': COLORS.buttonBg,
+            '--border-color': COLORS.border,
+            '--glow-color': COLORS.glow
           }}
           title="Rotate Left"
         >
@@ -279,17 +299,11 @@ const WorldMap = ({
         </button>
         <button
           onClick={rotateRight}
+          className="globe-control-btn"
           style={{
-            padding: '4px 8px',
-            backgroundColor: COLORS.buttonBg,
-            color: 'white',
-            border: `1px solid ${COLORS.border}`,
-            borderRadius: '3px',
-            cursor: 'pointer',
-            fontSize: '11px',
-            fontWeight: 'bold',
-            boxShadow: `0 0 5px ${COLORS.glow}`,
-            transition: 'all 0.3s ease'
+            '--button-bg': COLORS.buttonBg,
+            '--border-color': COLORS.border,
+            '--glow-color': COLORS.glow
           }}
           title="Rotate Right"
         >
@@ -297,17 +311,11 @@ const WorldMap = ({
         </button>
         <button
           onClick={zoomIn}
+          className="globe-control-btn"
           style={{
-            padding: '4px 8px',
-            backgroundColor: COLORS.buttonBg,
-            color: 'white',
-            border: `1px solid ${COLORS.border}`,
-            borderRadius: '3px',
-            cursor: 'pointer',
-            fontSize: '11px',
-            fontWeight: 'bold',
-            boxShadow: `0 0 5px ${COLORS.glow}`,
-            transition: 'all 0.3s ease'
+            '--button-bg': COLORS.buttonBg,
+            '--border-color': COLORS.border,
+            '--glow-color': COLORS.glow
           }}
           title="Zoom In"
         >
@@ -315,62 +323,77 @@ const WorldMap = ({
         </button>
         <button
           onClick={zoomOut}
+          className="globe-control-btn"
           style={{
-            padding: '4px 8px',
-            backgroundColor: COLORS.buttonBg,
-            color: 'white',
-            border: `1px solid ${COLORS.border}`,
-            borderRadius: '3px',
-            cursor: 'pointer',
-            fontSize: '11px',
-            fontWeight: 'bold',
-            boxShadow: `0 0 5px ${COLORS.glow}`,
-            transition: 'all 0.3s ease'
+            '--button-bg': COLORS.buttonBg,
+            '--border-color': COLORS.border,
+            '--glow-color': COLORS.glow
           }}
           title="Zoom Out"
         >
           −
         </button>
 
-        <span style={{
-          width: '1px',
-          height: '16px',
-          backgroundColor: COLORS.border,
-          margin: '0 4px'
-        }} />
+        <span className="globe-controls-divider" style={{ '--border-color': COLORS.border }} />
 
         <button
-          onClick={onStartOver}
+          onClick={() => mode !== 'quiz' && onModeToggle()}
+          className={`globe-control-btn ${mode === 'quiz' ? 'primary' : 'secondary'}`}
           style={{
-            padding: '4px 10px',
-            backgroundColor: COLORS.buttonPrimary,
-            color: COLORS.text,
-            border: `1px solid ${COLORS.border}`,
-            borderRadius: '3px',
-            cursor: 'pointer',
-            fontSize: '11px',
-            fontWeight: 'bold',
-            boxShadow: `0 0 5px ${COLORS.glow}`,
-            transition: 'all 0.3s ease'
+            '--button-primary': COLORS.buttonPrimary,
+            '--button-secondary': COLORS.buttonSecondary,
+            '--text-color': COLORS.text,
+            '--button-text': COLORS.ocean,
+            '--border-color': COLORS.border,
+            '--glow-color': COLORS.glow
           }}
-          title="Next Country"
+          title="Quiz Mode"
         >
-          Next
+          🎯 Quiz
         </button>
 
         <button
-          onClick={onToggleTooltips}
+          onClick={() => mode !== 'explore' && onModeToggle()}
+          className={`globe-control-btn ${mode === 'explore' ? 'primary' : 'secondary'}`}
           style={{
-            padding: '4px 10px',
-            backgroundColor: tooltipsEnabled ? COLORS.buttonSecondary : COLORS.land,
-            color: tooltipsEnabled ? COLORS.ocean : COLORS.textSecondary,
-            border: `1px solid ${COLORS.border}`,
-            borderRadius: '3px',
-            cursor: 'pointer',
-            fontSize: '11px',
-            fontWeight: 'bold',
-            boxShadow: tooltipsEnabled ? `0 0 8px ${COLORS.hover}` : 'none',
-            transition: 'all 0.3s ease'
+            '--button-primary': COLORS.buttonPrimary,
+            '--button-secondary': COLORS.buttonSecondary,
+            '--text-color': COLORS.text,
+            '--button-text': COLORS.ocean,
+            '--border-color': COLORS.border,
+            '--glow-color': COLORS.glow
+          }}
+          title="Explore Mode"
+        >
+          🗺️ Explore
+        </button>
+
+        {mode === 'quiz' && (
+          <button
+            onClick={onStartOver}
+            className="globe-control-btn primary"
+            style={{
+              '--button-primary': COLORS.buttonPrimary,
+              '--text-color': COLORS.text,
+              '--border-color': COLORS.border,
+              '--glow-color': COLORS.glow
+            }}
+            title="Next Country"
+          >
+            Next
+          </button>
+        )}
+
+        <button
+          onClick={onToggleTooltips}
+          className={`globe-control-btn ${tooltipsEnabled ? 'secondary toggle-on' : 'toggle-off'}`}
+          style={{
+            '--button-secondary': COLORS.buttonSecondary,
+            '--button-text': COLORS.ocean,
+            '--land-color': COLORS.land,
+            '--text-secondary': COLORS.textSecondary,
+            '--border-color': COLORS.border,
+            '--hover-color': COLORS.hover
           }}
           title="Toggle Tooltips"
         >
@@ -380,17 +403,12 @@ const WorldMap = ({
         <select
           value={selectedColorScheme}
           onChange={(e) => onColorSchemeChange(e.target.value)}
+          className="color-scheme-dropdown"
           style={{
-            padding: '4px 8px',
-            backgroundColor: COLORS.buttonPrimary,
-            color: COLORS.text,
-            border: `1px solid ${COLORS.border}`,
-            borderRadius: '3px',
-            cursor: 'pointer',
-            fontSize: '11px',
-            fontWeight: 'bold',
-            boxShadow: `0 0 5px ${COLORS.glow}`,
-            transition: 'all 0.3s ease'
+            '--button-primary': COLORS.buttonPrimary,
+            '--text-color': COLORS.text,
+            '--border-color': COLORS.border,
+            '--glow-color': COLORS.glow
           }}
         >
           {Object.keys(COLOR_SCHEMES).map(schemeKey => (

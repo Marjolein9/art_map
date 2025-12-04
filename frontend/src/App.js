@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import './App.css';
+import './styles/App.css';
+import './styles/components.css';  // Import centralized component styles
 import WorldMap from './components/WorldMap';
 import ArtworkInfoBar from './components/ArtworkInfoBar';
 import { COLOR_SCHEMES } from './styles/colorSchemes';
@@ -9,6 +10,8 @@ function App() {
   const { targetCountry, loading, gameStatus, handleCountryClick, fetchNewCountry } = useQuiz();
   const [tooltipsEnabled, setTooltipsEnabled] = useState(true);
   const [selectedColorScheme, setSelectedColorScheme] = useState('vintage');
+  const [mode, setMode] = useState('quiz'); // 'quiz' or 'explore'
+  const [exploreCountry, setExploreCountry] = useState(null);
 
   // Get current color scheme
   const COLORS = COLOR_SCHEMES[selectedColorScheme];
@@ -23,42 +26,53 @@ function App() {
     setSelectedColorScheme(scheme);
   };
 
+  // Handle mode toggle
+  const handleModeToggle = () => {
+    const newMode = mode === 'quiz' ? 'explore' : 'quiz';
+    setMode(newMode);
+    if (newMode === 'quiz') {
+      setExploreCountry(null);
+    }
+  };
+
+  // Handle explore mode country click
+  const handleExploreClick = (countryIso) => {
+    if (mode === 'explore') {
+      setExploreCountry(countryIso);
+    } else {
+      handleCountryClick(countryIso);
+    }
+  };
+
   return (
     <div className="App">
-      <div style={{
-        minHeight: '100vh',
-        background: COLORS.backgroundGradient,
-        padding: '20px',
-        position: 'relative',
-        overflow: 'hidden'
-      }}>
-        <div style={{
-          maxWidth: '1200px',
-          margin: '0 auto'
-        }}>
+      {/* App background with dynamic color theme */}
+      <div
+        className="app-background"
+        style={{ '--bg-gradient': COLORS.backgroundGradient }}
+      >
+        <div className="app-container">
           {loading ? (
-            <p style={{ textAlign: 'center', color: COLORS.text, fontSize: '1.2em' }}>Loading game...</p>
+            <p className="loading-message" style={{ '--text-color': COLORS.text }}>
+              Loading game...
+            </p>
           ) : (
             <>
-              <div style={{
-                display: 'flex',
-                gap: '20px',
-                alignItems: 'flex-start'
-              }}>
-                <div style={{
-                  flex: '1',
-                  backgroundColor: COLORS.cardBg,
-                  borderRadius: '8px',
-                  boxShadow: `0 0 20px ${COLORS.glow}, 0 4px 6px rgba(0, 0, 0, 0.3)`,
-                  padding: '20px',
-                  border: `2px solid ${COLORS.border}`,
-                  backdropFilter: 'blur(10px)'
-                }}>
+              <div className="app-content">
+                {/* Map container - Left side */}
+                <div
+                  className="map-container"
+                  style={{
+                    '--card-bg': COLORS.cardBg,
+                    '--glow-color': COLORS.glow,
+                    '--border-color': COLORS.border
+                  }}
+                >
                   <WorldMap
-                    onCountryClick={handleCountryClick}
-                    targetCountry={targetCountry?.iso}
-                    targetCountryName={targetCountry?.name}
-                    region={targetCountry?.subregion || targetCountry?.continent}
+                    onCountryClick={handleExploreClick}
+                    targetCountry={mode === 'quiz' ? targetCountry?.iso : null}
+                    targetCountryName={mode === 'quiz' ? targetCountry?.name : null}
+                    region={mode === 'quiz' ? (targetCountry?.subregion || targetCountry?.continent) : null}
                     gameStatus={gameStatus}
                     tooltipsEnabled={tooltipsEnabled}
                     colors={COLORS}
@@ -67,17 +81,17 @@ function App() {
                     onToggleTooltips={handleToggleTooltips}
                     selectedColorScheme={selectedColorScheme}
                     onColorSchemeChange={handleColorSchemeChange}
+                    mode={mode}
+                    onModeToggle={handleModeToggle}
                   />
                 </div>
 
                 {/* Artwork Info Bar - Right Side */}
-                <div style={{
-                  width: '400px',
-                  minWidth: '400px'
-                }}>
+                <div className="artwork-sidebar">
                   <ArtworkInfoBar
-                    countryISO={targetCountry?.iso}
+                    countryISO={mode === 'quiz' ? targetCountry?.iso : exploreCountry}
                     colors={COLORS}
+                    mode={mode}
                   />
                 </div>
               </div>

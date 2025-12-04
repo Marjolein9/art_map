@@ -1,0 +1,606 @@
+/**
+ * Component Styles
+ * 
+ * This file contains all styles for the application components.
+ * Moved from inline styles to centralized CSS for better maintainability.
+ * 
+ * Benefits of CSS files over inline styles:
+ * 1. Reusability - Define once, use many times
+ * 2. Maintainability - Easy to find and update styles
+ * 3. Performance - Browser can cache CSS files
+ * 4. Separation of concerns - Structure (HTML/JSX) separate from styling
+ */
+
+/* ==============================================================================
+   APP LAYOUT
+   ============================================================================== */
+
+.app-background {
+  min-height: 100vh;
+  padding: 20px;
+  position: relative;
+  overflow: hidden;
+  background: var(--bg-gradient);
+}
+
+.app-container {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.app-content {
+  display: flex;
+  gap: 20px;
+  align-items: flex-start;
+}
+
+.loading-message {
+  text-align: center;
+  font-size: 1.2em;
+  color: var(--text-color);
+}
+
+/* Map container - Left side */
+.map-container {
+  flex: 1;
+  border-radius: 8px;
+  padding: 20px;
+  border: 2px solid;
+  backdrop-filter: blur(10px);
+  background-color: var(--card-bg);
+  box-shadow: 0 0 20px var(--glow-color), 0 4px 6px rgba(0, 0, 0, 0.3);
+  border-color: var(--border-color);
+}
+
+/* Artwork sidebar - Right side */
+.artwork-sidebar {
+  width: 400px;
+  min-width: 400px;
+}
+
+/* ==============================================================================
+   WORLDMAP COMPONENT
+   ============================================================================== */
+
+/* Quiz overlay - Shows country name to find */
+.quiz-overlay {
+  position: absolute;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1000;
+  pointer-events: none;
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.quiz-overlay-correct {
+  border: 3px solid;
+  animation: pulse 0.5s ease-in-out;
+}
+
+.quiz-overlay-incorrect {
+  border: 3px solid;
+  animation: shake 0.5s ease-in-out;
+}
+
+/* Quiz controls */
+.quiz-controls {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 15px;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.quiz-button {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-weight: 500;
+}
+
+.quiz-button:hover:not(:disabled) {
+  transform: translateY(-2px);
+}
+
+.quiz-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Settings section */
+.settings-section {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.settings-label {
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.color-scheme-select {
+  padding: 8px 12px;
+  border-radius: 4px;
+  border: 1px solid;
+  font-size: 14px;
+  cursor: pointer;
+  transition: border-color 0.3s ease;
+}
+
+.color-scheme-select:focus {
+  outline: none;
+  border-width: 2px;
+}
+
+/* Globe container */
+.globe-container {
+  position: relative;
+  width: 100%;
+  height: 600px;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+/* ==============================================================================
+   ARTWORK INFO BAR
+   ============================================================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Roboto+Condensed:wght@300;400;700&family=Roboto:wght@100;300;400;700;900&display=swap');
+
+.artwork-info-container {
+  border-radius: 8px;
+  padding: 20px;
+  border: 5px solid;
+  backdrop-filter: blur(10px);
+  font-family: 'Roboto', Helvetica, sans-serif;
+  max-height: calc(100vh - 60px);
+  overflow-y: auto;
+  background-color: var(--card-bg);
+  box-shadow: 0 0 20px var(--glow-color), 0 4px 6px rgba(0, 0, 0, 0.3);
+  border-color: var(--border-color);
+  animation: slideIn 0.25s ease-in-out;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.artwork-info-title {
+  margin: 0 0 15px 0;
+  font-size: 18pt;
+  text-align: center;
+  text-transform: uppercase;
+  font-family: 'Roboto Condensed', Helvetica, sans-serif;
+  font-weight: 300;
+  letter-spacing: 1.5px;
+  color: var(--text-color);
+}
+
+.artwork-loading,
+.artwork-waiting,
+.artwork-no-data {
+  text-align: center;
+  color: var(--text-color);
+}
+
+.artwork-loading-title,
+.artwork-waiting-title,
+.artwork-no-data-title {
+  margin: 0 0 10px 0;
+  color: var(--glow-color);
+}
+
+.artwork-loading-subtitle,
+.artwork-waiting-subtitle,
+.artwork-no-data-subtitle {
+  margin: 0;
+  opacity: 0.7;
+}
+
+/* Artwork types list */
+.artwork-types-list {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+/* Type section */
+.artwork-type-section {
+  border-radius: 8px;
+  overflow: hidden;
+  background-color: rgba(0, 0, 0, 0.2);
+  border: 1px solid var(--border-color);
+}
+
+.artwork-type-header {
+  padding: 12px 15px;
+  background-color: rgba(0, 0, 0, 0.3);
+  border-bottom: 1px solid var(--border-color);
+  transition: background-color 0.2s ease;
+}
+
+.artwork-type-header:hover {
+  background-color: rgba(0, 0, 0, 0.4);
+}
+
+.artwork-type-title {
+  margin: 0;
+  font-size: 1.1em;
+  font-weight: 600;
+  color: var(--text-color);
+  font-family: 'Roboto Condensed', Helvetica, sans-serif;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.artwork-type-count {
+  opacity: 0.7;
+  font-size: 0.9em;
+  font-weight: 400;
+}
+
+.artwork-type-content {
+  padding: 15px;
+}
+
+/* Artwork grid/list */
+.artwork-list {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.artwork-item {
+  border-radius: 8px;
+  overflow: hidden;
+  transition: transform 0.25s ease-in-out, box-shadow 0.25s ease-in-out, opacity 0.25s ease-in-out;
+  cursor: pointer;
+  opacity: 0.8;
+  box-sizing: border-box;
+  background-color: rgba(0, 0, 0, 0.4);
+  border: 2px solid var(--border-color);
+}
+
+.artwork-item:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 0 20px var(--glow-color), 0 4px 12px rgba(0, 0, 0, 0.5);
+  opacity: 1;
+}
+
+.artwork-image-container {
+  padding: 10px;
+  background-color: rgba(0, 0, 0, 0.2);
+  position: relative;
+}
+
+/* Pagination controls */
+.artwork-pagination {
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background-color: rgba(0, 0, 0, 0.7);
+  padding: 8px 15px;
+  border-radius: 20px;
+  backdrop-filter: blur(10px);
+}
+
+.pagination-btn {
+  background-color: var(--button-bg, rgba(255, 255, 255, 0.2));
+  color: white;
+  border: 1px solid var(--border-color, rgba(255, 255, 255, 0.3));
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 12px;
+  transition: all 0.2s ease;
+}
+
+.pagination-btn:hover {
+  background-color: var(--glow-color, rgba(255, 255, 255, 0.3));
+  transform: scale(1.1);
+}
+
+.pagination-info {
+  color: white;
+  font-size: 13px;
+  font-weight: 600;
+  min-width: 50px;
+  text-align: center;
+}
+
+.artwork-image {
+  width: 100%;
+  height: auto;
+  display: block;
+  border-radius: 4px;
+}
+
+.artwork-details {
+  padding: 15px;
+  color: var(--text-color);
+  font-family: 'Roboto', Helvetica, sans-serif;
+}
+
+.artwork-artist {
+  font-weight: 700;
+  font-size: 1.1em;
+  margin-bottom: 5px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--text-color);
+  font-family: 'Roboto Condensed', Helvetica, sans-serif;
+}
+
+.artwork-title {
+  font-size: 0.95em;
+  color: rgba(229, 229, 229, 0.7);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  margin-bottom: 10px;
+}
+
+.artwork-dates {
+  font-size: 0.85em;
+  color: rgba(229, 229, 229, 0.5);
+  margin-top: 5px;
+}
+
+.artwork-local-badge {
+  display: inline-block;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 0.75em;
+  margin-top: 8px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  background-color: var(--glow-color);
+  color: var(--background-color);
+}
+
+.artwork-links {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.artwork-link {
+  padding: 6px 12px;
+  border-radius: 4px;
+  text-decoration: none;
+  font-size: 0.85em;
+  transition: all 0.2s ease;
+  border: 1px solid;
+}
+
+.artwork-link:hover {
+  transform: translateY(-2px);
+}
+
+/* Artwork count footer */
+.artwork-count-footer {
+  text-align: center;
+  margin-top: 20px;
+  padding-top: 20px;
+  border-top: 1px solid rgba(175, 225, 250, 0.3);
+  color: rgba(229, 229, 229, 0.7);
+  font-size: 12pt;
+  font-family: 'Roboto', Helvetica, sans-serif;
+}
+
+.artwork-count-footer strong {
+  color: var(--glow-color);
+}
+
+/* ==============================================================================
+   ANIMATIONS
+   ============================================================================== */
+
+@keyframes pulse {
+  0%, 100% { transform: translateX(-50%) scale(1); }
+  50% { transform: translateX(-50%) scale(1.05); }
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(-50%) translateY(0); }
+  25% { transform: translateX(-50%) translateY(-5px); }
+  75% { transform: translateX(-50%) translateY(5px); }
+}
+
+/* ==============================================================================
+   SCROLLBAR STYLING
+   ============================================================================== */
+
+.artwork-info-container::-webkit-scrollbar {
+  width: 8px;
+}
+
+.artwork-info-container::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.1);
+  border-radius: 4px;
+}
+
+.artwork-info-container::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 4px;
+}
+
+.artwork-info-container::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.5);
+}
+
+/* ==============================================================================
+   WORLDMAP - ADDITIONAL STYLES
+   ============================================================================== */
+
+/* WorldMap wrapper */
+.world-map-wrapper {
+  width: 100%;
+}
+
+/* Globe position container */
+.globe-position-container {
+  position: relative;
+  width: 100%;
+  height: 600px;
+}
+
+/* Find country overlay on top of globe */
+.find-country-overlay {
+  position: absolute;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-size: 20px;
+  font-weight: bold;
+  font-family: system-ui;
+  backdrop-filter: blur(10px);
+  z-index: 1000;
+  pointer-events: none;
+  transition: border 0.3s ease;
+  background-color: var(--card-bg);
+  color: var(--text-color);
+  box-shadow: 0 0 20px var(--glow-color), 0 4px 6px rgba(0,0,0,0.3);
+  border: var(--overlay-border, 2px solid var(--border-color));
+}
+
+.find-country-overlay .icon {
+  margin-right: 8px;
+}
+
+/* Globe control buttons container */
+.globe-controls {
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+  margin-top: 10px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+/* Base button style for globe controls */
+.globe-control-btn {
+  padding: 4px 8px;
+  border-radius: 3px;
+  cursor: pointer;
+  font-size: 11px;
+  font-weight: bold;
+  transition: all 0.3s ease;
+  background-color: var(--button-bg);
+  color: white;
+  border: 1px solid var(--border-color);
+  box-shadow: 0 0 5px var(--glow-color);
+}
+
+.globe-control-btn.primary {
+  background-color: var(--button-primary);
+  color: var(--text-color);
+}
+
+.globe-control-btn.secondary {
+  background-color: var(--button-secondary);
+  color: var(--button-text);
+}
+
+.globe-control-btn.toggle-off {
+  background-color: var(--land-color);
+  color: var(--text-secondary);
+  box-shadow: none;
+}
+
+.globe-control-btn.toggle-on {
+  box-shadow: 0 0 8px var(--hover-color);
+}
+
+.globe-control-btn:hover:not(:disabled) {
+  transform: translateY(-2px);
+}
+
+/* Divider between button groups */
+.globe-controls-divider {
+  width: 1px;
+  height: 16px;
+  margin: 0 4px;
+  background-color: var(--border-color);
+}
+
+/* Color scheme select dropdown */
+.color-scheme-dropdown {
+  padding: 4px 8px;
+  border-radius: 3px;
+  cursor: pointer;
+  font-size: 11px;
+  font-weight: bold;
+  transition: all 0.3s ease;
+  background-color: var(--button-primary);
+  color: var(--text-color);
+  border: 1px solid var(--border-color);
+  box-shadow: 0 0 5px var(--glow-color);
+}
+
+/* ==============================================================================
+   RESPONSIVE DESIGN
+   ============================================================================== */
+
+@media (max-width: 1024px) {
+  .app-content {
+    flex-direction: column;
+  }
+  
+  .artwork-sidebar {
+    width: 100%;
+    min-width: 100%;
+  }
+  
+  .artwork-info-container {
+    max-height: 500px;
+  }
+}
+
+@media (max-width: 768px) {
+  .app-background {
+    padding: 10px;
+  }
+  
+  .quiz-controls {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .settings-section {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .globe-container {
+    height: 400px;
+  }
+}

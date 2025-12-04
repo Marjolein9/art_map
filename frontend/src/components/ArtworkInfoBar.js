@@ -1,50 +1,98 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { fetchArtworks } from '../services/api';
 
-const ArtworkInfoBar = ({ countryISO, colors }) => {
-  const [artworks, setArtworks] = useState([]);
+const ArtworkInfoBar = ({ countryISO, colors, mode }) => {
+  const [artworksByType, setArtworksByType] = useState({});
   const [loading, setLoading] = useState(false);
+  const [collapsedTypes, setCollapsedTypes] = useState({});
+  const [currentImageIndex, setCurrentImageIndex] = useState({});
 
   // Fetch artworks from API when country changes
   useEffect(() => {
     if (!countryISO) {
-      setArtworks([]);
+      setArtworksByType({});
       return;
     }
 
     setLoading(true);
     fetchArtworks(countryISO)
       .then(data => {
-        const artworksWithImages = data.filter(artwork => artwork.image_path);
-        setArtworks(artworksWithImages);
+        // Group artworks by type
+        const grouped = data.reduce((acc, artwork) => {
+          // Only include artworks with images
+          if (!artwork.image_path) return acc;
+
+          const type = artwork.type || 'Art';
+          if (!acc[type]) {
+            acc[type] = [];
+          }
+          acc[type].push(artwork);
+          return acc;
+        }, {});
+
+        setArtworksByType(grouped);
         setLoading(false);
 
+        // Initialize current image index for each type to 0
+        const initialIndex = {};
+        Object.keys(grouped).forEach(type => {
+          initialIndex[type] = 0;
+        });
+        setCurrentImageIndex(initialIndex);
+
         console.log('🎨 Fetched artworks for', countryISO, ':', {
-          total: data.length,
-          withImages: artworksWithImages.length,
-          imagePaths: artworksWithImages.map(a => a.image_path).slice(0, 3)
+          types: Object.keys(grouped),
+          counts: Object.entries(grouped).map(([type, items]) => `${type}: ${items.length}`)
         });
       })
       .catch(err => {
         console.error('Error fetching artworks:', err);
-        setArtworks([]);
+        setArtworksByType({});
         setLoading(false);
       });
   }, [countryISO]);
 
+  // Toggle type collapse
+  const toggleTypeCollapse = (type) => {
+    setCollapsedTypes(prev => ({
+      ...prev,
+      [type]: !prev[type]
+    }));
+  };
+
+  // Navigate to next image for a type
+  const nextImage = (type) => {
+    const artworks = artworksByType[type];
+    if (!artworks) return;
+
+    setCurrentImageIndex(prev => ({
+      ...prev,
+      [type]: (prev[type] + 1) % artworks.length
+    }));
+  };
+
+  // Navigate to previous image for a type
+  const prevImage = (type) => {
+    const artworks = artworksByType[type];
+    if (!artworks) return;
+
+    setCurrentImageIndex(prev => ({
+      ...prev,
+      [type]: (prev[type] - 1 + artworks.length) % artworks.length
+    }));
+  };
+
   if (loading) {
     return (
-      <div style={{
-        backgroundColor: colors.cardBg,
-        borderRadius: '8px',
-        boxShadow: `0 0 20px ${colors.glow}, 0 4px 6px rgba(0, 0, 0, 0.3)`,
-        padding: '20px',
-        border: `5px solid ${colors.border}`,
-        backdropFilter: 'blur(10px)',
-        color: colors.text,
-        textAlign: 'center',
-        fontFamily: "'Roboto', Helvetica, sans-serif"
-      }}>
+      <div
+        className="artwork-info-container artwork-loading"
+        style={{
+          '--card-bg': colors.cardBg,
+          '--glow-color': colors.glow,
+          '--border-color': colors.border,
+          '--text-color': colors.text
+        }}
+      >
         Loading artwork...
       </div>
     );
@@ -52,208 +100,159 @@ const ArtworkInfoBar = ({ countryISO, colors }) => {
 
   if (!countryISO) {
     return (
-      <div style={{
-        backgroundColor: colors.cardBg,
-        borderRadius: '8px',
-        boxShadow: `0 0 20px ${colors.glow}, 0 4px 6px rgba(0, 0, 0, 0.3)`,
-        padding: '20px',
-        border: `5px solid ${colors.border}`,
-        backdropFilter: 'blur(10px)',
-        color: colors.text,
-        textAlign: 'center',
-        fontFamily: "'Roboto', Helvetica, sans-serif"
-      }}>
-        <h3 style={{ margin: '0 0 10px 0', color: colors.glow }}>Waiting for quiz...</h3>
-        <p style={{ margin: 0, opacity: 0.7 }}>Find the country to see artwork!</p>
+      <div
+        className="artwork-info-container artwork-waiting"
+        style={{
+          '--card-bg': colors.cardBg,
+          '--glow-color': colors.glow,
+          '--border-color': colors.border,
+          '--text-color': colors.text
+        }}
+      >
+        <h3 className="artwork-waiting-title">
+          {mode === 'quiz' ? 'Waiting for quiz...' : 'Click a country to explore!'}
+        </h3>
+        <p className="artwork-waiting-subtitle">
+          {mode === 'quiz' ? 'Find the country to see artwork!' : 'Select any country on the map'}
+        </p>
       </div>
     );
   }
 
-  if (artworks.length === 0) {
+  const types = Object.keys(artworksByType);
+
+  if (types.length === 0) {
     return (
-      <div style={{
-        backgroundColor: colors.cardBg,
-        borderRadius: '8px',
-        boxShadow: `0 0 20px ${colors.glow}, 0 4px 6px rgba(0, 0, 0, 0.3)`,
-        padding: '20px',
-        border: `5px solid ${colors.border}`,
-        backdropFilter: 'blur(10px)',
-        color: colors.text,
-        textAlign: 'center',
-        fontFamily: "'Roboto', Helvetica, sans-serif"
-      }}>
-        <h3 style={{ margin: '0 0 10px 0', color: colors.glow }}>No artwork available</h3>
-        <p style={{ margin: 0, opacity: 0.7 }}>Country: {countryISO}</p>
+      <div
+        className="artwork-info-container artwork-no-data"
+        style={{
+          '--card-bg': colors.cardBg,
+          '--glow-color': colors.glow,
+          '--border-color': colors.border,
+          '--text-color': colors.text
+        }}
+      >
+        <h3 className="artwork-no-data-title">No artwork available</h3>
+        <p className="artwork-no-data-subtitle">Country: {countryISO}</p>
       </div>
     );
   }
 
   return (
-    <div style={{
-      backgroundColor: colors.cardBg,
-      borderRadius: '8px',
-      boxShadow: `0 0 20px ${colors.glow}, 0 4px 6px rgba(0, 0, 0, 0.3)`,
-      padding: '20px',
-      border: `5px solid ${colors.border}`,
-      backdropFilter: 'blur(10px)',
-      animation: 'slideIn 0.25s ease-in-out',
-      fontFamily: "'Roboto', Helvetica, sans-serif"
-    }}>
-      <style>
-        {`
-          @import url('https://fonts.googleapis.com/css2?family=Roboto+Condensed:wght@300;400;700&family=Roboto:wght@100;300;400;700;900&display=swap');
-
-          @keyframes slideIn {
-            from {
-              opacity: 0;
-              transform: translateY(-20px);
-            }
-            to {
-              opacity: 1;
-              transform: translateY(0);
-            }
-          }
-        `}
-      </style>
-
-      <h3 style={{
-        color: colors.text,
-        marginBottom: '15px',
-        fontSize: '18pt',
-        textTransform: 'uppercase',
-        fontFamily: "'Roboto Condensed', Helvetica, sans-serif",
-        fontWeight: '300',
-        textAlign: 'center',
-        letterSpacing: '1.5px'
-      }}>
-        Artworks
+    <div
+      className="artwork-info-container"
+      style={{
+        '--card-bg': colors.cardBg,
+        '--glow-color': colors.glow,
+        '--border-color': colors.border,
+        '--text-color': colors.text,
+        '--background-color': colors.background
+      }}
+    >
+      <h3 className="artwork-info-title">
+        {countryISO}
       </h3>
 
-      <div style={{
-        display: 'flex',
-        flexDirection: 'column',
-        gap: '15px'
-      }}>
-        {artworks.map((artwork, index) => (
-          <div
-            key={index}
-            style={{
-              backgroundColor: 'rgba(0, 0, 0, 0.4)',
-              borderRadius: '8px',
-              overflow: 'hidden',
-              border: `2px solid ${colors.border}`,
-              transition: 'transform 0.25s ease-in-out, box-shadow 0.25s ease-in-out, opacity 0.25s ease-in-out',
-              cursor: 'pointer',
-              opacity: 0.8,
-              boxSizing: 'border-box'
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.transform = 'translateY(-5px)';
-              e.currentTarget.style.boxShadow = `0 0 20px ${colors.glow}, 0 4px 12px rgba(0, 0, 0, 0.5)`;
-              e.currentTarget.style.opacity = '1';
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.transform = 'translateY(0)';
-              e.currentTarget.style.boxShadow = 'none';
-              e.currentTarget.style.opacity = '0.8';
-            }}
-          >
-            <div style={{
-              padding: '10px',
-              backgroundColor: 'rgba(0, 0, 0, 0.2)'
-            }}>
-              <img
-                src={artwork.image_path.startsWith('http') ? artwork.image_path : `/${artwork.image_path}`}
-                alt={artwork.work_title || 'Artwork'}
-                style={{
-                  width: '100%',
-                  height: 'auto',
-                  display: 'block',
-                  backgroundColor: '#ddd',
-                  borderRadius: '4px'
-                }}
-                onError={(e) => {
-                  console.log('Failed to load image:', artwork.image_path);
-                  // Use inline SVG as fallback instead of external URL
-                  e.target.src = 'data:image/svg+xml,' + encodeURIComponent(`
-                    <svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200">
-                      <rect fill="#cccccc" width="200" height="200"/>
-                      <text x="50%" y="50%" text-anchor="middle" dominant-baseline="middle"
-                            font-family="Arial, sans-serif" font-size="14" fill="#666666">
-                        Image Not Available
-                      </text>
-                    </svg>
-                  `);
-                }}
-              />
-            </div>
-            <div style={{
-              padding: '15px',
-              color: colors.text,
-              fontFamily: "'Roboto', Helvetica, sans-serif"
-            }}>
-              <div style={{
-                fontWeight: '700',
-                fontSize: '1.1em',
-                marginBottom: '5px',
-                overflow: 'hidden',
-                textOverflow: 'ellipsis',
-                whiteSpace: 'nowrap',
-                color: colors.text,
-                fontFamily: "'Roboto Condensed', Helvetica, sans-serif"
-              }}>
-                {artwork.artist_name || 'Unknown Artist'}
+      <div className="artwork-types-list">
+        {types.map(type => {
+          const artworks = artworksByType[type];
+          const isCollapsed = collapsedTypes[type];
+          const currentIndex = currentImageIndex[type] || 0;
+          const currentArtwork = artworks[currentIndex];
+          const hasMultiple = artworks.length > 1;
+
+          return (
+            <div key={type} className="artwork-type-section">
+              {/* Type Header - Collapsible */}
+              <div
+                className="artwork-type-header"
+                onClick={() => toggleTypeCollapse(type)}
+                style={{ cursor: 'pointer' }}
+              >
+                <h4 className="artwork-type-title">
+                  {isCollapsed ? '▶' : '▼'} {type}
+                  <span className="artwork-type-count"> ({artworks.length})</span>
+                </h4>
               </div>
-              <div style={{
-                fontSize: '0.95em',
-                color: 'rgba(229, 229, 229, 0.7)',
-                overflow: 'hidden',
-                textOverflow: 'ellipsis',
-                whiteSpace: 'nowrap',
-                marginBottom: '10px'
-              }}>
-                {artwork.work_title || 'Untitled'}
-              </div>
-              {(artwork.birth_date || artwork.death_date) && (
-                <div style={{
-                  fontSize: '0.85em',
-                  color: 'rgba(229, 229, 229, 0.5)',
-                  marginTop: '5px'
-                }}>
-                  {artwork.birth_date?.split('-')[0] || '?'} – {artwork.death_date?.split('-')[0] || 'living'}
-                </div>
-              )}
-              {artwork.is_local === 'true' && (
-                <div style={{
-                  display: 'inline-block',
-                  backgroundColor: colors.glow,
-                  color: colors.background,
-                  padding: '4px 8px',
-                  borderRadius: '4px',
-                  fontSize: '0.75em',
-                  marginTop: '8px',
-                  fontWeight: '700',
-                  textTransform: 'uppercase',
-                  letterSpacing: '0.5px'
-                }}>
-                  Local
+
+              {/* Type Content - Collapsible */}
+              {!isCollapsed && (
+                <div className="artwork-type-content">
+                  <div className="artwork-item">
+                    <div className="artwork-image-container">
+                      <img
+                        src={currentArtwork.image_path.startsWith('http')
+                          ? currentArtwork.image_path
+                          : `/${currentArtwork.image_path}`}
+                        alt={currentArtwork.work_title || 'Artwork'}
+                        className="artwork-image"
+                        style={{ backgroundColor: '#ddd' }}
+                        onError={(e) => {
+                          console.log('Failed to load image:', currentArtwork.image_path);
+                          e.target.src = 'data:image/svg+xml,' + encodeURIComponent(`
+                            <svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200">
+                              <rect fill="#cccccc" width="200" height="200"/>
+                              <text x="50%" y="50%" text-anchor="middle" dominant-baseline="middle"
+                                    font-family="Arial, sans-serif" font-size="14" fill="#666666">
+                                Image Not Available
+                              </text>
+                            </svg>
+                          `);
+                        }}
+                      />
+
+                      {/* Pagination controls for multiple images */}
+                      {hasMultiple && (
+                        <div className="artwork-pagination">
+                          <button
+                            className="pagination-btn"
+                            onClick={() => prevImage(type)}
+                            title="Previous"
+                          >
+                            ◀
+                          </button>
+                          <span className="pagination-info">
+                            {currentIndex + 1} / {artworks.length}
+                          </span>
+                          <button
+                            className="pagination-btn"
+                            onClick={() => nextImage(type)}
+                            title="Next"
+                          >
+                            ▶
+                          </button>
+                        </div>
+                      )}
+                    </div>
+
+                    <div className="artwork-details">
+                      <div className="artwork-artist">
+                        {currentArtwork.artist_name || 'Unknown Artist'}
+                      </div>
+                      <div className="artwork-title">
+                        {currentArtwork.work_title || 'Untitled'}
+                      </div>
+                      {(currentArtwork.birth_date || currentArtwork.death_date) && (
+                        <div className="artwork-dates">
+                          {currentArtwork.birth_date?.split('-')[0] || '?'} – {currentArtwork.death_date?.split('-')[0] || 'living'}
+                        </div>
+                      )}
+                      {currentArtwork.is_local === 'true' && (
+                        <div className="artwork-local-badge">
+                          Local
+                        </div>
+                      )}
+                    </div>
+                  </div>
                 </div>
               )}
             </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
 
-      <div style={{
-        textAlign: 'center',
-        marginTop: '20px',
-        paddingTop: '20px',
-        borderTop: `1px solid rgba(175, 225, 250, 0.3)`,
-        color: 'rgba(229, 229, 229, 0.7)',
-        fontSize: '12pt',
-        fontFamily: "'Roboto', Helvetica, sans-serif"
-      }}>
-        Showing <strong style={{ color: colors.glow }}>{artworks.length}</strong> artwork{artworks.length !== 1 ? 's' : ''}
+      <div className="artwork-count-footer">
+        Showing <strong>{types.length}</strong> type{types.length !== 1 ? 's' : ''}
       </div>
     </div>
   );

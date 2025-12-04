@@ -45,6 +45,7 @@ def init_database():
         CREATE TABLE artworks (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             iso3 TEXT NOT NULL,
+            type TEXT DEFAULT 'Art',
             artist_name TEXT,
             country TEXT,
             location_reason TEXT,
@@ -97,15 +98,19 @@ def init_database():
                 }
 
             # Insert artwork
+            # Get type from CSV, default to 'Art' if not specified
+            artwork_type = row.get('type', '').strip() or 'Art'
+
             cursor.execute('''
                 INSERT INTO artworks (
-                    iso3, artist_name, country, location_reason,
+                    iso3, type, artist_name, country, location_reason,
                     author_background, birth_date, death_date, birth_place,
                     work_title, work_url, source, tags,
                     more_info, public_domain, image_path, is_local
-                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             ''', (
                 iso3,
+                artwork_type,
                 row.get('artist_name', ''),
                 country_name,
                 row.get('Location Reason', ''),

@@ -219,16 +219,16 @@ def get_artworks():
     # We explicitly list all columns instead of SELECT *
     # Why? Makes it clear what data we're returning, better for documentation
     # WHERE iso3 = ? filters to only artworks from the specified country
-    # ORDER BY id sorts results by artwork ID (consistent ordering)
+    # ORDER BY type, id sorts results by type first, then artwork ID
     cursor.execute('''
         SELECT
-            id, iso3, artist_name, country, work_title,
+            id, iso3, type, artist_name, country, work_title,
             work_url, image_path, source, tags, birth_date,
             death_date, birth_place, location_reason,
             author_background, more_info, public_domain, is_local
         FROM artworks
         WHERE iso3 = ?
-        ORDER BY id
+        ORDER BY type, id
     ''', (iso3,))
 
     # Convert all database rows to list of dicts
