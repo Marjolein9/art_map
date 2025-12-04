@@ -157,17 +157,3 @@ export const loadTopoJSON = async (countriesFromDB = []) => {
 
   return simpleGeoJSON;
 };
-
-/**
- * Legacy function for backward compatibility
- * Loads GeoJSON from GitHub (old method)
- */
-export const loadGeoJSON = async () => {
-  console.log('🌍 Loading GeoJSON (legacy)...');
-  const response = await fetch(
-    'https://raw.githubusercontent.com/vasturiano/react-globe.gl/master/example/datasets/ne_110m_admin_0_countries.geojson'
-  );
-  const data = await response.json();
-  console.log(`✅ Loaded ${data.features.length} countries (legacy)`);
-  return data;
-};

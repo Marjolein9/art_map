@@ -26,7 +26,8 @@ backend/
 ├── config.py           # Configuration constants (paths, ports, etc.)
 ├── db_utils.py         # Database helper functions
 ├── data/
-│   └── regions.json    # Country to region mappings
+│   ├── m49-list.json   # UN M49 country data (single source of truth)
+│   └── exports/        # CSV exports of database tables
 ├── database.db         # SQLite database file (auto-generated)
 └── requirements.txt    # Python dependencies
 ```
@@ -198,7 +199,9 @@ Stores information about each country.
 ```sql
 CREATE TABLE countries (
     iso3 TEXT PRIMARY KEY,      -- Three-letter country code (e.g., "USA")
+    iso2 TEXT,                   -- Two-letter country code (e.g., "US")
     name TEXT NOT NULL,          -- Full country name (e.g., "United States")
+    m49 INTEGER,                 -- UN M49 numeric code (e.g., 840)
     continent TEXT NOT NULL,     -- Continent (e.g., "Americas")
     subregion TEXT NOT NULL      -- Subregion (e.g., "North America")
 )

@@ -7,7 +7,7 @@ An interactive geography quiz game that displays artwork from different countrie
 This is a full-stack web application combining:
 - **Backend**: Python Flask REST API with SQLite database
 - **Frontend**: React application with 3D globe visualization
-- **Data**: 134 artworks from 84 countries
+- **Data**: 134 artworks from 84 countries (248 countries total in database)
 
 ## Project Structure
 
@@ -19,7 +19,8 @@ art_map/
 │   ├── config.py              # Configuration constants
 │   ├── db_utils.py            # Database helper functions
 │   ├── data/
-│   │   └── regions.json       # ISO3 country code to region mappings
+│   │   ├── m49-list.json      # UN M49 country data (single source of truth)
+│   │   └── exports/           # CSV exports of database tables
 │   ├── database.db            # SQLite database (generated)
 │   └── requirements.txt       # Python dependencies
 │

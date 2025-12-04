@@ -39,15 +39,19 @@ DATABASE_PATH = os.path.join(BASE_DIR, 'database.db')
 # DATA FILES
 # =============================================================================
 
-# REGIONS_JSON_PATH: Path to the JSON file containing country-to-region mappings
-# Used by init_database.py to assign regions to countries
-# Example: {"USA": {"continent": "Americas", "subregion": "North America"}}
-REGIONS_JSON_PATH = os.path.join(BASE_DIR, 'data', 'regions.json')
+# M49_JSON_PATH: Path to UN M49 standard country classification JSON
+# This is the single source of truth for all country data, regions, and codes
+# Source: https://tmrk.github.io/m49-list/m49-list.json
+M49_JSON_PATH = os.path.join(BASE_DIR, 'data', 'm49-list.json')
 
 # CSV_PATH: Path to the source CSV file with artwork data
 # '..' means go up one directory (from backend/ to art_map/)
 # This creates: /Users/you/art_map/children_combined_with_iso3.csv
 CSV_PATH = os.path.join(BASE_DIR, '..', 'children_combined_with_iso3.csv')
+
+# EXPORTS_DIR: Directory for exported CSV files from database
+# Used for inspection and backup
+EXPORTS_DIR = os.path.join(BASE_DIR, 'data', 'exports')
 
 # =============================================================================
 # SERVER CONFIGURATION

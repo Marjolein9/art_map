@@ -1,6 +1,6 @@
 import React, { memo, useState, useEffect, useRef } from 'react';
 import Globe from 'react-globe.gl';
-import { getCountryIsoCode, getCountryName } from '../utils/countryCodeMapping';
+import { getCountryIsoCode, getCountryName, initializeCountryMapping } from '../utils/countryCodeMapping';
 import { COLOR_SCHEMES } from '../styles/colorSchemes';
 import { REGION_VIEWS } from '../config/regions';
 import { loadTopoJSON } from '../utils/topoJsonLoader';
@@ -38,6 +38,9 @@ const WorldMap = ({
         console.log('📊 Fetching countries from database...');
         const dbCountries = await fetchCountries();
         console.log(`✅ Fetched ${dbCountries.length} countries from database`);
+
+        // Initialize M49→ISO3 mapping from database
+        initializeCountryMapping(dbCountries);
 
         // Load TopoJSON with database countries for validation
         const data = await loadTopoJSON(dbCountries);
