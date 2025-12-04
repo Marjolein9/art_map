@@ -3,6 +3,8 @@ import Globe from 'react-globe.gl';
 import { getCountryIsoCode, getCountryName } from '../utils/countryCodeMapping';
 import { COLOR_SCHEMES } from '../styles/colorSchemes';
 import { REGION_VIEWS } from '../config/regions';
+import { loadTopoJSON } from '../utils/topoJsonLoader';
+import { fetchCountries } from '../services/api';
 
 const WorldMap = ({
   onCountryClick,
@@ -28,30 +30,50 @@ const WorldMap = ({
   const previousRegionRef = useRef(null);
   const [clickedCountry, setClickedCountry] = useState(null);
 
-  // Load country data
+  // Load country data using TopoJSON
   useEffect(() => {
-    fetch('https://raw.githubusercontent.com/vasturiano/react-globe.gl/master/example/datasets/ne_110m_admin_0_countries.geojson')
-      .then(res => res.json())
-      .then(data => {
+    const loadData = async () => {
+      try {
+        // Fetch countries from database first
+        console.log('📊 Fetching countries from database...');
+        const dbCountries = await fetchCountries();
+        console.log(`✅ Fetched ${dbCountries.length} countries from database`);
+
+        // Load TopoJSON with database countries for validation
+        const data = await loadTopoJSON(dbCountries);
+
         setCountries(data);
 
         // Convert polygons to paths (border lines only) for consistent rendering
-        const paths = data.features.map(feature => {
-          const coords = feature.geometry.type === 'Polygon'
-            ? feature.geometry.coordinates
-            : feature.geometry.coordinates.flat(); // Handle MultiPolygon
-
-          return {
-            coords: coords,
-            properties: feature.properties,
-            geometry: feature.geometry
-          };
+        const paths = [];
+        data.features.forEach(feature => {
+          if (feature.geometry.type === 'Polygon') {
+            // Single polygon - add as one path
+            paths.push({
+              coords: feature.geometry.coordinates,
+              properties: feature.properties,
+              geometry: feature.geometry
+            });
+          } else if (feature.geometry.type === 'MultiPolygon') {
+            // Multi-polygon - create a separate path for each island
+            feature.geometry.coordinates.forEach((islandCoords) => {
+              paths.push({
+                coords: islandCoords,
+                properties: feature.properties,
+                geometry: { ...feature.geometry, coordinates: islandCoords, type: 'Polygon' }
+              });
+            });
+          }
         });
 
         setCountryPaths(paths);
         console.log('🌍 Loaded country data:', data.features.length, 'countries');
-      })
-      .catch(err => console.error('Error loading country data:', err));
+      } catch (err) {
+        console.error('Error loading country data:', err);
+      }
+    };
+
+    loadData();
   }, []);
 
   // Clear clicked country after feedback

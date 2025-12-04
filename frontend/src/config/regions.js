@@ -10,6 +10,7 @@ export const REGION_VIEWS = {
   // Africa subregions
   'North Africa': { lat: 28, lng: 15, altitude: 1.4 },
   'West Africa': { lat: 10, lng: 0, altitude: 1.4 },
+  'Middle Africa': { lat: -2, lng: 20, altitude: 1.4 },
   'East Africa': { lat: 0, lng: 38, altitude: 1.4 },
   'Southern Africa': { lat: -25, lng: 25, altitude: 1.4 },
 
@@ -21,11 +22,11 @@ export const REGION_VIEWS = {
   'Middle East': { lat: 30, lng: 45, altitude: 1.3 },
 
   // Europe subregions
-  'Western Europe': { lat: 50, lng: 5, altitude: 1.3 },
-  'Eastern Europe': { lat: 52, lng: 30, altitude: 1.3 },
-  'Northern Europe': { lat: 62, lng: 15, altitude: 1.3 },
-  'Southern Europe': { lat: 42, lng: 15, altitude: 1.3 },
-  'Central Europe': { lat: 50, lng: 15, altitude: 1.3 },
+  'Western Europe': { lat: 50, lng: 5, altitude: 1.0 },
+  'Eastern Europe': { lat: 52, lng: 30, altitude: 1.0 },
+  'Northern Europe': { lat: 62, lng: 15, altitude: 1.0 },
+  'Southern Europe': { lat: 42, lng: 15, altitude: 1.0 },
+  'Central Europe': { lat: 50, lng: 15, altitude: 1.0 },
 
   // Americas
   'North America': { lat: 50, lng: -100, altitude: 1.5 },
