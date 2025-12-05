@@ -53,6 +53,10 @@ CSV_PATH = os.path.join(BASE_DIR, '..', 'children_combined_with_iso3.csv')
 # Used for inspection and backup
 EXPORTS_DIR = os.path.join(BASE_DIR, 'data', 'exports')
 
+# BORDERS_CSV_PATH: Path to the country borders CSV file
+# Contains country border relationships (which countries border which)
+BORDERS_CSV_PATH = os.path.join(BASE_DIR, 'data', 'GEODATASOURCE-COUNTRY-BORDERS.CSV')
+
 # =============================================================================
 # SERVER CONFIGURATION
 # =============================================================================

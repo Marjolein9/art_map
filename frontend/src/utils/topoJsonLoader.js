@@ -105,7 +105,7 @@ export const loadTopoJSON = async (countriesFromDB = []) => {
   // Check for missing countries
   const simpleCountryISOs = new Set(
     simpleGeoJSON.features
-      .map(f => getCountryIsoCode(f.properties))
+      .map(f => getCountryIsoCode(f))
       .filter(Boolean)
   );
 
@@ -134,7 +134,7 @@ export const loadTopoJSON = async (countriesFromDB = []) => {
     // Find missing countries in detailed topology
     const addedCountries = [];
     detailedGeoJSON.features.forEach(feature => {
-      const iso = getCountryIsoCode(feature.properties);
+      const iso = getCountryIsoCode(feature);
       if (iso && missingCountries.includes(iso)) {
         // Filter islands before adding
         const filtered = filterLargestIslands(feature);

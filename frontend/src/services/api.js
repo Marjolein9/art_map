@@ -135,6 +135,16 @@ export const checkAnswer = async (selectedCountryIso, targetCountryIso) => {
 };
 
 /**
+ * Fetch neighboring countries for a given country
+ * @param {string} iso3 - Country ISO3 code
+ */
+export const fetchNeighbors = async (iso3) => {
+  const response = await fetch(`${API_URL}/neighbors/${iso3}`);
+  const data = await response.json();
+  return data.neighbors;
+};
+
+/**
  * Health check endpoint
  */
 export const checkHealth = async () => {

@@ -9,7 +9,7 @@ import sqlite3
 import csv
 import json
 import os
-from config import DATABASE_PATH, CSV_PATH, M49_JSON_PATH, EXPORTS_DIR
+from config import DATABASE_PATH, CSV_PATH, M49_JSON_PATH, EXPORTS_DIR, BORDERS_CSV_PATH
 
 # UN M49 Region code to continent name
 REGION_NAMES = {
@@ -96,6 +96,55 @@ def load_m49_data():
     print(f"✅ Loaded {len(countries)} countries from UN M49 data")
     return countries
 
+def load_borders_data(m49_countries):
+    """Load country borders and map ISO2 to ISO3 and M49 codes"""
+    print(f"📥 Loading country borders from: {BORDERS_CSV_PATH}")
+
+    # Create ISO2 -> {ISO3, M49} mapping from M49 data
+    iso2_to_country = {}
+    for country in m49_countries:
+        if country['iso2']:
+            iso2_to_country[country['iso2']] = {
+                'iso3': country['iso3'],
+                'm49': country['m49']
+            }
+
+    borders = []
+    skipped = set()
+
+    with open(BORDERS_CSV_PATH, 'r', encoding='utf-8') as f:
+        reader = csv.DictReader(f)
+
+        for row in reader:
+            country_iso2 = row.get('country_code', '').strip()
+            border_iso2 = row.get('country_border_code', '').strip()
+
+            # Skip empty borders (islands, etc.)
+            if not country_iso2 or not border_iso2:
+                continue
+
+            # Convert ISO2 to ISO3 and M49
+            country_data = iso2_to_country.get(country_iso2)
+            border_data = iso2_to_country.get(border_iso2)
+
+            if not country_data or not border_data:
+                if country_iso2 and border_iso2:
+                    skipped.add(f"{country_iso2}->{border_iso2}")
+                continue
+
+            borders.append({
+                'country_iso3': country_data['iso3'],
+                'country_m49': country_data['m49'],
+                'neighbor_iso3': border_data['iso3'],
+                'neighbor_m49': border_data['m49']
+            })
+
+    if skipped:
+        print(f"⚠️  Skipped {len(skipped)} border mappings (ISO2 not found in M49)")
+
+    print(f"✅ Loaded {len(borders)} border relationships")
+    return borders
+
 def export_table_to_csv(conn, table_name, output_dir):
     """Export a database table to CSV"""
     cursor = conn.cursor()
@@ -126,6 +175,9 @@ def init_database():
 
     # Load UN M49 country data
     m49_countries = load_m49_data()
+
+    # Load country borders data
+    borders_data = load_borders_data(m49_countries)
 
     # Delete old database if exists
     if os.path.exists(DATABASE_PATH):
@@ -178,6 +230,24 @@ def init_database():
 
     # Create index for faster queries
     cursor.execute('CREATE INDEX idx_artworks_iso3 ON artworks(iso3)')
+
+    # Create country_borders table
+    print("🗺️  Creating country_borders table...")
+    cursor.execute('''
+        CREATE TABLE country_borders (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            country_iso3 TEXT NOT NULL,
+            country_m49 INTEGER,
+            neighbor_iso3 TEXT NOT NULL,
+            neighbor_m49 INTEGER,
+            FOREIGN KEY (country_iso3) REFERENCES countries(iso3),
+            FOREIGN KEY (neighbor_iso3) REFERENCES countries(iso3)
+        )
+    ''')
+
+    # Create indexes for faster neighbor lookups
+    cursor.execute('CREATE INDEX idx_borders_country_iso3 ON country_borders(country_iso3)')
+    cursor.execute('CREATE INDEX idx_borders_country_m49 ON country_borders(country_m49)')
 
     # Insert countries from M49 data
     print(f"🌍 Inserting {len(m49_countries)} countries...")
@@ -243,6 +313,21 @@ def init_database():
 
     print(f"✅ Inserted {artworks_count} artworks")
 
+    # Insert country borders
+    print(f"🗺️  Inserting {len(borders_data)} border relationships...")
+    for border in borders_data:
+        cursor.execute('''
+            INSERT INTO country_borders (country_iso3, country_m49, neighbor_iso3, neighbor_m49)
+            VALUES (?, ?, ?, ?)
+        ''', (
+            border['country_iso3'],
+            border['country_m49'],
+            border['neighbor_iso3'],
+            border['neighbor_m49']
+        ))
+
+    print(f"✅ Inserted {len(borders_data)} border relationships")
+
     conn.commit()
 
     # Export tables to CSV
@@ -251,12 +336,14 @@ def init_database():
 
     export_table_to_csv(conn, 'countries', EXPORTS_DIR)
     export_table_to_csv(conn, 'artworks', EXPORTS_DIR)
+    export_table_to_csv(conn, 'country_borders', EXPORTS_DIR)
 
     conn.close()
 
     print(f"\n✅ Database initialized successfully!")
     print(f"   - {len(m49_countries)} countries")
     print(f"   - {artworks_count} artworks")
+    print(f"   - {len(borders_data)} border relationships")
     print(f"   - Database: {DATABASE_PATH}")
     print(f"   - CSV exports: {EXPORTS_DIR}")
 

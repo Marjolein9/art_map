@@ -12,12 +12,16 @@
 // Store the M49→ISO3 mapping built from API data
 let m49ToIso3Mapping = {};
 
+// Track M49 codes we've already warned about to avoid spam
+const warnedM49Codes = new Set();
+
 /**
  * Initialize the M49→ISO3 mapping from countries data
  * @param {Array} countries - Array of country objects from database with {iso3, m49, name}
  */
 export const initializeCountryMapping = (countries) => {
   m49ToIso3Mapping = {};
+  warnedM49Codes.clear(); // Clear warnings on re-initialization
 
   if (!countries || !Array.isArray(countries)) {
     console.warn('⚠️ No countries data provided for mapping');
@@ -26,8 +30,9 @@ export const initializeCountryMapping = (countries) => {
 
   countries.forEach(country => {
     if (country.m49 && country.iso3) {
-      // Store as string key to match TopoJSON property types
-      m49ToIso3Mapping[String(country.m49)] = country.iso3;
+      // Store as zero-padded 3-digit string to match TopoJSON IDs (e.g., "004", "032")
+      const paddedM49 = String(country.m49).padStart(3, '0');
+      m49ToIso3Mapping[paddedM49] = country.iso3;
     }
   });
 
@@ -35,22 +40,28 @@ export const initializeCountryMapping = (countries) => {
 };
 
 /**
- * Extract the correct ISO 3-letter code from TopoJSON properties
- * @param {Object} properties - The properties object from TopoJSON feature
+ * Extract the correct ISO 3-letter code from GeoJSON feature
+ * @param {Object} feature - The GeoJSON feature object (or properties object for backward compatibility)
  * @returns {string|null} - The 3-letter ISO code or null
  */
-export const getCountryIsoCode = (properties) => {
-  if (!properties) return null;
+export const getCountryIsoCode = (feature) => {
+  if (!feature) return null;
 
-  // Our TopoJSON uses M49 numeric code as 'id'
-  const m49Code = properties.id;
+  // Handle both full feature object and properties-only object
+  // GeoJSON features have id at top level, not in properties
+  const m49Code = feature.id || feature.properties?.id;
+  const name = feature.properties?.name || feature.name;
 
   if (m49Code && m49ToIso3Mapping[m49Code]) {
     return m49ToIso3Mapping[m49Code];
   }
 
-  // No M49 code found - this shouldn't happen with our TopoJSON
-  console.warn(`⚠️ No M49 mapping for country:`, properties);
+  // Only warn once per unique M49 code to avoid spam
+  if (m49Code && !warnedM49Codes.has(m49Code)) {
+    warnedM49Codes.add(m49Code);
+    console.warn(`⚠️ No M49 mapping for country: ${name || 'Unknown'} (M49: ${m49Code})`);
+  }
+
   return null;
 };
 

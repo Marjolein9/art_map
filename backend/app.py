@@ -63,7 +63,7 @@ def get_countries():
 
     Example response:
     {
-      "countries": [{"iso3": "USA", "name": "United States", ...}, ...],
+      "countries": [{"iso3": "USA", "iso2": "US", "name": "United States", "m49": 840, ...}, ...],
       "count": 84
     }
     """
@@ -80,7 +80,7 @@ def get_countries():
     # SELECT: Get data from database
     # FROM countries: From the 'countries' table
     # ORDER BY name: Sort results alphabetically by country name
-    cursor.execute('SELECT iso3, name, continent, subregion FROM countries ORDER BY name')
+    cursor.execute('SELECT iso3, iso2, name, m49, continent, subregion FROM countries ORDER BY name')
 
     # Step 4: Fetch results and convert to list of dicts
     # cursor.fetchall() returns list of Row objects
@@ -289,6 +289,39 @@ def check_answer():
         'targetCountry': target_iso  # Echo back correct answer
     })
 
+
+@app.route('/api/neighbors/<iso3>', methods=['GET'])
+def get_neighbors(iso3):
+    """
+    Get neighboring countries for a specific country.
+
+    HTTP Method: GET
+    URL: http://localhost:5000/api/neighbors/USA
+    Purpose: Used for quiz hints - show bordering countries
+
+    Returns: JSON with list of neighboring countries including M49 codes
+    Example: {"neighbors": [{"iso3": "CAN", "m49": 124, "name": "Canada"}, ...], "count": 2}
+    """
+    conn = get_db_connection()
+    cursor = conn.cursor()
+
+    # Get all neighbors for this country with M49 codes
+    cursor.execute('''
+        SELECT c.iso3, c.m49, c.name
+        FROM country_borders cb
+        JOIN countries c ON cb.neighbor_iso3 = c.iso3
+        WHERE cb.country_iso3 = ?
+        ORDER BY c.name
+    ''', (iso3,))
+
+    neighbors = [dict(row) for row in cursor.fetchall()]
+    conn.close()
+
+    return jsonify({
+        'country_iso3': iso3,
+        'neighbors': neighbors,
+        'count': len(neighbors)
+    })
 
 @app.route('/api/health', methods=['GET'])
 def health():

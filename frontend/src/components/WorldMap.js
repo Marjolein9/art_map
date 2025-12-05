@@ -4,7 +4,7 @@ import { getCountryIsoCode, getCountryName, initializeCountryMapping } from '../
 import { COLOR_SCHEMES } from '../styles/colorSchemes';
 import { REGION_VIEWS } from '../config/regions';
 import { loadTopoJSON } from '../utils/topoJsonLoader';
-import { fetchCountries } from '../services/api';
+import { fetchCountries, fetchNeighbors } from '../services/api';
 
 const WorldMap = ({
   onCountryClick,
@@ -29,6 +29,7 @@ const WorldMap = ({
   const [hoverD, setHoverD] = useState(null);
   const previousRegionRef = useRef(null);
   const [clickedCountry, setClickedCountry] = useState(null);
+  const [hintNeighborsM49, setHintNeighborsM49] = useState([]);
 
   // Load country data using TopoJSON
   useEffect(() => {
@@ -55,7 +56,8 @@ const WorldMap = ({
             paths.push({
               coords: feature.geometry.coordinates,
               properties: feature.properties,
-              geometry: feature.geometry
+              geometry: feature.geometry,
+              id: feature.id // Preserve M49 code
             });
           } else if (feature.geometry.type === 'MultiPolygon') {
             // Multi-polygon - create a separate path for each island
@@ -63,7 +65,8 @@ const WorldMap = ({
               paths.push({
                 coords: islandCoords,
                 properties: feature.properties,
-                geometry: { ...feature.geometry, coordinates: islandCoords, type: 'Polygon' }
+                geometry: { ...feature.geometry, coordinates: islandCoords, type: 'Polygon' },
+                id: feature.id // Preserve M49 code
               });
             });
           }
@@ -78,6 +81,87 @@ const WorldMap = ({
 
     loadData();
   }, []);
+
+  // Handle incorrect answer - show border hints
+  // Keep hints visible until a new target country is selected
+  const hintCountryRef = useRef(null);  // Track which country hints are for
+
+  useEffect(() => {
+    console.log('🔄 Hint effect running:', { gameStatus, targetCountry, mode });
+
+    const showHints = async () => {
+      if (gameStatus === 'incorrect' && targetCountry && mode === 'quiz') {
+        // Only generate new hints if this is a different country than last time
+        if (hintCountryRef.current === targetCountry) {
+          console.log('♻️ Keeping same hints - same target country:', targetCountry);
+          return; // Keep existing hints, don't regenerate
+        }
+
+        try {
+          console.log(`🎯 Target country: ${targetCountryName} (${targetCountry})`);
+
+          // Fetch neighbors of the target country
+          const neighbors = await fetchNeighbors(targetCountry);
+          console.log(`📍 Found ${neighbors.length} neighboring countries for ${targetCountryName}`);
+
+          // Find target country's M49 code from the countries data
+          const targetCountryData = countries.features.find(f => getCountryIsoCode(f) === targetCountry);
+          const targetM49 = targetCountryData?.id;
+
+          console.log(`🔢 Target country M49 code: ${targetM49} (${targetCountryName})`);
+
+          const highlightM49s = [];
+
+          // Always add the target country itself
+          if (targetM49) {
+            highlightM49s.push(targetM49);
+            console.log(`✨ Highlighting target country: ${targetCountryName} (M49: ${targetM49})`);
+          }
+
+          if (neighbors && neighbors.length > 0) {
+            // Randomly select up to 2 neighbors to highlight
+            const shuffled = [...neighbors].sort(() => Math.random() - 0.5);
+            const selected = shuffled.slice(0, Math.min(2, neighbors.length));
+
+            // Add neighbor M49 codes (with zero-padding to match TopoJSON)
+            const neighborM49s = selected.map(n => {
+              const paddedM49 = String(n.m49).padStart(3, '0');
+              console.log(`✨ Highlighting neighbor: ${n.name} (M49: ${paddedM49})`);
+              return paddedM49;
+            }).filter(Boolean);
+
+            highlightM49s.push(...neighborM49s);
+          }
+
+          console.log(`🎨 Total countries to highlight: ${highlightM49s.length}`, highlightM49s);
+          setHintNeighborsM49(highlightM49s);
+          hintCountryRef.current = targetCountry; // Remember which country these hints are for
+        } catch (err) {
+          console.error('❌ Error fetching neighbors for hint:', err);
+        }
+      } else if (mode !== 'quiz') {
+        // Clear hints if not in quiz mode
+        console.log('🧹 Clearing hints - not in quiz mode');
+        setHintNeighborsM49([]);
+        hintCountryRef.current = null;
+      }
+      // Note: Don't clear hints when gameStatus changes back to 'playing'
+      // Hints persist until a new target country is selected
+    };
+
+    showHints();
+  }, [gameStatus, targetCountry, targetCountryName, mode, countries]);
+
+  // Clear hints when a NEW target country appears
+  const prevTargetCountryRef = useRef(null);
+  useEffect(() => {
+    if (prevTargetCountryRef.current && prevTargetCountryRef.current !== targetCountry) {
+      console.log('🧹 Clearing hints - new target country:', targetCountry);
+      setHintNeighborsM49([]);
+      hintCountryRef.current = null; // Reset hint tracking
+    }
+    prevTargetCountryRef.current = targetCountry;
+  }, [targetCountry]);
 
   // Clear clicked country after feedback
   useEffect(() => {
@@ -125,13 +209,19 @@ const WorldMap = ({
 
   // Get border color based on hover and game status
   const getBorderColor = (country) => {
-    const iso3 = getCountryIsoCode(country.properties);
+    const iso3 = getCountryIsoCode(country);
     if (!iso3) return COLORS.border;
 
     // If this country was just clicked and got a result
     if (clickedCountry === iso3) {
       if (gameStatus === 'correct') return COLORS.correct;
       if (gameStatus === 'incorrect') return COLORS.incorrect;
+    }
+
+    // Hint: Highlight borders of neighboring countries using M49 codes (highest priority)
+    const m49 = country.id || country.properties?.id;
+    if (m49 && hintNeighborsM49.includes(String(m49))) {
+      return COLORS.correct; // Use bright color for hint borders
     }
 
     // If hovering over this country
@@ -147,7 +237,7 @@ const WorldMap = ({
   const handlePolygonClick = (polygon) => {
     if (!polygon || !polygon.properties) return;
 
-    const iso3 = getCountryIsoCode(polygon.properties);
+    const iso3 = getCountryIsoCode(polygon);
     const name = getCountryName(polygon.properties);
 
     if (!iso3) {
@@ -245,9 +335,9 @@ const WorldMap = ({
           polygonStrokeColor={() => 'rgba(0, 0, 0, 0)'} // Hide polygon borders
           polygonAltitude={0.001}
 
-          polygonLabel={tooltipsEnabled ? ({ properties: d }) => {
-            const name = getCountryName(d);
-            const iso = getCountryIsoCode(d);
+          polygonLabel={tooltipsEnabled ? (feature) => {
+            const name = getCountryName(feature.properties);
+            const iso = getCountryIsoCode(feature);
             return `
               <div style="background: ${COLORS.tooltipBg}; color: ${COLORS.tooltipText}; padding: 8px 12px; border-radius: 4px; font-family: system-ui; font-weight: bold; box-shadow: 0 0 10px ${COLORS.glow}; border: 2px solid ${COLORS.border};">
                 ${name}${iso ? ` (${iso})` : ''}
@@ -270,18 +360,32 @@ const WorldMap = ({
           pathPointLat={p => p[1]}
           pathPointLng={p => p[0]}
           pathColor={d => {
-            const iso3 = getCountryIsoCode(d.properties);
+            const iso3 = getCountryIsoCode(d);
             if (!iso3) return COLORS.border;
 
+            // Target country gets correct/incorrect color
             if (clickedCountry === iso3) {
               if (gameStatus === 'correct') return COLORS.correct;
               if (gameStatus === 'incorrect') return COLORS.incorrect;
             }
 
+            // Hint: Highlight borders of neighboring countries using M49 codes (highest priority)
+            const m49 = d.id || d.properties?.id;
+            if (m49 && hintNeighborsM49.includes(String(m49))) {
+              return COLORS.correct; // Use bright color for hint borders
+            }
+
             if (d === hoverD) return COLORS.selected;
             return COLORS.border;
           }}
-          pathStroke={0.8}
+          pathStroke={d => {
+            // Make hint neighbor borders much thicker and more visible using M49 codes
+            const m49 = d.id || d.properties?.id;
+            if (m49 && hintNeighborsM49.includes(String(m49))) {
+              return 4.0; // Extra thick for hints
+            }
+            return 0.8; // Normal thickness
+          }}
           pathDashLength={1}
           pathDashGap={0}
           pathDashAnimateTime={0}
