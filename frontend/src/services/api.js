@@ -73,13 +73,14 @@ export const fetchCountries = async () => {
 };
 
 /**
- * Fetch artworks for a specific country
+ * Fetch images for a specific country from all three collections
  * @param {string} iso3 - Country ISO3 code
+ * @returns {object} - Images grouped by collection type
  */
-export const fetchArtworks = async (iso3) => {
-  const response = await fetch(`${API_URL}/artworks?iso3=${iso3}`);
+export const fetchImages = async (iso3) => {
+  const response = await fetch(`${API_URL}/images/${iso3}`);
   const data = await response.json();
-  return data.artworks;
+  return data.images;
 };
 
 /**

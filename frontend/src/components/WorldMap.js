@@ -242,6 +242,9 @@ const WorldMap = ({
 
     if (!iso3) {
       console.warn('⚠️ Could not determine ISO code for clicked country:', polygon.properties);
+      console.log('ℹ️ Country name:', name, '- This country may not have artwork data available');
+      // Still allow the click to proceed - let the artwork component handle missing data
+      onCountryClick(null);
       return;
     }
 
@@ -389,6 +392,8 @@ const WorldMap = ({
           pathDashLength={1}
           pathDashGap={0}
           pathDashAnimateTime={0}
+          onPathHover={setHoverD}
+          onPathClick={handlePolygonClick}
 
           enablePointerInteraction={true}
           width={900}

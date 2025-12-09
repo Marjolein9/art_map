@@ -1,53 +1,50 @@
-import { useState, useEffect } from 'react';
-import { fetchArtworks } from '../services/api';
+import { useState, useEffect, useRef } from 'react';
+import { fetchImages } from '../services/api';
 
 const ArtworkInfoBar = ({ countryISO, colors, mode }) => {
-  const [artworksByType, setArtworksByType] = useState({});
+  const [imagesByCollection, setImagesByCollection] = useState({});
   const [loading, setLoading] = useState(false);
   const [collapsedTypes, setCollapsedTypes] = useState({});
   const [currentImageIndex, setCurrentImageIndex] = useState({});
+  const imageRefs = useRef({});
 
-  // Fetch artworks from API when country changes
+  // Fetch images from API when country changes
   useEffect(() => {
-    if (!countryISO) {
-      setArtworksByType({});
+    if (!countryISO || countryISO === null) {
+      setImagesByCollection({});
       return;
     }
 
     setLoading(true);
-    fetchArtworks(countryISO)
+    fetchImages(countryISO)
       .then(data => {
-        // Group artworks by type
-        const grouped = data.reduce((acc, artwork) => {
-          // Only include artworks with images
-          if (!artwork.image_path) return acc;
-
-          const type = artwork.type || 'Art';
-          if (!acc[type]) {
-            acc[type] = [];
+        // Data is already grouped by collection type from backend
+        // Filter out empty collections
+        const filtered = {};
+        Object.entries(data).forEach(([collection, images]) => {
+          if (images && images.length > 0) {
+            filtered[collection] = images;
           }
-          acc[type].push(artwork);
-          return acc;
-        }, {});
+        });
 
-        setArtworksByType(grouped);
+        setImagesByCollection(filtered);
         setLoading(false);
 
-        // Initialize current image index for each type to 0
+        // Initialize current image index for each collection to 0
         const initialIndex = {};
-        Object.keys(grouped).forEach(type => {
-          initialIndex[type] = 0;
+        Object.keys(filtered).forEach(collection => {
+          initialIndex[collection] = 0;
         });
         setCurrentImageIndex(initialIndex);
 
-        console.log('🎨 Fetched artworks for', countryISO, ':', {
-          types: Object.keys(grouped),
-          counts: Object.entries(grouped).map(([type, items]) => `${type}: ${items.length}`)
+        console.log('🖼️  Fetched images for', countryISO, ':', {
+          collections: Object.keys(filtered),
+          counts: Object.entries(filtered).map(([type, items]) => `${type}: ${items.length}`)
         });
       })
       .catch(err => {
-        console.error('Error fetching artworks:', err);
-        setArtworksByType({});
+        console.error('Error fetching images:', err);
+        setImagesByCollection({});
         setLoading(false);
       });
   }, [countryISO]);
@@ -60,26 +57,88 @@ const ArtworkInfoBar = ({ countryISO, colors, mode }) => {
     }));
   };
 
-  // Navigate to next image for a type
-  const nextImage = (type) => {
-    const artworks = artworksByType[type];
-    if (!artworks) return;
+  // Navigate to next image for a collection
+  const nextImage = (collection) => {
+    const images = imagesByCollection[collection];
+    if (!images) return;
+
+    // Cleanup current image before switching
+    if (imageRefs.current[collection]) {
+      const img = imageRefs.current[collection];
+      img.src = '';
+    }
 
     setCurrentImageIndex(prev => ({
       ...prev,
-      [type]: (prev[type] + 1) % artworks.length
+      [collection]: (prev[collection] + 1) % images.length
     }));
   };
 
-  // Navigate to previous image for a type
-  const prevImage = (type) => {
-    const artworks = artworksByType[type];
-    if (!artworks) return;
+  // Navigate to previous image for a collection
+  const prevImage = (collection) => {
+    const images = imagesByCollection[collection];
+    if (!images) return;
+
+    // Cleanup current image before switching
+    if (imageRefs.current[collection]) {
+      const img = imageRefs.current[collection];
+      img.src = '';
+    }
 
     setCurrentImageIndex(prev => ({
       ...prev,
-      [type]: (prev[type] - 1 + artworks.length) % artworks.length
+      [collection]: (prev[collection] - 1 + images.length) % images.length
     }));
+  };
+
+  // Cleanup all images when country changes
+  useEffect(() => {
+    return () => {
+      // Force cleanup of all images to prevent memory leaks
+      Object.keys(imageRefs.current).forEach(collection => {
+        if (imageRefs.current[collection]) {
+          const img = imageRefs.current[collection];
+          img.src = '';
+          img.removeAttribute('src');
+        }
+      });
+      imageRefs.current = {};
+    };
+  }, [countryISO]);
+
+  // Helper function to generate caption based on collection type
+  const generateCaption = (collection, image) => {
+    switch(collection) {
+      case 'Albert Kahn':
+        return (
+          <>
+            {image.title && <div className="artwork-title">{image.title}</div>}
+            {image.location && <div className="artwork-location">{image.location}</div>}
+            {image.date && <div className="artwork-date">{image.date}</div>}
+          </>
+        );
+      case 'Children in Art':
+        return (
+          <>
+            {image.title && <div className="artwork-title">{image.title}</div>}
+            {image.artist_name && (
+              <div className="artwork-artist">
+                by {image.artist_name}
+                {image.artist_nationality && ` (${image.artist_nationality})`}
+              </div>
+            )}
+          </>
+        );
+      case 'Public Domain Review':
+        return (
+          <>
+            {image.title && <div className="artwork-title">{image.title}</div>}
+            {image.country && <div className="artwork-location">{image.country}</div>}
+          </>
+        );
+      default:
+        return <div className="artwork-title">{image.title || 'Untitled'}</div>;
+    }
   };
 
   if (loading) {
@@ -119,9 +178,7 @@ const ArtworkInfoBar = ({ countryISO, colors, mode }) => {
     );
   }
 
-  const types = Object.keys(artworksByType);
-
-  if (types.length === 0) {
+  if (countryISO === null) {
     return (
       <div
         className="artwork-info-container artwork-no-data"
@@ -132,7 +189,28 @@ const ArtworkInfoBar = ({ countryISO, colors, mode }) => {
           '--text-color': colors.text
         }}
       >
-        <h3 className="artwork-no-data-title">No artwork available</h3>
+        <h3 className="artwork-no-data-title">Territory Not Recognized</h3>
+        <p className="artwork-no-data-subtitle">
+          This territory is not in our database. We only include UN-recognized countries.
+        </p>
+      </div>
+    );
+  }
+
+  const collections = Object.keys(imagesByCollection);
+
+  if (collections.length === 0) {
+    return (
+      <div
+        className="artwork-info-container artwork-no-data"
+        style={{
+          '--card-bg': colors.cardBg,
+          '--glow-color': colors.glow,
+          '--border-color': colors.border,
+          '--text-color': colors.text
+        }}
+      >
+        <h3 className="artwork-no-data-title">No images available</h3>
         <p className="artwork-no-data-subtitle">Country: {countryISO}</p>
       </div>
     );
@@ -154,41 +232,52 @@ const ArtworkInfoBar = ({ countryISO, colors, mode }) => {
       </h3>
 
       <div className="artwork-types-list">
-        {types.map(type => {
-          const artworks = artworksByType[type];
-          const isCollapsed = collapsedTypes[type];
-          const currentIndex = currentImageIndex[type] || 0;
-          const currentArtwork = artworks[currentIndex];
-          const hasMultiple = artworks.length > 1;
+        {collections.map(collection => {
+          const images = imagesByCollection[collection];
+          const isCollapsed = collapsedTypes[collection];
+          const currentIndex = currentImageIndex[collection] || 0;
+          const currentImage = images[currentIndex];
+          const hasMultiple = images.length > 1;
 
           return (
-            <div key={type} className="artwork-type-section">
-              {/* Type Header - Collapsible */}
+            <div key={collection} className="artwork-type-section">
+              {/* Collection Header - Collapsible */}
               <div
                 className="artwork-type-header"
-                onClick={() => toggleTypeCollapse(type)}
+                onClick={() => toggleTypeCollapse(collection)}
                 style={{ cursor: 'pointer' }}
               >
                 <h4 className="artwork-type-title">
-                  {isCollapsed ? '▶' : '▼'} {type}
-                  <span className="artwork-type-count"> ({artworks.length})</span>
+                  {isCollapsed ? '▶' : '▼'} {collection}
+                  <span className="artwork-type-count"> ({images.length})</span>
                 </h4>
               </div>
 
-              {/* Type Content - Collapsible */}
+              {/* Collection Content - Collapsible */}
               {!isCollapsed && (
                 <div className="artwork-type-content">
                   <div className="artwork-item">
                     <div className="artwork-image-container">
                       <img
-                        src={currentArtwork.image_path.startsWith('http')
-                          ? currentArtwork.image_path
-                          : `/${currentArtwork.image_path}`}
-                        alt={currentArtwork.work_title || 'Artwork'}
+                        key={`${collection}-${currentIndex}`}
+                        ref={el => imageRefs.current[collection] = el}
+                        src={currentImage.filepath.startsWith('http')
+                          ? currentImage.filepath
+                          : `http://localhost:5000/${currentImage.filepath}`}
+                        alt={currentImage.title || 'Image'}
                         className="artwork-image"
+                        loading="lazy"
+                        decoding="async"
                         style={{ backgroundColor: '#ddd' }}
+                        onLoad={(e) => {
+                          const img = e.target;
+                          if (img.naturalWidth > 2000 || img.naturalHeight > 2000) {
+                            console.warn('Large image detected:', currentImage.filepath,
+                              `${img.naturalWidth}x${img.naturalHeight}`);
+                          }
+                        }}
                         onError={(e) => {
-                          console.log('Failed to load image:', currentArtwork.image_path);
+                          console.log('Failed to load image:', currentImage.filepath);
                           e.target.src = 'data:image/svg+xml,' + encodeURIComponent(`
                             <svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200">
                               <rect fill="#cccccc" width="200" height="200"/>
@@ -206,17 +295,17 @@ const ArtworkInfoBar = ({ countryISO, colors, mode }) => {
                         <div className="artwork-pagination">
                           <button
                             className="pagination-btn"
-                            onClick={() => prevImage(type)}
+                            onClick={() => prevImage(collection)}
                             title="Previous"
                           >
                             ◀
                           </button>
                           <span className="pagination-info">
-                            {currentIndex + 1} / {artworks.length}
+                            {currentIndex + 1} / {images.length}
                           </span>
                           <button
                             className="pagination-btn"
-                            onClick={() => nextImage(type)}
+                            onClick={() => nextImage(collection)}
                             title="Next"
                           >
                             ▶
@@ -226,22 +315,7 @@ const ArtworkInfoBar = ({ countryISO, colors, mode }) => {
                     </div>
 
                     <div className="artwork-details">
-                      <div className="artwork-artist">
-                        {currentArtwork.artist_name || 'Unknown Artist'}
-                      </div>
-                      <div className="artwork-title">
-                        {currentArtwork.work_title || 'Untitled'}
-                      </div>
-                      {(currentArtwork.birth_date || currentArtwork.death_date) && (
-                        <div className="artwork-dates">
-                          {currentArtwork.birth_date?.split('-')[0] || '?'} – {currentArtwork.death_date?.split('-')[0] || 'living'}
-                        </div>
-                      )}
-                      {currentArtwork.is_local === 'true' && (
-                        <div className="artwork-local-badge">
-                          Local
-                        </div>
-                      )}
+                      {generateCaption(collection, currentImage)}
                     </div>
                   </div>
                 </div>
@@ -252,7 +326,7 @@ const ArtworkInfoBar = ({ countryISO, colors, mode }) => {
       </div>
 
       <div className="artwork-count-footer">
-        Showing <strong>{types.length}</strong> type{types.length !== 1 ? 's' : ''}
+        Showing <strong>{collections.length}</strong> collection{collections.length !== 1 ? 's' : ''}
       </div>
     </div>
   );

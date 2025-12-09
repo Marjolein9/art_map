@@ -9,7 +9,15 @@ import sqlite3
 import csv
 import json
 import os
-from config import DATABASE_PATH, CSV_PATH, M49_JSON_PATH, EXPORTS_DIR, BORDERS_CSV_PATH
+from config import (
+    DATABASE_PATH,
+    M49_JSON_PATH,
+    EXPORTS_DIR,
+    BORDERS_CSV_PATH,
+    ALBERT_KAHN_CSV_PATH,
+    CHILDREN_ARTWORK_CSV_PATH,
+    PUBLIC_DOMAIN_CSV_PATH
+)
 
 # UN M49 Region code to continent name
 REGION_NAMES = {
@@ -202,34 +210,54 @@ def init_database():
         )
     ''')
 
-    # Create artworks table
-    print("🎨 Creating artworks table...")
+    # Create albert_kahn_images table
+    print("🖼️  Creating albert_kahn_images table...")
     cursor.execute('''
-        CREATE TABLE artworks (
+        CREATE TABLE albert_kahn_images (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
-            iso3 TEXT NOT NULL,
-            type TEXT DEFAULT 'Art',
-            artist_name TEXT,
-            country TEXT,
-            location_reason TEXT,
-            author_background TEXT,
-            birth_date TEXT,
-            death_date TEXT,
-            birth_place TEXT,
-            work_title TEXT,
-            work_url TEXT,
-            source TEXT,
-            tags TEXT,
-            more_info TEXT,
-            public_domain TEXT,
-            image_path TEXT,
-            is_local TEXT,
-            FOREIGN KEY (iso3) REFERENCES countries(iso3)
+            alpha3 TEXT NOT NULL,
+            image_filename TEXT,
+            filepath TEXT,
+            title_en TEXT,
+            location TEXT,
+            date TEXT,
+            operator TEXT,
+            inventory_number TEXT,
+            FOREIGN KEY (alpha3) REFERENCES countries(iso3)
         )
     ''')
+    cursor.execute('CREATE INDEX idx_albert_kahn_alpha3 ON albert_kahn_images(alpha3)')
 
-    # Create index for faster queries
-    cursor.execute('CREATE INDEX idx_artworks_iso3 ON artworks(iso3)')
+    # Create children_artwork_images table
+    print("🎨 Creating children_artwork_images table...")
+    cursor.execute('''
+        CREATE TABLE children_artwork_images (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            alpha3 TEXT NOT NULL,
+            artist_name TEXT,
+            artist_nationality TEXT,
+            work_title TEXT,
+            filepath TEXT,
+            image_path TEXT,
+            FOREIGN KEY (alpha3) REFERENCES countries(iso3)
+        )
+    ''')
+    cursor.execute('CREATE INDEX idx_children_artwork_alpha3 ON children_artwork_images(alpha3)')
+
+    # Create public_domain_images table
+    print("📚 Creating public_domain_images table...")
+    cursor.execute('''
+        CREATE TABLE public_domain_images (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            alpha3 TEXT NOT NULL,
+            title TEXT,
+            country TEXT,
+            filepath TEXT,
+            source_link TEXT,
+            FOREIGN KEY (alpha3) REFERENCES countries(iso3)
+        )
+    ''')
+    cursor.execute('CREATE INDEX idx_public_domain_alpha3 ON public_domain_images(alpha3)')
 
     # Create country_borders table
     print("🗺️  Creating country_borders table...")
@@ -266,52 +294,118 @@ def init_database():
 
     print(f"✅ Inserted {len(m49_countries)} countries")
 
-    # Read artworks CSV and populate artworks table
-    print(f"🎨 Loading artworks from: {CSV_PATH}")
-    artworks_count = 0
+    # Load Albert Kahn images
+    print(f"🖼️  Loading Albert Kahn images from: {ALBERT_KAHN_CSV_PATH}")
+    albert_kahn_count = 0
 
-    with open(CSV_PATH, 'r', encoding='utf-8') as f:
+    with open(ALBERT_KAHN_CSV_PATH, 'r', encoding='utf-8') as f:
         reader = csv.DictReader(f)
 
         for row in reader:
-            iso3 = row.get('iso3', '').strip()
-            country_name = row.get('country', '').strip()
+            alpha3 = row.get('alpha3', '').strip()
+            filepath = row.get('new_filepath', '').strip()
 
-            if not iso3 or not country_name:
+            if not alpha3 or not filepath:
                 continue
 
-            # Get type from CSV, default to 'Art' if not specified
-            artwork_type = row.get('type', '').strip() or 'Art'
+            # Strip "backend/" prefix from filepath
+            if filepath.startswith('backend/'):
+                filepath = filepath[8:]  # Remove "backend/"
 
             cursor.execute('''
-                INSERT INTO artworks (
-                    iso3, type, artist_name, country, location_reason,
-                    author_background, birth_date, death_date, birth_place,
-                    work_title, work_url, source, tags,
-                    more_info, public_domain, image_path, is_local
-                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                INSERT INTO albert_kahn_images (
+                    alpha3, image_filename, filepath, title_en, location,
+                    date, operator, inventory_number
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
             ''', (
-                iso3,
-                artwork_type,
-                row.get('artist_name', ''),
-                country_name,
-                row.get('Location Reason', ''),
-                row.get('Author Background', ''),
-                row.get('birth_date', ''),
-                row.get('death_date', ''),
-                row.get('birth_place', ''),
-                row.get('work_title', ''),
-                row.get('work_url', ''),
-                row.get('source', ''),
-                row.get('tags', ''),
-                row.get('More info', ''),
-                row.get('Public Domain?', ''),
-                row.get('image_path', ''),
-                row.get('is_local', '')
+                alpha3,
+                row.get('image_filename', ''),
+                filepath,
+                row.get('title_en', ''),
+                row.get('location', ''),
+                row.get('date', ''),
+                row.get('operator', ''),
+                row.get('inventory_number', '')
             ))
-            artworks_count += 1
+            albert_kahn_count += 1
 
-    print(f"✅ Inserted {artworks_count} artworks")
+    print(f"✅ Inserted {albert_kahn_count} Albert Kahn images")
+
+    # Load Children Artwork images (only rows with Keep="keep")
+    print(f"🎨 Loading Children Artwork from: {CHILDREN_ARTWORK_CSV_PATH}")
+    children_artwork_count = 0
+
+    with open(CHILDREN_ARTWORK_CSV_PATH, 'r', encoding='utf-8') as f:
+        reader = csv.DictReader(f)
+
+        for row in reader:
+            keep_status = row.get('Keep', '').strip().lower()
+            if keep_status != 'keep':
+                continue
+
+            alpha3 = row.get('iso3 artist', '').strip()
+            filepath = row.get('filepath', '').strip()
+
+            if not alpha3 or not filepath:
+                continue
+
+            # Strip "backend/" prefix from filepath
+            if filepath.startswith('backend/'):
+                filepath = filepath[8:]  # Remove "backend/"
+
+            cursor.execute('''
+                INSERT INTO children_artwork_images (
+                    alpha3, artist_name, artist_nationality, work_title,
+                    filepath, image_path
+                ) VALUES (?, ?, ?, ?, ?, ?)
+            ''', (
+                alpha3,
+                row.get('artist_name', ''),
+                row.get('Artist Nationality', ''),
+                row.get('work_title', ''),
+                filepath,
+                row.get('image_path', '')
+            ))
+            children_artwork_count += 1
+
+    print(f"✅ Inserted {children_artwork_count} children artwork images")
+
+    # Load Public Domain images (skip rows with Remove="yes")
+    print(f"📚 Loading Public Domain images from: {PUBLIC_DOMAIN_CSV_PATH}")
+    public_domain_count = 0
+
+    with open(PUBLIC_DOMAIN_CSV_PATH, 'r', encoding='utf-8') as f:
+        reader = csv.DictReader(f)
+
+        for row in reader:
+            remove_status = row.get('Remove', '').strip().lower()
+            if remove_status == 'yes':
+                continue
+
+            alpha3 = row.get('Alpha Code', '').strip()
+            filepath = row.get('filepath', '').strip()
+
+            if not alpha3 or not filepath:
+                continue
+
+            # Strip "backend/" prefix from filepath
+            if filepath.startswith('backend/'):
+                filepath = filepath[8:]  # Remove "backend/"
+
+            cursor.execute('''
+                INSERT INTO public_domain_images (
+                    alpha3, title, country, filepath, source_link
+                ) VALUES (?, ?, ?, ?, ?)
+            ''', (
+                alpha3,
+                row.get('Public Domain Title', ''),
+                row.get('Country', ''),
+                filepath,
+                row.get('Source Link', '')
+            ))
+            public_domain_count += 1
+
+    print(f"✅ Inserted {public_domain_count} public domain images")
 
     # Insert country borders
     print(f"🗺️  Inserting {len(borders_data)} border relationships...")
@@ -335,14 +429,18 @@ def init_database():
     os.makedirs(EXPORTS_DIR, exist_ok=True)
 
     export_table_to_csv(conn, 'countries', EXPORTS_DIR)
-    export_table_to_csv(conn, 'artworks', EXPORTS_DIR)
+    export_table_to_csv(conn, 'albert_kahn_images', EXPORTS_DIR)
+    export_table_to_csv(conn, 'children_artwork_images', EXPORTS_DIR)
+    export_table_to_csv(conn, 'public_domain_images', EXPORTS_DIR)
     export_table_to_csv(conn, 'country_borders', EXPORTS_DIR)
 
     conn.close()
 
     print(f"\n✅ Database initialized successfully!")
     print(f"   - {len(m49_countries)} countries")
-    print(f"   - {artworks_count} artworks")
+    print(f"   - {albert_kahn_count} Albert Kahn images")
+    print(f"   - {children_artwork_count} children artwork images")
+    print(f"   - {public_domain_count} public domain images")
     print(f"   - {len(borders_data)} border relationships")
     print(f"   - Database: {DATABASE_PATH}")
     print(f"   - CSV exports: {EXPORTS_DIR}")

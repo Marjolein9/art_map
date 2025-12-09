@@ -19,7 +19,8 @@ Browser → GET /api/countries → Flask → get_countries() → Database → JS
 # Flask: The main application class
 # jsonify: Converts Python dicts to JSON responses (sets proper headers)
 # request: Contains data from incoming HTTP requests (URL params, body, etc.)
-from flask import Flask, jsonify, request
+# send_from_directory: Serves static files from a directory
+from flask import Flask, jsonify, request, send_from_directory
 
 # CORS (Cross-Origin Resource Sharing) - allows frontend to call backend
 # Why needed? Browser security prevents requests between different origins.
@@ -121,16 +122,18 @@ def random_country():
     conn = get_db_connection()
     cursor = conn.cursor()
 
-    # Get all unique country codes that have at least one artwork
+    # Get all unique country codes that have at least one image from any collection
     # SELECT DISTINCT: Get unique values only (no duplicates)
-    # FROM artworks: Look in the artworks table
-    # iso3 is the three-letter country code (USA, FRA, JPN, etc.)
-    cursor.execute('SELECT DISTINCT iso3 FROM artworks')
+    # UNION combines results from all three image tables
+    cursor.execute('''
+        SELECT DISTINCT alpha3 as iso3 FROM albert_kahn_images
+        UNION
+        SELECT DISTINCT alpha3 as iso3 FROM children_artwork_images
+        UNION
+        SELECT DISTINCT alpha3 as iso3 FROM public_domain_images
+    ''')
 
     # Extract just the iso3 codes into a Python list
-    # [row['iso3'] for row in ...] is list comprehension
-    # Before: [{'iso3': 'USA'}, {'iso3': 'FRA'}, {'iso3': 'JPN'}]
-    # After: ['USA', 'FRA', 'JPN']
     country_isos = [row['iso3'] for row in cursor.fetchall()]
 
     # Error handling: What if database is empty?
@@ -182,65 +185,63 @@ def random_country():
         }
     })
 
-@app.route('/api/artworks', methods=['GET'])
-def get_artworks():
+@app.route('/api/images/<alpha3>', methods=['GET'])
+def get_images(alpha3):
     """
-    Get artworks for a specific country.
+    Get all images for a country from all three collections.
 
     HTTP Method: GET
-    URL: http://localhost:5000/api/artworks?iso3=USA
-    URL Parameter: iso3 (required) - three-letter country code
+    URL: http://localhost:5000/api/images/USA
+    URL Parameter: alpha3 (required) - three-letter country code in URL path
 
-    Example Request: GET /api/artworks?iso3=USA
-    Returns: JSON with list of artworks for that country
+    Example Request: GET /api/images/USA
+    Returns: JSON with images grouped by collection type
 
     HTTP Status Codes:
     - 200: Success
-    - 400: Bad Request (missing iso3 parameter)
     """
-    # Extract URL parameter 'iso3' from query string
-    # Query string is the part after ? in URL: /api/artworks?iso3=USA
-    # request.args is a dict-like object containing all URL parameters
-    # .get('iso3') retrieves the value, returns None if parameter doesn't exist
-    # Example URL: /api/artworks?iso3=USA → iso3 = 'USA'
-    iso3 = request.args.get('iso3')
-
-    # INPUT VALIDATION: Check if required parameter was provided
-    # Good practice to validate inputs before using them
-    if not iso3:
-        # Return error with HTTP 400 (Bad Request) status code
-        # Client made a mistake - forgot required parameter
-        return jsonify({'error': 'iso3 parameter required'}), 400
-
     conn = get_db_connection()
     cursor = conn.cursor()
 
-    # Query database for all artworks matching this country
-    # We explicitly list all columns instead of SELECT *
-    # Why? Makes it clear what data we're returning, better for documentation
-    # WHERE iso3 = ? filters to only artworks from the specified country
-    # ORDER BY type, id sorts results by type first, then artwork ID
+    # Query Albert Kahn images
     cursor.execute('''
-        SELECT
-            id, iso3, type, artist_name, country, work_title,
-            work_url, image_path, source, tags, birth_date,
-            death_date, birth_place, location_reason,
-            author_background, more_info, public_domain, is_local
-        FROM artworks
-        WHERE iso3 = ?
-        ORDER BY type, id
-    ''', (iso3,))
+        SELECT 'Albert Kahn' as collection_type,
+               filepath, title_en as title, location, date,
+               operator, inventory_number
+        FROM albert_kahn_images
+        WHERE alpha3 = ?
+    ''', (alpha3,))
+    albert_kahn = [dict(row) for row in cursor.fetchall()]
 
-    # Convert all database rows to list of dicts
-    # This makes the data easy to work with in JavaScript
-    artworks = [dict(row) for row in cursor.fetchall()]
+    # Query Children Artwork images
+    cursor.execute('''
+        SELECT 'Children in Art' as collection_type,
+               filepath, work_title as title, artist_name,
+               artist_nationality
+        FROM children_artwork_images
+        WHERE alpha3 = ?
+    ''', (alpha3,))
+    children_art = [dict(row) for row in cursor.fetchall()]
+
+    # Query Public Domain images
+    cursor.execute('''
+        SELECT 'Public Domain Review' as collection_type,
+               filepath, title, country, source_link
+        FROM public_domain_images
+        WHERE alpha3 = ?
+    ''', (alpha3,))
+    public_domain = [dict(row) for row in cursor.fetchall()]
+
     conn.close()
 
-    # Return list of artworks with metadata
     return jsonify({
-        'artworks': artworks,  # List of artwork objects
-        'count': len(artworks),  # How many artworks found (0 if country has none)
-        'iso3': iso3  # Echo back the requested country code
+        'images': {
+            'Albert Kahn': albert_kahn,
+            'Children in Art': children_art,
+            'Public Domain Review': public_domain
+        },
+        'total_count': len(albert_kahn) + len(children_art) + len(public_domain),
+        'alpha3': alpha3
     })
 
 @app.route('/api/game/check-answer', methods=['POST'])
@@ -343,25 +344,67 @@ def health():
     cursor = conn.cursor()
 
     # Count total countries in database
-    # COUNT(*) returns number of rows in the table
-    # 'as count' names the result column 'count' (instead of 'COUNT(*)')
     cursor.execute('SELECT COUNT(*) as count FROM countries')
     countries_count = cursor.fetchone()['count']
 
-    # Count total artworks in database
-    cursor.execute('SELECT COUNT(*) as count FROM artworks')
-    artworks_count = cursor.fetchone()['count']
+    # Count images from all three collections
+    cursor.execute('SELECT COUNT(*) as count FROM albert_kahn_images')
+    albert_kahn_count = cursor.fetchone()['count']
+
+    cursor.execute('SELECT COUNT(*) as count FROM children_artwork_images')
+    children_art_count = cursor.fetchone()['count']
+
+    cursor.execute('SELECT COUNT(*) as count FROM public_domain_images')
+    public_domain_count = cursor.fetchone()['count']
 
     conn.close()
 
-    # Return health information
-    # Frontend or monitoring tools can check this
+    # Return health information with breakdown by collection
     return jsonify({
-        'status': 'healthy',  # Could be 'healthy' or 'unhealthy'
-        'database': 'connected',  # Database connection successful
-        'countries_count': countries_count,  # Total countries in DB
-        'artworks_count': artworks_count  # Total artworks in DB
+        'status': 'healthy',
+        'database': 'connected',
+        'countries_count': countries_count,
+        'albert_kahn_count': albert_kahn_count,
+        'children_art_count': children_art_count,
+        'public_domain_count': public_domain_count,
+        'total_images': albert_kahn_count + children_art_count + public_domain_count
     })
+
+
+# ==============================================================================
+# STATIC FILE SERVING
+# ==============================================================================
+# Serve images from the images directory
+# This allows the frontend to load images via URLs like:
+# http://localhost:5000/images/USA/albert_kahn/file.jpg
+
+@app.route('/images/<path:filename>')
+def serve_image(filename):
+    """
+    Serve static image files.
+
+    HTTP Method: GET
+    URL: http://localhost:5000/images/USA/albert_kahn/file.jpg
+    Purpose: Serve image files from the backend/images directory
+
+    The <path:filename> captures the entire path after /images/
+    Example: /images/USA/albert_kahn/file.jpg → filename = 'USA/albert_kahn/file.jpg'
+
+    send_from_directory() safely serves files from a directory
+    - Prevents directory traversal attacks (e.g., /images/../../etc/passwd)
+    - Sets proper Content-Type headers based on file extension
+    - Handles caching headers for performance
+    """
+    # Get the absolute path to the images directory
+    # os.path.dirname(__file__) gets the directory containing this file (backend/)
+    # os.path.join() safely joins path components
+    images_dir = os.path.join(os.path.dirname(__file__), 'images')
+
+    # send_from_directory serves the file and handles all HTTP headers
+    # Parameters:
+    # - directory: Where to look for files
+    # - path: Relative path to the file within that directory
+    return send_from_directory(images_dir, filename)
 
 
 # ==============================================================================
@@ -382,18 +425,26 @@ if __name__ == '__main__':
     conn = get_db_connection()
     cursor = conn.cursor()
 
-    # Get total counts
+    # Get total counts from all image collections
     cursor.execute('SELECT COUNT(*) FROM countries')
-    countries_count = cursor.fetchone()[0]  # [0] gets first column value
+    countries_count = cursor.fetchone()[0]
 
-    cursor.execute('SELECT COUNT(*) FROM artworks')
-    artworks_count = cursor.fetchone()[0]
+    cursor.execute('SELECT COUNT(*) FROM albert_kahn_images')
+    albert_kahn_count = cursor.fetchone()[0]
+
+    cursor.execute('SELECT COUNT(*) FROM children_artwork_images')
+    children_art_count = cursor.fetchone()[0]
+
+    cursor.execute('SELECT COUNT(*) FROM public_domain_images')
+    public_domain_count = cursor.fetchone()[0]
+
+    total_images = albert_kahn_count + children_art_count + public_domain_count
 
     conn.close()
 
     # Print startup message to console
-    # f-string: f"text {variable}" embeds variable values in string
-    print(f"🎨 Loaded {artworks_count} artworks from {countries_count} countries")
+    print(f"🖼️  Loaded {total_images} images ({albert_kahn_count} Albert Kahn, {children_art_count} Children Art, {public_domain_count} Public Domain)")
+    print(f"🌍 {countries_count} countries in database")
     print(f"🚀 Starting server on http://localhost:{PORT}")
 
     # Start Flask development server

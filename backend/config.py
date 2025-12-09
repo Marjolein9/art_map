@@ -44,11 +44,6 @@ DATABASE_PATH = os.path.join(BASE_DIR, 'database.db')
 # Source: https://tmrk.github.io/m49-list/m49-list.json
 M49_JSON_PATH = os.path.join(BASE_DIR, 'data', 'm49-list.json')
 
-# CSV_PATH: Path to the source CSV file with artwork data
-# '..' means go up one directory (from backend/ to art_map/)
-# This creates: /Users/you/art_map/children_combined_with_iso3.csv
-CSV_PATH = os.path.join(BASE_DIR, '..', 'children_combined_with_iso3.csv')
-
 # EXPORTS_DIR: Directory for exported CSV files from database
 # Used for inspection and backup
 EXPORTS_DIR = os.path.join(BASE_DIR, 'data', 'exports')
@@ -56,6 +51,12 @@ EXPORTS_DIR = os.path.join(BASE_DIR, 'data', 'exports')
 # BORDERS_CSV_PATH: Path to the country borders CSV file
 # Contains country border relationships (which countries border which)
 BORDERS_CSV_PATH = os.path.join(BASE_DIR, 'data', 'GEODATASOURCE-COUNTRY-BORDERS.CSV')
+
+# IMAGE COLLECTION CSV PATHS
+# Paths to the CSV files containing image metadata for each collection
+ALBERT_KAHN_CSV_PATH = os.path.join(BASE_DIR, 'data', 'albert_kahn_metadata.csv')
+CHILDREN_ARTWORK_CSV_PATH = os.path.join(BASE_DIR, 'data', 'artwork_final.csv')
+PUBLIC_DOMAIN_CSV_PATH = os.path.join(BASE_DIR, 'data', 'public_review_images.csv')
 
 # =============================================================================
 # SERVER CONFIGURATION

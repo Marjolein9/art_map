@@ -37,7 +37,9 @@ function App() {
 
   // Handle explore mode country click
   const handleExploreClick = (countryIso) => {
+    console.log('🔍 Country clicked:', { countryIso, mode });
     if (mode === 'explore') {
+      console.log('🗺️ Setting explore country to:', countryIso);
       setExploreCountry(countryIso);
     } else {
       handleCountryClick(countryIso);
