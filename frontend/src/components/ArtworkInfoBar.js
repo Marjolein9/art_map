@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { fetchImages } from '../services/api';
 
-const ArtworkInfoBar = ({ countryISO, countryName, colors, mode, gameStatus, onClose, onNext }) => {
+const ArtworkInfoBar = ({ countryISO, countryName, colors, mode, answerSubmitted, isCorrectAnswer, onClose, onNext }) => {
   const [imagesByCollection, setImagesByCollection] = useState({});
   const [loading, setLoading] = useState(false);
   const [collapsedTypes, setCollapsedTypes] = useState({});
@@ -293,9 +293,17 @@ const ArtworkInfoBar = ({ countryISO, countryName, colors, mode, gameStatus, onC
     >
       <div className="artwork-info-header">
         <h3 className="artwork-info-title">
-          {countryName || countryISO}
+          {mode === 'quiz' && !answerSubmitted ? (
+            `Find: ${countryName || countryISO}`
+          ) : mode === 'quiz' && answerSubmitted && isCorrectAnswer ? (
+            `✓ Correct: ${countryName || countryISO}`
+          ) : mode === 'quiz' && answerSubmitted && !isCorrectAnswer ? (
+            `✗ Incorrect: ${countryName || countryISO}`
+          ) : (
+            countryName || countryISO
+          )}
         </h3>
-        {mode === 'quiz' && gameStatus === 'correct' && onNext ? (
+        {mode === 'quiz' && answerSubmitted && isCorrectAnswer && onNext ? (
           <button
             className="artwork-next-btn"
             onClick={onNext}
@@ -304,7 +312,7 @@ const ArtworkInfoBar = ({ countryISO, countryName, colors, mode, gameStatus, onC
           >
             Next →
           </button>
-        ) : mode === 'quiz' && gameStatus === 'incorrect' && onClose ? (
+        ) : mode === 'quiz' && answerSubmitted && !isCorrectAnswer && onClose ? (
           <button
             className="artwork-try-again-btn"
             onClick={onClose}

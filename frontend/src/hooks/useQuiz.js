@@ -59,10 +59,8 @@ export const useQuiz = () => {
         // Don't auto-fetch new country - wait for user to click "Next" button
       } else {
         setGameStatus('incorrect');
-        // Reset to playing after showing incorrect feedback
-        setTimeout(() => {
-          setGameStatus('playing');
-        }, 1500);
+        // Stay in incorrect state - no timeout reset
+        // User can try again, hints persist until correct or new country
       }
     } catch (err) {
       console.error('Error checking answer:', err);

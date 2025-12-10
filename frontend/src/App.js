@@ -13,9 +13,10 @@ function App() {
   const [selectedColorScheme, setSelectedColorScheme] = useState('vintage');
   const [mode, setMode] = useState('quiz'); // 'quiz' or 'explore'
   const [exploreCountry, setExploreCountry] = useState(null);
-  const [infoBarOpen, setInfoBarOpen] = useState(false);
+  const [infoBarOpen, setInfoBarOpen] = useState(true); // Start with info bar open in quiz mode
   const [countryLookup, setCountryLookup] = useState({});
   const [clickedCountry, setClickedCountry] = useState(null); // Track clicked country for incorrect answers
+  const [answerSubmitted, setAnswerSubmitted] = useState(false); // Track if an answer was submitted
 
   // Get current color scheme
   const COLORS = COLOR_SCHEMES[selectedColorScheme];
@@ -60,22 +61,26 @@ function App() {
     } else {
       // In quiz mode, handle the answer check
       setClickedCountry(countryIso); // Store the clicked country
+      setAnswerSubmitted(true); // Mark that an answer was submitted
       handleCountryClick(countryIso);
       // Always open info bar in quiz mode to show result (correct or incorrect)
       setInfoBarOpen(true);
     }
   };
 
-  // Handle close info bar
+  // Handle close info bar (Try Again)
   const handleCloseInfoBar = () => {
     setInfoBarOpen(false);
     setClickedCountry(null); // Clear clicked country when closing
+    setAnswerSubmitted(false); // Reset answer submitted state
+    // Note: gameStatus stays 'incorrect', hints persist
   };
 
   // Handle next country in quiz mode
   const handleNextCountry = () => {
-    setInfoBarOpen(false);
+    setInfoBarOpen(true); // Keep info bar open for next question
     setClickedCountry(null); // Clear clicked country when moving to next
+    setAnswerSubmitted(false); // Reset answer submitted state
     fetchNewCountry();
   };
 
@@ -91,14 +96,14 @@ function App() {
   const getCurrentCountryData = () => {
     if (mode === 'quiz') {
       // If user clicked a country (correct or incorrect), show that country's info
-      // Only show target country if nothing has been clicked yet
-      if (clickedCountry && infoBarOpen) {
+      if (clickedCountry) {
         const isCorrect = clickedCountry === targetCountry?.iso;
         return {
           iso: isCorrect ? targetCountry?.iso : clickedCountry,
           name: isCorrect ? targetCountry?.name : countryLookup[clickedCountry]
         };
       }
+      // Otherwise show target country (initial state or after closing)
       return {
         iso: targetCountry?.iso,
         name: targetCountry?.name
@@ -163,7 +168,8 @@ function App() {
                           countryName={currentCountry.name}
                           colors={COLORS}
                           mode={mode}
-                          gameStatus={gameStatus}
+                          answerSubmitted={answerSubmitted}
+                          isCorrectAnswer={clickedCountry === targetCountry?.iso}
                           onClose={handleCloseInfoBar}
                           onNext={handleNextCountry}
                         />

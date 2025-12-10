@@ -188,26 +188,17 @@ const WorldMap = ({
     showHints();
   }, [gameStatus, targetCountry, targetCountryName, mode, countries]);
 
-  // Clear hints when a NEW target country appears
+  // Clear hints and visual feedback when a NEW target country appears
   const prevTargetCountryRef = useRef(null);
   useEffect(() => {
     if (prevTargetCountryRef.current && prevTargetCountryRef.current !== targetCountry) {
-      console.log('🧹 Clearing hints - new target country:', targetCountry);
+      console.log('🧹 Clearing hints and feedback - new target country:', targetCountry);
       setHintNeighborsM49([]);
       hintCountryRef.current = null; // Reset hint tracking
+      setClickedCountry(null); // Clear visual feedback
     }
     prevTargetCountryRef.current = targetCountry;
   }, [targetCountry]);
-
-  // Clear clicked country after feedback
-  useEffect(() => {
-    if (gameStatus !== 'playing') {
-      const timer = setTimeout(() => {
-        setClickedCountry(null);
-      }, gameStatus === 'correct' ? 2000 : 1500);
-      return () => clearTimeout(timer);
-    }
-  }, [gameStatus]);
 
   // Rotate to region when it changes
   useEffect(() => {
@@ -341,27 +332,6 @@ const WorldMap = ({
     }, 500);
   };
 
-  // Get border color and icon for Find overlay
-  const getFindOverlayStyle = () => {
-    if (gameStatus === 'correct') {
-      return {
-        border: `3px solid ${COLORS.correct}`,
-        icon: '✓'
-      };
-    } else if (gameStatus === 'incorrect') {
-      return {
-        border: `3px solid ${COLORS.incorrect}`,
-        icon: '✗'
-      };
-    }
-    return {
-      border: `2px solid ${COLORS.border}`,
-      icon: ''
-    };
-  };
-
-  const overlayStyle = getFindOverlayStyle();
-
   return (
     <div className="world-map-wrapper">
       <div className="globe-position-container">
@@ -440,22 +410,6 @@ const WorldMap = ({
           width={900}
           height={600}
         />
-
-        {/* Find overlay on top of globe */}
-        {targetCountryName && (
-          <div
-            className="find-country-overlay"
-            style={{
-              '--card-bg': COLORS.cardBg,
-              '--text-color': COLORS.text,
-              '--glow-color': COLORS.glow,
-              '--overlay-border': overlayStyle.border
-            }}
-          >
-            {overlayStyle.icon && <span className="icon">{overlayStyle.icon}</span>}
-            Find: {targetCountryName}
-          </div>
-        )}
       </div>
 
       {/* All control buttons - below globe, small, all in one line */}
