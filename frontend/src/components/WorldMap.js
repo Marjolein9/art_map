@@ -4,7 +4,7 @@ import { getCountryIsoCode, getCountryName, initializeCountryMapping } from '../
 import { COLOR_SCHEMES } from '../styles/colorSchemes';
 import { REGION_VIEWS } from '../config/regions';
 import { loadTopoJSON } from '../utils/topoJsonLoader';
-import { fetchCountries, fetchNeighbors, fetchEmptyCountries } from '../services/api';
+import { fetchCountries, fetchNeighbors, fetchSimilarIslands, fetchEmptyCountries } from '../services/api';
 
 const WorldMap = ({
   onCountryClick,
@@ -116,10 +116,6 @@ const WorldMap = ({
         try {
           console.log(`🎯 Target country: ${targetCountryName} (${targetCountry})`);
 
-          // Fetch neighbors of the target country
-          const neighbors = await fetchNeighbors(targetCountry);
-          console.log(`📍 Found ${neighbors.length} neighboring countries for ${targetCountryName}`);
-
           // Find target country's M49 code from the countries data
           const targetCountryData = countries.features.find(f => getCountryIsoCode(f) === targetCountry);
           const targetM49 = targetCountryData?.id;
@@ -134,26 +130,50 @@ const WorldMap = ({
             console.log(`✨ Highlighting target country: ${targetCountryName} (M49: ${targetM49})`);
           }
 
-          if (neighbors && neighbors.length > 0) {
-            // Randomly select up to 2 neighbors to highlight
-            const shuffled = [...neighbors].sort(() => Math.random() - 0.5);
-            const selected = shuffled.slice(0, Math.min(2, neighbors.length));
+          // Check if this is an island country (no land neighbors)
+          const islandData = await fetchSimilarIslands(targetCountry);
 
-            // Add neighbor M49 codes (with zero-padding to match TopoJSON)
-            const neighborM49s = selected.map(n => {
-              const paddedM49 = String(n.m49).padStart(3, '0');
-              console.log(`✨ Highlighting neighbor: ${n.name} (M49: ${paddedM49})`);
-              return paddedM49;
-            }).filter(Boolean);
+          if (islandData.is_island) {
+            // For islands, show 2 other similar islands
+            console.log(`🏝️ ${targetCountryName} is an island! Showing similar islands from ${islandData.target_subregion || islandData.target_continent}`);
 
-            highlightM49s.push(...neighborM49s);
+            if (islandData.islands && islandData.islands.length > 0) {
+              const islandM49s = islandData.islands.map(island => {
+                const paddedM49 = String(island.m49).padStart(3, '0');
+                console.log(`✨ Highlighting similar island: ${island.name} (M49: ${paddedM49})`);
+                return paddedM49;
+              }).filter(Boolean);
+
+              highlightM49s.push(...islandM49s);
+            } else {
+              console.log('⚠️ No similar islands found for hint');
+            }
+          } else {
+            // For non-islands, use neighbors as before
+            const neighbors = await fetchNeighbors(targetCountry);
+            console.log(`📍 Found ${neighbors.length} neighboring countries for ${targetCountryName}`);
+
+            if (neighbors && neighbors.length > 0) {
+              // Randomly select up to 2 neighbors to highlight
+              const shuffled = [...neighbors].sort(() => Math.random() - 0.5);
+              const selected = shuffled.slice(0, Math.min(2, neighbors.length));
+
+              // Add neighbor M49 codes (with zero-padding to match TopoJSON)
+              const neighborM49s = selected.map(n => {
+                const paddedM49 = String(n.m49).padStart(3, '0');
+                console.log(`✨ Highlighting neighbor: ${n.name} (M49: ${paddedM49})`);
+                return paddedM49;
+              }).filter(Boolean);
+
+              highlightM49s.push(...neighborM49s);
+            }
           }
 
           console.log(`🎨 Total countries to highlight: ${highlightM49s.length}`, highlightM49s);
           setHintNeighborsM49(highlightM49s);
           hintCountryRef.current = targetCountry; // Remember which country these hints are for
         } catch (err) {
-          console.error('❌ Error fetching neighbors for hint:', err);
+          console.error('❌ Error fetching hints:', err);
         }
       } else if (mode !== 'quiz') {
         // Clear hints if not in quiz mode

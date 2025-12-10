@@ -15,6 +15,7 @@ function App() {
   const [exploreCountry, setExploreCountry] = useState(null);
   const [infoBarOpen, setInfoBarOpen] = useState(false);
   const [countryLookup, setCountryLookup] = useState({});
+  const [clickedCountry, setClickedCountry] = useState(null); // Track clicked country for incorrect answers
 
   // Get current color scheme
   const COLORS = COLOR_SCHEMES[selectedColorScheme];
@@ -58,6 +59,7 @@ function App() {
       setInfoBarOpen(true); // Open info bar when country is selected
     } else {
       // In quiz mode, handle the answer check
+      setClickedCountry(countryIso); // Store the clicked country
       handleCountryClick(countryIso);
       // Always open info bar in quiz mode to show result (correct or incorrect)
       setInfoBarOpen(true);
@@ -67,11 +69,13 @@ function App() {
   // Handle close info bar
   const handleCloseInfoBar = () => {
     setInfoBarOpen(false);
+    setClickedCountry(null); // Clear clicked country when closing
   };
 
   // Handle next country in quiz mode
   const handleNextCountry = () => {
     setInfoBarOpen(false);
+    setClickedCountry(null); // Clear clicked country when moving to next
     fetchNewCountry();
   };
 
@@ -86,6 +90,15 @@ function App() {
   // Get current country name
   const getCurrentCountryData = () => {
     if (mode === 'quiz') {
+      // If user clicked a country (correct or incorrect), show that country's info
+      // Only show target country if nothing has been clicked yet
+      if (clickedCountry && infoBarOpen) {
+        const isCorrect = clickedCountry === targetCountry?.iso;
+        return {
+          iso: isCorrect ? targetCountry?.iso : clickedCountry,
+          name: isCorrect ? targetCountry?.name : countryLookup[clickedCountry]
+        };
+      }
       return {
         iso: targetCountry?.iso,
         name: targetCountry?.name

@@ -112,7 +112,15 @@ const ArtworkInfoBar = ({ countryISO, countryName, colors, mode, gameStatus, onC
       case 'Albert Kahn':
         return (
           <>
-            {image.title && <div className="artwork-title">{image.title}</div>}
+            {image.title && image.page_url ? (
+              <div className="artwork-title">
+                <a href={image.page_url} target="_blank" rel="noopener noreferrer">
+                  {image.title}
+                </a>
+              </div>
+            ) : image.title ? (
+              <div className="artwork-title">{image.title}</div>
+            ) : null}
             {image.location && <div className="artwork-location">{image.location}</div>}
             {image.date && <div className="artwork-date">{image.date}</div>}
           </>
@@ -120,10 +128,22 @@ const ArtworkInfoBar = ({ countryISO, countryName, colors, mode, gameStatus, onC
       case 'Children in Art':
         return (
           <>
-            {image.title && <div className="artwork-title">{image.title}</div>}
+            {image.title && image.work_url ? (
+              <div className="artwork-title">
+                <a href={image.work_url} target="_blank" rel="noopener noreferrer">
+                  {image.title}
+                </a>
+              </div>
+            ) : image.title ? (
+              <div className="artwork-title">{image.title}</div>
+            ) : null}
             {image.artist_name && (
               <div className="artwork-artist">
-                by {image.artist_name}
+                by {image.author_wikilink ? (
+                  <a href={image.author_wikilink} target="_blank" rel="noopener noreferrer">
+                    {image.artist_name}
+                  </a>
+                ) : image.artist_name}
                 {image.artist_nationality && ` (${image.artist_nationality})`}
               </div>
             )}
@@ -132,12 +152,58 @@ const ArtworkInfoBar = ({ countryISO, countryName, colors, mode, gameStatus, onC
       case 'Public Domain Review':
         return (
           <>
-            {image.title && <div className="artwork-title">{image.title}</div>}
-            {image.country && <div className="artwork-location">{image.country}</div>}
+            {image.title && image.public_domain_url ? (
+              <div className="artwork-title">
+                <a href={image.public_domain_url} target="_blank" rel="noopener noreferrer">
+                  {image.title}
+                </a>
+              </div>
+            ) : image.title ? (
+              <div className="artwork-title">{image.title}</div>
+            ) : null}
+            {image.image_info && image.source_link ? (
+              <div className="artwork-location">
+                <a href={image.source_link} target="_blank" rel="noopener noreferrer">
+                  {image.image_info}
+                </a>
+              </div>
+            ) : image.image_info ? (
+              <div className="artwork-location">{image.image_info}</div>
+            ) : null}
           </>
         );
       default:
         return <div className="artwork-title">{image.title || 'Untitled'}</div>;
+    }
+  };
+
+  // Helper function to get collection subtitle with link
+  const getCollectionSubtitle = (collection) => {
+    switch(collection) {
+      case 'Albert Kahn':
+        return (
+          <a
+            href="https://collections.albert-kahn.hauts-de-seine.fr/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="collection-subtitle"
+          >
+            Albert Kahn Museum
+          </a>
+        );
+      case 'Public Domain Review':
+        return (
+          <a
+            href="https://publicdomainreview.org/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="collection-subtitle"
+          >
+            Public Domain Review
+          </a>
+        );
+      default:
+        return null;
     }
   };
 
@@ -275,10 +341,13 @@ const ArtworkInfoBar = ({ countryISO, countryName, colors, mode, gameStatus, onC
                 onClick={() => toggleTypeCollapse(collection)}
                 style={{ cursor: 'pointer' }}
               >
-                <h4 className="artwork-type-title">
-                  {isCollapsed ? '▶' : '▼'} {collection}
-                  <span className="artwork-type-count"> ({images.length})</span>
-                </h4>
+                <div>
+                  <h4 className="artwork-type-title">
+                    {isCollapsed ? '▶' : '▼'} {collection}
+                    <span className="artwork-type-count"> ({images.length})</span>
+                  </h4>
+                  {getCollectionSubtitle(collection)}
+                </div>
               </div>
 
               {/* Collection Content - Collapsible */}

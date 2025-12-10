@@ -146,6 +146,17 @@ export const fetchNeighbors = async (iso3) => {
 };
 
 /**
+ * Fetch similar islands for hint purposes (for island countries with no neighbors)
+ * @param {string} iso3 - Country ISO3 code
+ * @returns {object} - {is_island: boolean, islands: array, count: number}
+ */
+export const fetchSimilarIslands = async (iso3) => {
+  const response = await fetch(`${API_URL}/similar-islands/${iso3}`);
+  const data = await response.json();
+  return data;
+};
+
+/**
  * Fetch list of countries with no images
  * @returns {array} - Array of ISO3 codes for countries without images
  */

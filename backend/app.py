@@ -211,7 +211,7 @@ def get_images(alpha3):
     cursor.execute('''
         SELECT 'Albert Kahn' as collection_type,
                new_filepath as filepath, title_en as title, location, date,
-               operator, inventory_number
+               operator, inventory_number, page_url
         FROM albert_kahn_images
         WHERE alpha3 = ?
     ''', (alpha3,))
@@ -221,7 +221,7 @@ def get_images(alpha3):
     cursor.execute('''
         SELECT 'Children in Art' as collection_type,
                filepath, work_title as title, artist_name,
-               artist_nationality
+               artist_nationality, author_wikilink, work_url
         FROM children_artwork_images
         WHERE iso3_artist = ?
     ''', (alpha3,))
@@ -230,7 +230,8 @@ def get_images(alpha3):
     # Query Public Domain images
     cursor.execute('''
         SELECT 'Public Domain Review' as collection_type,
-               filepath, public_domain_title as title, country, source_link
+               filepath, public_domain_title as title, country, source_link,
+               public_domain_url, image_info
         FROM public_domain_images
         WHERE alpha_code = ?
     ''', (alpha3,))
@@ -326,6 +327,91 @@ def get_neighbors(iso3):
         'country_iso3': iso3,
         'neighbors': neighbors,
         'count': len(neighbors)
+    })
+
+@app.route('/api/similar-islands/<iso3>', methods=['GET'])
+def get_similar_islands(iso3):
+    """
+    Get similar island countries for hint purposes.
+
+    HTTP Method: GET
+    URL: http://localhost:5000/api/similar-islands/JPN
+    Purpose: Used for quiz hints when target is an island - show other islands
+
+    Returns: JSON with list of similar island countries (preferably same subregion/continent)
+    Example: {"islands": [{"iso3": "PHL", "m49": 608, "name": "Philippines"}, ...], "count": 2, "is_island": true}
+    """
+    conn = get_db_connection()
+    cursor = conn.cursor()
+
+    # Check if the target country is an island (has no neighbors)
+    cursor.execute('''
+        SELECT COUNT(*) as neighbor_count
+        FROM country_borders
+        WHERE country_iso3 = ?
+    ''', (iso3,))
+
+    neighbor_count = cursor.fetchone()['neighbor_count']
+    is_island = neighbor_count == 0
+
+    if not is_island:
+        conn.close()
+        return jsonify({
+            'country_iso3': iso3,
+            'is_island': False,
+            'islands': [],
+            'count': 0
+        })
+
+    # Get the target country's details
+    cursor.execute('''
+        SELECT iso3, name, m49, continent, subregion
+        FROM countries
+        WHERE iso3 = ?
+    ''', (iso3,))
+
+    target = cursor.fetchone()
+    if not target:
+        conn.close()
+        return jsonify({'error': 'Country not found'}), 404
+
+    # Find other islands (countries with no neighbors) excluding the target
+    # Priority: same subregion > same continent > any other islands
+    # Also check if they have images in any collection
+    cursor.execute('''
+        SELECT DISTINCT c.iso3, c.m49, c.name, c.continent, c.subregion,
+               CASE
+                   WHEN c.subregion = ? THEN 1
+                   WHEN c.continent = ? THEN 2
+                   ELSE 3
+               END as priority
+        FROM countries c
+        LEFT JOIN country_borders cb ON c.iso3 = cb.country_iso3
+        WHERE c.iso3 != ?
+        AND c.iso3 NOT IN ('ATA')  -- Exclude Antarctica
+        GROUP BY c.iso3
+        HAVING COUNT(cb.neighbor_iso3) = 0
+        ORDER BY priority, RANDOM()
+        LIMIT 2
+    ''', (target['subregion'], target['continent'], iso3))
+
+    islands = [dict(row) for row in cursor.fetchall()]
+
+    # Remove the priority field before returning
+    for island in islands:
+        island.pop('priority', None)
+        island.pop('continent', None)
+        island.pop('subregion', None)
+
+    conn.close()
+
+    return jsonify({
+        'country_iso3': iso3,
+        'is_island': True,
+        'islands': islands,
+        'count': len(islands),
+        'target_subregion': target['subregion'],
+        'target_continent': target['continent']
     })
 
 @app.route('/api/countries/empty', methods=['GET'])
