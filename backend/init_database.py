@@ -9,6 +9,10 @@ import sqlite3
 import csv
 import json
 import os
+import requests
+import time
+from urllib.parse import urlparse, unquote
+from pathlib import Path
 from config import (
     DATABASE_PATH,
     M49_JSON_PATH,
@@ -64,6 +68,74 @@ SUBREGION_NAMES = {
     57: "Oceania",  # Micronesia
     61: "Oceania",  # Polynesia
 }
+
+def download_image(url, iso3, collection_type, suggested_filename=None):
+    """
+    Download an image from URL and save it to the correct folder structure.
+
+    Args:
+        url: URL of the image to download
+        iso3: Country ISO3 code
+        collection_type: Collection type ('albert_kahn', 'children_artwork', or 'public_domain')
+        suggested_filename: Optional filename to use (will extract from URL if not provided)
+
+    Returns:
+        Relative filepath (e.g., 'images/USA/public_domain/image.jpg') or None if download fails
+    """
+    if not url or url.startswith('http') == False:
+        return None
+
+    try:
+        # Get filename from URL or use suggested filename
+        if suggested_filename:
+            filename = suggested_filename
+        else:
+            parsed_url = urlparse(url)
+            filename = unquote(os.path.basename(parsed_url.path))
+
+        # If no filename could be determined, skip
+        if not filename or filename == '':
+            print(f"  ⚠️  Could not determine filename from URL: {url}")
+            return None
+
+        # Create directory structure: images/{ISO3}/{collection_type}/
+        base_dir = os.path.dirname(os.path.abspath(__file__))
+        image_dir = os.path.join(base_dir, 'images', iso3, collection_type)
+        os.makedirs(image_dir, exist_ok=True)
+
+        # Full path for saving
+        filepath_full = os.path.join(image_dir, filename)
+
+        # Check if file already exists
+        if os.path.exists(filepath_full):
+            # Return relative path
+            return f"images/{iso3}/{collection_type}/{filename}"
+
+        # Download the image
+        print(f"  📥 Downloading: {filename}")
+        response = requests.get(url, timeout=30, headers={
+            'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36'
+        })
+        response.raise_for_status()
+
+        # Save to file
+        with open(filepath_full, 'wb') as f:
+            f.write(response.content)
+
+        print(f"  ✅ Saved: {filename}")
+
+        # Brief delay to be respectful to servers
+        time.sleep(0.5)
+
+        # Return relative path
+        return f"images/{iso3}/{collection_type}/{filename}"
+
+    except requests.RequestException as e:
+        print(f"  ❌ Failed to download {url}: {e}")
+        return None
+    except Exception as e:
+        print(f"  ❌ Error processing {url}: {e}")
+        return None
 
 def load_m49_data():
     """Load and parse UN M49 country data"""
@@ -210,54 +282,93 @@ def init_database():
         )
     ''')
 
-    # Create albert_kahn_images table
+    # Create albert_kahn_images table with ALL columns from CSV
     print("🖼️  Creating albert_kahn_images table...")
     cursor.execute('''
         CREATE TABLE albert_kahn_images (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
-            alpha3 TEXT NOT NULL,
+            file_path TEXT,
             image_filename TEXT,
-            filepath TEXT,
+            inventory_number TEXT,
+            title_fr TEXT,
             title_en TEXT,
             location TEXT,
-            date TEXT,
+            country_fr TEXT,
+            country_en TEXT,
+            m49code INTEGER,
+            alpha2 TEXT,
+            alpha3 TEXT NOT NULL,
             operator TEXT,
-            inventory_number TEXT,
+            author TEXT,
+            mission TEXT,
+            date TEXT,
+            theme TEXT,
+            sub_theme TEXT,
+            description TEXT,
+            domain TEXT,
+            process TEXT,
+            support TEXT,
+            denomination TEXT,
+            format TEXT,
+            dimensions TEXT,
+            ownership TEXT,
+            license TEXT,
+            page_url TEXT,
+            image_url TEXT,
+            new_filepath TEXT,
             FOREIGN KEY (alpha3) REFERENCES countries(iso3)
         )
     ''')
     cursor.execute('CREATE INDEX idx_albert_kahn_alpha3 ON albert_kahn_images(alpha3)')
 
-    # Create children_artwork_images table
+    # Create children_artwork_images table with ALL columns from CSV
     print("🎨 Creating children_artwork_images table...")
     cursor.execute('''
         CREATE TABLE children_artwork_images (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
-            alpha3 TEXT NOT NULL,
             artist_name TEXT,
+            author_wikilink TEXT,
             artist_nationality TEXT,
+            iso3_artist TEXT NOT NULL,
+            country_of_subject TEXT,
+            iso3 TEXT,
             work_title TEXT,
-            filepath TEXT,
+            keep TEXT,
             image_path TEXT,
-            FOREIGN KEY (alpha3) REFERENCES countries(iso3)
+            work_url TEXT,
+            location_reason TEXT,
+            author_background TEXT,
+            birth_date TEXT,
+            death_date TEXT,
+            birth_place TEXT,
+            source TEXT,
+            tags TEXT,
+            more_info TEXT,
+            is_local TEXT,
+            filepath TEXT,
+            FOREIGN KEY (iso3_artist) REFERENCES countries(iso3)
         )
     ''')
-    cursor.execute('CREATE INDEX idx_children_artwork_alpha3 ON children_artwork_images(alpha3)')
+    cursor.execute('CREATE INDEX idx_children_artwork_iso3_artist ON children_artwork_images(iso3_artist)')
 
-    # Create public_domain_images table
+    # Create public_domain_images table with ALL columns from CSV
     print("📚 Creating public_domain_images table...")
     cursor.execute('''
         CREATE TABLE public_domain_images (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
-            alpha3 TEXT NOT NULL,
-            title TEXT,
-            country TEXT,
-            filepath TEXT,
+            public_domain_url TEXT,
+            public_domain_title TEXT,
+            image_info TEXT,
             source_link TEXT,
-            FOREIGN KEY (alpha3) REFERENCES countries(iso3)
+            country TEXT,
+            alpha_code TEXT NOT NULL,
+            filename TEXT,
+            remove TEXT,
+            filepath TEXT,
+            FOREIGN KEY (alpha_code) REFERENCES countries(iso3)
         )
     ''')
-    cursor.execute('CREATE INDEX idx_public_domain_alpha3 ON public_domain_images(alpha3)')
+    cursor.execute('CREATE INDEX idx_public_domain_alpha_code ON public_domain_images(alpha_code)')
 
     # Create country_borders table
     print("🗺️  Creating country_borders table...")
@@ -294,7 +405,7 @@ def init_database():
 
     print(f"✅ Inserted {len(m49_countries)} countries")
 
-    # Load Albert Kahn images
+    # Load Albert Kahn images - ALL columns
     print(f"🖼️  Loading Albert Kahn images from: {ALBERT_KAHN_CSV_PATH}")
     albert_kahn_count = 0
 
@@ -303,35 +414,72 @@ def init_database():
 
         for row in reader:
             alpha3 = row.get('alpha3', '').strip()
-            filepath = row.get('new_filepath', '').strip()
+            new_filepath = row.get('new_filepath', '').strip()
+            image_url = row.get('image_url', '').strip()
 
-            if not alpha3 or not filepath:
+            if not alpha3:
+                continue
+
+            # If new_filepath is empty but image_url has a URL, download it
+            if not new_filepath and image_url and image_url.startswith('http'):
+                print(f"  🔄 Row has URL in image_url but no new_filepath, downloading...")
+                new_filepath = download_image(image_url, alpha3, 'albert_kahn')
+                if not new_filepath:
+                    print(f"  ⏭️  Skipping row due to failed download")
+                    continue
+
+            # If still no filepath, skip
+            if not new_filepath:
                 continue
 
             # Strip "backend/" prefix from filepath
-            if filepath.startswith('backend/'):
-                filepath = filepath[8:]  # Remove "backend/"
+            if new_filepath.startswith('backend/'):
+                new_filepath = new_filepath[8:]  # Remove "backend/"
 
             cursor.execute('''
                 INSERT INTO albert_kahn_images (
-                    alpha3, image_filename, filepath, title_en, location,
-                    date, operator, inventory_number
-                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+                    file_path, image_filename, inventory_number, title_fr, title_en,
+                    location, country_fr, country_en, m49code, alpha2, alpha3,
+                    operator, author, mission, date, theme, sub_theme, description,
+                    domain, process, support, denomination, format, dimensions,
+                    ownership, license, page_url, image_url, new_filepath
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             ''', (
-                alpha3,
+                row.get('file_path', ''),
                 row.get('image_filename', ''),
-                filepath,
+                row.get('inventory_number', ''),
+                row.get('title_fr', ''),
                 row.get('title_en', ''),
                 row.get('location', ''),
-                row.get('date', ''),
+                row.get('country_fr', ''),
+                row.get('country_en', ''),
+                row.get('m49code', ''),
+                row.get('alpha2', ''),
+                alpha3,
                 row.get('operator', ''),
-                row.get('inventory_number', '')
+                row.get('author', ''),
+                row.get('mission', ''),
+                row.get('date', ''),
+                row.get('theme', ''),
+                row.get('sub_theme', ''),
+                row.get('description', ''),
+                row.get('domain', ''),
+                row.get('process', ''),
+                row.get('support', ''),
+                row.get('denomination', ''),
+                row.get('format', ''),
+                row.get('dimensions', ''),
+                row.get('ownership', ''),
+                row.get('license', ''),
+                row.get('page_url', ''),
+                row.get('image_url', ''),
+                new_filepath
             ))
             albert_kahn_count += 1
 
     print(f"✅ Inserted {albert_kahn_count} Albert Kahn images")
 
-    # Load Children Artwork images (only rows with Keep="keep")
+    # Load Children Artwork images (only rows with Keep="keep") - ALL columns
     print(f"🎨 Loading Children Artwork from: {CHILDREN_ARTWORK_CSV_PATH}")
     children_artwork_count = 0
 
@@ -343,10 +491,23 @@ def init_database():
             if keep_status != 'keep':
                 continue
 
-            alpha3 = row.get('iso3 artist', '').strip()
+            iso3_artist = row.get('iso3 artist', '').strip()
             filepath = row.get('filepath', '').strip()
+            image_path = row.get('image_path', '').strip()
 
-            if not alpha3 or not filepath:
+            if not iso3_artist:
+                continue
+
+            # If filepath is empty but image_path has a URL, download it
+            if not filepath and image_path and image_path.startswith('http'):
+                print(f"  🔄 Row has URL in image_path but no filepath, downloading...")
+                filepath = download_image(image_path, iso3_artist, 'children_artwork')
+                if not filepath:
+                    print(f"  ⏭️  Skipping row due to failed download")
+                    continue
+
+            # If still no filepath, skip
+            if not filepath:
                 continue
 
             # Strip "backend/" prefix from filepath
@@ -355,22 +516,38 @@ def init_database():
 
             cursor.execute('''
                 INSERT INTO children_artwork_images (
-                    alpha3, artist_name, artist_nationality, work_title,
-                    filepath, image_path
-                ) VALUES (?, ?, ?, ?, ?, ?)
+                    artist_name, author_wikilink, artist_nationality, iso3_artist,
+                    country_of_subject, iso3, work_title, keep, image_path, work_url,
+                    location_reason, author_background, birth_date, death_date, birth_place,
+                    source, tags, more_info, is_local, filepath
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             ''', (
-                alpha3,
                 row.get('artist_name', ''),
+                row.get('Author WikiLink', ''),
                 row.get('Artist Nationality', ''),
+                iso3_artist,
+                row.get('Country of Subject: ', ''),
+                row.get('iso3', ''),
                 row.get('work_title', ''),
-                filepath,
-                row.get('image_path', '')
+                row.get('Keep', ''),
+                row.get('image_path', ''),
+                row.get('work_url', ''),
+                row.get('Location Reason', ''),
+                row.get('Author Background', ''),
+                row.get('birth_date', ''),
+                row.get('death_date', ''),
+                row.get('birth_place', ''),
+                row.get('source', ''),
+                row.get('tags', ''),
+                row.get('More info', ''),
+                row.get('is_local', ''),
+                filepath
             ))
             children_artwork_count += 1
 
     print(f"✅ Inserted {children_artwork_count} children artwork images")
 
-    # Load Public Domain images (skip rows with Remove="yes")
+    # Load Public Domain images (skip rows with Remove="yes") - ALL columns
     print(f"📚 Loading Public Domain images from: {PUBLIC_DOMAIN_CSV_PATH}")
     public_domain_count = 0
 
@@ -382,10 +559,25 @@ def init_database():
             if remove_status == 'yes':
                 continue
 
-            alpha3 = row.get('Alpha Code', '').strip()
+            alpha_code = row.get('Alpha Code', '').strip()
             filepath = row.get('filepath', '').strip()
+            public_domain_url = row.get('Public Domain URL', '').strip()
 
-            if not alpha3 or not filepath:
+            if not alpha_code:
+                continue
+
+            # If filepath is empty but Public Domain URL has a URL, download it
+            if not filepath and public_domain_url and public_domain_url.startswith('http'):
+                print(f"  🔄 Row has URL in Public Domain URL but no filepath, downloading...")
+                # Try to use suggested filename from Filename column
+                suggested_filename = row.get('Filename', '').strip()
+                filepath = download_image(public_domain_url, alpha_code, 'public_domain', suggested_filename if suggested_filename else None)
+                if not filepath:
+                    print(f"  ⏭️  Skipping row due to failed download")
+                    continue
+
+            # If still no filepath, skip
+            if not filepath:
                 continue
 
             # Strip "backend/" prefix from filepath
@@ -394,14 +586,19 @@ def init_database():
 
             cursor.execute('''
                 INSERT INTO public_domain_images (
-                    alpha3, title, country, filepath, source_link
-                ) VALUES (?, ?, ?, ?, ?)
+                    public_domain_url, public_domain_title, image_info, source_link,
+                    country, alpha_code, filename, remove, filepath
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
             ''', (
-                alpha3,
+                row.get('Public Domain URL', ''),
                 row.get('Public Domain Title', ''),
+                row.get('Image Info', ''),
+                row.get('Source Link', ''),
                 row.get('Country', ''),
-                filepath,
-                row.get('Source Link', '')
+                alpha_code,
+                row.get('Filename', ''),
+                row.get('Remove', ''),
+                filepath
             ))
             public_domain_count += 1
 

@@ -31,6 +31,10 @@ from flask_cors import CORS
 # Standard Python libraries
 import random  # For selecting random country in quiz
 import os  # For checking if database file exists
+from io import BytesIO  # For serving images from memory
+
+# Image processing
+from PIL import Image
 
 # Our custom modules (from other files in backend/)
 from db_utils import get_db_connection  # Database connection helper
@@ -128,9 +132,9 @@ def random_country():
     cursor.execute('''
         SELECT DISTINCT alpha3 as iso3 FROM albert_kahn_images
         UNION
-        SELECT DISTINCT alpha3 as iso3 FROM children_artwork_images
+        SELECT DISTINCT iso3_artist as iso3 FROM children_artwork_images
         UNION
-        SELECT DISTINCT alpha3 as iso3 FROM public_domain_images
+        SELECT DISTINCT alpha_code as iso3 FROM public_domain_images
     ''')
 
     # Extract just the iso3 codes into a Python list
@@ -206,7 +210,7 @@ def get_images(alpha3):
     # Query Albert Kahn images
     cursor.execute('''
         SELECT 'Albert Kahn' as collection_type,
-               filepath, title_en as title, location, date,
+               new_filepath as filepath, title_en as title, location, date,
                operator, inventory_number
         FROM albert_kahn_images
         WHERE alpha3 = ?
@@ -219,16 +223,16 @@ def get_images(alpha3):
                filepath, work_title as title, artist_name,
                artist_nationality
         FROM children_artwork_images
-        WHERE alpha3 = ?
+        WHERE iso3_artist = ?
     ''', (alpha3,))
     children_art = [dict(row) for row in cursor.fetchall()]
 
     # Query Public Domain images
     cursor.execute('''
         SELECT 'Public Domain Review' as collection_type,
-               filepath, title, country, source_link
+               filepath, public_domain_title as title, country, source_link
         FROM public_domain_images
-        WHERE alpha3 = ?
+        WHERE alpha_code = ?
     ''', (alpha3,))
     public_domain = [dict(row) for row in cursor.fetchall()]
 
@@ -324,6 +328,45 @@ def get_neighbors(iso3):
         'count': len(neighbors)
     })
 
+@app.route('/api/countries/empty', methods=['GET'])
+def get_empty_countries():
+    """
+    Get list of countries with no images.
+
+    HTTP Method: GET
+    URL: http://localhost:5000/api/countries/empty
+    Purpose: Return list of country ISO3 codes that have no images
+
+    Returns: JSON with list of empty country ISO3 codes
+    """
+    conn = get_db_connection()
+    cursor = conn.cursor()
+
+    # Get all countries
+    cursor.execute('SELECT iso3 FROM countries')
+    all_countries = {row['iso3'] for row in cursor.fetchall()}
+
+    # Get countries that have at least one image
+    cursor.execute('''
+        SELECT DISTINCT alpha3 FROM albert_kahn_images
+        UNION
+        SELECT DISTINCT iso3_artist FROM children_artwork_images
+        UNION
+        SELECT DISTINCT alpha_code FROM public_domain_images
+    ''')
+    countries_with_images = {row[0] for row in cursor.fetchall()}
+
+    conn.close()
+
+    # Find countries without any images
+    empty_countries = sorted(all_countries - countries_with_images)
+
+    return jsonify({
+        'empty_countries': empty_countries,
+        'count': len(empty_countries)
+    })
+
+
 @app.route('/api/health', methods=['GET'])
 def health():
     """
@@ -405,6 +448,124 @@ def serve_image(filename):
     # - directory: Where to look for files
     # - path: Relative path to the file within that directory
     return send_from_directory(images_dir, filename)
+
+@app.route('/images/thumbnail/<path:filename>')
+def serve_thumbnail(filename):
+    """
+    Serve thumbnail version of images (200x200 max).
+
+    HTTP Method: GET
+    URL: http://localhost:5000/images/thumbnail/USA/albert_kahn/file.jpg
+    Purpose: Serve smaller thumbnail versions for faster loading
+
+    Query Parameters:
+    - size: Max dimension in pixels (default 200)
+
+    Example: /images/thumbnail/USA/file.jpg?size=150
+
+    Returns: Resized JPEG image
+    """
+    try:
+        # Get size from query params (default 200)
+        size = int(request.args.get('size', 200))
+        size = min(size, 500)  # Cap at 500px for safety
+
+        # Get the image file
+        images_dir = os.path.join(os.path.dirname(__file__), 'images')
+        image_path = os.path.join(images_dir, filename)
+
+        if not os.path.exists(image_path):
+            return jsonify({'error': 'Image not found'}), 404
+
+        # Open and resize image
+        img = Image.open(image_path)
+
+        # Convert to RGB if needed
+        if img.mode in ('RGBA', 'LA', 'P'):
+            background = Image.new('RGB', img.size, (255, 255, 255))
+            if img.mode == 'P':
+                img = img.convert('RGBA')
+            background.paste(img, mask=img.split()[-1] if img.mode in ('RGBA', 'LA') else None)
+            img = background
+        elif img.mode != 'RGB':
+            img = img.convert('RGB')
+
+        # Thumbnail maintains aspect ratio
+        img.thumbnail((size, size), Image.LANCZOS)
+
+        # Save to bytes
+        img_io = BytesIO()
+        img.save(img_io, 'JPEG', quality=80, optimize=True)
+        img_io.seek(0)
+
+        # Return with proper headers
+        from flask import Response
+        return Response(img_io.getvalue(), mimetype='image/jpeg')
+
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/images/resize/<path:filename>')
+def serve_resized(filename):
+    """
+    Serve dynamically resized images.
+
+    HTTP Method: GET
+    URL: http://localhost:5000/images/resize/USA/albert_kahn/file.jpg?width=400
+    Purpose: Serve images resized to specific dimensions for responsive design
+
+    Query Parameters:
+    - width: Target width in pixels (required)
+    - quality: JPEG quality 1-100 (default 85)
+
+    Example: /images/resize/USA/file.jpg?width=400&quality=90
+
+    Returns: Resized JPEG image maintaining aspect ratio
+    """
+    try:
+        # Get parameters
+        width = request.args.get('width', type=int)
+        quality = min(int(request.args.get('quality', 85)), 100)
+
+        if not width:
+            return jsonify({'error': 'width parameter required'}), 400
+
+        # Cap width at 1200px for safety
+        width = min(width, 1200)
+
+        # Get the image file
+        images_dir = os.path.join(os.path.dirname(__file__), 'images')
+        image_path = os.path.join(images_dir, filename)
+
+        if not os.path.exists(image_path):
+            return jsonify({'error': 'Image not found'}), 404
+
+        # Open image
+        img = Image.open(image_path)
+
+        # Convert to RGB if needed
+        if img.mode != 'RGB':
+            img = img.convert('RGB')
+
+        # Resize maintaining aspect ratio
+        original_width, original_height = img.size
+
+        if original_width > width:
+            ratio = width / original_width
+            new_height = int(original_height * ratio)
+            img = img.resize((width, new_height), Image.LANCZOS)
+
+        # Save to bytes
+        img_io = BytesIO()
+        img.save(img_io, 'JPEG', quality=quality, optimize=True)
+        img_io.seek(0)
+
+        # Return with proper headers
+        from flask import Response
+        return Response(img_io.getvalue(), mimetype='image/jpeg')
+
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
 
 
 # ==============================================================================

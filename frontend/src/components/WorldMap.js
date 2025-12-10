@@ -4,7 +4,7 @@ import { getCountryIsoCode, getCountryName, initializeCountryMapping } from '../
 import { COLOR_SCHEMES } from '../styles/colorSchemes';
 import { REGION_VIEWS } from '../config/regions';
 import { loadTopoJSON } from '../utils/topoJsonLoader';
-import { fetchCountries, fetchNeighbors } from '../services/api';
+import { fetchCountries, fetchNeighbors, fetchEmptyCountries } from '../services/api';
 
 const WorldMap = ({
   onCountryClick,
@@ -30,6 +30,7 @@ const WorldMap = ({
   const previousRegionRef = useRef(null);
   const [clickedCountry, setClickedCountry] = useState(null);
   const [hintNeighborsM49, setHintNeighborsM49] = useState([]);
+  const [emptyCountries, setEmptyCountries] = useState(new Set());
 
   // Load country data using TopoJSON
   useEffect(() => {
@@ -80,6 +81,21 @@ const WorldMap = ({
     };
 
     loadData();
+  }, []);
+
+  // Fetch list of countries with no images
+  useEffect(() => {
+    const loadEmptyCountries = async () => {
+      try {
+        const emptyList = await fetchEmptyCountries();
+        setEmptyCountries(new Set(emptyList));
+        console.log(`📭 Loaded ${emptyList.length} empty countries (no images)`);
+      } catch (err) {
+        console.error('Error fetching empty countries:', err);
+      }
+    };
+
+    loadEmptyCountries();
   }, []);
 
   // Handle incorrect answer - show border hints
@@ -227,6 +243,11 @@ const WorldMap = ({
     // If hovering over this country
     if (country === hoverD) {
       return COLORS.selected; // Highlight border on hover
+    }
+
+    // Empty countries (no images) - show with dimmer border
+    if (emptyCountries.has(iso3)) {
+      return 'rgba(150, 150, 150, 0.3)'; // Dimmer, more transparent border
     }
 
     // Default border color

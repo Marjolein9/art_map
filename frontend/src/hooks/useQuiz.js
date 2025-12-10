@@ -56,11 +56,10 @@ export const useQuiz = () => {
 
       if (result.correct) {
         setGameStatus('correct');
-        setTimeout(() => {
-          fetchNewCountry(); // Auto start new round after 2 seconds
-        }, 2000);
+        // Don't auto-fetch new country - wait for user to click "Next" button
       } else {
         setGameStatus('incorrect');
+        // Reset to playing after showing incorrect feedback
         setTimeout(() => {
           setGameStatus('playing');
         }, 1500);

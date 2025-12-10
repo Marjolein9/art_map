@@ -146,6 +146,16 @@ export const fetchNeighbors = async (iso3) => {
 };
 
 /**
+ * Fetch list of countries with no images
+ * @returns {array} - Array of ISO3 codes for countries without images
+ */
+export const fetchEmptyCountries = async () => {
+  const response = await fetch(`${API_URL}/countries/empty`);
+  const data = await response.json();
+  return data.empty_countries;
+};
+
+/**
  * Health check endpoint
  */
 export const checkHealth = async () => {

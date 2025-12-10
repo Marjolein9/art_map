@@ -1,10 +1,11 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import './styles/App.css';
 import './styles/components.css';  // Import centralized component styles
 import WorldMap from './components/WorldMap';
 import ArtworkInfoBar from './components/ArtworkInfoBar';
 import { COLOR_SCHEMES } from './styles/colorSchemes';
 import { useQuiz } from './hooks/useQuiz';
+import { fetchCountries } from './services/api';
 
 function App() {
   const { targetCountry, loading, gameStatus, handleCountryClick, fetchNewCountry } = useQuiz();
@@ -12,9 +13,22 @@ function App() {
   const [selectedColorScheme, setSelectedColorScheme] = useState('vintage');
   const [mode, setMode] = useState('quiz'); // 'quiz' or 'explore'
   const [exploreCountry, setExploreCountry] = useState(null);
+  const [infoBarOpen, setInfoBarOpen] = useState(false);
+  const [countryLookup, setCountryLookup] = useState({});
 
   // Get current color scheme
   const COLORS = COLOR_SCHEMES[selectedColorScheme];
+
+  // Fetch all countries for name lookup
+  useEffect(() => {
+    fetchCountries().then(countries => {
+      const lookup = {};
+      countries.forEach(country => {
+        lookup[country.iso3] = country.name;
+      });
+      setCountryLookup(lookup);
+    });
+  }, []);
 
   // Handle tooltip toggle
   const handleToggleTooltips = () => {
@@ -41,10 +55,50 @@ function App() {
     if (mode === 'explore') {
       console.log('🗺️ Setting explore country to:', countryIso);
       setExploreCountry(countryIso);
+      setInfoBarOpen(true); // Open info bar when country is selected
     } else {
+      // In quiz mode, handle the answer check
       handleCountryClick(countryIso);
+      // Always open info bar in quiz mode to show result (correct or incorrect)
+      setInfoBarOpen(true);
     }
   };
+
+  // Handle close info bar
+  const handleCloseInfoBar = () => {
+    setInfoBarOpen(false);
+  };
+
+  // Handle next country in quiz mode
+  const handleNextCountry = () => {
+    setInfoBarOpen(false);
+    fetchNewCountry();
+  };
+
+  // Handle backdrop click
+  const handleBackdropClick = (e) => {
+    // Only close if clicking the backdrop itself, not the info bar content
+    if (e.target === e.currentTarget) {
+      handleCloseInfoBar();
+    }
+  };
+
+  // Get current country name
+  const getCurrentCountryData = () => {
+    if (mode === 'quiz') {
+      return {
+        iso: targetCountry?.iso,
+        name: targetCountry?.name
+      };
+    } else {
+      return {
+        iso: exploreCountry,
+        name: countryLookup[exploreCountry]
+      };
+    }
+  };
+
+  const currentCountry = getCurrentCountryData();
 
   return (
     <div className="App">
@@ -61,9 +115,9 @@ function App() {
           ) : (
             <>
               <div className="app-content">
-                {/* Map container - Left side */}
+                {/* Map container - Full width */}
                 <div
-                  className="map-container"
+                  className="map-container map-container-full"
                   style={{
                     '--card-bg': COLORS.cardBg,
                     '--glow-color': COLORS.glow,
@@ -86,15 +140,23 @@ function App() {
                     mode={mode}
                     onModeToggle={handleModeToggle}
                   />
-                </div>
 
-                {/* Artwork Info Bar - Right Side */}
-                <div className="artwork-sidebar">
-                  <ArtworkInfoBar
-                    countryISO={mode === 'quiz' ? targetCountry?.iso : exploreCountry}
-                    colors={COLORS}
-                    mode={mode}
-                  />
+                  {/* Artwork Info Bar - Overlay centered over map */}
+                  {infoBarOpen && currentCountry.iso && (
+                    <div className="artwork-backdrop" onClick={mode === 'explore' ? handleBackdropClick : undefined}>
+                      <div className="artwork-overlay">
+                        <ArtworkInfoBar
+                          countryISO={currentCountry.iso}
+                          countryName={currentCountry.name}
+                          colors={COLORS}
+                          mode={mode}
+                          gameStatus={gameStatus}
+                          onClose={handleCloseInfoBar}
+                          onNext={handleNextCountry}
+                        />
+                      </div>
+                    </div>
+                  )}
                 </div>
               </div>
             </>

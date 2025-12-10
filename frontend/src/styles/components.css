@@ -40,7 +40,7 @@
   color: var(--text-color);
 }
 
-/* Map container - Left side */
+/* Map container - Full width with relative positioning for overlay */
 .map-container {
   flex: 1;
   border-radius: 8px;
@@ -52,10 +52,43 @@
   border-color: var(--border-color);
 }
 
-/* Artwork sidebar - Right side */
-.artwork-sidebar {
-  width: 400px;
-  min-width: 400px;
+.map-container-full {
+  position: relative;
+  width: 100%;
+}
+
+/* Backdrop - Full screen overlay for clicking outside */
+.artwork-backdrop {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 999;
+  background-color: rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(2px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: fadeIn 0.2s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Artwork overlay - Centered over map */
+.artwork-overlay {
+  z-index: 1000;
+  width: 90%;
+  max-width: 500px;
+  max-height: 80vh;
+  pointer-events: auto;
 }
 
 /* ==============================================================================
@@ -181,8 +214,17 @@
   }
 }
 
+/* Header with title and close button */
+.artwork-info-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+  gap: 15px;
+}
+
 .artwork-info-title {
-  margin: 0 0 15px 0;
+  margin: 0;
   font-size: 18pt;
   text-align: center;
   text-transform: uppercase;
@@ -190,6 +232,84 @@
   font-weight: 300;
   letter-spacing: 1.5px;
   color: var(--text-color);
+  flex: 1;
+}
+
+/* Close button */
+.artwork-close-btn {
+  background-color: rgba(0, 0, 0, 0.3);
+  color: var(--text-color);
+  border: 2px solid var(--border-color);
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 18px;
+  font-weight: bold;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+  padding: 0;
+  line-height: 1;
+}
+
+.artwork-close-btn:hover {
+  background-color: var(--glow-color);
+  color: var(--background-color, #000);
+  transform: scale(1.1) rotate(90deg);
+  box-shadow: 0 0 10px var(--glow-color);
+}
+
+/* Next button (quiz mode - correct answer) */
+.artwork-next-btn {
+  background-color: rgba(76, 175, 80, 0.8);
+  color: white;
+  border: 2px solid rgba(76, 175, 80, 1);
+  border-radius: 20px;
+  padding: 8px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: bold;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+  line-height: 1;
+  font-family: 'Roboto', sans-serif;
+}
+
+.artwork-next-btn:hover {
+  background-color: rgba(76, 175, 80, 1);
+  transform: scale(1.05);
+  box-shadow: 0 0 15px rgba(76, 175, 80, 0.5);
+}
+
+/* Try Again button (quiz mode - incorrect answer) */
+.artwork-try-again-btn {
+  background-color: rgba(244, 67, 54, 0.8);
+  color: white;
+  border: 2px solid rgba(244, 67, 54, 1);
+  border-radius: 20px;
+  padding: 8px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: bold;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+  line-height: 1;
+  font-family: 'Roboto', sans-serif;
+}
+
+.artwork-try-again-btn:hover {
+  background-color: rgba(244, 67, 54, 1);
+  transform: scale(1.05);
+  box-shadow: 0 0 15px rgba(244, 67, 54, 0.5);
 }
 
 .artwork-loading,
@@ -197,6 +317,15 @@
 .artwork-no-data {
   text-align: center;
   color: var(--text-color);
+  position: relative;
+  padding-top: 50px;
+}
+
+.artwork-loading .artwork-close-btn,
+.artwork-no-data .artwork-close-btn {
+  position: absolute;
+  top: 15px;
+  right: 15px;
 }
 
 .artwork-loading-title,
@@ -574,14 +703,14 @@
   .app-content {
     flex-direction: column;
   }
-  
-  .artwork-sidebar {
-    width: 100%;
-    min-width: 100%;
+
+  .artwork-overlay {
+    width: 95%;
+    max-height: 70vh;
   }
-  
+
   .artwork-info-container {
-    max-height: 500px;
+    max-height: 70vh;
   }
 }
 
@@ -589,18 +718,27 @@
   .app-background {
     padding: 10px;
   }
-  
+
   .quiz-controls {
     flex-direction: column;
     align-items: stretch;
   }
-  
+
   .settings-section {
     flex-direction: column;
     align-items: stretch;
   }
-  
+
   .globe-container {
     height: 400px;
+  }
+
+  .artwork-overlay {
+    width: 98%;
+    max-height: 60vh;
+  }
+
+  .artwork-info-title {
+    font-size: 14pt;
   }
 }

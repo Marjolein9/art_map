@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { fetchImages } from '../services/api';
 
-const ArtworkInfoBar = ({ countryISO, colors, mode }) => {
+const ArtworkInfoBar = ({ countryISO, countryName, colors, mode, gameStatus, onClose, onNext }) => {
   const [imagesByCollection, setImagesByCollection] = useState({});
   const [loading, setLoading] = useState(false);
   const [collapsedTypes, setCollapsedTypes] = useState({});
@@ -152,30 +152,18 @@ const ArtworkInfoBar = ({ countryISO, colors, mode }) => {
           '--text-color': colors.text
         }}
       >
+        {onClose && (
+          <button className="artwork-close-btn" onClick={onClose} title="Close">
+            ✕
+          </button>
+        )}
         Loading artwork...
       </div>
     );
   }
 
   if (!countryISO) {
-    return (
-      <div
-        className="artwork-info-container artwork-waiting"
-        style={{
-          '--card-bg': colors.cardBg,
-          '--glow-color': colors.glow,
-          '--border-color': colors.border,
-          '--text-color': colors.text
-        }}
-      >
-        <h3 className="artwork-waiting-title">
-          {mode === 'quiz' ? 'Waiting for quiz...' : 'Click a country to explore!'}
-        </h3>
-        <p className="artwork-waiting-subtitle">
-          {mode === 'quiz' ? 'Find the country to see artwork!' : 'Select any country on the map'}
-        </p>
-      </div>
-    );
+    return null; // Don't show the info bar when no country is selected
   }
 
   if (countryISO === null) {
@@ -189,6 +177,11 @@ const ArtworkInfoBar = ({ countryISO, colors, mode }) => {
           '--text-color': colors.text
         }}
       >
+        {onClose && (
+          <button className="artwork-close-btn" onClick={onClose} title="Close">
+            ✕
+          </button>
+        )}
         <h3 className="artwork-no-data-title">Territory Not Recognized</h3>
         <p className="artwork-no-data-subtitle">
           This territory is not in our database. We only include UN-recognized countries.
@@ -210,6 +203,11 @@ const ArtworkInfoBar = ({ countryISO, colors, mode }) => {
           '--text-color': colors.text
         }}
       >
+        {onClose && (
+          <button className="artwork-close-btn" onClick={onClose} title="Close">
+            ✕
+          </button>
+        )}
         <h3 className="artwork-no-data-title">No images available</h3>
         <p className="artwork-no-data-subtitle">Country: {countryISO}</p>
       </div>
@@ -227,9 +225,39 @@ const ArtworkInfoBar = ({ countryISO, colors, mode }) => {
         '--background-color': colors.background
       }}
     >
-      <h3 className="artwork-info-title">
-        {countryISO}
-      </h3>
+      <div className="artwork-info-header">
+        <h3 className="artwork-info-title">
+          {countryName || countryISO}
+        </h3>
+        {mode === 'quiz' && gameStatus === 'correct' && onNext ? (
+          <button
+            className="artwork-next-btn"
+            onClick={onNext}
+            title="Next Country"
+            aria-label="Go to next country"
+          >
+            Next →
+          </button>
+        ) : mode === 'quiz' && gameStatus === 'incorrect' && onClose ? (
+          <button
+            className="artwork-try-again-btn"
+            onClick={onClose}
+            title="Try Again"
+            aria-label="Try again"
+          >
+            Try Again
+          </button>
+        ) : onClose ? (
+          <button
+            className="artwork-close-btn"
+            onClick={onClose}
+            title="Close"
+            aria-label="Close artwork panel"
+          >
+            ✕
+          </button>
+        ) : null}
+      </div>
 
       <div className="artwork-types-list">
         {collections.map(collection => {
