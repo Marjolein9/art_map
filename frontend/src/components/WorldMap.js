@@ -1,7 +1,6 @@
 import React, { memo, useState, useEffect, useRef } from 'react';
 import Globe from 'react-globe.gl';
 import { getCountryIsoCode, getCountryName, initializeCountryMapping } from '../utils/countryCodeMapping';
-import { COLOR_SCHEMES } from '../styles/colorSchemes';
 import { REGION_VIEWS } from '../config/regions';
 import { loadTopoJSON } from '../utils/topoJsonLoader';
 import { fetchCountries, fetchNeighbors, fetchSimilarIslands, fetchEmptyCountries } from '../services/api';
@@ -17,8 +16,6 @@ const WorldMap = ({
   onNewGame,
   onStartOver,
   onToggleTooltips,
-  selectedColorScheme,
-  onColorSchemeChange,
   mode = 'quiz',
   onModeToggle
 }) => {
@@ -31,6 +28,41 @@ const WorldMap = ({
   const [clickedCountry, setClickedCountry] = useState(null);
   const [hintNeighborsM49, setHintNeighborsM49] = useState([]);
   const [emptyCountries, setEmptyCountries] = useState(new Set());
+  const [globeDimensions, setGlobeDimensions] = useState({ width: 900, height: 600 });
+  const [hintsEnabled, setHintsEnabled] = useState(false);
+
+  // Handle window resize for responsive globe
+  useEffect(() => {
+    const updateGlobeDimensions = () => {
+      const width = window.innerWidth;
+      let globeWidth, globeHeight;
+
+      if (width <= 768) {
+        // Mobile
+        globeWidth = Math.min(width - 40, 600);
+        globeHeight = 400;
+      } else if (width <= 1024) {
+        // Tablet
+        globeWidth = Math.min(width - 80, 800);
+        globeHeight = 500;
+      } else {
+        // Desktop - max 900px width to match container
+        globeWidth = Math.min(width - 100, 900);
+        globeHeight = 600;
+      }
+
+      setGlobeDimensions({ width: globeWidth, height: globeHeight });
+    };
+
+    // Set initial dimensions
+    updateGlobeDimensions();
+
+    // Add resize listener
+    window.addEventListener('resize', updateGlobeDimensions);
+
+    // Cleanup
+    return () => window.removeEventListener('resize', updateGlobeDimensions);
+  }, []);
 
   // Load country data using TopoJSON
   useEffect(() => {
@@ -103,10 +135,10 @@ const WorldMap = ({
   const hintCountryRef = useRef(null);  // Track which country hints are for
 
   useEffect(() => {
-    console.log('🔄 Hint effect running:', { gameStatus, targetCountry, mode });
+    console.log('🔄 Hint effect running:', { gameStatus, targetCountry, mode, hintsEnabled });
 
     const showHints = async () => {
-      if (gameStatus === 'incorrect' && targetCountry && mode === 'quiz') {
+      if (gameStatus === 'incorrect' && targetCountry && mode === 'quiz' && hintsEnabled) {
         // Only generate new hints if this is a different country than last time
         if (hintCountryRef.current === targetCountry) {
           console.log('♻️ Keeping same hints - same target country:', targetCountry);
@@ -175,9 +207,9 @@ const WorldMap = ({
         } catch (err) {
           console.error('❌ Error fetching hints:', err);
         }
-      } else if (mode !== 'quiz') {
-        // Clear hints if not in quiz mode
-        console.log('🧹 Clearing hints - not in quiz mode');
+      } else if (mode !== 'quiz' || !hintsEnabled) {
+        // Clear hints if not in quiz mode or hints disabled
+        console.log('🧹 Clearing hints - not in quiz mode or hints disabled');
         setHintNeighborsM49([]);
         hintCountryRef.current = null;
       }
@@ -186,7 +218,7 @@ const WorldMap = ({
     };
 
     showHints();
-  }, [gameStatus, targetCountry, targetCountryName, mode, countries]);
+  }, [gameStatus, targetCountry, targetCountryName, mode, countries, hintsEnabled]);
 
   // Clear hints and visual feedback when a NEW target country appears
   const prevTargetCountryRef = useRef(null);
@@ -407,145 +439,110 @@ const WorldMap = ({
           onPathClick={handlePolygonClick}
 
           enablePointerInteraction={true}
-          width={900}
-          height={600}
+          width={globeDimensions.width}
+          height={globeDimensions.height}
         />
-      </div>
 
-      {/* All control buttons - below globe, small, all in one line */}
-      <div className="globe-controls">
-        <button
-          onClick={rotateLeft}
-          className="globe-control-btn"
+        {/* Control overlay on top of globe */}
+        <div
+          className="control-overlay"
           style={{
-            '--button-bg': COLORS.buttonBg,
-            '--border-color': COLORS.border,
-            '--glow-color': COLORS.glow
-          }}
-          title="Rotate Left"
-        >
-          ←
-        </button>
-        <button
-          onClick={rotateRight}
-          className="globe-control-btn"
-          style={{
-            '--button-bg': COLORS.buttonBg,
-            '--border-color': COLORS.border,
-            '--glow-color': COLORS.glow
-          }}
-          title="Rotate Right"
-        >
-          →
-        </button>
-        <button
-          onClick={zoomIn}
-          className="globe-control-btn"
-          style={{
-            '--button-bg': COLORS.buttonBg,
-            '--border-color': COLORS.border,
-            '--glow-color': COLORS.glow
-          }}
-          title="Zoom In"
-        >
-          +
-        </button>
-        <button
-          onClick={zoomOut}
-          className="globe-control-btn"
-          style={{
-            '--button-bg': COLORS.buttonBg,
-            '--border-color': COLORS.border,
-            '--glow-color': COLORS.glow
-          }}
-          title="Zoom Out"
-        >
-          −
-        </button>
-
-        <span className="globe-controls-divider" style={{ '--border-color': COLORS.border }} />
-
-        <button
-          onClick={() => mode !== 'quiz' && onModeToggle()}
-          className={`globe-control-btn ${mode === 'quiz' ? 'primary' : 'secondary'}`}
-          style={{
-            '--button-primary': COLORS.buttonPrimary,
-            '--button-secondary': COLORS.buttonSecondary,
+            '--card-bg': COLORS.cardBg,
             '--text-color': COLORS.text,
-            '--button-text': COLORS.ocean,
-            '--border-color': COLORS.border,
-            '--glow-color': COLORS.glow
-          }}
-          title="Quiz Mode"
-        >
-          🎯 Quiz
-        </button>
-
-        <button
-          onClick={() => mode !== 'explore' && onModeToggle()}
-          className={`globe-control-btn ${mode === 'explore' ? 'primary' : 'secondary'}`}
-          style={{
-            '--button-primary': COLORS.buttonPrimary,
-            '--button-secondary': COLORS.buttonSecondary,
-            '--text-color': COLORS.text,
-            '--button-text': COLORS.ocean,
-            '--border-color': COLORS.border,
-            '--glow-color': COLORS.glow
-          }}
-          title="Explore Mode"
-        >
-          🗺️ Explore
-        </button>
-
-        {mode === 'quiz' && (
-          <button
-            onClick={onStartOver}
-            className="globe-control-btn primary"
-            style={{
-              '--button-primary': COLORS.buttonPrimary,
-              '--text-color': COLORS.text,
-              '--border-color': COLORS.border,
-              '--glow-color': COLORS.glow
-            }}
-            title="Next Country"
-          >
-            Next
-          </button>
-        )}
-
-        <button
-          onClick={onToggleTooltips}
-          className={`globe-control-btn ${tooltipsEnabled ? 'secondary toggle-on' : 'toggle-off'}`}
-          style={{
-            '--button-secondary': COLORS.buttonSecondary,
-            '--button-text': COLORS.ocean,
-            '--land-color': COLORS.land,
-            '--text-secondary': COLORS.textSecondary,
-            '--border-color': COLORS.border,
-            '--hover-color': COLORS.hover
-          }}
-          title="Toggle Tooltips"
-        >
-          {tooltipsEnabled ? 'Tips: ON' : 'Tips: OFF'}
-        </button>
-
-        <select
-          value={selectedColorScheme}
-          onChange={(e) => onColorSchemeChange(e.target.value)}
-          className="color-scheme-dropdown"
-          style={{
-            '--button-primary': COLORS.buttonPrimary,
-            '--text-color': COLORS.text,
-            '--border-color': COLORS.border,
-            '--glow-color': COLORS.glow
+            '--glow-color': COLORS.glow,
+            '--border-color': COLORS.border
           }}
         >
-          {Object.keys(COLOR_SCHEMES).map(schemeKey => (
-            <option key={schemeKey} value={schemeKey}>
-              {COLOR_SCHEMES[schemeKey].name}
-            </option>
-          ))}
-        </select>
+          {/* Title text */}
+          <div className="overlay-title">
+            {mode === 'quiz' && targetCountryName ? `Find: ${targetCountryName}` : 'Click to Explore'}
+          </div>
+
+          {/* Control buttons and toggles */}
+          <div className="overlay-controls">
+            <button
+              onClick={rotateLeft}
+              className="globe-control-btn-small"
+              title="Rotate Left"
+            >
+              ←
+            </button>
+            <button
+              onClick={rotateRight}
+              className="globe-control-btn-small"
+              title="Rotate Right"
+            >
+              →
+            </button>
+            <button
+              onClick={zoomIn}
+              className="globe-control-btn-small"
+              title="Zoom In"
+            >
+              +
+            </button>
+            <button
+              onClick={zoomOut}
+              className="globe-control-btn-small"
+              title="Zoom Out"
+            >
+              −
+            </button>
+
+            <span className="controls-divider" />
+
+            {/* Quiz/Explore Toggle */}
+            <div className="toggle-container-small">
+              <span className="toggle-label-small">Quiz</span>
+              <label className="toggle-switch-small">
+                <input
+                  type="checkbox"
+                  checked={mode === 'explore'}
+                  onChange={onModeToggle}
+                />
+                <span className="toggle-slider-small"></span>
+              </label>
+            </div>
+
+            {mode === 'quiz' && (
+              <>
+                <button
+                  onClick={onStartOver}
+                  className="globe-control-btn-small"
+                  title="Next Country"
+                >
+                  Next
+                </button>
+
+                {/* Hint Toggle */}
+                <div className="toggle-container-small">
+                  <span className="toggle-label-small">Hint</span>
+                  <label className="toggle-switch-small">
+                    <input
+                      type="checkbox"
+                      checked={hintsEnabled}
+                      onChange={() => setHintsEnabled(prev => !prev)}
+                    />
+                    <span className="toggle-slider-small"></span>
+                  </label>
+                </div>
+              </>
+            )}
+
+            {/* Tip Toggle */}
+            <div className="toggle-container-small">
+              <span className="toggle-label-small">Tip</span>
+              <label className="toggle-switch-small">
+                <input
+                  type="checkbox"
+                  checked={tooltipsEnabled}
+                  onChange={onToggleTooltips}
+                />
+                <span className="toggle-slider-small"></span>
+              </label>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );

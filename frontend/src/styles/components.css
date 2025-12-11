@@ -57,13 +57,13 @@
   width: 100%;
 }
 
-/* Backdrop - Full screen overlay for clicking outside */
+/* Backdrop - Full screen overlay for clicking outside (explore mode only) */
 .artwork-backdrop {
   position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
+  top: 20px;
+  left: 20px;
+  right: 20px;
+  bottom: 20px;
   z-index: 9999;
   background-color: rgba(0, 0, 0, 0.5);
   backdrop-filter: blur(3px);
@@ -82,13 +82,34 @@
   }
 }
 
-/* Artwork overlay - Centered over map */
+/* Artwork overlay - Centered over map (explore mode only) */
 .artwork-overlay {
   z-index: 10000;
   width: 90%;
   max-width: 500px;
   max-height: 80vh;
   pointer-events: auto;
+}
+
+/* Artwork container inline - Below map with same margins (quiz mode) */
+.artwork-container-inline {
+  width: 100%;
+  max-width: 1200px;
+  margin: 20px auto 20px auto;
+  padding: 0 20px;
+  animation: slideIn 0.3s ease-out;
+  box-sizing: border-box;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 /* ==============================================================================
@@ -178,9 +199,12 @@
 .globe-container {
   position: relative;
   width: 100%;
-  height: 600px;
+  min-height: 600px;
   border-radius: 8px;
   overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 /* ==============================================================================
@@ -644,32 +668,137 @@
 .globe-position-container {
   position: relative;
   width: 100%;
-  height: 600px;
+  min-height: 600px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
-/* Find country overlay on top of globe */
-.find-country-overlay {
+/* Control overlay on top of globe */
+.control-overlay {
   position: absolute;
   top: 20px;
   left: 50%;
   transform: translateX(-50%);
-  padding: 12px 24px;
+  padding: 10px 16px;
   border-radius: 8px;
-  font-size: 20px;
-  font-weight: bold;
-  font-family: system-ui;
   backdrop-filter: blur(10px);
   z-index: 1000;
-  pointer-events: none;
-  transition: border 0.3s ease;
   background-color: var(--card-bg);
-  color: var(--text-color);
   box-shadow: 0 0 20px var(--glow-color), 0 4px 6px rgba(0,0,0,0.3);
-  border: var(--overlay-border, 2px solid var(--border-color));
+  border: 2px solid var(--border-color);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: center;
 }
 
-.find-country-overlay .icon {
-  margin-right: 8px;
+.overlay-title {
+  font-size: 16px;
+  font-weight: bold;
+  font-family: system-ui;
+  color: var(--text-color);
+  text-align: center;
+}
+
+.overlay-controls {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+/* Small control buttons for overlay */
+.globe-control-btn-small {
+  padding: 3px 8px;
+  border-radius: 3px;
+  cursor: pointer;
+  font-size: 11px;
+  font-weight: bold;
+  transition: all 0.2s ease;
+  background-color: rgba(255, 255, 255, 0.2);
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow: 0 0 3px rgba(255, 255, 255, 0.2);
+}
+
+.globe-control-btn-small:hover {
+  transform: translateY(-1px);
+  background-color: rgba(255, 255, 255, 0.3);
+}
+
+/* Small divider for controls */
+.controls-divider {
+  width: 1px;
+  height: 14px;
+  background-color: rgba(255, 255, 255, 0.3);
+  margin: 0 2px;
+}
+
+/* Small toggle containers for overlay */
+.toggle-container-small {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.toggle-label-small {
+  font-size: 9px;
+  font-weight: bold;
+  color: var(--text-color);
+  opacity: 0.9;
+}
+
+.toggle-switch-small {
+  position: relative;
+  display: inline-block;
+  width: 32px;
+  height: 16px;
+}
+
+.toggle-switch-small input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.toggle-slider-small {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(100, 100, 100, 0.5);
+  transition: 0.3s;
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.toggle-slider-small:before {
+  position: absolute;
+  content: "";
+  height: 10px;
+  width: 10px;
+  left: 3px;
+  bottom: 2px;
+  background-color: white;
+  transition: 0.3s;
+  border-radius: 50%;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+input:checked + .toggle-slider-small {
+  background-color: rgba(76, 175, 80, 0.8);
+}
+
+input:checked + .toggle-slider-small:before {
+  transform: translateX(16px);
+}
+
+.toggle-slider-small:hover {
+  opacity: 0.9;
 }
 
 /* Globe control buttons container */
@@ -728,18 +857,69 @@
   background-color: var(--border-color);
 }
 
-/* Color scheme select dropdown */
-.color-scheme-dropdown {
-  padding: 4px 8px;
-  border-radius: 3px;
-  cursor: pointer;
-  font-size: 11px;
+/* iPhone-style Toggle Switch */
+.toggle-container {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.toggle-label {
+  font-size: 10px;
   font-weight: bold;
-  transition: all 0.3s ease;
-  background-color: var(--button-primary);
   color: var(--text-color);
-  border: 1px solid var(--border-color);
-  box-shadow: 0 0 5px var(--glow-color);
+  opacity: 0.8;
+}
+
+.toggle-switch {
+  position: relative;
+  display: inline-block;
+  width: 40px;
+  height: 20px;
+}
+
+.toggle-switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.toggle-slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: var(--toggle-bg);
+  transition: 0.3s;
+  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.toggle-slider:before {
+  position: absolute;
+  content: "";
+  height: 14px;
+  width: 14px;
+  left: 3px;
+  bottom: 2px;
+  background-color: var(--toggle-knob);
+  transition: 0.3s;
+  border-radius: 50%;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+input:checked + .toggle-slider {
+  background-color: var(--toggle-active);
+}
+
+input:checked + .toggle-slider:before {
+  transform: translateX(20px);
+}
+
+.toggle-slider:hover {
+  opacity: 0.9;
 }
 
 /* ==============================================================================
@@ -756,6 +936,10 @@
     max-height: 70vh;
   }
 
+  .artwork-container-inline {
+    padding: 0 15px;
+  }
+
   .artwork-info-container {
     max-height: 70vh;
   }
@@ -764,6 +948,13 @@
 @media (max-width: 768px) {
   .app-background {
     padding: 10px;
+  }
+
+  .artwork-backdrop {
+    top: 10px;
+    left: 10px;
+    right: 10px;
+    bottom: 10px;
   }
 
   .quiz-controls {
@@ -777,7 +968,7 @@
   }
 
   .globe-container {
-    height: 400px;
+    min-height: 400px;
   }
 
   .artwork-overlay {
@@ -787,5 +978,9 @@
 
   .artwork-info-title {
     font-size: 14pt;
+  }
+
+  .map-container {
+    padding: 15px;
   }
 }

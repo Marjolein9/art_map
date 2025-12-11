@@ -293,9 +293,7 @@ const ArtworkInfoBar = ({ countryISO, countryName, colors, mode, answerSubmitted
     >
       <div className="artwork-info-header">
         <h3 className="artwork-info-title">
-          {mode === 'quiz' && !answerSubmitted ? (
-            `Find: ${countryName || countryISO}`
-          ) : mode === 'quiz' && answerSubmitted && isCorrectAnswer ? (
+          {mode === 'quiz' && answerSubmitted && isCorrectAnswer ? (
             `✓ Correct: ${countryName || countryISO}`
           ) : mode === 'quiz' && answerSubmitted && !isCorrectAnswer ? (
             `✗ Incorrect: ${countryName || countryISO}`

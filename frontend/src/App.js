@@ -10,16 +10,15 @@ import { fetchCountries } from './services/api';
 function App() {
   const { targetCountry, loading, gameStatus, handleCountryClick, fetchNewCountry } = useQuiz();
   const [tooltipsEnabled, setTooltipsEnabled] = useState(true);
-  const [selectedColorScheme, setSelectedColorScheme] = useState('vintage');
   const [mode, setMode] = useState('quiz'); // 'quiz' or 'explore'
   const [exploreCountry, setExploreCountry] = useState(null);
-  const [infoBarOpen, setInfoBarOpen] = useState(true); // Start with info bar open in quiz mode
+  const [infoBarOpen, setInfoBarOpen] = useState(false); // Start with info bar closed in quiz mode
   const [countryLookup, setCountryLookup] = useState({});
   const [clickedCountry, setClickedCountry] = useState(null); // Track clicked country for incorrect answers
   const [answerSubmitted, setAnswerSubmitted] = useState(false); // Track if an answer was submitted
 
-  // Get current color scheme
-  const COLORS = COLOR_SCHEMES[selectedColorScheme];
+  // Use vintage color scheme (1900s)
+  const COLORS = COLOR_SCHEMES.vintage;
 
   // Fetch all countries for name lookup
   useEffect(() => {
@@ -35,11 +34,6 @@ function App() {
   // Handle tooltip toggle
   const handleToggleTooltips = () => {
     setTooltipsEnabled(prev => !prev);
-  };
-
-  // Handle color scheme change
-  const handleColorSchemeChange = (scheme) => {
-    setSelectedColorScheme(scheme);
   };
 
   // Handle mode toggle
@@ -78,7 +72,7 @@ function App() {
 
   // Handle next country in quiz mode
   const handleNextCountry = () => {
-    setInfoBarOpen(true); // Keep info bar open for next question
+    setInfoBarOpen(false); // Close info bar for next question
     setClickedCountry(null); // Clear clicked country when moving to next
     setAnswerSubmitted(false); // Reset answer submitted state
     fetchNewCountry();
@@ -153,8 +147,6 @@ function App() {
                     onNewGame={fetchNewCountry}
                     onStartOver={fetchNewCountry}
                     onToggleTooltips={handleToggleTooltips}
-                    selectedColorScheme={selectedColorScheme}
-                    onColorSchemeChange={handleColorSchemeChange}
                     mode={mode}
                     onModeToggle={handleModeToggle}
                   />
