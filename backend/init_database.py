@@ -22,7 +22,8 @@ from config import (
     BORDERS_CSV_PATH,
     ALBERT_KAHN_CSV_PATH,
     CHILDREN_ARTWORK_CSV_PATH,
-    PUBLIC_DOMAIN_CSV_PATH
+    PUBLIC_DOMAIN_CSV_PATH,
+    MET_METADATA_CSV_PATH
 )
 
 # UN M49 Region code to continent name
@@ -543,6 +544,29 @@ def init_database():
     ''')
     cursor.execute('CREATE INDEX idx_public_domain_alpha_code ON public_domain_images(alpha_code)')
 
+    # Create met_images table
+    print("🏛️  Creating met_images table...")
+    cursor.execute('''
+        CREATE TABLE met_images (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            object_id TEXT NOT NULL,
+            alpha3 TEXT NOT NULL,
+            country_name TEXT,
+            title TEXT,
+            artist_name TEXT,
+            object_date TEXT,
+            medium TEXT,
+            department TEXT,
+            culture TEXT,
+            object_url TEXT,
+            primary_image_url TEXT,
+            filepath TEXT,
+            json_file TEXT,
+            FOREIGN KEY (alpha3) REFERENCES countries(iso3)
+        )
+    ''')
+    cursor.execute('CREATE INDEX idx_met_alpha3 ON met_images(alpha3)')
+
     # Create country_borders table
     print("🗺️  Creating country_borders table...")
     cursor.execute('''
@@ -849,6 +873,53 @@ def init_database():
 
     print(f"✅ Inserted {public_domain_count} public domain images")
 
+    # Load and insert Met Museum images
+    print(f"\n🏛️  Loading Met Museum images from {MET_METADATA_CSV_PATH}...")
+    met_count = 0
+
+    if os.path.exists(MET_METADATA_CSV_PATH):
+        with open(MET_METADATA_CSV_PATH, 'r', encoding='utf-8') as f:
+            reader = csv.DictReader(f)
+            for row in reader:
+                alpha3 = row.get('alpha3', '').strip()
+                filepath = row.get('filepath', '').strip()
+
+                # Skip if no alpha3 or filepath
+                if not alpha3 or not filepath:
+                    continue
+
+                # Verify image exists
+                if not os.path.exists(filepath):
+                    print(f"  ⚠️  Image not found: {filepath}")
+                    continue
+
+                cursor.execute('''
+                    INSERT INTO met_images (
+                        object_id, alpha3, country_name, title, artist_name,
+                        object_date, medium, department, culture, object_url,
+                        primary_image_url, filepath, json_file
+                    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                ''', (
+                    row.get('object_id', ''),
+                    alpha3,
+                    row.get('country_name', ''),
+                    row.get('title', ''),
+                    row.get('artist_name', ''),
+                    row.get('object_date', ''),
+                    row.get('medium', ''),
+                    row.get('department', ''),
+                    row.get('culture', ''),
+                    row.get('object_url', ''),
+                    row.get('primary_image_url', ''),
+                    filepath,
+                    row.get('json_file', '')
+                ))
+                met_count += 1
+
+        print(f"✅ Inserted {met_count} Met Museum images")
+    else:
+        print(f"⚠️  Met metadata CSV not found, skipping Met Museum import")
+
     # Insert country borders
     print(f"🗺️  Inserting {len(borders_data)} border relationships...")
     for border in borders_data:
@@ -874,6 +945,7 @@ def init_database():
     export_table_to_csv(conn, 'albert_kahn_images', EXPORTS_DIR)
     export_table_to_csv(conn, 'children_artwork_images', EXPORTS_DIR)
     export_table_to_csv(conn, 'public_domain_images', EXPORTS_DIR)
+    export_table_to_csv(conn, 'met_images', EXPORTS_DIR)
     export_table_to_csv(conn, 'country_borders', EXPORTS_DIR)
 
     conn.close()

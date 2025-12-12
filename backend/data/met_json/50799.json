@@ -1,0 +1,87 @@
+{
+  "objectID": 50799,
+  "isHighlight": true,
+  "accessionNumber": "66.179",
+  "accessionYear": "1966",
+  "isPublicDomain": true,
+  "primaryImage": "https://images.metmuseum.org/CRDImages/as/original/DT5221.jpg",
+  "primaryImageSmall": "https://images.metmuseum.org/CRDImages/as/web-large/DT5221.jpg",
+  "additionalImages": [],
+  "constituents": null,
+  "department": "Asian Art",
+  "objectName": "Figure",
+  "title": "Tara, the Buddhist Savior",
+  "culture": "Nepal, Kathmandu Valley",
+  "period": "Malla period",
+  "dynasty": "",
+  "reign": "",
+  "portfolio": "",
+  "artistRole": "",
+  "artistPrefix": "",
+  "artistDisplayName": "",
+  "artistDisplayBio": "",
+  "artistSuffix": "",
+  "artistAlphaSort": "",
+  "artistNationality": "",
+  "artistBeginDate": "",
+  "artistEndDate": "",
+  "artistGender": "",
+  "artistWikidata_URL": "",
+  "artistULAN_URL": "",
+  "objectDate": "14th century",
+  "objectBeginDate": 1300,
+  "objectEndDate": 1399,
+  "medium": "Gilt copper alloy with color and semiprecious stone inlay",
+  "dimensions": "H. 23 1/4 in. (59.1 cm); H. incl. base 26 in. (66 cm);  W. 10 1/2 in. (26.7 cm); D. 5 in. (12/7 cm)",
+  "measurements": [
+    {
+      "elementName": "Overall",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Depth": 12.700026,
+        "Height": 59.05512,
+        "Other": 66.04013,
+        "Weight": 10.432732,
+        "Width": 26.670053
+      }
+    }
+  ],
+  "creditLine": "Louis V. Bell Fund, 1966",
+  "geographyType": "",
+  "city": "",
+  "state": "",
+  "county": "",
+  "country": "",
+  "region": "",
+  "subregion": "",
+  "locale": "",
+  "locus": "",
+  "excavation": "",
+  "river": "",
+  "classification": "Sculpture",
+  "rightsAndReproduction": "",
+  "linkResource": "",
+  "metadataDate": "2025-11-13T04:51:50.813Z",
+  "repository": "Metropolitan Museum of Art, New York, NY",
+  "objectURL": "https://www.metmuseum.org/art/collection/search/50799",
+  "tags": [
+    {
+      "term": "Lotuses",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300375570",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q3645698"
+    },
+    {
+      "term": "Buddhism",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300073738",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q748"
+    },
+    {
+      "term": "Deities",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300343850",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q178885"
+    }
+  ],
+  "objectWikidata_URL": "https://www.wikidata.org/wiki/Q83562570",
+  "isTimelineWork": true,
+  "GalleryNumber": "252"
+}

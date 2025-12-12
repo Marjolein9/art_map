@@ -1,0 +1,73 @@
+{
+  "objectID": 37558,
+  "isHighlight": true,
+  "accessionNumber": "1992.72.1",
+  "accessionYear": "1992",
+  "isPublicDomain": true,
+  "primaryImage": "https://images.metmuseum.org/CRDImages/as/original/DT5077.jpg",
+  "primaryImageSmall": "https://images.metmuseum.org/CRDImages/as/web-large/DT5077.jpg",
+  "additionalImages": [],
+  "constituents": null,
+  "department": "Asian Art",
+  "objectName": "Ewer",
+  "title": "Ewer in the Form of a Phoenix",
+  "culture": "Vietnam",
+  "period": "",
+  "dynasty": "",
+  "reign": "",
+  "portfolio": "",
+  "artistRole": "",
+  "artistPrefix": "",
+  "artistDisplayName": "",
+  "artistDisplayBio": "",
+  "artistSuffix": "",
+  "artistAlphaSort": "",
+  "artistNationality": "",
+  "artistBeginDate": "",
+  "artistEndDate": "",
+  "artistGender": "",
+  "artistWikidata_URL": "",
+  "artistULAN_URL": "",
+  "objectDate": "ca. 15th–16th century",
+  "objectBeginDate": 1400,
+  "objectEndDate": 1599,
+  "medium": "Stoneware with underglaze cobalt blue decoration",
+  "dimensions": "H. 11 1/2 in. (29.2 cm)",
+  "measurements": [
+    {
+      "elementName": "Overall",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Height": 29.2
+      }
+    }
+  ],
+  "creditLine": "Gift of Betty and John R. Menke, 1992",
+  "geographyType": "",
+  "city": "",
+  "state": "",
+  "county": "",
+  "country": "",
+  "region": "",
+  "subregion": "",
+  "locale": "",
+  "locus": "",
+  "excavation": "",
+  "river": "",
+  "classification": "Ceramics",
+  "rightsAndReproduction": "",
+  "linkResource": "",
+  "metadataDate": "2025-09-30T04:51:13.59Z",
+  "repository": "Metropolitan Museum of Art, New York, NY",
+  "objectURL": "https://www.metmuseum.org/art/collection/search/37558",
+  "tags": [
+    {
+      "term": "Phoenix",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300379749",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q48444"
+    }
+  ],
+  "objectWikidata_URL": "https://www.wikidata.org/wiki/Q83562036",
+  "isTimelineWork": true,
+  "GalleryNumber": "250"
+}

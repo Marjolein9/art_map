@@ -1,0 +1,81 @@
+{
+  "objectID": 321330,
+  "isHighlight": false,
+  "accessionNumber": "2013.165a, b",
+  "accessionYear": "2013",
+  "isPublicDomain": true,
+  "primaryImage": "https://images.metmuseum.org/CRDImages/ao/original/DP320234.jpg",
+  "primaryImageSmall": "https://images.metmuseum.org/CRDImages/ao/web-large/DP320234.jpg",
+  "additionalImages": [
+    "https://images.metmuseum.org/CRDImages/ao/original/DP320232.jpg",
+    "https://images.metmuseum.org/CRDImages/ao/original/DP320233.jpg"
+  ],
+  "constituents": [
+    {
+      "constituentID": 232637,
+      "role": "Artist",
+      "name": "Circle of \"Unobadula\"",
+      "constituentULAN_URL": "",
+      "constituentWikidata_URL": "",
+      "gender": ""
+    }
+  ],
+  "department": "The Michael C. Rockefeller Wing",
+  "objectName": "Vessel",
+  "title": "Lidded prestige vessel",
+  "culture": "",
+  "period": "",
+  "dynasty": "",
+  "reign": "",
+  "portfolio": "",
+  "artistRole": "Artist",
+  "artistPrefix": "Circle of",
+  "artistDisplayName": "\"Unobadula\"",
+  "artistDisplayBio": "active mid–late 19th century, KwaZulu-Natal, South Africa",
+  "artistSuffix": "",
+  "artistAlphaSort": "Unobadula",
+  "artistNationality": "",
+  "artistBeginDate": "1850",
+  "artistEndDate": "1900",
+  "artistGender": "",
+  "artistWikidata_URL": "",
+  "artistULAN_URL": "",
+  "objectDate": "Mid–late 19th century",
+  "objectBeginDate": 1840,
+  "objectEndDate": 1900,
+  "medium": "Wood",
+  "dimensions": "H. 24 13/16 × W. 17 × W. 17 in. (63 × 43.2 × 43.2 cm)",
+  "measurements": [
+    {
+      "elementName": "Overall",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Depth": 43.180088,
+        "Height": 63.023876,
+        "Width": 43.180088
+      }
+    }
+  ],
+  "creditLine": "Purchase, Anonymous, Richard, Ann, John, and James Solomon Families Foundation, Adam Lindemann and Amalia Dayan, and Herbert and Lenore Schorr Gifts, Rogers Fund, and funds from various donors, 2013",
+  "geographyType": "",
+  "city": "",
+  "state": "KwaZulu-Natal",
+  "county": "",
+  "country": "South Africa",
+  "region": "",
+  "subregion": "",
+  "locale": "",
+  "locus": "",
+  "excavation": "",
+  "river": "",
+  "classification": "Wood-Containers",
+  "rightsAndReproduction": "",
+  "linkResource": "",
+  "metadataDate": "2025-12-03T04:55:40.143Z",
+  "repository": "Metropolitan Museum of Art, New York, NY",
+  "objectURL": "https://www.metmuseum.org/art/collection/search/321330",
+  "tags": null,
+  "objectWikidata_URL": "",
+  "isTimelineWork": false,
+  "GalleryNumber": "344"
+}

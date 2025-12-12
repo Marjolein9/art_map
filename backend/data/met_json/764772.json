@@ -1,0 +1,79 @@
+{
+  "objectID": 764772,
+  "isHighlight": false,
+  "accessionNumber": "2017.68.23",
+  "accessionYear": "2017",
+  "isPublicDomain": true,
+  "primaryImage": "https://images.metmuseum.org/CRDImages/ph/original/DP-15801-045.jpg",
+  "primaryImageSmall": "https://images.metmuseum.org/CRDImages/ph/web-large/DP-15801-045.jpg",
+  "additionalImages": [
+    "https://images.metmuseum.org/CRDImages/ph/original/DP-15801-046.jpg"
+  ],
+  "constituents": [
+    {
+      "constituentID": 200714,
+      "role": "Artist",
+      "name": "Juan Pedro Chabalgoity",
+      "constituentULAN_URL": "",
+      "constituentWikidata_URL": "",
+      "gender": ""
+    }
+  ],
+  "department": "Photographs",
+  "objectName": "Carte-de-visite; Photocollage; Collage",
+  "title": "[Photo Collage: Man Drawing Bust]",
+  "culture": "",
+  "period": "",
+  "dynasty": "",
+  "reign": "",
+  "portfolio": "",
+  "artistRole": "Artist",
+  "artistPrefix": "",
+  "artistDisplayName": "Juan Pedro Chabalgoity",
+  "artistDisplayBio": "Uruguayan, 1848–1909",
+  "artistSuffix": "",
+  "artistAlphaSort": "Chabalgoity, Juan Pedro",
+  "artistNationality": "Uruguayan",
+  "artistBeginDate": "1848",
+  "artistEndDate": "1909",
+  "artistGender": "",
+  "artistWikidata_URL": "",
+  "artistULAN_URL": "",
+  "objectDate": "ca. 1875",
+  "objectBeginDate": 1870,
+  "objectEndDate": 1880,
+  "medium": "Albumen silver prints, lithographs",
+  "dimensions": "Mount: 10.5 x 6.3 cm",
+  "measurements": [
+    {
+      "elementName": "Overall",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Height": 10.16002,
+        "Width": 6.350013
+      }
+    }
+  ],
+  "creditLine": "Gift of Drew Knowlton and William L. Schaeffer, 2017",
+  "geographyType": "",
+  "city": "",
+  "state": "",
+  "county": "",
+  "country": "",
+  "region": "",
+  "subregion": "",
+  "locale": "",
+  "locus": "",
+  "excavation": "",
+  "river": "",
+  "classification": "Photographs",
+  "rightsAndReproduction": "",
+  "linkResource": "",
+  "metadataDate": "2025-03-06T04:54:30Z",
+  "repository": "Metropolitan Museum of Art, New York, NY",
+  "objectURL": "https://www.metmuseum.org/art/collection/search/764772",
+  "tags": null,
+  "objectWikidata_URL": "",
+  "isTimelineWork": false,
+  "GalleryNumber": ""
+}

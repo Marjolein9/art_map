@@ -1,0 +1,90 @@
+{
+  "objectID": 764797,
+  "isHighlight": false,
+  "accessionNumber": "2017.69.2",
+  "accessionYear": "2017",
+  "isPublicDomain": true,
+  "primaryImage": "https://images.metmuseum.org/CRDImages/ph/original/DP-15801-095.jpg",
+  "primaryImageSmall": "https://images.metmuseum.org/CRDImages/ph/web-large/DP-15801-095.jpg",
+  "additionalImages": [
+    "https://images.metmuseum.org/CRDImages/ph/original/DP-15801-096.jpg"
+  ],
+  "constituents": [
+    {
+      "constituentID": 200706,
+      "role": "Photography Studio",
+      "name": "G. R. Lambert &amp; Co.",
+      "constituentULAN_URL": "",
+      "constituentWikidata_URL": "",
+      "gender": ""
+    }
+  ],
+  "department": "Photographs",
+  "objectName": "Carte-de-visite",
+  "title": "[Studio Portrait: Woman Seated Beside a Table, Singapore]",
+  "culture": "",
+  "period": "",
+  "dynasty": "",
+  "reign": "",
+  "portfolio": "",
+  "artistRole": "Photography Studio",
+  "artistPrefix": "",
+  "artistDisplayName": "G. R. Lambert & Co.",
+  "artistDisplayBio": "German, active 1870s–80s",
+  "artistSuffix": "",
+  "artistAlphaSort": "G. R. Lambert & Co.",
+  "artistNationality": "German",
+  "artistBeginDate": "1870",
+  "artistEndDate": "1889",
+  "artistGender": "",
+  "artistWikidata_URL": "",
+  "artistULAN_URL": "",
+  "objectDate": "1870s",
+  "objectBeginDate": 1870,
+  "objectEndDate": 1879,
+  "medium": "Albumen silver print",
+  "dimensions": "Image: 9.4 x 5.9 cm\nMount: 10.6 x 6.2 cm",
+  "measurements": [
+    {
+      "elementName": "Overall",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Height": 10.16002,
+        "Width": 6.350013
+      }
+    }
+  ],
+  "creditLine": "The Horace W. Goldsmith Foundation Fund, through Joyce and Robert Menschel, 2017",
+  "geographyType": "",
+  "city": "",
+  "state": "",
+  "county": "",
+  "country": "",
+  "region": "",
+  "subregion": "",
+  "locale": "",
+  "locus": "",
+  "excavation": "",
+  "river": "",
+  "classification": "Photographs",
+  "rightsAndReproduction": "",
+  "linkResource": "",
+  "metadataDate": "2025-03-06T04:54:30Z",
+  "repository": "Metropolitan Museum of Art, New York, NY",
+  "objectURL": "https://www.metmuseum.org/art/collection/search/764797",
+  "tags": [
+    {
+      "term": "Portraits",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300015637",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q134307"
+    },
+    {
+      "term": "Women",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300025943",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q467"
+    }
+  ],
+  "objectWikidata_URL": "",
+  "isTimelineWork": false,
+  "GalleryNumber": ""
+}

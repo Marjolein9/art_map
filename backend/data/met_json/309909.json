@@ -1,0 +1,84 @@
+{
+  "objectID": 309909,
+  "isHighlight": false,
+  "accessionNumber": "1973.264",
+  "accessionYear": "1973",
+  "isPublicDomain": true,
+  "primaryImage": "https://images.metmuseum.org/CRDImages/ao/original/DP208351.jpg",
+  "primaryImageSmall": "https://images.metmuseum.org/CRDImages/ao/web-large/DP208351.jpg",
+  "additionalImages": [],
+  "constituents": [
+    {
+      "constituentID": 219149,
+      "role": "Artist",
+      "name": "Bongo artist",
+      "constituentULAN_URL": "",
+      "constituentWikidata_URL": "",
+      "gender": ""
+    }
+  ],
+  "department": "The Michael C. Rockefeller Wing",
+  "objectName": "Funerary post",
+  "title": "Ngya (commemorative post)",
+  "culture": "Bongo",
+  "period": "",
+  "dynasty": "",
+  "reign": "",
+  "portfolio": "",
+  "artistRole": "Artist",
+  "artistPrefix": "",
+  "artistDisplayName": "Bongo artist",
+  "artistDisplayBio": "",
+  "artistSuffix": "",
+  "artistAlphaSort": "Bongo artist",
+  "artistNationality": "",
+  "artistBeginDate": "",
+  "artistEndDate": "",
+  "artistGender": "",
+  "artistWikidata_URL": "",
+  "artistULAN_URL": "",
+  "objectDate": "late 19th century",
+  "objectBeginDate": 1850,
+  "objectEndDate": 1900,
+  "medium": "Mahogany",
+  "dimensions": "H. 75 1/2 × W. (approx.)  9 1/2 × D. 9 1/4 in. (191.8 × 24.1 × 23.5 cm)",
+  "measurements": [
+    {
+      "elementName": "Overall",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Depth": 23.495047,
+        "Height": 191.77039,
+        "Width": 24.130049
+      }
+    }
+  ],
+  "creditLine": "Purchase, Harris Brisbane Dick and Louis V. Bell Funds and Joseph Pulitzer Bequest, 1973",
+  "geographyType": "",
+  "city": "",
+  "state": "",
+  "county": "",
+  "country": "western South Sudan",
+  "region": "Tonj",
+  "subregion": "",
+  "locale": "",
+  "locus": "",
+  "excavation": "",
+  "river": "",
+  "classification": "Wood-Sculpture",
+  "rightsAndReproduction": "",
+  "linkResource": "",
+  "metadataDate": "2025-06-21T04:50:46.59Z",
+  "repository": "Metropolitan Museum of Art, New York, NY",
+  "objectURL": "https://www.metmuseum.org/art/collection/search/309909",
+  "tags": [
+    {
+      "term": "Male Nudes",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300189568",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q40446"
+    }
+  ],
+  "objectWikidata_URL": "https://www.wikidata.org/wiki/Q116406827",
+  "isTimelineWork": true,
+  "GalleryNumber": "344"
+}

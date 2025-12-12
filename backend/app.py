@@ -237,15 +237,26 @@ def get_images(alpha3):
     ''', (alpha3,))
     public_domain = [dict(row) for row in cursor.fetchall()]
 
+    # Query Met Museum images
+    cursor.execute('''
+        SELECT 'Met Museum' as collection_type,
+               filepath, title, artist_name, object_date,
+               medium, department, culture, object_url
+        FROM met_images
+        WHERE alpha3 = ?
+    ''', (alpha3,))
+    met_museum = [dict(row) for row in cursor.fetchall()]
+
     conn.close()
 
     return jsonify({
         'images': {
             'Albert Kahn': albert_kahn,
             'Children in Art': children_art,
-            'Public Domain Review': public_domain
+            'Public Domain Review': public_domain,
+            'Met Museum': met_museum
         },
-        'total_count': len(albert_kahn) + len(children_art) + len(public_domain),
+        'total_count': len(albert_kahn) + len(children_art) + len(public_domain) + len(met_museum),
         'alpha3': alpha3
     })
 

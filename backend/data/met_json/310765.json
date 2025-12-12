@@ -1,0 +1,96 @@
+{
+  "objectID": 310765,
+  "isHighlight": true,
+  "accessionNumber": "1978.412.322",
+  "accessionYear": "1978",
+  "isPublicDomain": true,
+  "primaryImage": "https://images.metmuseum.org/CRDImages/ao/original/DP302219.jpg",
+  "primaryImageSmall": "https://images.metmuseum.org/CRDImages/ao/web-large/DP302219.jpg",
+  "additionalImages": [
+    "https://images.metmuseum.org/CRDImages/ao/original/DP306907.jpg",
+    "https://images.metmuseum.org/CRDImages/ao/original/DP302220.jpg",
+    "https://images.metmuseum.org/CRDImages/ao/original/DP302222.jpg",
+    "https://images.metmuseum.org/CRDImages/ao/original/DP302221.jpg"
+  ],
+  "constituents": [
+    {
+      "constituentID": 230883,
+      "role": "Artist",
+      "name": "Dogon blacksmith",
+      "constituentULAN_URL": "",
+      "constituentWikidata_URL": "",
+      "gender": ""
+    }
+  ],
+  "department": "The Michael C. Rockefeller Wing",
+  "objectName": "Figure",
+  "title": "Priest with raised arms",
+  "culture": "Dogon",
+  "period": "",
+  "dynasty": "",
+  "reign": "",
+  "portfolio": "",
+  "artistRole": "Artist",
+  "artistPrefix": "",
+  "artistDisplayName": "Dogon blacksmith",
+  "artistDisplayBio": "",
+  "artistSuffix": "",
+  "artistAlphaSort": "Dogon blacksmith",
+  "artistNationality": "",
+  "artistBeginDate": "",
+  "artistEndDate": "",
+  "artistGender": "",
+  "artistWikidata_URL": "",
+  "artistULAN_URL": "",
+  "objectDate": "14th–17th century",
+  "objectBeginDate": 1300,
+  "objectEndDate": 1699,
+  "medium": "Wood, applied organic materials",
+  "dimensions": "H. 82 7/8 x W. 14 1/4 x D. 8 3/8 in. (210.5 x 36.2 x 21.3 cm)",
+  "measurements": [
+    {
+      "elementName": "Other",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Depth": 21.31
+      }
+    },
+    {
+      "elementName": "Overall",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Depth": 21.31,
+        "Height": 210.5025,
+        "Width": 36.2
+      }
+    }
+  ],
+  "creditLine": "The Michael C. Rockefeller Memorial Collection, Gift of Nelson A. Rockefeller, 1969",
+  "geographyType": "",
+  "city": "Tintam village(?)",
+  "state": "",
+  "county": "",
+  "country": "Mali",
+  "region": "Bandiagara Escarpment",
+  "subregion": "",
+  "locale": "",
+  "locus": "",
+  "excavation": "",
+  "river": "",
+  "classification": "Wood-Sculpture",
+  "rightsAndReproduction": "",
+  "linkResource": "",
+  "metadataDate": "2025-09-03T04:50:00.593Z",
+  "repository": "Metropolitan Museum of Art, New York, NY",
+  "objectURL": "https://www.metmuseum.org/art/collection/search/310765",
+  "tags": [
+    {
+      "term": "Male Nudes",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300189568",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q40446"
+    }
+  ],
+  "objectWikidata_URL": "https://www.wikidata.org/wiki/Q29384270",
+  "isTimelineWork": true,
+  "GalleryNumber": "341"
+}

@@ -1,0 +1,82 @@
+{
+  "objectID": 502064,
+  "isHighlight": true,
+  "accessionNumber": "89.4.1489",
+  "accessionYear": "1889",
+  "isPublicDomain": true,
+  "primaryImage": "https://images.metmuseum.org/CRDImages/mi/original/DP302560.jpg",
+  "primaryImageSmall": "https://images.metmuseum.org/CRDImages/mi/web-large/DP302560.jpg",
+  "additionalImages": [
+    "https://images.metmuseum.org/CRDImages/mi/original/meas89.4.1489.jpg",
+    "https://images.metmuseum.org/CRDImages/mi/original/DP218834.jpg",
+    "https://images.metmuseum.org/CRDImages/mi/original/89.4.1191 .jpg"
+  ],
+  "constituents": null,
+  "department": "Musical Instruments",
+  "objectName": "Sesando",
+  "title": "Sesando",
+  "culture": "Javanese (Timorese)",
+  "period": "",
+  "dynasty": "",
+  "reign": "",
+  "portfolio": "",
+  "artistRole": "",
+  "artistPrefix": "",
+  "artistDisplayName": "",
+  "artistDisplayBio": "",
+  "artistSuffix": "",
+  "artistAlphaSort": "",
+  "artistNationality": "",
+  "artistBeginDate": "",
+  "artistEndDate": "",
+  "artistGender": "",
+  "artistWikidata_URL": "",
+  "artistULAN_URL": "",
+  "objectDate": "late 19th century",
+  "objectBeginDate": 1890,
+  "objectEndDate": 1900,
+  "medium": "Bamboo, teak wood, palm (Borassus flabellifera), wire",
+  "dimensions": "H. 22 1/16 × W. 24 × D. 12 3/16 in. (56 × 61 × 31 cm)",
+  "measurements": [
+    {
+      "elementName": "Overall",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Depth": 31,
+        "Height": 56,
+        "Width": 61
+      }
+    },
+    {
+      "elementName": "Overall",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Depth": 31,
+        "Height": 56,
+        "Width": 61
+      }
+    }
+  ],
+  "creditLine": "The Crosby Brown Collection of Musical Instruments, 1889",
+  "geographyType": "",
+  "city": "Nusa Tenggara",
+  "state": "Timor Island",
+  "county": "",
+  "country": "Indonesia",
+  "region": "",
+  "subregion": "",
+  "locale": "",
+  "locus": "",
+  "excavation": "",
+  "river": "",
+  "classification": "Chordophone-Zither-plucked-tube",
+  "rightsAndReproduction": "",
+  "linkResource": "",
+  "metadataDate": "2025-01-31T04:54:36.6Z",
+  "repository": "Metropolitan Museum of Art, New York, NY",
+  "objectURL": "https://www.metmuseum.org/art/collection/search/502064",
+  "tags": null,
+  "objectWikidata_URL": "https://www.wikidata.org/wiki/Q81909825",
+  "isTimelineWork": true,
+  "GalleryNumber": "681"
+}

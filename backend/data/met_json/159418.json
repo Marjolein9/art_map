@@ -1,0 +1,90 @@
+{
+  "objectID": 159418,
+  "isHighlight": false,
+  "accessionNumber": "2009.300.843a–d",
+  "accessionYear": "2009",
+  "isPublicDomain": true,
+  "primaryImage": "https://images.metmuseum.org/CRDImages/es/original/60.87.7a-d_front_CP4.jpg",
+  "primaryImageSmall": "https://images.metmuseum.org/CRDImages/es/web-large/60.87.7a-d_front_CP4.jpg",
+  "additionalImages": [
+    "https://images.metmuseum.org/CRDImages/es/original/60.87.7a-d_back_CP4.jpg"
+  ],
+  "constituents": null,
+  "department": "European Sculpture and Decorative Arts",
+  "objectName": "Ensemble",
+  "title": "Ensemble",
+  "culture": "",
+  "period": "",
+  "dynasty": "",
+  "reign": "",
+  "portfolio": "",
+  "artistRole": "",
+  "artistPrefix": "",
+  "artistDisplayName": "",
+  "artistDisplayBio": "",
+  "artistSuffix": "",
+  "artistAlphaSort": "",
+  "artistNationality": "",
+  "artistBeginDate": "",
+  "artistEndDate": "",
+  "artistGender": "",
+  "artistWikidata_URL": "",
+  "artistULAN_URL": "",
+  "objectDate": "1840–80",
+  "objectBeginDate": 1840,
+  "objectEndDate": 1880,
+  "medium": "wool, cotton, silk",
+  "dimensions": "Length at CB (a): 32 in. (81.3 cm)\r\nLength at CB (b): 25 in. (63.5 cm)\r\nLength at CB (c): 12 in. (30.5 cm)\r\nLength at CB (d): 22 in. (55.9 cm)",
+  "measurements": [
+    {
+      "elementName": "Length at CB",
+      "elementDescription": "a",
+      "elementMeasurements": {
+        "Length": 81.28016
+      }
+    },
+    {
+      "elementName": "Length at CB",
+      "elementDescription": "d",
+      "elementMeasurements": {
+        "Length": 55.88011
+      }
+    },
+    {
+      "elementName": "Length at CB",
+      "elementDescription": "c",
+      "elementMeasurements": {
+        "Length": 30.48006
+      }
+    },
+    {
+      "elementName": "Length at CB",
+      "elementDescription": "b",
+      "elementMeasurements": {
+        "Length": 63.500126
+      }
+    }
+  ],
+  "creditLine": "Brooklyn Museum Costume Collection at The Metropolitan Museum of Art, Gift of the Brooklyn Museum, 2009; Gift of the International Business Machine Corporation, 1960",
+  "geographyType": "",
+  "city": "",
+  "state": "",
+  "county": "",
+  "country": "",
+  "region": "",
+  "subregion": "",
+  "locale": "",
+  "locus": "",
+  "excavation": "",
+  "river": "",
+  "classification": "Main dress-Womenswear",
+  "rightsAndReproduction": "",
+  "linkResource": "",
+  "metadataDate": "2025-01-31T04:54:36.6Z",
+  "repository": "Metropolitan Museum of Art, New York, NY",
+  "objectURL": "https://www.metmuseum.org/art/collection/search/159418",
+  "tags": null,
+  "objectWikidata_URL": "https://www.wikidata.org/wiki/Q100380698",
+  "isTimelineWork": false,
+  "GalleryNumber": ""
+}

@@ -1,0 +1,80 @@
+{
+  "objectID": 503200,
+  "isHighlight": true,
+  "accessionNumber": "1982.32",
+  "accessionYear": "1982",
+  "isPublicDomain": true,
+  "primaryImage": "https://images.metmuseum.org/CRDImages/mi/original/DP302721.jpg",
+  "primaryImageSmall": "https://images.metmuseum.org/CRDImages/mi/web-large/DP302721.jpg",
+  "additionalImages": [
+    "https://images.metmuseum.org/CRDImages/mi/original/227579.jpg",
+    "https://images.metmuseum.org/CRDImages/mi/original/227580.jpg",
+    "https://images.metmuseum.org/CRDImages/mi/original/227581.jpg",
+    "https://images.metmuseum.org/CRDImages/mi/original/DP218833.jpg"
+  ],
+  "constituents": null,
+  "department": "Musical Instruments",
+  "objectName": "Dadabuan",
+  "title": "Dadabuan",
+  "culture": "Philippine (Mindanao)",
+  "period": "",
+  "dynasty": "",
+  "reign": "",
+  "portfolio": "",
+  "artistRole": "",
+  "artistPrefix": "",
+  "artistDisplayName": "",
+  "artistDisplayBio": "",
+  "artistSuffix": "",
+  "artistAlphaSort": "",
+  "artistNationality": "",
+  "artistBeginDate": "",
+  "artistEndDate": "",
+  "artistGender": "",
+  "artistWikidata_URL": "",
+  "artistULAN_URL": "",
+  "objectDate": "19th century",
+  "objectBeginDate": 1801,
+  "objectEndDate": 1900,
+  "medium": "Wood, mother-of-pearl, skin",
+  "dimensions": "Height: 32 3/8 in. (82.2 cm)\r\nDiameter (Maximum): 24 7/16 in. (62 cm)\r\nDiameter (Drum head): 21 3/4 in. (55.3 cm)",
+  "measurements": [
+    {
+      "elementName": "Diameter",
+      "elementDescription": "Drum head",
+      "elementMeasurements": {
+        "Diameter": 55.3
+      }
+    },
+    {
+      "elementName": "Overall",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Diameter": 62,
+        "Height": 82.2
+      }
+    }
+  ],
+  "creditLine": "Rogers Fund, 1982",
+  "geographyType": "",
+  "city": "Mindanao",
+  "state": "",
+  "county": "",
+  "country": "Philippines",
+  "region": "",
+  "subregion": "",
+  "locale": "",
+  "locus": "",
+  "excavation": "",
+  "river": "",
+  "classification": "Membranophone-single-headed / goblet drum",
+  "rightsAndReproduction": "",
+  "linkResource": "",
+  "metadataDate": "2025-09-13T04:52:11.177Z",
+  "repository": "Metropolitan Museum of Art, New York, NY",
+  "objectURL": "https://www.metmuseum.org/art/collection/search/503200",
+  "tags": null,
+  "objectWikidata_URL": "https://www.wikidata.org/wiki/Q104413042",
+  "isTimelineWork": false,
+  "GalleryNumber": ""
+}

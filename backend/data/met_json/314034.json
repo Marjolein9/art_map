@@ -1,0 +1,95 @@
+{
+  "objectID": 314034,
+  "isHighlight": true,
+  "accessionNumber": "1979.290",
+  "accessionYear": "1979",
+  "isPublicDomain": true,
+  "primaryImage": "https://images.metmuseum.org/CRDImages/ao/original/DT1244.jpg",
+  "primaryImageSmall": "https://images.metmuseum.org/CRDImages/ao/web-large/DT1244.jpg",
+  "additionalImages": [
+    "https://images.metmuseum.org/CRDImages/ao/original/DP-40027-001.jpg",
+    "https://images.metmuseum.org/CRDImages/ao/original/DP-40027-004.jpg",
+    "https://images.metmuseum.org/CRDImages/ao/original/DP-40027-003.jpg",
+    "https://images.metmuseum.org/CRDImages/ao/original/DP-40027-002.jpg",
+    "https://images.metmuseum.org/CRDImages/ao/original/DT1272.jpg"
+  ],
+  "constituents": [
+    {
+      "constituentID": 63458,
+      "role": "Artist",
+      "name": "Ngongo ya Chintu, formerly known as the \"Buli Master\"",
+      "constituentULAN_URL": "",
+      "constituentWikidata_URL": "",
+      "gender": ""
+    }
+  ],
+  "department": "The Michael C. Rockefeller Wing",
+  "objectName": "Stool",
+  "title": "Lupona (royal seat)",
+  "culture": "Luba or Hemba peoples",
+  "period": "",
+  "dynasty": "",
+  "reign": "",
+  "portfolio": "",
+  "artistRole": "Artist",
+  "artistPrefix": "",
+  "artistDisplayName": "Ngongo ya Chintu, formerly known as the \"Buli Master\"",
+  "artistDisplayBio": "ca. 1810-1870, Kateba region, Democratic Republic of the Congo",
+  "artistSuffix": "",
+  "artistAlphaSort": "Ngongo ya Chintu",
+  "artistNationality": "Democratic Republic of Congo",
+  "artistBeginDate": "",
+  "artistEndDate": "",
+  "artistGender": "",
+  "artistWikidata_URL": "",
+  "artistULAN_URL": "",
+  "objectDate": "ca. 1840–1870",
+  "objectBeginDate": 1835,
+  "objectEndDate": 1875,
+  "medium": "Wood, metal studs",
+  "dimensions": "H. 24 × W. 11 × D. 11 in. (61 × 27.9 × 27.9 cm)",
+  "measurements": [
+    {
+      "elementName": "Overall",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Depth": 27.940056,
+        "Height": 60.96012,
+        "Width": 27.940056
+      }
+    }
+  ],
+  "creditLine": "Purchase, Buckeye Trust and Charles B. Benenson Gifts, Rogers Fund and funds from various donors, 1979",
+  "geographyType": "",
+  "city": "Kateba village region",
+  "state": "",
+  "county": "",
+  "country": "Democratic Republic of the Congo",
+  "region": "",
+  "subregion": "",
+  "locale": "",
+  "locus": "",
+  "excavation": "",
+  "river": "",
+  "classification": "Wood-Furniture",
+  "rightsAndReproduction": "",
+  "linkResource": "",
+  "metadataDate": "2025-12-03T04:55:40.143Z",
+  "repository": "Metropolitan Museum of Art, New York, NY",
+  "objectURL": "https://www.metmuseum.org/art/collection/search/314034",
+  "tags": [
+    {
+      "term": "Caryatids",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300001583",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q208120"
+    },
+    {
+      "term": "Women",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300025943",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q467"
+    }
+  ],
+  "objectWikidata_URL": "https://www.wikidata.org/wiki/Q81385532",
+  "isTimelineWork": true,
+  "GalleryNumber": "344"
+}

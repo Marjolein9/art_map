@@ -1,0 +1,89 @@
+{
+  "objectID": 56277,
+  "isHighlight": false,
+  "accessionNumber": "2001.407",
+  "accessionYear": "2001",
+  "isPublicDomain": true,
+  "primaryImage": "https://images.metmuseum.org/CRDImages/as/original/DT5002.jpg",
+  "primaryImageSmall": "https://images.metmuseum.org/CRDImages/as/web-large/DT5002.jpg",
+  "additionalImages": [],
+  "constituents": null,
+  "department": "Asian Art",
+  "objectName": "Figure",
+  "title": "Posthumous Portrait of a Queen as Parvati",
+  "culture": "Indonesia (Java)",
+  "period": "Eastern Javanese period",
+  "dynasty": "",
+  "reign": "",
+  "portfolio": "",
+  "artistRole": "",
+  "artistPrefix": "",
+  "artistDisplayName": "",
+  "artistDisplayBio": "",
+  "artistSuffix": "",
+  "artistAlphaSort": "",
+  "artistNationality": "",
+  "artistBeginDate": "",
+  "artistEndDate": "",
+  "artistGender": "",
+  "artistWikidata_URL": "",
+  "artistULAN_URL": "",
+  "objectDate": "14th century",
+  "objectBeginDate": 1300,
+  "objectEndDate": 1399,
+  "medium": "Andesite",
+  "dimensions": "H. 80 in. (203.2 cm); W. 3 ft. 3 in. (99.1 cm)",
+  "measurements": [
+    {
+      "elementName": "Overall",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Height": 203.2,
+        "Width": 99.1
+      }
+    }
+  ],
+  "creditLine": "Purchase, 2000 Benefit Fund, 2001",
+  "geographyType": "",
+  "city": "",
+  "state": "",
+  "county": "",
+  "country": "",
+  "region": "",
+  "subregion": "",
+  "locale": "",
+  "locus": "",
+  "excavation": "",
+  "river": "",
+  "classification": "Sculpture",
+  "rightsAndReproduction": "",
+  "linkResource": "",
+  "metadataDate": "2025-09-30T04:51:13.59Z",
+  "repository": "Metropolitan Museum of Art, New York, NY",
+  "objectURL": "https://www.metmuseum.org/art/collection/search/56277",
+  "tags": [
+    {
+      "term": "Bulls",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300250117",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q693690"
+    },
+    {
+      "term": "Ganesha",
+      "AAT_URL": "http://vocab.getty.edu/page/ia/901000387",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q1579"
+    },
+    {
+      "term": "Parvati",
+      "AAT_URL": "http://vocab.getty.edu/page/ia/901001899",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q170485"
+    },
+    {
+      "term": "Hinduism",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300073727",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q9089"
+    }
+  ],
+  "objectWikidata_URL": "https://www.wikidata.org/wiki/Q83562617",
+  "isTimelineWork": true,
+  "GalleryNumber": "247"
+}

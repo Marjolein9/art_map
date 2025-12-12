@@ -1,0 +1,106 @@
+{
+  "objectID": 314704,
+  "isHighlight": true,
+  "accessionNumber": "1983.600a, b",
+  "accessionYear": "1983",
+  "isPublicDomain": true,
+  "primaryImage": "https://images.metmuseum.org/CRDImages/ao/original/DT1219.jpg",
+  "primaryImageSmall": "https://images.metmuseum.org/CRDImages/ao/web-large/DT1219.jpg",
+  "additionalImages": [
+    "https://images.metmuseum.org/CRDImages/ao/original/DT7618.jpg"
+  ],
+  "constituents": [
+    {
+      "constituentID": 231466,
+      "role": "Artist",
+      "name": "Bamana numu (blacksmith)",
+      "constituentULAN_URL": "",
+      "constituentWikidata_URL": "",
+      "gender": ""
+    }
+  ],
+  "department": "The Michael C. Rockefeller Wing",
+  "objectName": "Male figure",
+  "title": "Gwantigi",
+  "culture": "Bamana peoples",
+  "period": "",
+  "dynasty": "",
+  "reign": "",
+  "portfolio": "",
+  "artistRole": "Artist",
+  "artistPrefix": "",
+  "artistDisplayName": "Bamana numu (blacksmith)",
+  "artistDisplayBio": "",
+  "artistSuffix": "",
+  "artistAlphaSort": "Bamana numu (blacksmith)",
+  "artistNationality": "",
+  "artistBeginDate": "",
+  "artistEndDate": "",
+  "artistGender": "",
+  "artistWikidata_URL": "",
+  "artistULAN_URL": "",
+  "objectDate": "15th–17th century",
+  "objectBeginDate": 1500,
+  "objectEndDate": 1699,
+  "medium": "Wood",
+  "dimensions": "H. 35 1/2 in. × W. 9 in. × D. 13 1/2 in. (90.2 × 22.9 × 34.3 cm)\r\nOther ((F)): 9 in. × 10 3/8 in. (22.9 × 26.4 cm)\r\nOther ((Lance)): 44 in. (111.8 cm)",
+  "measurements": [
+    {
+      "elementName": "Other",
+      "elementDescription": "(F)",
+      "elementMeasurements": {
+        "Depth": 26.37,
+        "Width": 22.86
+      }
+    },
+    {
+      "elementName": "Overall",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Depth": 34.29007,
+        "Height": 90.17018,
+        "Width": 22.86
+      }
+    },
+    {
+      "elementName": "Other",
+      "elementDescription": "(Lance)",
+      "elementMeasurements": {
+        "Length": 111.76
+      }
+    }
+  ],
+  "creditLine": "Gift of John and Evelyn Kossak, The Kronos Collections, in honor of Martin Lerner, 1983",
+  "geographyType": "",
+  "city": "Bougouni region",
+  "state": "",
+  "county": "",
+  "country": "Mali",
+  "region": "",
+  "subregion": "",
+  "locale": "",
+  "locus": "",
+  "excavation": "",
+  "river": "",
+  "classification": "Wood-Sculpture",
+  "rightsAndReproduction": "",
+  "linkResource": "",
+  "metadataDate": "2025-09-16T04:53:38.513Z",
+  "repository": "Metropolitan Museum of Art, New York, NY",
+  "objectURL": "https://www.metmuseum.org/art/collection/search/314704",
+  "tags": [
+    {
+      "term": "Spears",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300037038",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q44475"
+    },
+    {
+      "term": "Men",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300025928",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q8441"
+    }
+  ],
+  "objectWikidata_URL": "https://www.wikidata.org/wiki/Q104413022",
+  "isTimelineWork": true,
+  "GalleryNumber": "341"
+}

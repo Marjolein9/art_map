@@ -57,6 +57,7 @@ BORDERS_CSV_PATH = os.path.join(BASE_DIR, 'data', 'GEODATASOURCE-COUNTRY-BORDERS
 ALBERT_KAHN_CSV_PATH = os.path.join(BASE_DIR, 'data', 'albert_kahn_metadata.csv')
 CHILDREN_ARTWORK_CSV_PATH = os.path.join(BASE_DIR, 'data', 'artwork_final.csv')
 PUBLIC_DOMAIN_CSV_PATH = os.path.join(BASE_DIR, 'data', 'public_review_images.csv')
+MET_METADATA_CSV_PATH = os.path.join(BASE_DIR, 'data', 'met_metadata.csv')
 
 # =============================================================================
 # SERVER CONFIGURATION

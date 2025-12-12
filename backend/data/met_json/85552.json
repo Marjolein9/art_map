@@ -1,0 +1,84 @@
+{
+  "objectID": 85552,
+  "isHighlight": false,
+  "accessionNumber": "C.I.51.100",
+  "accessionYear": "1951",
+  "isPublicDomain": true,
+  "primaryImage": "https://images.metmuseum.org/CRDImages/is/original/CI51.100_F.jpg",
+  "primaryImageSmall": "https://images.metmuseum.org/CRDImages/is/web-large/CI51.100_F.jpg",
+  "additionalImages": [
+    "https://images.metmuseum.org/CRDImages/is/original/CI51.100_B.jpg",
+    "https://images.metmuseum.org/CRDImages/is/original/CI51.100_d.jpg"
+  ],
+  "constituents": null,
+  "department": "Islamic Art",
+  "objectName": "Kaftan",
+  "title": "Kaftan",
+  "culture": "",
+  "period": "",
+  "dynasty": "",
+  "reign": "",
+  "portfolio": "",
+  "artistRole": "",
+  "artistPrefix": "",
+  "artistDisplayName": "",
+  "artistDisplayBio": "",
+  "artistSuffix": "",
+  "artistAlphaSort": "",
+  "artistNationality": "",
+  "artistBeginDate": "",
+  "artistEndDate": "",
+  "artistGender": "",
+  "artistWikidata_URL": "",
+  "artistULAN_URL": "",
+  "objectDate": "19th century",
+  "objectBeginDate": 1800,
+  "objectEndDate": 1899,
+  "medium": "Silk, metal wrapped thread; embroidered",
+  "dimensions": "Length at CB: 60 in. (152.4 cm)",
+  "measurements": [
+    {
+      "elementName": "Width",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Width": 274.3205
+      }
+    },
+    {
+      "elementName": "Length at CF",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Length": 144.7803
+      }
+    },
+    {
+      "elementName": "Length at CB",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Length": 152.4003
+      }
+    }
+  ],
+  "creditLine": "Purchase, Irene Lewisohn Bequest, 1951",
+  "geographyType": "Made in",
+  "city": "Bukhara",
+  "state": "",
+  "county": "",
+  "country": "present-day Uzbekistan",
+  "region": "",
+  "subregion": "",
+  "locale": "",
+  "locus": "",
+  "excavation": "",
+  "river": "",
+  "classification": "Main dress",
+  "rightsAndReproduction": "",
+  "linkResource": "",
+  "metadataDate": "2025-03-06T04:54:30Z",
+  "repository": "Metropolitan Museum of Art, New York, NY",
+  "objectURL": "https://www.metmuseum.org/art/collection/search/85552",
+  "tags": null,
+  "objectWikidata_URL": "",
+  "isTimelineWork": false,
+  "GalleryNumber": ""
+}

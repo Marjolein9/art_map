@@ -172,6 +172,23 @@ const ArtworkInfoBar = ({ countryISO, countryName, colors, mode, answerSubmitted
             ) : null}
           </>
         );
+      case 'Met Museum':
+        return (
+          <>
+            {image.title && image.object_url ? (
+              <div className="artwork-title">
+                <a href={image.object_url} target="_blank" rel="noopener noreferrer">
+                  {image.title}
+                </a>
+              </div>
+            ) : image.title ? (
+              <div className="artwork-title">{image.title}</div>
+            ) : null}
+            {image.artist_name && <div className="artwork-artist">by {image.artist_name}</div>}
+            {image.object_date && <div className="artwork-date">{image.object_date}</div>}
+            {image.medium && <div className="artwork-location">{image.medium}</div>}
+          </>
+        );
       default:
         return <div className="artwork-title">{image.title || 'Untitled'}</div>;
     }
@@ -200,6 +217,17 @@ const ArtworkInfoBar = ({ countryISO, countryName, colors, mode, answerSubmitted
             className="collection-subtitle"
           >
             Public Domain Review
+          </a>
+        );
+      case 'Met Museum':
+        return (
+          <a
+            href="https://www.metmuseum.org/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="collection-subtitle"
+          >
+            Metropolitan Museum of Art
           </a>
         );
       default:
