@@ -11,8 +11,10 @@ import json
 import os
 import requests
 import time
+import shutil
 from urllib.parse import urlparse, unquote
 from pathlib import Path
+from PIL import Image
 from config import (
     DATABASE_PATH,
     M49_JSON_PATH,
@@ -69,6 +71,171 @@ SUBREGION_NAMES = {
     61: "Oceania",  # Polynesia
 }
 
+# Image processing configuration
+MAX_IMAGE_SIZE_MB = 1
+MAX_DIMENSION = 1200
+JPEG_QUALITY = 85
+
+def get_file_size_mb(filepath):
+    """Get file size in megabytes."""
+    return os.path.getsize(filepath) / (1024 * 1024)
+
+def check_image_exists(filepath):
+    """
+    Check if an image file exists, also checking for .jpg version if path ends in .webp
+
+    Args:
+        filepath: Relative or absolute path to check
+
+    Returns:
+        Tuple of (exists, actual_path) where actual_path may differ from input if webp->jpg conversion happened
+    """
+    if os.path.exists(filepath):
+        return True, filepath
+
+    # If path ends in .webp, also check for .jpg version
+    if filepath.lower().endswith('.webp'):
+        jpg_path = filepath[:-5] + '.jpg'  # Replace .webp with .jpg
+        if os.path.exists(jpg_path):
+            return True, jpg_path
+
+    return False, filepath
+
+def process_image(filepath):
+    """
+    Process an image file:
+    - Convert webp to jpeg (deletes original webp)
+    - Resize if > 1MB
+    - Convert RGBA to RGB
+
+    Args:
+        filepath: Full path to image file
+
+    Returns:
+        New filepath (jpg) if format changed, or original filepath
+    """
+    try:
+        original_filepath = filepath
+        original_size = get_file_size_mb(filepath)
+
+        # Open image
+        img = Image.open(filepath)
+        needs_save = False
+        format_changed = False
+
+        # Convert webp to jpeg
+        if filepath.lower().endswith('.webp'):
+            print(f"  🔄 Converting webp to jpeg: {os.path.basename(filepath)}")
+            new_filepath = filepath[:-5] + '.jpg'  # Remove .webp, add .jpg
+            filepath = new_filepath
+            format_changed = True
+            needs_save = True
+
+        # Check if needs resizing
+        width, height = img.size
+        if original_size > MAX_IMAGE_SIZE_MB or width > MAX_DIMENSION or height > MAX_DIMENSION:
+            print(f"  ↕️ Resizing image: {original_size:.2f}MB / {width}x{height}px")
+
+            # Calculate new dimensions
+            if width > height:
+                if width > MAX_DIMENSION:
+                    new_width = MAX_DIMENSION
+                    new_height = int((MAX_DIMENSION / width) * height)
+                else:
+                    new_width, new_height = width, height
+            else:
+                if height > MAX_DIMENSION:
+                    new_height = MAX_DIMENSION
+                    new_width = int((MAX_DIMENSION / height) * width)
+                else:
+                    new_width, new_height = width, height
+
+            if new_width != width or new_height != height:
+                img = img.resize((new_width, new_height), Image.Resampling.LANCZOS)
+                needs_save = True
+
+        # Convert RGBA to RGB if saving as JPEG
+        if img.mode == 'RGBA':
+            background = Image.new('RGB', img.size, (255, 255, 255))
+            background.paste(img, mask=img.split()[3])
+            img = background
+            needs_save = True
+        elif img.mode != 'RGB':
+            img = img.convert('RGB')
+            needs_save = True
+
+        # Save if any changes were made
+        if needs_save:
+            img.save(filepath, 'JPEG', quality=JPEG_QUALITY, optimize=True)
+            new_size = get_file_size_mb(filepath)
+            print(f"  ✅ Processed: {new_size:.2f}MB")
+
+            # Delete original webp file after conversion
+            if format_changed and os.path.exists(original_filepath):
+                os.remove(original_filepath)
+                print(f"  🗑️  Deleted webp file: {os.path.basename(original_filepath)}")
+
+        return filepath
+
+    except Exception as e:
+        print(f"  ❌ Error processing image {filepath}: {e}")
+        return filepath  # Return original path on error
+
+def copy_local_image(local_path, iso3, collection_type):
+    """
+    Copy a local image file to the correct folder structure.
+
+    Args:
+        local_path: Local file path (e.g., /Users/.../image.jpg)
+        iso3: Country ISO3 code
+        collection_type: Collection type ('albert_kahn', 'children_artwork', or 'public_domain')
+
+    Returns:
+        Relative filepath (e.g., 'images/USA/children_artwork/image.jpg') or None if copy fails
+    """
+    if not local_path or not os.path.exists(local_path):
+        print(f"  ⚠️  Local file does not exist: {local_path}")
+        return None
+
+    try:
+        # Get filename from path
+        filename = os.path.basename(local_path)
+
+        # If no filename could be determined, skip
+        if not filename or filename == '':
+            print(f"  ⚠️  Could not determine filename from path: {local_path}")
+            return None
+
+        # Create directory structure: images/{ISO3}/{collection_type}/
+        base_dir = os.path.dirname(os.path.abspath(__file__))
+        image_dir = os.path.join(base_dir, 'images', iso3, collection_type)
+        os.makedirs(image_dir, exist_ok=True)
+
+        # Full path for saving
+        filepath_full = os.path.join(image_dir, filename)
+
+        # Check if file already exists at destination
+        if not os.path.exists(filepath_full):
+            # Copy the file
+            print(f"  📋 Copying local file: {filename}")
+            shutil.copy2(local_path, filepath_full)
+            print(f"  ✅ Copied: {filename}")
+        else:
+            print(f"  ✅ File already exists: {filename}")
+
+        # Process image (convert webp, resize if needed)
+        processed_filepath = process_image(filepath_full)
+
+        # Get final filename (may have changed from .webp to .jpg)
+        final_filename = os.path.basename(processed_filepath)
+
+        # Return relative path
+        return f"images/{iso3}/{collection_type}/{final_filename}"
+
+    except Exception as e:
+        print(f"  ❌ Error copying {local_path}: {e}")
+        return None
+
 def download_image(url, iso3, collection_type, suggested_filename=None):
     """
     Download an image from URL and save it to the correct folder structure.
@@ -87,7 +254,8 @@ def download_image(url, iso3, collection_type, suggested_filename=None):
 
     try:
         # Get filename from URL or use suggested filename
-        if suggested_filename:
+        # Check if suggested_filename is actually a URL (not a filename)
+        if suggested_filename and not suggested_filename.startswith('http'):
             filename = suggested_filename
         else:
             parsed_url = urlparse(url)
@@ -107,28 +275,33 @@ def download_image(url, iso3, collection_type, suggested_filename=None):
         filepath_full = os.path.join(image_dir, filename)
 
         # Check if file already exists
-        if os.path.exists(filepath_full):
-            # Return relative path
-            return f"images/{iso3}/{collection_type}/{filename}"
+        if not os.path.exists(filepath_full):
+            # Download the image
+            print(f"  📥 Downloading: {filename}")
+            response = requests.get(url, timeout=30, headers={
+                'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36'
+            })
+            response.raise_for_status()
 
-        # Download the image
-        print(f"  📥 Downloading: {filename}")
-        response = requests.get(url, timeout=30, headers={
-            'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36'
-        })
-        response.raise_for_status()
+            # Save to file
+            with open(filepath_full, 'wb') as f:
+                f.write(response.content)
 
-        # Save to file
-        with open(filepath_full, 'wb') as f:
-            f.write(response.content)
+            print(f"  ✅ Saved: {filename}")
 
-        print(f"  ✅ Saved: {filename}")
+            # Brief delay to be respectful to servers
+            time.sleep(0.5)
+        else:
+            print(f"  ✅ File already exists: {filename}")
 
-        # Brief delay to be respectful to servers
-        time.sleep(0.5)
+        # Process image (convert webp, resize if needed)
+        processed_filepath = process_image(filepath_full)
+
+        # Get final filename (may have changed from .webp to .jpg)
+        final_filename = os.path.basename(processed_filepath)
 
         # Return relative path
-        return f"images/{iso3}/{collection_type}/{filename}"
+        return f"images/{iso3}/{collection_type}/{final_filename}"
 
     except requests.RequestException as e:
         print(f"  ❌ Failed to download {url}: {e}")
@@ -405,36 +578,62 @@ def init_database():
 
     print(f"✅ Inserted {len(m49_countries)} countries")
 
-    # Load Albert Kahn images - ALL columns
+    # Load Albert Kahn images - use image_url column
     print(f"🖼️  Loading Albert Kahn images from: {ALBERT_KAHN_CSV_PATH}")
     albert_kahn_count = 0
+    downloads_folder = os.path.expanduser('~/Downloads')
+    base_dir = os.path.dirname(os.path.abspath(__file__))
 
     with open(ALBERT_KAHN_CSV_PATH, 'r', encoding='utf-8') as f:
         reader = csv.DictReader(f)
 
         for row in reader:
             alpha3 = row.get('alpha3', '').strip()
-            new_filepath = row.get('new_filepath', '').strip()
             image_url = row.get('image_url', '').strip()
 
-            if not alpha3:
+            if not alpha3 or not image_url:
                 continue
 
-            # If new_filepath is empty but image_url has a URL, download it
-            if not new_filepath and image_url and image_url.startswith('http'):
-                print(f"  🔄 Row has URL in image_url but no new_filepath, downloading...")
-                new_filepath = download_image(image_url, alpha3, 'albert_kahn')
-                if not new_filepath:
-                    print(f"  ⏭️  Skipping row due to failed download")
-                    continue
+            new_filepath = None
 
-            # If still no filepath, skip
+            # Determine source and check if file already exists
+            if image_url.startswith('http'):
+                # Get expected filename from URL
+                parsed_url = urlparse(image_url)
+                filename = unquote(os.path.basename(parsed_url.path))
+                # Check for both .jpg and original extension
+                expected_path_jpg = os.path.join(base_dir, 'images', alpha3, 'albert_kahn', filename.replace('.webp', '.jpg') if filename.endswith('.webp') else filename)
+                expected_path_original = os.path.join(base_dir, 'images', alpha3, 'albert_kahn', filename)
+
+                if os.path.exists(expected_path_jpg):
+                    new_filepath = f"images/{alpha3}/albert_kahn/{os.path.basename(expected_path_jpg)}"
+                elif os.path.exists(expected_path_original):
+                    new_filepath = f"images/{alpha3}/albert_kahn/{filename}"
+                else:
+                    # Download from URL
+                    print(f"  🔄 Downloading from URL...")
+                    new_filepath = download_image(image_url, alpha3, 'albert_kahn')
+            else:
+                # Assume it's in Downloads folder
+                local_path = os.path.join(downloads_folder, image_url)
+                filename = os.path.basename(local_path)
+                # Check for both .jpg and original extension
+                expected_path_jpg = os.path.join(base_dir, 'images', alpha3, 'albert_kahn', filename.replace('.webp', '.jpg') if filename.endswith('.webp') else filename)
+                expected_path_original = os.path.join(base_dir, 'images', alpha3, 'albert_kahn', filename)
+
+                if os.path.exists(expected_path_jpg):
+                    new_filepath = f"images/{alpha3}/albert_kahn/{os.path.basename(expected_path_jpg)}"
+                elif os.path.exists(expected_path_original):
+                    new_filepath = f"images/{alpha3}/albert_kahn/{filename}"
+                else:
+                    # Copy from Downloads folder
+                    print(f"  🔄 Copying from Downloads folder...")
+                    new_filepath = copy_local_image(local_path, alpha3, 'albert_kahn')
+
+            # If filepath acquisition failed, skip
             if not new_filepath:
+                print(f"  ⏭️  Skipping row due to failed image acquisition")
                 continue
-
-            # Strip "backend/" prefix from filepath
-            if new_filepath.startswith('backend/'):
-                new_filepath = new_filepath[8:]  # Remove "backend/"
 
             cursor.execute('''
                 INSERT INTO albert_kahn_images (
@@ -479,7 +678,7 @@ def init_database():
 
     print(f"✅ Inserted {albert_kahn_count} Albert Kahn images")
 
-    # Load Children Artwork images (only rows with Keep="keep") - ALL columns
+    # Load Children Artwork images (only rows with Keep="keep") - use image_path column
     print(f"🎨 Loading Children Artwork from: {CHILDREN_ARTWORK_CSV_PATH}")
     children_artwork_count = 0
 
@@ -492,27 +691,51 @@ def init_database():
                 continue
 
             iso3_artist = row.get('iso3 artist', '').strip()
-            filepath = row.get('filepath', '').strip()
             image_path = row.get('image_path', '').strip()
 
-            if not iso3_artist:
+            if not iso3_artist or not image_path:
                 continue
 
-            # If filepath is empty but image_path has a URL, download it
-            if not filepath and image_path and image_path.startswith('http'):
-                print(f"  🔄 Row has URL in image_path but no filepath, downloading...")
-                filepath = download_image(image_path, iso3_artist, 'children_artwork')
-                if not filepath:
-                    print(f"  ⏭️  Skipping row due to failed download")
-                    continue
+            filepath = None
 
-            # If still no filepath, skip
+            # Determine source and check if file already exists
+            if image_path.startswith('http'):
+                # Get expected filename from URL
+                parsed_url = urlparse(image_path)
+                filename = unquote(os.path.basename(parsed_url.path))
+                # Check for both .jpg and original extension
+                expected_path_jpg = os.path.join(base_dir, 'images', iso3_artist, 'children_artwork', filename.replace('.webp', '.jpg') if filename.endswith('.webp') else filename)
+                expected_path_original = os.path.join(base_dir, 'images', iso3_artist, 'children_artwork', filename)
+
+                if os.path.exists(expected_path_jpg):
+                    filepath = f"images/{iso3_artist}/children_artwork/{os.path.basename(expected_path_jpg)}"
+                elif os.path.exists(expected_path_original):
+                    filepath = f"images/{iso3_artist}/children_artwork/{filename}"
+                else:
+                    # Download from URL
+                    print(f"  🔄 Downloading from URL...")
+                    filepath = download_image(image_path, iso3_artist, 'children_artwork')
+            else:
+                # Assume it's in Downloads folder
+                local_path = os.path.join(downloads_folder, image_path)
+                filename = os.path.basename(local_path)
+                # Check for both .jpg and original extension
+                expected_path_jpg = os.path.join(base_dir, 'images', iso3_artist, 'children_artwork', filename.replace('.webp', '.jpg') if filename.endswith('.webp') else filename)
+                expected_path_original = os.path.join(base_dir, 'images', iso3_artist, 'children_artwork', filename)
+
+                if os.path.exists(expected_path_jpg):
+                    filepath = f"images/{iso3_artist}/children_artwork/{os.path.basename(expected_path_jpg)}"
+                elif os.path.exists(expected_path_original):
+                    filepath = f"images/{iso3_artist}/children_artwork/{filename}"
+                else:
+                    # Copy from Downloads folder
+                    print(f"  🔄 Copying from Downloads folder...")
+                    filepath = copy_local_image(local_path, iso3_artist, 'children_artwork')
+
+            # If filepath acquisition failed, skip
             if not filepath:
+                print(f"  ⏭️  Skipping row due to failed image acquisition")
                 continue
-
-            # Strip "backend/" prefix from filepath
-            if filepath.startswith('backend/'):
-                filepath = filepath[8:]  # Remove "backend/"
 
             cursor.execute('''
                 INSERT INTO children_artwork_images (
@@ -547,7 +770,7 @@ def init_database():
 
     print(f"✅ Inserted {children_artwork_count} children artwork images")
 
-    # Load Public Domain images (skip rows with Remove="yes") - ALL columns
+    # Load Public Domain images (skip rows with Remove="yes") - use Filename column
     print(f"📚 Loading Public Domain images from: {PUBLIC_DOMAIN_CSV_PATH}")
     public_domain_count = 0
 
@@ -560,29 +783,51 @@ def init_database():
                 continue
 
             alpha_code = row.get('Alpha Code', '').strip()
-            filepath = row.get('filepath', '').strip()
-            public_domain_url = row.get('Public Domain URL', '').strip()
+            filename_value = row.get('Filename', '').strip()
 
-            if not alpha_code:
+            if not alpha_code or not filename_value:
                 continue
 
-            # If filepath is empty but Public Domain URL has a URL, download it
-            if not filepath and public_domain_url and public_domain_url.startswith('http'):
-                print(f"  🔄 Row has URL in Public Domain URL but no filepath, downloading...")
-                # Try to use suggested filename from Filename column
-                suggested_filename = row.get('Filename', '').strip()
-                filepath = download_image(public_domain_url, alpha_code, 'public_domain', suggested_filename if suggested_filename else None)
-                if not filepath:
-                    print(f"  ⏭️  Skipping row due to failed download")
-                    continue
+            filepath = None
 
-            # If still no filepath, skip
+            # Determine source and check if file already exists
+            if filename_value.startswith('http'):
+                # Get expected filename from URL
+                parsed_url = urlparse(filename_value)
+                filename = unquote(os.path.basename(parsed_url.path))
+                # Check for both .jpg and original extension
+                expected_path_jpg = os.path.join(base_dir, 'images', alpha_code, 'public_domain', filename.replace('.webp', '.jpg') if filename.endswith('.webp') else filename)
+                expected_path_original = os.path.join(base_dir, 'images', alpha_code, 'public_domain', filename)
+
+                if os.path.exists(expected_path_jpg):
+                    filepath = f"images/{alpha_code}/public_domain/{os.path.basename(expected_path_jpg)}"
+                elif os.path.exists(expected_path_original):
+                    filepath = f"images/{alpha_code}/public_domain/{filename}"
+                else:
+                    # Download from URL
+                    print(f"  🔄 Downloading from URL...")
+                    filepath = download_image(filename_value, alpha_code, 'public_domain')
+            else:
+                # Assume it's in Downloads folder
+                local_path = os.path.join(downloads_folder, filename_value)
+                filename = os.path.basename(local_path)
+                # Check for both .jpg and original extension
+                expected_path_jpg = os.path.join(base_dir, 'images', alpha_code, 'public_domain', filename.replace('.webp', '.jpg') if filename.endswith('.webp') else filename)
+                expected_path_original = os.path.join(base_dir, 'images', alpha_code, 'public_domain', filename)
+
+                if os.path.exists(expected_path_jpg):
+                    filepath = f"images/{alpha_code}/public_domain/{os.path.basename(expected_path_jpg)}"
+                elif os.path.exists(expected_path_original):
+                    filepath = f"images/{alpha_code}/public_domain/{filename}"
+                else:
+                    # Copy from Downloads folder
+                    print(f"  🔄 Copying from Downloads folder...")
+                    filepath = copy_local_image(local_path, alpha_code, 'public_domain')
+
+            # If filepath acquisition failed, skip
             if not filepath:
+                print(f"  ⏭️  Skipping row due to failed image acquisition")
                 continue
-
-            # Strip "backend/" prefix from filepath
-            if filepath.startswith('backend/'):
-                filepath = filepath[8:]  # Remove "backend/"
 
             cursor.execute('''
                 INSERT INTO public_domain_images (

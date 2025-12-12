@@ -11,15 +11,15 @@ const WorldMap = ({
   targetCountryName = null,
   region = null, // Can be continent or subregion
   gameStatus = 'playing',
-  tooltipsEnabled = true,
   colors,
   onNewGame,
   onStartOver,
-  onToggleTooltips,
   mode = 'quiz',
   onModeToggle
 }) => {
   const COLORS = colors;
+  // Auto-control tooltips based on mode: always ON in explore, always OFF in quiz
+  const tooltipsEnabled = mode === 'explore';
   const globeEl = useRef();
   const [countries, setCountries] = useState({ features: [] });
   const [countryPaths, setCountryPaths] = useState([]);
@@ -135,10 +135,10 @@ const WorldMap = ({
   const hintCountryRef = useRef(null);  // Track which country hints are for
 
   useEffect(() => {
-    console.log('🔄 Hint effect running:', { gameStatus, targetCountry, mode, hintsEnabled });
+    console.log('🔄 Hint effect running:', { targetCountry, mode, hintsEnabled });
 
     const showHints = async () => {
-      if (gameStatus === 'incorrect' && targetCountry && mode === 'quiz' && hintsEnabled) {
+      if (targetCountry && mode === 'quiz' && hintsEnabled) {
         // Only generate new hints if this is a different country than last time
         if (hintCountryRef.current === targetCountry) {
           console.log('♻️ Keeping same hints - same target country:', targetCountry);
@@ -207,18 +207,16 @@ const WorldMap = ({
         } catch (err) {
           console.error('❌ Error fetching hints:', err);
         }
-      } else if (mode !== 'quiz' || !hintsEnabled) {
+      } else {
         // Clear hints if not in quiz mode or hints disabled
         console.log('🧹 Clearing hints - not in quiz mode or hints disabled');
         setHintNeighborsM49([]);
         hintCountryRef.current = null;
       }
-      // Note: Don't clear hints when gameStatus changes back to 'playing'
-      // Hints persist until a new target country is selected
     };
 
     showHints();
-  }, [gameStatus, targetCountry, targetCountryName, mode, countries, hintsEnabled]);
+  }, [targetCountry, targetCountryName, mode, countries, hintsEnabled]);
 
   // Clear hints and visual feedback when a NEW target country appears
   const prevTargetCountryRef = useRef(null);
@@ -435,6 +433,7 @@ const WorldMap = ({
           pathDashLength={1}
           pathDashGap={0}
           pathDashAnimateTime={0}
+          pathTransitionDuration={0}
           onPathHover={setHoverD}
           onPathClick={handlePolygonClick}
 
@@ -497,7 +496,7 @@ const WorldMap = ({
               <label className="toggle-switch-small">
                 <input
                   type="checkbox"
-                  checked={mode === 'explore'}
+                  checked={mode === 'quiz'}
                   onChange={onModeToggle}
                 />
                 <span className="toggle-slider-small"></span>
@@ -528,19 +527,6 @@ const WorldMap = ({
                 </div>
               </>
             )}
-
-            {/* Tip Toggle */}
-            <div className="toggle-container-small">
-              <span className="toggle-label-small">Tip</span>
-              <label className="toggle-switch-small">
-                <input
-                  type="checkbox"
-                  checked={tooltipsEnabled}
-                  onChange={onToggleTooltips}
-                />
-                <span className="toggle-slider-small"></span>
-              </label>
-            </div>
           </div>
         </div>
       </div>

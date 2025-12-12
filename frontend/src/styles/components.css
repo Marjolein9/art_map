@@ -219,12 +219,33 @@
   border: 5px solid;
   backdrop-filter: blur(10px);
   font-family: 'Roboto', Helvetica, sans-serif;
-  max-height: calc(100vh - 60px);
+  max-height: calc(100vh - 100px);
   overflow-y: auto;
   background-color: var(--card-bg);
   box-shadow: 0 0 20px var(--glow-color), 0 4px 6px rgba(0, 0, 0, 0.3);
   border-color: var(--border-color);
   animation: slideIn 0.25s ease-in-out;
+}
+
+/* Custom scrollbar for better visibility */
+.artwork-info-container::-webkit-scrollbar {
+  width: 16px;
+}
+
+.artwork-info-container::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.4);
+  border-radius: 8px;
+  margin: 4px;
+}
+
+.artwork-info-container::-webkit-scrollbar-thumb {
+  background: rgba(200, 200, 200, 0.7);
+  border-radius: 8px;
+  border: 3px solid rgba(0, 0, 0, 0.3);
+}
+
+.artwork-info-container::-webkit-scrollbar-thumb:hover {
+  background: rgba(230, 230, 230, 0.9);
 }
 
 @keyframes slideIn {
@@ -458,8 +479,13 @@
 
 .artwork-image-container {
   padding: 10px;
-  background-color: rgba(0, 0, 0, 0.2);
   position: relative;
+  height: 450px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(232, 220, 196, 0.85);
+  overflow: hidden;
 }
 
 /* Pagination controls */
@@ -506,10 +532,13 @@
 }
 
 .artwork-image {
-  width: 100%;
+  max-width: 100%;
+  max-height: 100%;
+  width: auto;
   height: auto;
   display: block;
   border-radius: 4px;
+  object-fit: contain;
 }
 
 .artwork-details {
@@ -717,15 +746,16 @@
   font-size: 11px;
   font-weight: bold;
   transition: all 0.2s ease;
-  background-color: rgba(255, 255, 255, 0.2);
+  background-color: rgba(40, 40, 40, 0.85);
   color: white;
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  box-shadow: 0 0 3px rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.4);
 }
 
 .globe-control-btn-small:hover {
   transform: translateY(-1px);
-  background-color: rgba(255, 255, 255, 0.3);
+  background-color: rgba(60, 60, 60, 0.9);
+  box-shadow: 0 0 8px rgba(255, 255, 255, 0.3);
 }
 
 /* Small divider for controls */
@@ -941,7 +971,7 @@ input:checked + .toggle-slider:before {
   }
 
   .artwork-info-container {
-    max-height: 70vh;
+    max-height: calc(100vh - 100px);
   }
 }
 
@@ -978,6 +1008,10 @@ input:checked + .toggle-slider:before {
 
   .artwork-info-title {
     font-size: 14pt;
+  }
+
+  .artwork-info-container {
+    max-height: calc(100vh - 80px);
   }
 
   .map-container {

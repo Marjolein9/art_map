@@ -9,7 +9,6 @@ import { fetchCountries } from './services/api';
 
 function App() {
   const { targetCountry, loading, gameStatus, handleCountryClick, fetchNewCountry } = useQuiz();
-  const [tooltipsEnabled, setTooltipsEnabled] = useState(true);
   const [mode, setMode] = useState('quiz'); // 'quiz' or 'explore'
   const [exploreCountry, setExploreCountry] = useState(null);
   const [infoBarOpen, setInfoBarOpen] = useState(false); // Start with info bar closed in quiz mode
@@ -30,11 +29,6 @@ function App() {
       setCountryLookup(lookup);
     });
   }, []);
-
-  // Handle tooltip toggle
-  const handleToggleTooltips = () => {
-    setTooltipsEnabled(prev => !prev);
-  };
 
   // Handle mode toggle
   const handleModeToggle = () => {
@@ -142,11 +136,9 @@ function App() {
                     targetCountryName={mode === 'quiz' ? targetCountry?.name : null}
                     region={mode === 'quiz' ? (targetCountry?.subregion || targetCountry?.continent) : null}
                     gameStatus={gameStatus}
-                    tooltipsEnabled={tooltipsEnabled}
                     colors={COLORS}
                     onNewGame={fetchNewCountry}
                     onStartOver={fetchNewCountry}
-                    onToggleTooltips={handleToggleTooltips}
                     mode={mode}
                     onModeToggle={handleModeToggle}
                   />

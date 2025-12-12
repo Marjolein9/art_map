@@ -60,6 +60,8 @@ export const getCountryIsoCode = (feature) => {
   if (m49Code && !warnedM49Codes.has(m49Code)) {
     warnedM49Codes.add(m49Code);
     console.warn(`⚠️ No M49 mapping for country: ${name || 'Unknown'} (M49: ${m49Code})`);
+    console.log('Available mappings:', Object.keys(m49ToIso3Mapping).length, 'countries');
+    console.log('Feature structure:', { hasId: !!feature.id, hasPropsId: !!feature.properties?.id, name });
   }
 
   return null;
