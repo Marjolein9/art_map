@@ -62,3 +62,6 @@ temp/
 
 # Optional REPL history
 .node_repl_history
+
+# Project-specific
+background_work/
