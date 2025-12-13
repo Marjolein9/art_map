@@ -132,9 +132,9 @@ def random_country():
     cursor.execute('''
         SELECT DISTINCT alpha3 as iso3 FROM albert_kahn_images
         UNION
-        SELECT DISTINCT iso3_artist as iso3 FROM children_artwork_images
+        SELECT DISTINCT alpha3 as iso3 FROM children_artwork_images
         UNION
-        SELECT DISTINCT alpha_code as iso3 FROM public_domain_images
+        SELECT DISTINCT alpha3 as iso3 FROM public_domain_images
     ''')
 
     # Extract just the iso3 codes into a Python list
@@ -210,7 +210,7 @@ def get_images(alpha3):
     # Query Albert Kahn images
     cursor.execute('''
         SELECT 'Albert Kahn' as collection_type,
-               new_filepath as filepath, title_en as title, location, date,
+               filepath, title_en as title, location, date,
                operator, inventory_number, page_url
         FROM albert_kahn_images
         WHERE alpha3 = ?
@@ -220,20 +220,20 @@ def get_images(alpha3):
     # Query Children Artwork images
     cursor.execute('''
         SELECT 'Children in Art' as collection_type,
-               filepath, work_title as title, artist_name,
+               filepath, title, artist_name,
                artist_nationality, author_wikilink, work_url
         FROM children_artwork_images
-        WHERE iso3_artist = ?
+        WHERE alpha3 = ?
     ''', (alpha3,))
     children_art = [dict(row) for row in cursor.fetchall()]
 
     # Query Public Domain images
     cursor.execute('''
         SELECT 'Public Domain Review' as collection_type,
-               filepath, public_domain_title as title, country, source_link,
-               public_domain_url, image_info
+               filepath, title, country, source_link,
+               source_url, description
         FROM public_domain_images
-        WHERE alpha_code = ?
+        WHERE alpha3 = ?
     ''', (alpha3,))
     public_domain = [dict(row) for row in cursor.fetchall()]
 
@@ -447,9 +447,9 @@ def get_empty_countries():
     cursor.execute('''
         SELECT DISTINCT alpha3 FROM albert_kahn_images
         UNION
-        SELECT DISTINCT iso3_artist FROM children_artwork_images
+        SELECT DISTINCT alpha3 FROM children_artwork_images
         UNION
-        SELECT DISTINCT alpha_code FROM public_domain_images
+        SELECT DISTINCT alpha3 FROM public_domain_images
     ''')
     countries_with_images = {row[0] for row in cursor.fetchall()}
 

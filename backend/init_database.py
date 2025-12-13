@@ -134,20 +134,20 @@ def process_image(filepath):
 
         # Check if needs resizing
         width, height = img.size
-        if original_size > MAX_IMAGE_SIZE_MB or width > MAX_DIMENSION or height > MAX_DIMENSION:
+        if original_size > MAX_IMAGE_SIZE_MB or width > MAX_IMAGE_DIMENSION or height > MAX_IMAGE_DIMENSION:
             print(f"  ↕️ Resizing image: {original_size:.2f}MB / {width}x{height}px")
 
             # Calculate new dimensions
             if width > height:
-                if width > MAX_DIMENSION:
-                    new_width = MAX_DIMENSION
-                    new_height = int((MAX_DIMENSION / width) * height)
+                if width > MAX_IMAGE_DIMENSION:
+                    new_width = MAX_IMAGE_DIMENSION
+                    new_height = int((MAX_IMAGE_DIMENSION / width) * height)
                 else:
                     new_width, new_height = width, height
             else:
-                if height > MAX_DIMENSION:
-                    new_height = MAX_DIMENSION
-                    new_width = int((MAX_DIMENSION / height) * width)
+                if height > MAX_IMAGE_DIMENSION:
+                    new_height = MAX_IMAGE_DIMENSION
+                    new_width = int((MAX_IMAGE_DIMENSION / height) * width)
                 else:
                     new_width, new_height = width, height
 
@@ -182,7 +182,7 @@ def process_image(filepath):
         print(f"  ❌ Error processing image {filepath}: {e}")
         return filepath  # Return original path on error
 
-def copy_local_image(local_path, iso3, collection_type):
+def copy_local_image(local_path, iso3, collection_type, target_filename=None):
     """
     Copy a local image file to the correct folder structure.
 
@@ -190,6 +190,7 @@ def copy_local_image(local_path, iso3, collection_type):
         local_path: Local file path (e.g., /Users/.../image.jpg)
         iso3: Country ISO3 code
         collection_type: Collection type ('albert_kahn', 'children_artwork', or 'public_domain')
+        target_filename: Optional filename to use (will use original filename if not provided)
 
     Returns:
         Relative filepath (e.g., 'images/USA/children_artwork/image.jpg') or None if copy fails
@@ -199,8 +200,11 @@ def copy_local_image(local_path, iso3, collection_type):
         return None
 
     try:
-        # Get filename from path
-        filename = os.path.basename(local_path)
+        # Get filename - use target_filename if provided, otherwise use original
+        if target_filename:
+            filename = target_filename
+        else:
+            filename = os.path.basename(local_path)
 
         # If no filename could be determined, skip
         if not filename or filename == '':
@@ -237,7 +241,7 @@ def copy_local_image(local_path, iso3, collection_type):
         print(f"  ❌ Error copying {local_path}: {e}")
         return None
 
-def download_image(url, iso3, collection_type, suggested_filename=None):
+def download_image(url, iso3, collection_type, target_filename=None):
     """
     Download an image from URL and save it to the correct folder structure.
 
@@ -245,7 +249,7 @@ def download_image(url, iso3, collection_type, suggested_filename=None):
         url: URL of the image to download
         iso3: Country ISO3 code
         collection_type: Collection type ('albert_kahn', 'children_artwork', or 'public_domain')
-        suggested_filename: Optional filename to use (will extract from URL if not provided)
+        target_filename: Optional filename to use (will extract from URL if not provided)
 
     Returns:
         Relative filepath (e.g., 'images/USA/public_domain/image.jpg') or None if download fails
@@ -254,10 +258,9 @@ def download_image(url, iso3, collection_type, suggested_filename=None):
         return None
 
     try:
-        # Get filename from URL or use suggested filename
-        # Check if suggested_filename is actually a URL (not a filename)
-        if suggested_filename and not suggested_filename.startswith('http'):
-            filename = suggested_filename
+        # Get filename - use target_filename if provided, otherwise extract from URL
+        if target_filename:
+            filename = target_filename
         else:
             parsed_url = urlparse(url)
             filename = unquote(os.path.basename(parsed_url.path))
@@ -489,7 +492,7 @@ def init_database():
             license TEXT,
             page_url TEXT,
             image_url TEXT,
-            new_filepath TEXT,
+            filepath TEXT,
             FOREIGN KEY (alpha3) REFERENCES countries(iso3)
         )
     ''')
@@ -503,12 +506,12 @@ def init_database():
             artist_name TEXT,
             author_wikilink TEXT,
             artist_nationality TEXT,
-            iso3_artist TEXT NOT NULL,
+            alpha3 TEXT NOT NULL,
             country_of_subject TEXT,
             iso3 TEXT,
-            work_title TEXT,
+            title TEXT,
             keep TEXT,
-            image_path TEXT,
+            image_url TEXT,
             work_url TEXT,
             location_reason TEXT,
             author_background TEXT,
@@ -520,29 +523,29 @@ def init_database():
             more_info TEXT,
             is_local TEXT,
             filepath TEXT,
-            FOREIGN KEY (iso3_artist) REFERENCES countries(iso3)
+            FOREIGN KEY (alpha3) REFERENCES countries(iso3)
         )
     ''')
-    cursor.execute('CREATE INDEX idx_children_artwork_iso3_artist ON children_artwork_images(iso3_artist)')
+    cursor.execute('CREATE INDEX idx_children_artwork_alpha3 ON children_artwork_images(alpha3)')
 
     # Create public_domain_images table with ALL columns from CSV
     print("📚 Creating public_domain_images table...")
     cursor.execute('''
         CREATE TABLE public_domain_images (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
-            public_domain_url TEXT,
-            public_domain_title TEXT,
-            image_info TEXT,
+            source_url TEXT,
+            title TEXT,
+            description TEXT,
             source_link TEXT,
             country TEXT,
-            alpha_code TEXT NOT NULL,
-            filename TEXT,
+            alpha3 TEXT NOT NULL,
+            image_url TEXT,
             remove TEXT,
             filepath TEXT,
-            FOREIGN KEY (alpha_code) REFERENCES countries(iso3)
+            FOREIGN KEY (alpha3) REFERENCES countries(iso3)
         )
     ''')
-    cursor.execute('CREATE INDEX idx_public_domain_alpha_code ON public_domain_images(alpha_code)')
+    cursor.execute('CREATE INDEX idx_public_domain_alpha3 ON public_domain_images(alpha3)')
 
     # Create met_images table
     print("🏛️  Creating met_images table...")
@@ -559,7 +562,7 @@ def init_database():
             department TEXT,
             culture TEXT,
             object_url TEXT,
-            primary_image_url TEXT,
+            image_url TEXT,
             filepath TEXT,
             json_file TEXT,
             FOREIGN KEY (alpha3) REFERENCES countries(iso3)
@@ -635,7 +638,7 @@ def init_database():
             if not alpha3 or not image_url:
                 continue
 
-            new_filepath = None
+            filepath = None
 
             # Determine source and check if file already exists
             if image_url.startswith('http'):
@@ -647,13 +650,13 @@ def init_database():
                 expected_path_original = os.path.join(base_dir, 'images', alpha3, 'albert_kahn', filename)
 
                 if os.path.exists(expected_path_jpg):
-                    new_filepath = f"images/{alpha3}/albert_kahn/{os.path.basename(expected_path_jpg)}"
+                    filepath = f"images/{alpha3}/albert_kahn/{os.path.basename(expected_path_jpg)}"
                 elif os.path.exists(expected_path_original):
-                    new_filepath = f"images/{alpha3}/albert_kahn/{filename}"
+                    filepath = f"images/{alpha3}/albert_kahn/{filename}"
                 else:
                     # Download from URL
                     print(f"  🔄 Downloading from URL...")
-                    new_filepath = download_image(image_url, alpha3, 'albert_kahn')
+                    filepath = download_image(image_url, alpha3, 'albert_kahn')
             else:
                 # Assume it's in Downloads folder
                 local_path = os.path.join(downloads_folder, image_url)
@@ -663,16 +666,16 @@ def init_database():
                 expected_path_original = os.path.join(base_dir, 'images', alpha3, 'albert_kahn', filename)
 
                 if os.path.exists(expected_path_jpg):
-                    new_filepath = f"images/{alpha3}/albert_kahn/{os.path.basename(expected_path_jpg)}"
+                    filepath = f"images/{alpha3}/albert_kahn/{os.path.basename(expected_path_jpg)}"
                 elif os.path.exists(expected_path_original):
-                    new_filepath = f"images/{alpha3}/albert_kahn/{filename}"
+                    filepath = f"images/{alpha3}/albert_kahn/{filename}"
                 else:
                     # Copy from Downloads folder
                     print(f"  🔄 Copying from Downloads folder...")
-                    new_filepath = copy_local_image(local_path, alpha3, 'albert_kahn')
+                    filepath = copy_local_image(local_path, alpha3, 'albert_kahn')
 
             # If filepath acquisition failed, skip
-            if not new_filepath:
+            if not filepath:
                 print(f"  ⏭️  Skipping row due to failed image acquisition")
                 continue
 
@@ -682,7 +685,7 @@ def init_database():
                     location, country_fr, country_en, m49code, alpha2, alpha3,
                     operator, author, mission, date, theme, sub_theme, description,
                     domain, process, support, denomination, format, dimensions,
-                    ownership, license, page_url, image_url, new_filepath
+                    ownership, license, page_url, image_url, filepath
                 ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             ''', (
                 row.get('file_path', ''),
@@ -713,75 +716,86 @@ def init_database():
                 row.get('license', ''),
                 row.get('page_url', ''),
                 row.get('image_url', ''),
-                new_filepath
+                filepath
             ))
             albert_kahn_count += 1
 
     print(f"✅ Inserted {albert_kahn_count} Albert Kahn images")
 
-    # Load Children Artwork images (only rows with Keep="keep") - use image_path column
+    # Load Children Artwork images (only rows with Keep="keep")
+    # Use image_url to download, title to rename, filepath to save location
     print(f"🎨 Loading Children Artwork from: {CHILDREN_ARTWORK_CSV_PATH}")
     children_artwork_count = 0
+    processed_files = set()  # Track files that are in the database
+
+    def sanitize_filename(title):
+        """Convert title to safe filename with underscores"""
+        if not title:
+            return None
+        # Replace spaces with underscores, remove unsafe characters
+        safe = title.replace(' ', '_').replace('/', '_').replace('\\', '_')
+        safe = ''.join(c for c in safe if c.isalnum() or c in ('_', '-', '.'))
+        return safe + '.jpg' if not safe.endswith('.jpg') else safe
 
     with open(CHILDREN_ARTWORK_CSV_PATH, 'r', encoding='utf-8') as f:
         reader = csv.DictReader(f)
 
         for row in reader:
+            # Only process rows with Keep="keep"
             keep_status = row.get('Keep', '').strip().lower()
             if keep_status != 'keep':
                 continue
 
-            iso3_artist = row.get('iso3 artist', '').strip()
-            image_path = row.get('image_path', '').strip()
+            alpha3 = row.get('alpha3', '').strip()
+            image_url = row.get('image_url', '').strip()
+            title = row.get('title', '').strip()
 
-            if not iso3_artist or not image_path:
+            if not alpha3 or not image_url or not title:
                 continue
 
+            # Step 1: Create sanitized filename from title
+            target_filename = sanitize_filename(title)
+            if not target_filename:
+                continue
+
+            # Step 2: Check if image already exists at expected path
+            expected_path = os.path.join(base_dir, 'images', alpha3, 'children_artwork', target_filename)
             filepath = None
 
-            # Determine source and check if file already exists
-            if image_path.startswith('http'):
-                # Get expected filename from URL
-                parsed_url = urlparse(image_path)
-                filename = unquote(os.path.basename(parsed_url.path))
-                # Check for both .jpg and original extension
-                expected_path_jpg = os.path.join(base_dir, 'images', iso3_artist, 'children_artwork', filename.replace('.webp', '.jpg') if filename.endswith('.webp') else filename)
-                expected_path_original = os.path.join(base_dir, 'images', iso3_artist, 'children_artwork', filename)
-
-                if os.path.exists(expected_path_jpg):
-                    filepath = f"images/{iso3_artist}/children_artwork/{os.path.basename(expected_path_jpg)}"
-                elif os.path.exists(expected_path_original):
-                    filepath = f"images/{iso3_artist}/children_artwork/{filename}"
-                else:
-                    # Download from URL
-                    print(f"  🔄 Downloading from URL...")
-                    filepath = download_image(image_path, iso3_artist, 'children_artwork')
+            if os.path.exists(expected_path):
+                # Image already exists, use it
+                filepath = f"images/{alpha3}/children_artwork/{target_filename}"
+                processed_files.add(expected_path)
             else:
-                # Assume it's in Downloads folder
-                local_path = os.path.join(downloads_folder, image_path)
-                filename = os.path.basename(local_path)
-                # Check for both .jpg and original extension
-                expected_path_jpg = os.path.join(base_dir, 'images', iso3_artist, 'children_artwork', filename.replace('.webp', '.jpg') if filename.endswith('.webp') else filename)
-                expected_path_original = os.path.join(base_dir, 'images', iso3_artist, 'children_artwork', filename)
-
-                if os.path.exists(expected_path_jpg):
-                    filepath = f"images/{iso3_artist}/children_artwork/{os.path.basename(expected_path_jpg)}"
-                elif os.path.exists(expected_path_original):
-                    filepath = f"images/{iso3_artist}/children_artwork/{filename}"
+                # Step 3: Image doesn't exist, download/copy from image_url
+                if image_url.startswith('http'):
+                    # Download from URL with sanitized filename
+                    print(f"  🔄 Downloading: {title}")
+                    filepath = download_image(image_url, alpha3, 'children_artwork', target_filename=target_filename)
                 else:
-                    # Copy from Downloads folder
-                    print(f"  🔄 Copying from Downloads folder...")
-                    filepath = copy_local_image(local_path, iso3_artist, 'children_artwork')
+                    # Handle local file paths
+                    if image_url.startswith('/') or image_url.startswith('~'):
+                        local_path = os.path.expanduser(image_url)
+                    else:
+                        local_path = os.path.join(downloads_folder, image_url)
+
+                    # Copy with sanitized filename
+                    print(f"  🔄 Copying: {title}")
+                    filepath = copy_local_image(local_path, alpha3, 'children_artwork', target_filename=target_filename)
+
+                if filepath:
+                    processed_files.add(os.path.join(base_dir, filepath))
 
             # If filepath acquisition failed, skip
             if not filepath:
-                print(f"  ⏭️  Skipping row due to failed image acquisition")
+                print(f"  ⏭️  Skipping '{title}' - failed to acquire image")
                 continue
 
+            # Step 4: Save filepath to database
             cursor.execute('''
                 INSERT INTO children_artwork_images (
-                    artist_name, author_wikilink, artist_nationality, iso3_artist,
-                    country_of_subject, iso3, work_title, keep, image_path, work_url,
+                    artist_name, author_wikilink, artist_nationality, alpha3,
+                    country_of_subject, iso3, title, keep, image_url, work_url,
                     location_reason, author_background, birth_date, death_date, birth_place,
                     source, tags, more_info, is_local, filepath
                 ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
@@ -789,12 +803,12 @@ def init_database():
                 row.get('artist_name', ''),
                 row.get('Author WikiLink', ''),
                 row.get('Artist Nationality', ''),
-                iso3_artist,
+                alpha3,
                 row.get('Country of Subject: ', ''),
                 row.get('iso3', ''),
-                row.get('work_title', ''),
+                row.get('title', ''),
                 row.get('Keep', ''),
-                row.get('image_path', ''),
+                row.get('image_url', ''),
                 row.get('work_url', ''),
                 row.get('Location Reason', ''),
                 row.get('Author Background', ''),
@@ -811,7 +825,28 @@ def init_database():
 
     print(f"✅ Inserted {children_artwork_count} children artwork images")
 
-    # Load Public Domain images (skip rows with Remove="yes") - use Filename column
+    # Clean up orphaned children_artwork images (files not in database)
+    print(f"🧹 Cleaning up orphaned children_artwork images...")
+    orphaned_count = 0
+    images_dir = os.path.join(base_dir, 'images')
+
+    if os.path.exists(images_dir):
+        for country_dir in os.listdir(images_dir):
+            children_artwork_dir = os.path.join(images_dir, country_dir, 'children_artwork')
+            if os.path.isdir(children_artwork_dir):
+                for filename in os.listdir(children_artwork_dir):
+                    file_path = os.path.join(children_artwork_dir, filename)
+                    if os.path.isfile(file_path) and file_path not in processed_files:
+                        print(f"  🗑️  Deleting orphaned file: {country_dir}/children_artwork/{filename}")
+                        os.remove(file_path)
+                        orphaned_count += 1
+
+    if orphaned_count > 0:
+        print(f"✅ Deleted {orphaned_count} orphaned children_artwork images")
+    else:
+        print(f"✅ No orphaned children_artwork images found")
+
+    # Load Public Domain images (skip rows with Remove="yes") - use image_url column
     print(f"📚 Loading Public Domain images from: {PUBLIC_DOMAIN_CSV_PATH}")
     public_domain_count = 0
 
@@ -823,47 +858,47 @@ def init_database():
             if remove_status == 'yes':
                 continue
 
-            alpha_code = row.get('Alpha Code', '').strip()
-            filename_value = row.get('Filename', '').strip()
+            alpha3 = row.get('alpha3', '').strip()
+            image_url = row.get('image_url', '').strip()
 
-            if not alpha_code or not filename_value:
+            if not alpha3 or not image_url:
                 continue
 
             filepath = None
 
             # Determine source and check if file already exists
-            if filename_value.startswith('http'):
+            if image_url.startswith('http'):
                 # Get expected filename from URL
-                parsed_url = urlparse(filename_value)
+                parsed_url = urlparse(image_url)
                 filename = unquote(os.path.basename(parsed_url.path))
                 # Check for both .jpg and original extension
-                expected_path_jpg = os.path.join(base_dir, 'images', alpha_code, 'public_domain', filename.replace('.webp', '.jpg') if filename.endswith('.webp') else filename)
-                expected_path_original = os.path.join(base_dir, 'images', alpha_code, 'public_domain', filename)
+                expected_path_jpg = os.path.join(base_dir, 'images', alpha3, 'public_domain', filename.replace('.webp', '.jpg') if filename.endswith('.webp') else filename)
+                expected_path_original = os.path.join(base_dir, 'images', alpha3, 'public_domain', filename)
 
                 if os.path.exists(expected_path_jpg):
-                    filepath = f"images/{alpha_code}/public_domain/{os.path.basename(expected_path_jpg)}"
+                    filepath = f"images/{alpha3}/public_domain/{os.path.basename(expected_path_jpg)}"
                 elif os.path.exists(expected_path_original):
-                    filepath = f"images/{alpha_code}/public_domain/{filename}"
+                    filepath = f"images/{alpha3}/public_domain/{filename}"
                 else:
                     # Download from URL
                     print(f"  🔄 Downloading from URL...")
-                    filepath = download_image(filename_value, alpha_code, 'public_domain')
+                    filepath = download_image(image_url, alpha3, 'public_domain')
             else:
                 # Assume it's in Downloads folder
-                local_path = os.path.join(downloads_folder, filename_value)
+                local_path = os.path.join(downloads_folder, image_url)
                 filename = os.path.basename(local_path)
                 # Check for both .jpg and original extension
-                expected_path_jpg = os.path.join(base_dir, 'images', alpha_code, 'public_domain', filename.replace('.webp', '.jpg') if filename.endswith('.webp') else filename)
-                expected_path_original = os.path.join(base_dir, 'images', alpha_code, 'public_domain', filename)
+                expected_path_jpg = os.path.join(base_dir, 'images', alpha3, 'public_domain', filename.replace('.webp', '.jpg') if filename.endswith('.webp') else filename)
+                expected_path_original = os.path.join(base_dir, 'images', alpha3, 'public_domain', filename)
 
                 if os.path.exists(expected_path_jpg):
-                    filepath = f"images/{alpha_code}/public_domain/{os.path.basename(expected_path_jpg)}"
+                    filepath = f"images/{alpha3}/public_domain/{os.path.basename(expected_path_jpg)}"
                 elif os.path.exists(expected_path_original):
-                    filepath = f"images/{alpha_code}/public_domain/{filename}"
+                    filepath = f"images/{alpha3}/public_domain/{filename}"
                 else:
                     # Copy from Downloads folder
                     print(f"  🔄 Copying from Downloads folder...")
-                    filepath = copy_local_image(local_path, alpha_code, 'public_domain')
+                    filepath = copy_local_image(local_path, alpha3, 'public_domain')
 
             # If filepath acquisition failed, skip
             if not filepath:
@@ -872,17 +907,17 @@ def init_database():
 
             cursor.execute('''
                 INSERT INTO public_domain_images (
-                    public_domain_url, public_domain_title, image_info, source_link,
-                    country, alpha_code, filename, remove, filepath
+                    source_url, title, description, source_link,
+                    country, alpha3, image_url, remove, filepath
                 ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
             ''', (
-                row.get('Public Domain URL', ''),
-                row.get('Public Domain Title', ''),
-                row.get('Image Info', ''),
+                row.get('source_url', ''),
+                row.get('title', ''),
+                row.get('description', ''),
                 row.get('Source Link', ''),
                 row.get('Country', ''),
-                alpha_code,
-                row.get('Filename', ''),
+                alpha3,
+                row.get('image_url', ''),
                 row.get('Remove', ''),
                 filepath
             ))
@@ -914,7 +949,7 @@ def init_database():
                     INSERT INTO met_images (
                         object_id, alpha3, country_name, title, artist_name,
                         object_date, medium, department, culture, object_url,
-                        primary_image_url, filepath, json_file
+                        image_url, filepath, json_file
                     ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                 ''', (
                     row.get('object_id', ''),
@@ -927,7 +962,7 @@ def init_database():
                     row.get('department', ''),
                     row.get('culture', ''),
                     row.get('object_url', ''),
-                    row.get('primary_image_url', ''),
+                    row.get('image_url', ''),
                     filepath,
                     row.get('json_file', '')
                 ))

@@ -23,9 +23,9 @@ def find_empty_countries():
     cursor.execute('''
         SELECT DISTINCT alpha3 FROM albert_kahn_images
         UNION
-        SELECT DISTINCT iso3_artist FROM children_artwork_images
+        SELECT DISTINCT alpha3 FROM children_artwork_images
         UNION
-        SELECT DISTINCT alpha_code FROM public_domain_images
+        SELECT DISTINCT alpha3 FROM public_domain_images
     ''')
     countries_with_images = {row[0] for row in cursor.fetchall()}
 
