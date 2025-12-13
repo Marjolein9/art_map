@@ -585,6 +585,23 @@ def init_database():
     cursor.execute('CREATE INDEX idx_borders_country_iso3 ON country_borders(country_iso3)')
     cursor.execute('CREATE INDEX idx_borders_country_m49 ON country_borders(country_m49)')
 
+    # Create child_mortality table
+    print("👶 Creating child_mortality table...")
+    cursor.execute('''
+        CREATE TABLE child_mortality (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            country_code TEXT NOT NULL,
+            country_name TEXT NOT NULL,
+            year INTEGER NOT NULL,
+            mortality_rate REAL NOT NULL,
+            UNIQUE(country_code, year)
+        )
+    ''')
+
+    # Create index for faster lookups
+    cursor.execute('CREATE INDEX idx_mortality_country_code ON child_mortality(country_code)')
+    cursor.execute('CREATE INDEX idx_mortality_year ON child_mortality(year)')
+
     # Insert countries from M49 data
     print(f"🌍 Inserting {len(m49_countries)} countries...")
     for country in m49_countries:
@@ -935,6 +952,42 @@ def init_database():
 
     print(f"✅ Inserted {len(borders_data)} border relationships")
 
+    # Insert child mortality data
+    child_mortality_csv = os.path.join('data', 'child-mortality.csv')
+    if os.path.exists(child_mortality_csv):
+        print(f"👶 Reading child mortality data from {child_mortality_csv}...")
+        mortality_count = 0
+        skipped_count = 0
+        with open(child_mortality_csv, 'r', encoding='utf-8') as f:
+            reader = csv.DictReader(f)
+            for row in reader:
+                # Filter: Only include data from 1989 onwards
+                year = int(row['Year'])
+                if year < 1989:
+                    skipped_count += 1
+                    continue
+
+                # Filter: Only include countries with alpha codes (ISO codes)
+                country_code = row['Code'].strip()
+                if not country_code or len(country_code) != 3 or not country_code.isalpha():
+                    skipped_count += 1
+                    continue
+
+                cursor.execute('''
+                    INSERT OR REPLACE INTO child_mortality (country_code, country_name, year, mortality_rate)
+                    VALUES (?, ?, ?, ?)
+                ''', (
+                    country_code,
+                    row['Entity'],
+                    year,
+                    float(row['Child mortality rate'])
+                ))
+                mortality_count += 1
+
+        print(f"✅ Inserted {mortality_count} child mortality records (skipped {skipped_count} records before 1989 or without valid ISO codes)")
+    else:
+        print(f"⚠️  Child mortality CSV not found, skipping child mortality import")
+
     conn.commit()
 
     # Export tables to CSV
@@ -947,6 +1000,7 @@ def init_database():
     export_table_to_csv(conn, 'public_domain_images', EXPORTS_DIR)
     export_table_to_csv(conn, 'met_images', EXPORTS_DIR)
     export_table_to_csv(conn, 'country_borders', EXPORTS_DIR)
+    export_table_to_csv(conn, 'child_mortality', EXPORTS_DIR)
 
     conn.close()
 

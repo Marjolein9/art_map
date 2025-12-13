@@ -32,6 +32,7 @@ from flask_cors import CORS
 import random  # For selecting random country in quiz
 import os  # For checking if database file exists
 from io import BytesIO  # For serving images from memory
+import csv  # For reading CSV files
 
 # Image processing
 from PIL import Image
@@ -461,6 +462,66 @@ def get_empty_countries():
     return jsonify({
         'empty_countries': empty_countries,
         'count': len(empty_countries)
+    })
+
+
+@app.route('/api/child-mortality/<country_code>', methods=['GET'])
+def get_child_mortality(country_code):
+    """
+    Get child mortality data for a specific country.
+
+    HTTP Method: GET
+    URL: http://localhost:5000/api/child-mortality/<country_code>
+
+    Returns: JSON with 1989 and 2023 child mortality rates and the difference
+    """
+    conn = get_db_connection()
+    cursor = conn.cursor()
+
+    # Get all mortality data for this country
+    cursor.execute('''
+        SELECT year, mortality_rate
+        FROM child_mortality
+        WHERE country_code = ?
+        ORDER BY year
+    ''', (country_code,))
+
+    rows = cursor.fetchall()
+    conn.close()
+
+    if not rows:
+        return jsonify({'error': f'No data found for country code: {country_code}'}), 404
+
+    # Convert to dictionary
+    mortality_data = {row['year']: row['mortality_rate'] for row in rows}
+
+    # Find 1989 or next available year
+    start_year = None
+    start_rate = None
+    for year in range(1989, 2024):
+        if year in mortality_data:
+            start_year = year
+            start_rate = mortality_data[year]
+            break
+
+    # Get 2023 data
+    end_year = 2023
+    end_rate = mortality_data.get(2023)
+
+    if start_rate is None or end_rate is None:
+        return jsonify({'error': 'Insufficient data for comparison'}), 404
+
+    # Calculate difference (keep precision for display)
+    difference = end_rate - start_rate
+
+    return jsonify({
+        'country_code': country_code,
+        'start_year': start_year,
+        'start_rate': start_rate,
+        'end_year': end_year,
+        'end_rate': end_rate,
+        'difference': difference,
+        'candle_count': abs(round(difference))  # Round only for candle count
     })
 
 

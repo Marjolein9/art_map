@@ -167,6 +167,20 @@ export const fetchEmptyCountries = async () => {
 };
 
 /**
+ * Fetch child mortality data for a specific country
+ * @param {string} iso3 - Country ISO3 code
+ * @returns {object} - {start_year, start_rate, end_year, end_rate, difference, candle_count}
+ */
+export const fetchChildMortality = async (iso3) => {
+  const response = await fetch(`${API_URL}/child-mortality/${iso3}`);
+  if (!response.ok) {
+    throw new Error('Child mortality data not available');
+  }
+  const data = await response.json();
+  return data;
+};
+
+/**
  * Health check endpoint
  */
 export const checkHealth = async () => {

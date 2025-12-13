@@ -303,8 +303,15 @@ const WorldMap = ({
     const name = getCountryName(polygon.properties);
 
     if (!iso3) {
-      console.warn('⚠️ Could not determine ISO code for clicked country:', polygon.properties);
-      console.log('ℹ️ Country name:', name, '- This country may not have artwork data available');
+      console.warn('⚠️ Could not determine ISO code for clicked country');
+      console.log('📋 Debug info:', {
+        name,
+        hasId: !!polygon.id,
+        hasPropsId: !!polygon.properties?.id,
+        id: polygon.id,
+        propsId: polygon.properties?.id,
+        properties: polygon.properties
+      });
       // Still allow the click to proceed - let the artwork component handle missing data
       onCountryClick(null);
       return;

@@ -1,11 +1,13 @@
 import { useState, useEffect, useRef } from 'react';
-import { fetchImages } from '../services/api';
+import { fetchImages, fetchChildMortality } from '../services/api';
+import Candles from './Candles';
 
 const ArtworkInfoBar = ({ countryISO, countryName, colors, mode, answerSubmitted, isCorrectAnswer, onClose, onNext }) => {
   const [imagesByCollection, setImagesByCollection] = useState({});
   const [loading, setLoading] = useState(false);
   const [collapsedTypes, setCollapsedTypes] = useState({});
   const [currentImageIndex, setCurrentImageIndex] = useState({});
+  const [mortalityData, setMortalityData] = useState(null);
   const imageRefs = useRef({});
 
   // Fetch images from API when country changes
@@ -46,6 +48,24 @@ const ArtworkInfoBar = ({ countryISO, countryName, colors, mode, answerSubmitted
         console.error('Error fetching images:', err);
         setImagesByCollection({});
         setLoading(false);
+      });
+  }, [countryISO]);
+
+  // Fetch child mortality data when country changes
+  useEffect(() => {
+    if (!countryISO || countryISO === null) {
+      setMortalityData(null);
+      return;
+    }
+
+    fetchChildMortality(countryISO)
+      .then(data => {
+        setMortalityData(data);
+        console.log('📊 Child mortality data for', countryISO, ':', data);
+      })
+      .catch(err => {
+        console.log('No child mortality data available for', countryISO);
+        setMortalityData(null);
       });
   }, [countryISO]);
 
@@ -319,7 +339,16 @@ const ArtworkInfoBar = ({ countryISO, countryName, colors, mode, answerSubmitted
         '--background-color': colors.background
       }}
     >
-      <div className="artwork-info-header">
+      <div className="artwork-info-header" style={{
+        position: 'sticky',
+        top: 0,
+        backgroundColor: 'var(--card-bg)',
+        zIndex: 10,
+        paddingTop: '15px',
+        paddingBottom: '10px',
+        marginBottom: '10px',
+        borderBottom: '1px solid var(--border-color)'
+      }}>
         <h3 className="artwork-info-title">
           {mode === 'quiz' && answerSubmitted && isCorrectAnswer ? (
             `✓ Correct: ${countryName || countryISO}`
@@ -459,6 +488,70 @@ const ArtworkInfoBar = ({ countryISO, countryName, colors, mode, answerSubmitted
       <div className="artwork-count-footer">
         Showing <strong>{collections.length}</strong> collection{collections.length !== 1 ? 's' : ''}
       </div>
+
+      {/* Child Mortality Section */}
+      {mortalityData && (
+        <div className="mortality-section" style={{
+          padding: '20px',
+          borderTop: '1px solid var(--border-color)',
+          marginTop: '10px'
+        }}>
+          <div style={{
+            fontSize: '14px',
+            marginBottom: '12px',
+            display: 'flex',
+            flexWrap: 'wrap',
+            alignItems: 'center',
+            gap: '10px'
+          }}>
+            <strong>Child Mortality Progress</strong>
+            <span>{mortalityData.start_year}: {mortalityData.start_rate.toFixed(2)}%</span>
+            <span>{mortalityData.end_year}: {mortalityData.end_rate.toFixed(2)}%</span>
+            <span>Change: {mortalityData.difference.toFixed(2)}%</span>
+          </div>
+          {mortalityData.candle_count > 0 && (
+            <Candles count={mortalityData.candle_count} />
+          )}
+          <div style={{
+            fontSize: '11px',
+            marginTop: '12px',
+            color: 'var(--text-color)',
+            opacity: 0.7
+          }}>
+            <div>
+              Candle design by{' '}
+              <a
+                href="https://codepen.io/shorinamaria/pen/VbepBe"
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{ color: 'inherit', textDecoration: 'underline' }}
+              >
+                shorinamaria
+              </a>
+              {' '}and{' '}
+              <a
+                href="https://codepen.io/mirichan/pen/jEBmyG"
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{ color: 'inherit', textDecoration: 'underline' }}
+              >
+                mirichan
+              </a>
+            </div>
+            <div style={{ marginTop: '4px' }}>
+              Data: Gapminder (2015); UN Inter-agency Group for Child Mortality Estimation (2025) – processed by Our World in Data.{' '}
+              <a
+                href="https://ourworldindata.org/child-mortality-big-problem-in-brief"
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{ color: 'inherit', textDecoration: 'underline' }}
+              >
+                Read more
+              </a>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
