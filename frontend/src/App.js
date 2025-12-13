@@ -3,7 +3,7 @@ import './styles/App.css';
 import './styles/components.css';  // Import centralized component styles
 import WorldMap from './components/WorldMap';
 import ArtworkInfoBar from './components/ArtworkInfoBar';
-import { COLOR_SCHEMES } from './styles/colorSchemes';
+import COLOR_SCHEME from './styles/colorSchemes';
 import { useQuiz } from './hooks/useQuiz';
 import { fetchCountries } from './services/api';
 
@@ -17,7 +17,7 @@ function App() {
   const [answerSubmitted, setAnswerSubmitted] = useState(false); // Track if an answer was submitted
 
   // Use vintage color scheme (1900s)
-  const COLORS = COLOR_SCHEMES.vintage;
+  const COLORS = COLOR_SCHEME;
 
   // Fetch all countries for name lookup
   useEffect(() => {

@@ -3,7 +3,7 @@ import Globe from 'react-globe.gl';
 import { getCountryIsoCode, getCountryName, initializeCountryMapping } from '../utils/countryCodeMapping';
 import { REGION_VIEWS } from '../config/regions';
 import { loadTopoJSON } from '../utils/topoJsonLoader';
-import { fetchCountries, fetchNeighbors, fetchSimilarIslands, fetchEmptyCountries } from '../services/api';
+import { fetchCountries, fetchNeighbors, fetchSimilarIslands } from '../services/api';
 
 const WorldMap = ({
   onCountryClick,
@@ -27,7 +27,6 @@ const WorldMap = ({
   const previousRegionRef = useRef(null);
   const [clickedCountry, setClickedCountry] = useState(null);
   const [hintNeighborsM49, setHintNeighborsM49] = useState([]);
-  const [emptyCountries, setEmptyCountries] = useState(new Set());
   const [globeDimensions, setGlobeDimensions] = useState({ width: 900, height: 600 });
   const [hintsEnabled, setHintsEnabled] = useState(false);
 
@@ -113,21 +112,6 @@ const WorldMap = ({
     };
 
     loadData();
-  }, []);
-
-  // Fetch list of countries with no images
-  useEffect(() => {
-    const loadEmptyCountries = async () => {
-      try {
-        const emptyList = await fetchEmptyCountries();
-        setEmptyCountries(new Set(emptyList));
-        console.log(`📭 Loaded ${emptyList.length} empty countries (no images)`);
-      } catch (err) {
-        console.error('Error fetching empty countries:', err);
-      }
-    };
-
-    loadEmptyCountries();
   }, []);
 
   // Handle incorrect answer - show border hints
@@ -257,44 +241,6 @@ const WorldMap = ({
       );
     }
   }, [region]);
-
-  // Get country fill color based on game state
-  const getCountryColor = () => {
-    // Make countries completely transparent - only show outlines
-    return 'rgba(0, 0, 0, 0)';
-  };
-
-  // Get border color based on hover and game status
-  const getBorderColor = (country) => {
-    const iso3 = getCountryIsoCode(country);
-    if (!iso3) return COLORS.border;
-
-    // If this country was just clicked and got a result
-    if (clickedCountry === iso3) {
-      if (gameStatus === 'correct') return COLORS.correct;
-      if (gameStatus === 'incorrect') return COLORS.incorrect;
-    }
-
-    // Hint: Highlight borders of neighboring countries using M49 codes (highest priority)
-    const m49 = country.id || country.properties?.id;
-    if (m49 && hintNeighborsM49.includes(String(m49))) {
-      return COLORS.correct; // Use bright color for hint borders
-    }
-
-    // If hovering over this country
-    if (country === hoverD) {
-      return COLORS.selected; // Highlight border on hover
-    }
-
-    // Empty countries (no images) - show with dimmer border
-    if (emptyCountries.has(iso3)) {
-      return 'rgba(150, 150, 150, 0.3)'; // Dimmer, more transparent border
-    }
-
-    // Default border color
-    return COLORS.border;
-  };
-
   // Handle country click
   const handlePolygonClick = (polygon) => {
     if (!polygon || !polygon.properties) return;

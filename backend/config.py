@@ -79,3 +79,24 @@ PORT = 5000
 #   - Better performance
 # IMPORTANT: Always set to False in production!
 DEBUG = True
+
+# =============================================================================
+# IMAGE PROCESSING CONFIGURATION
+# =============================================================================
+
+# MAX_IMAGE_WIDTH: Maximum width for processed images
+# Images wider than this will be resized while maintaining aspect ratio
+MAX_IMAGE_WIDTH = 800
+
+# MAX_IMAGE_DIMENSION: Maximum dimension (width or height) for images
+# Used during image optimization to keep file sizes reasonable
+MAX_IMAGE_DIMENSION = 1200
+
+# JPEG_QUALITY: JPEG compression quality (0-100)
+# Higher = better quality but larger files
+# 85 is a good balance between quality and file size
+JPEG_QUALITY = 85
+
+# API_REQUEST_DELAY: Delay between API requests (in seconds)
+# Used when fetching data from external APIs to avoid rate limiting
+API_REQUEST_DELAY = 0.1

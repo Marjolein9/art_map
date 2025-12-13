@@ -157,16 +157,6 @@ export const fetchSimilarIslands = async (iso3) => {
 };
 
 /**
- * Fetch list of countries with no images
- * @returns {array} - Array of ISO3 codes for countries without images
- */
-export const fetchEmptyCountries = async () => {
-  const response = await fetch(`${API_URL}/countries/empty`);
-  const data = await response.json();
-  return data.empty_countries;
-};
-
-/**
  * Fetch child mortality data for a specific country
  * @param {string} iso3 - Country ISO3 code
  * @returns {object} - {start_year, start_rate, end_year, end_rate, difference, candle_count}
@@ -176,15 +166,6 @@ export const fetchChildMortality = async (iso3) => {
   if (!response.ok) {
     throw new Error('Child mortality data not available');
   }
-  const data = await response.json();
-  return data;
-};
-
-/**
- * Health check endpoint
- */
-export const checkHealth = async () => {
-  const response = await fetch(`${API_URL}/health`);
   const data = await response.json();
   return data;
 };

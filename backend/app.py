@@ -32,7 +32,6 @@ from flask_cors import CORS
 import random  # For selecting random country in quiz
 import os  # For checking if database file exists
 from io import BytesIO  # For serving images from memory
-import csv  # For reading CSV files
 
 # Image processing
 from PIL import Image
@@ -521,7 +520,7 @@ def get_child_mortality(country_code):
         'end_year': end_year,
         'end_rate': end_rate,
         'difference': difference,
-        'candle_count': abs(round(difference))  # Round only for candle count
+        'candle_count': abs(difference)  # Preserve decimal for fractional candle rendering
     })
 
 
@@ -548,7 +547,7 @@ def health():
     cursor.execute('SELECT COUNT(*) as count FROM countries')
     countries_count = cursor.fetchone()['count']
 
-    # Count images from all three collections
+    # Count images from all four collections (Albert Kahn, Children in Art, Public Domain Review, Met Museum)
     cursor.execute('SELECT COUNT(*) as count FROM albert_kahn_images')
     albert_kahn_count = cursor.fetchone()['count']
 
@@ -557,6 +556,9 @@ def health():
 
     cursor.execute('SELECT COUNT(*) as count FROM public_domain_images')
     public_domain_count = cursor.fetchone()['count']
+
+    cursor.execute('SELECT COUNT(*) as count FROM met_images')
+    met_count = cursor.fetchone()['count']
 
     conn.close()
 
@@ -568,7 +570,8 @@ def health():
         'albert_kahn_count': albert_kahn_count,
         'children_art_count': children_art_count,
         'public_domain_count': public_domain_count,
-        'total_images': albert_kahn_count + children_art_count + public_domain_count
+        'met_count': met_count,
+        'total_images': albert_kahn_count + children_art_count + public_domain_count + met_count
     })
 
 

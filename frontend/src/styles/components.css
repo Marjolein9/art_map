@@ -248,17 +248,6 @@
   background: rgba(230, 230, 230, 0.9);
 }
 
-@keyframes slideIn {
-  from {
-    opacity: 0;
-    transform: translateY(-20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
 /* Header with title and close button */
 .artwork-info-header {
   display: flex;
@@ -1017,4 +1006,45 @@ input:checked + .toggle-slider:before {
   .map-container {
     padding: 15px;
   }
+}
+
+/* ==============================================================================
+   ADDITIONAL COMPONENT STYLES
+   ============================================================================== */
+
+/* Sticky header in artwork info bar */
+.artwork-info-header {
+  position: sticky;
+  top: 0;
+  background-color: var(--card-bg);
+  z-index: 10;
+  padding-top: 15px;
+  padding-bottom: 10px;
+  margin-bottom: 10px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+/* Child mortality section */
+.mortality-section {
+  padding: 20px;
+  border-top: 1px solid var(--border-color);
+  margin-top: 10px;
+}
+
+/* Mortality statistics container */
+.mortality-stats {
+  font-size: 14px;
+  margin-bottom: 12px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+}
+
+/* Mortality credits/attribution */
+.mortality-credits {
+  font-size: 11px;
+  margin-top: 12px;
+  color: var(--text-color);
+  opacity: 0.7;
 }

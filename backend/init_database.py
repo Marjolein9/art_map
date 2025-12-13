@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 Database initialization script
-Reads UN M49 country data and artworks CSV to populate the database
+Reads UN M49 country data, artworks CSVs, borders, child mortality data, and Met Museum collection to populate the database
 Run this whenever data is updated: python3 init_database.py
 """
 
@@ -23,7 +23,9 @@ from config import (
     ALBERT_KAHN_CSV_PATH,
     CHILDREN_ARTWORK_CSV_PATH,
     PUBLIC_DOMAIN_CSV_PATH,
-    MET_METADATA_CSV_PATH
+    MET_METADATA_CSV_PATH,
+    MAX_IMAGE_DIMENSION,
+    JPEG_QUALITY
 )
 
 # UN M49 Region code to continent name
@@ -73,9 +75,7 @@ SUBREGION_NAMES = {
 }
 
 # Image processing configuration
-MAX_IMAGE_SIZE_MB = 1
-MAX_DIMENSION = 1200
-JPEG_QUALITY = 85
+MAX_IMAGE_SIZE_MB = 1  # Maximum file size in MB before optimization
 
 def get_file_size_mb(filepath):
     """Get file size in megabytes."""
