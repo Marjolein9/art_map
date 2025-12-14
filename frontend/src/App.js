@@ -8,7 +8,7 @@ import { useQuiz } from './hooks/useQuiz';
 import { fetchCountries } from './services/api';
 
 function App() {
-  const { targetCountry, loading, gameStatus, handleCountryClick, fetchNewCountry } = useQuiz();
+  const { targetCountry, loading, gameStatus, handleCountryClick, fetchNewCountry, resetGameStatus } = useQuiz();
   const [mode, setMode] = useState('quiz'); // 'quiz' or 'explore'
   const [exploreCountry, setExploreCountry] = useState(null);
   const [infoBarOpen, setInfoBarOpen] = useState(false); // Start with info bar closed in quiz mode
@@ -61,7 +61,7 @@ function App() {
     setInfoBarOpen(false);
     setClickedCountry(null); // Clear clicked country when closing
     setAnswerSubmitted(false); // Reset answer submitted state
-    // Note: gameStatus stays 'incorrect', hints persist
+    resetGameStatus(); // Reset game status to 'playing' so user can try again
   };
 
   // Handle next country in quiz mode
@@ -72,11 +72,21 @@ function App() {
     fetchNewCountry();
   };
 
-  // Handle backdrop click
+  // Handle backdrop click (clicking outside info bar)
   const handleBackdropClick = (e) => {
     // Only close if clicking the backdrop itself, not the info bar content
     if (e.target === e.currentTarget) {
-      handleCloseInfoBar();
+      if (mode === 'explore') {
+        handleCloseInfoBar();
+      } else if (mode === 'quiz') {
+        // In quiz mode: if correct answer, go to next; if incorrect, try again
+        const isCorrect = clickedCountry === targetCountry?.iso;
+        if (isCorrect) {
+          handleNextCountry();
+        } else {
+          handleCloseInfoBar();
+        }
+      }
     }
   };
 
@@ -145,7 +155,7 @@ function App() {
 
                   {/* Artwork Info Bar - Overlay centered over map */}
                   {infoBarOpen && currentCountry.iso && (
-                    <div className="artwork-backdrop" onClick={mode === 'explore' ? handleBackdropClick : undefined}>
+                    <div className="artwork-backdrop" onClick={handleBackdropClick}>
                       <div className="artwork-overlay">
                         <ArtworkInfoBar
                           countryISO={currentCountry.iso}

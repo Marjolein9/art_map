@@ -27,27 +27,31 @@ const WorldMap = ({
   const previousRegionRef = useRef(null);
   const [clickedCountry, setClickedCountry] = useState(null);
   const [hintNeighborsM49, setHintNeighborsM49] = useState([]);
-  const [globeDimensions, setGlobeDimensions] = useState({ width: 900, height: 600 });
+  const [globeDimensions, setGlobeDimensions] = useState({
+    width: window.innerWidth - 60,
+    height: window.innerHeight - 120
+  });
   const [hintsEnabled, setHintsEnabled] = useState(false);
 
   // Handle window resize for responsive globe
   useEffect(() => {
     const updateGlobeDimensions = () => {
       const width = window.innerWidth;
+      const height = window.innerHeight;
       let globeWidth, globeHeight;
 
       if (width <= 768) {
-        // Mobile
-        globeWidth = Math.min(width - 40, 600);
-        globeHeight = 400;
+        // Mobile - account for controls and padding
+        globeWidth = width - 40;
+        globeHeight = height - 100;
       } else if (width <= 1024) {
         // Tablet
-        globeWidth = Math.min(width - 80, 800);
-        globeHeight = 500;
+        globeWidth = width - 60;
+        globeHeight = height - 120;
       } else {
-        // Desktop - max 900px width to match container
-        globeWidth = Math.min(width - 100, 900);
-        globeHeight = 600;
+        // Desktop - full screen with minimal margins
+        globeWidth = width - 60;
+        globeHeight = height - 120;
       }
 
       setGlobeDimensions({ width: globeWidth, height: globeHeight });

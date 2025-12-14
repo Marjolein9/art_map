@@ -1,0 +1,32 @@
+name: Keep Backend Alive
+
+# This workflow prevents Render free tier from sleeping after 15 min inactivity
+# Pings the backend every 14 minutes to keep it warm
+# Result: No cold starts, fast response times for users
+
+on:
+  schedule:
+    # Run every 14 minutes (*/14 means "every 14 minutes")
+    # Cron format: minute hour day month weekday
+    # */14 * * * * = every 14 minutes, every hour, every day
+    - cron: '*/14 * * * *'
+
+  # Allow manual triggering from GitHub Actions tab (for testing)
+  workflow_dispatch:
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Ping backend health endpoint
+        run: |
+          echo "Pinging backend to keep it alive..."
+          curl -f https://art-map-backend.onrender.com/api/health || echo "Ping failed, but that's okay"
+          echo "Ping completed at $(date)"
+
+# Notes:
+# - Update the URL above with your actual Render backend URL
+# - GitHub Actions free tier: 2000 minutes/month
+# - This workflow uses ~2 minutes/month (14-minute intervals)
+# - Completely free solution to prevent cold starts!

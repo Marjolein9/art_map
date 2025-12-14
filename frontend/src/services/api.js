@@ -32,8 +32,10 @@
  */
 
 // Backend API base URL
-// All endpoints start with this URL
-const API_URL = 'http://localhost:5000/api';
+// Uses environment variable for production deployment (Vercel/Netlify)
+// Falls back to localhost for local development
+// Set REACT_APP_API_URL in .env.production for production
+const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
 
 /**
  * Fetch a random country that has artwork.

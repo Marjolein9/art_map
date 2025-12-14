@@ -4,15 +4,13 @@ Find all countries that have no images in any collection
 and export them to a CSV file
 """
 
-import sqlite3
 import csv
-from config import DATABASE_PATH
+from db_utils import get_db_connection
 
 def find_empty_countries():
     """Find countries with no images in any collection"""
 
-    conn = sqlite3.connect(DATABASE_PATH)
-    conn.row_factory = sqlite3.Row
+    conn = get_db_connection()
     cursor = conn.cursor()
 
     # Get all countries

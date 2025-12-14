@@ -1,76 +1,96 @@
 """
-Database Utility Functions
+Database Utility Functions - PostgreSQL Only
 
-This module provides reusable database connection functions.
-Instead of repeating the same database connection code in every file,
-we centralize it here.
+This module provides PostgreSQL database connection functions.
+All environments (local and production) use PostgreSQL.
 
 Why this is useful:
 1. DRY (Don't Repeat Yourself) - write connection code once
 2. Consistency - all connections configured the same way
 3. Easy to modify - change in one place affects everywhere
 """
-import sqlite3
-from config import DATABASE_PATH
+import os
+import psycopg2
+from psycopg2.extras import RealDictCursor
 
 
 def get_db_connection():
     """
-    Get SQLite database connection with row factory for dictionary results.
+    Get PostgreSQL database connection with dictionary results.
 
-    What this function does:
-    1. Connects to the SQLite database file at DATABASE_PATH
-    2. Configures the connection to return rows as dict-like objects
-    3. Returns the connection object for use
+    Deployment Strategy:
+    -------------------
+    - **Local Development:** Uses local PostgreSQL (createdb artmap_dev)
+    - **Production (Render):** Uses Render PostgreSQL (DATABASE_URL env var)
+
+    Both environments use the same PostgreSQL database engine.
+
+    How it works:
+    1. Read DATABASE_URL environment variable
+    2. Convert postgres:// to postgresql:// if needed (Render compatibility)
+    3. Connect to PostgreSQL with RealDictCursor for dict-like results
 
     Returns:
-        sqlite3.Connection: Database connection object
+        psycopg2.Connection: Database connection with dict cursor
 
     Example usage:
-        # In any file that needs database access:
         from db_utils import get_db_connection
 
         conn = get_db_connection()
         cursor = conn.cursor()
-        cursor.execute('SELECT * FROM countries')
-        countries = cursor.fetchall()
+        cursor.execute('SELECT * FROM countries WHERE iso3 = %s', ('USA',))
+        country = cursor.fetchone()
         conn.close()
 
-        # Now 'countries' is a list of dict-like objects:
-        # [{'iso3': 'USA', 'name': 'United States', ...}, ...]
+        # Returns: {'iso3': 'USA', 'name': 'United States', ...}
 
-    What is Row Factory?
+    PostgreSQL Setup:
+    ----------------
+    **Local Development:**
+        brew install postgresql
+        createdb artmap_dev
+        export DATABASE_URL="postgresql://localhost/artmap_dev"
+        python3 init_database_postgres.py
+
+    **Production (Render):**
+        DATABASE_URL is automatically provided by Render when you link the database
+
+    URL Format Handling:
     -------------------
-    By default, SQLite returns tuples:
-        ('USA', 'United States', 'Americas', 'North America')
+    - Render provides: postgres://user:pass@host:port/db
+    - psycopg2 requires: postgresql://user:pass@host:port/db
+    - This function handles the conversion automatically
 
-    With row_factory = sqlite3.Row, it returns dict-like Row objects:
-        {'iso3': 'USA', 'name': 'United States', 'continent': 'Americas', ...}
-
-    This makes code more readable:
-        # Without row factory (tuple):
-        country_name = row[1]  # What is index 1?
-
-        # With row factory (dict-like):
-        country_name = row['name']  # Much clearer!
-
-    Note about connections:
-    ----------------------
-    Always close connections when done to free resources:
-        conn.close()
-
-    Or use context manager (preferred):
+    Context Manager Support:
+    -----------------------
+    Always close connections to avoid resource leaks:
         with get_db_connection() as conn:
             cursor = conn.cursor()
-            # ... do database work ...
-        # Connection automatically closed
+            # ... do work ...
+        # Automatically closed
     """
-    # sqlite3.connect() creates a connection to the database file
-    # If file doesn't exist, it would create it (but we want it to exist already)
-    conn = sqlite3.connect(DATABASE_PATH)
+    # Get DATABASE_URL from environment
+    database_url = os.getenv('DATABASE_URL')
 
-    # Set row factory to return dict-like Row objects instead of tuples
-    # This makes results easier to work with in Python
-    conn.row_factory = sqlite3.Row
+    if not database_url:
+        raise EnvironmentError(
+            "DATABASE_URL environment variable not set!\n"
+            "\n"
+            "Local development:\n"
+            "  1. Install PostgreSQL: brew install postgresql\n"
+            "  2. Create database: createdb artmap_dev\n"
+            "  3. Set DATABASE_URL: export DATABASE_URL='postgresql://localhost/artmap_dev'\n"
+            "  4. Initialize database: python3 backend/init_database_postgres.py\n"
+            "\n"
+            "Production (Render):\n"
+            "  DATABASE_URL is automatically provided when you link a PostgreSQL database"
+        )
+
+    # Handle Render's postgres:// URL format (convert to postgresql://)
+    if database_url.startswith('postgres://'):
+        database_url = database_url.replace('postgres://', 'postgresql://', 1)
+
+    # Connect to PostgreSQL with RealDictCursor for dict-like results
+    conn = psycopg2.connect(database_url, cursor_factory=RealDictCursor)
 
     return conn

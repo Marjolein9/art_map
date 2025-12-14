@@ -24,7 +24,7 @@
 }
 
 .app-container {
-  max-width: 1200px;
+  width: 100%;
   margin: 0 auto;
 }
 
@@ -57,7 +57,7 @@
   width: 100%;
 }
 
-/* Backdrop - Full screen overlay for clicking outside (explore mode only) */
+/* Backdrop - Full screen overlay for clicking outside to close info bar */
 .artwork-backdrop {
   position: absolute;
   top: 20px;
@@ -82,7 +82,7 @@
   }
 }
 
-/* Artwork overlay - Centered over map (explore mode only) */
+/* Artwork overlay - Centered info bar container */
 .artwork-overlay {
   z-index: 10000;
   width: 90%;
@@ -199,7 +199,7 @@
 .globe-container {
   position: relative;
   width: 100%;
-  min-height: 600px;
+  min-height: calc(100vh - 120px);
   border-radius: 8px;
   overflow: hidden;
   display: flex;
@@ -686,7 +686,7 @@
 .globe-position-container {
   position: relative;
   width: 100%;
-  min-height: 600px;
+  min-height: calc(100vh - 120px);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -987,7 +987,7 @@ input:checked + .toggle-slider:before {
   }
 
   .globe-container {
-    min-height: 400px;
+    min-height: calc(100vh - 100px);
   }
 
   .artwork-overlay {

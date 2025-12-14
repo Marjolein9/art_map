@@ -9,6 +9,11 @@ export const useQuiz = () => {
   const [loading, setLoading] = useState(true);
   const [gameStatus, setGameStatus] = useState('playing'); // 'playing', 'correct', 'incorrect'
 
+  // Function to reset game status back to playing (for retrying after incorrect answer)
+  const resetGameStatus = () => {
+    setGameStatus('playing');
+  };
+
   // Fetch a random country for the quiz
   const fetchNewCountry = async () => {
     try {
@@ -72,6 +77,7 @@ export const useQuiz = () => {
     loading,
     gameStatus,
     handleCountryClick,
-    fetchNewCountry
+    fetchNewCountry,
+    resetGameStatus
   };
 };

@@ -5,13 +5,19 @@ This file centralizes all configuration values used across the backend.
 Instead of hardcoding paths and settings in multiple files, we define them
 once here and import them where needed.
 
+Supports both local development (SQLite) and production deployment (PostgreSQL).
+
 Example usage in other files:
-    from config import DATABASE_PATH, PORT
+    from config import DATABASE_PATH, PORT, ALLOWED_ORIGINS
 
     conn = sqlite3.connect(DATABASE_PATH)
     app.run(port=PORT)
 """
 import os
+from dotenv import load_dotenv
+
+# Load environment variables from .env file (local development)
+load_dotenv()
 
 # =============================================================================
 # DIRECTORY PATHS
@@ -64,11 +70,12 @@ MET_METADATA_CSV_PATH = os.path.join(BASE_DIR, 'data', 'met_metadata.csv')
 # =============================================================================
 
 # PORT: Which port the Flask server listens on
-# Default is 5000, which means the server runs at http://localhost:5000
-# You can change this if port 5000 is already in use
-PORT = 5000
+# Environment variable: PORT (e.g., Render sets this automatically)
+# Default: 5000 for local development
+PORT = int(os.getenv('PORT', 5000))
 
 # DEBUG: Enable Flask's debug mode
+# Environment variable: DEBUG (set to 'true' or 'false')
 # When True:
 #   - Server auto-reloads when you change code
 #   - Detailed error messages in browser
@@ -78,7 +85,20 @@ PORT = 5000
 #   - Generic error messages (more secure)
 #   - Better performance
 # IMPORTANT: Always set to False in production!
-DEBUG = True
+DEBUG = os.getenv('DEBUG', 'True').lower() in ('true', '1', 'yes')
+
+# ALLOWED_ORIGINS: CORS allowed origins for production
+# Environment variable: ALLOWED_ORIGINS (comma-separated list)
+# Examples:
+#   - Local: ALLOWED_ORIGINS=http://localhost:3000
+#   - Production: ALLOWED_ORIGINS=https://art-map.vercel.app,https://art-map-preview.vercel.app
+#   - Wildcard (dev only): ALLOWED_ORIGINS=*
+# Default: * (allow all - only for development!)
+ALLOWED_ORIGINS_STR = os.getenv('ALLOWED_ORIGINS', '*')
+if ALLOWED_ORIGINS_STR == '*':
+    ALLOWED_ORIGINS = ['*']
+else:
+    ALLOWED_ORIGINS = [origin.strip() for origin in ALLOWED_ORIGINS_STR.split(',')]
 
 # =============================================================================
 # IMAGE PROCESSING CONFIGURATION

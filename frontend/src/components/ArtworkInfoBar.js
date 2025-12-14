@@ -189,10 +189,10 @@ const ArtworkInfoBar = ({ countryISO, countryName, colors, mode, answerSubmitted
           >
             Next →
           </button>
-        ) : mode === 'quiz' && answerSubmitted && !isCorrectAnswer && onNext ? (
+        ) : mode === 'quiz' && answerSubmitted && !isCorrectAnswer && onClose ? (
           <button
             className="artwork-next-btn"
-            onClick={onNext}
+            onClick={onClose}
             title="Try Again"
             aria-label="Try again"
           >

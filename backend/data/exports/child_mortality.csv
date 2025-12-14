@@ -6484,6 +6484,7 @@ id,country_code,country_name,year,mortality_rate
 6483,TCA,Turks and Caicos Islands,2009,0.77
 6484,TCA,Turks and Caicos Islands,2010,0.75
 6485,TCA,Turks and Caicos Islands,2011,0.74
+6629,ARE,United Arab Emirates,2015,0.77
 6486,TCA,Turks and Caicos Islands,2012,0.72
 6487,TCA,Turks and Caicos Islands,2013,0.71
 6488,TCA,Turks and Caicos Islands,2014,0.69
@@ -6627,7 +6628,6 @@ id,country_code,country_name,year,mortality_rate
 6626,ARE,United Arab Emirates,2012,0.84
 6627,ARE,United Arab Emirates,2013,0.82
 6628,ARE,United Arab Emirates,2014,0.79
-6629,ARE,United Arab Emirates,2015,0.77
 6630,ARE,United Arab Emirates,2016,0.73
 6631,ARE,United Arab Emirates,2017,0.7
 6632,ARE,United Arab Emirates,2018,0.67

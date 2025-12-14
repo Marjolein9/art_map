@@ -38,17 +38,20 @@ from PIL import Image
 
 # Our custom modules (from other files in backend/)
 from db_utils import get_db_connection  # Database connection helper
-from config import DATABASE_PATH, PORT, DEBUG  # Configuration constants
+from config import PORT, DEBUG  # Configuration constants
 
 # Create Flask application instance
 # __name__ tells Flask the name of the current module
 # This helps Flask know where to look for resources (templates, static files)
 app = Flask(__name__)
 
-# Enable CORS for all routes
-# This allows the React frontend (port 3000) to make requests to this backend (port 5000)
-# Without this, browser would block the requests due to Same-Origin Policy
-CORS(app)
+# Enable CORS for allowed origins
+# In development: allows localhost:3000
+# In production: allows only configured frontend URLs (Vercel)
+# ALLOWED_ORIGINS is configured in config.py from environment variable
+from config import ALLOWED_ORIGINS
+
+CORS(app, origins=ALLOWED_ORIGINS)
 
 # ==============================================================================
 # API ROUTES (Endpoints)
@@ -159,12 +162,12 @@ def random_country():
     # SQL INJECTION PREVENTION:
     # ? is a placeholder - prevents SQL injection attacks
     # NEVER do: f"WHERE iso3 = '{selected_iso}'" - DANGEROUS!
-    # Always use: 'WHERE iso3 = ?' with tuple parameter
+    # Always use: 'WHERE iso3 = %s' with tuple parameter
     # (selected_iso,) is a tuple with one element (comma makes it a tuple)
     cursor.execute('''
         SELECT iso3, name, continent, subregion
         FROM countries
-        WHERE iso3 = ?
+        WHERE iso3 = %s
     ''', (selected_iso,))
 
     # fetchone() gets single result (vs fetchall() which gets all results)
@@ -213,7 +216,7 @@ def get_images(alpha3):
                filepath, title_en as title, location, date,
                operator, inventory_number, page_url
         FROM albert_kahn_images
-        WHERE alpha3 = ?
+        WHERE alpha3 = %s
     ''', (alpha3,))
     albert_kahn = [dict(row) for row in cursor.fetchall()]
 
@@ -223,7 +226,7 @@ def get_images(alpha3):
                filepath, title, artist_name,
                artist_nationality, author_wikilink, work_url
         FROM children_artwork_images
-        WHERE alpha3 = ?
+        WHERE alpha3 = %s
     ''', (alpha3,))
     children_art = [dict(row) for row in cursor.fetchall()]
 
@@ -233,7 +236,7 @@ def get_images(alpha3):
                filepath, title, country, source_link,
                source_url, description
         FROM public_domain_images
-        WHERE alpha3 = ?
+        WHERE alpha3 = %s
     ''', (alpha3,))
     public_domain = [dict(row) for row in cursor.fetchall()]
 
@@ -243,7 +246,7 @@ def get_images(alpha3):
                filepath, title, artist_name, object_date,
                medium, department, culture, object_url
         FROM met_images
-        WHERE alpha3 = ?
+        WHERE alpha3 = %s
     ''', (alpha3,))
     met_museum = [dict(row) for row in cursor.fetchall()]
 
@@ -327,7 +330,7 @@ def get_neighbors(iso3):
         SELECT c.iso3, c.m49, c.name
         FROM country_borders cb
         JOIN countries c ON cb.neighbor_iso3 = c.iso3
-        WHERE cb.country_iso3 = ?
+        WHERE cb.country_iso3 = %s
         ORDER BY c.name
     ''', (iso3,))
 
@@ -359,7 +362,7 @@ def get_similar_islands(iso3):
     cursor.execute('''
         SELECT COUNT(*) as neighbor_count
         FROM country_borders
-        WHERE country_iso3 = ?
+        WHERE country_iso3 = %s
     ''', (iso3,))
 
     neighbor_count = cursor.fetchone()['neighbor_count']
@@ -378,7 +381,7 @@ def get_similar_islands(iso3):
     cursor.execute('''
         SELECT iso3, name, m49, continent, subregion
         FROM countries
-        WHERE iso3 = ?
+        WHERE iso3 = %s
     ''', (iso3,))
 
     target = cursor.fetchone()
@@ -392,8 +395,8 @@ def get_similar_islands(iso3):
     cursor.execute('''
         SELECT DISTINCT c.iso3, c.m49, c.name, c.continent, c.subregion,
                CASE
-                   WHEN c.subregion = ? THEN 1
-                   WHEN c.continent = ? THEN 2
+                   WHEN c.subregion = %s THEN 1
+                   WHEN c.continent = %s THEN 2
                    ELSE 3
                END as priority
         FROM countries c
@@ -481,7 +484,7 @@ def get_child_mortality(country_code):
     cursor.execute('''
         SELECT year, mortality_rate
         FROM child_mortality
-        WHERE country_code = ?
+        WHERE country_code = %s
         ORDER BY year
     ''', (country_code,))
 
@@ -736,29 +739,23 @@ def serve_resized(filename):
 # It won't run if you import this file as a module in another script
 
 if __name__ == '__main__':
-    # Pre-flight check: Make sure database exists before starting server
-    # Database should be created by running: python3 init_database.py
-    if not os.path.exists(DATABASE_PATH):
-        print("❌ Database not found! Please run: python3 init_database.py")
-        exit(1)  # Exit with error code 1 (non-zero = error)
-
     # Display startup information: Show how much data is loaded
     # This helps verify database was initialized correctly
     conn = get_db_connection()
     cursor = conn.cursor()
 
     # Get total counts from all image collections
-    cursor.execute('SELECT COUNT(*) FROM countries')
-    countries_count = cursor.fetchone()[0]
+    cursor.execute('SELECT COUNT(*) as count FROM countries')
+    countries_count = cursor.fetchone()['count']
 
-    cursor.execute('SELECT COUNT(*) FROM albert_kahn_images')
-    albert_kahn_count = cursor.fetchone()[0]
+    cursor.execute('SELECT COUNT(*) as count FROM albert_kahn_images')
+    albert_kahn_count = cursor.fetchone()['count']
 
-    cursor.execute('SELECT COUNT(*) FROM children_artwork_images')
-    children_art_count = cursor.fetchone()[0]
+    cursor.execute('SELECT COUNT(*) as count FROM children_artwork_images')
+    children_art_count = cursor.fetchone()['count']
 
-    cursor.execute('SELECT COUNT(*) FROM public_domain_images')
-    public_domain_count = cursor.fetchone()[0]
+    cursor.execute('SELECT COUNT(*) as count FROM public_domain_images')
+    public_domain_count = cursor.fetchone()['count']
 
     total_images = albert_kahn_count + children_art_count + public_domain_count
 
