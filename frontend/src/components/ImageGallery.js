@@ -1,3 +1,7 @@
+// Get API base URL from environment variable
+// Remove /api suffix to get the base server URL for images
+const API_BASE = (process.env.REACT_APP_API_URL || 'http://localhost:5000/api').replace('/api', '');
+
 /**
  * ImageGallery Component
  *
@@ -190,7 +194,7 @@ const ImageGallery = ({
                 ref={imageRef}
                 src={currentImage.filepath.startsWith('http')
                   ? currentImage.filepath
-                  : `http://localhost:5000/${currentImage.filepath}`}
+                  : `${API_BASE}/${currentImage.filepath}`}
                 alt={currentImage.title || 'Image'}
                 className="artwork-image"
                 loading="lazy"
