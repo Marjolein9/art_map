@@ -202,13 +202,40 @@ const ImageGallery = ({
                 style={{ backgroundColor: '#ddd' }}
                 onLoad={(e) => {
                   const img = e.target;
+
+                  // Log successful load
+                  const loadedUrl = currentImage.filepath.startsWith('http')
+                    ? currentImage.filepath
+                    : `${API_BASE}/${currentImage.filepath}`;
+
+                  console.log('✅ Image loaded successfully:', {
+                    title: currentImage.title || 'Untitled',
+                    collection: collection,
+                    filepath: currentImage.filepath,
+                    dimensions: `${img.naturalWidth}x${img.naturalHeight}`,
+                    url: loadedUrl
+                  });
+
                   if (img.naturalWidth > 2000 || img.naturalHeight > 2000) {
-                    console.warn('Large image detected:', currentImage.filepath,
+                    console.warn('⚠️ Large image detected:', currentImage.filepath,
                       `${img.naturalWidth}x${img.naturalHeight}`);
                   }
                 }}
                 onError={(e) => {
-                  console.log('Failed to load image:', currentImage.filepath);
+                  // Log detailed error information for debugging
+                  const attemptedUrl = currentImage.filepath.startsWith('http')
+                    ? currentImage.filepath
+                    : `${API_BASE}/${currentImage.filepath}`;
+
+                  console.error('❌ Image failed to load:', {
+                    title: currentImage.title || 'Untitled',
+                    collection: collection,
+                    filepath: currentImage.filepath,
+                    attemptedUrl: attemptedUrl,
+                    apiBase: API_BASE
+                  });
+
+                  // Set placeholder image
                   e.target.src = 'data:image/svg+xml,' + encodeURIComponent(`
                     <svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200">
                       <rect fill="#cccccc" width="200" height="200"/>

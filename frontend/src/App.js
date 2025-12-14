@@ -1,49 +1,149 @@
+/*
+ * REACT BASICS FOR BEGINNERS
+ * ===========================
+ * React is a JavaScript library for building user interfaces with reusable components.
+ *
+ * Key Concepts in this file:
+ *
+ * 1. COMPONENTS
+ *    - Components are reusable pieces of UI (like building blocks)
+ *    - Example: <WorldMap /> renders a 3D globe component
+ *    - App is the main component that combines all other components
+ *
+ * 2. STATE (useState)
+ *    - State is data that can change over time
+ *    - When state changes, React automatically re-renders the component
+ *    - Syntax: const [value, setValue] = useState(initialValue)
+ *    - Example: const [mode, setMode] = useState('quiz')
+ *      - mode is the current value
+ *      - setMode is the function to update it
+ *      - 'quiz' is the initial value
+ *
+ * 3. EFFECTS (useEffect)
+ *    - Run code when component mounts or when dependencies change
+ *    - Example: Fetch data from API when component loads
+ *
+ * 4. CUSTOM HOOKS (useQuiz)
+ *    - Reusable logic extracted into a function
+ *    - Returns values and functions other components can use
+ *
+ * 5. PROPS
+ *    - Data passed from parent component to child component
+ *    - Example: <WorldMap targetCountry={targetCountry?.iso} />
+ *      - targetCountry is a prop passed to WorldMap
+ */
+
+// Import React hooks for managing state and side effects
+// useState: Manage component state (data that can change)
+// useEffect: Run code when component mounts or updates
 import { useState, useEffect } from 'react';
+
+// Import CSS styles for this component
 import './styles/App.css';
-import './styles/components.css';  // Import centralized component styles
-import WorldMap from './components/WorldMap';
-import ArtworkInfoBar from './components/ArtworkInfoBar';
-import COLOR_SCHEME from './styles/colorSchemes';
-import { useQuiz } from './hooks/useQuiz';
-import { fetchCountries } from './services/api';
+import './styles/components.css';
 
+// Import child components (reusable UI pieces)
+import WorldMap from './components/WorldMap';  // 3D globe component
+import ArtworkInfoBar from './components/ArtworkInfoBar';  // Side panel showing artwork
+
+// Import configuration and utilities
+import COLOR_SCHEME from './styles/colorSchemes';  // Color palette for UI
+import { useQuiz } from './hooks/useQuiz';  // Custom hook for quiz game logic
+import { fetchCountries } from './services/api';  // API call to fetch country data
+
+/**
+ * App Component - Main component that orchestrates the entire application
+ *
+ * This component manages:
+ * - Quiz mode vs Explore mode
+ * - User interactions (country clicks, mode toggle)
+ * - Info bar visibility
+ * - Answer checking and game flow
+ */
 function App() {
-  const { targetCountry, loading, gameStatus, handleCountryClick, fetchNewCountry, resetGameStatus } = useQuiz();
-  const [mode, setMode] = useState('quiz'); // 'quiz' or 'explore'
-  const [exploreCountry, setExploreCountry] = useState(null);
-  const [infoBarOpen, setInfoBarOpen] = useState(false); // Start with info bar closed in quiz mode
-  const [countryLookup, setCountryLookup] = useState({});
-  const [clickedCountry, setClickedCountry] = useState(null); // Track clicked country for incorrect answers
-  const [answerSubmitted, setAnswerSubmitted] = useState(false); // Track if an answer was submitted
+  // ===========================================================================
+  // STATE MANAGEMENT
+  // ===========================================================================
 
-  // Use vintage color scheme (1900s)
+  // Quiz game state from custom hook
+  // This hook handles: random country selection, answer checking, game status
+  const { targetCountry, loading, gameStatus, handleCountryClick, fetchNewCountry, resetGameStatus } = useQuiz();
+
+  // Mode: 'quiz' or 'explore'
+  // Quiz mode: User guesses countries from artwork
+  // Explore mode: User browses countries and their artwork freely
+  const [mode, setMode] = useState('quiz');
+
+  // Country selected in explore mode
+  const [exploreCountry, setExploreCountry] = useState(null);
+
+  // Info bar visibility (sidebar showing artwork and info)
+  const [infoBarOpen, setInfoBarOpen] = useState(false);
+
+  // Country lookup table: { 'USA': 'United States', 'GBR': 'United Kingdom', ... }
+  // Used to quickly get country name from ISO3 code
+  const [countryLookup, setCountryLookup] = useState({});
+
+  // Track which country user clicked (for showing info even if incorrect)
+  const [clickedCountry, setClickedCountry] = useState(null);
+
+  // Track if user has submitted an answer (to show result)
+  const [answerSubmitted, setAnswerSubmitted] = useState(false);
+
+  // Use vintage color scheme (1900s themed UI colors)
   const COLORS = COLOR_SCHEME;
 
-  // Fetch all countries for name lookup
+  // ===========================================================================
+  // EFFECTS (Run once when component mounts)
+  // ===========================================================================
+
+  // Fetch all countries from API when component first loads
+  // useEffect with empty array [] means: "run once when component mounts"
+  // This is like componentDidMount in class components
   useEffect(() => {
+    // Call API to get list of all countries
     fetchCountries().then(countries => {
+      // Build a lookup object for quick name retrieval
+      // Input: [{ iso3: 'USA', name: 'United States' }, ...]
+      // Output: { 'USA': 'United States', 'GBR': 'United Kingdom', ... }
       const lookup = {};
       countries.forEach(country => {
         lookup[country.iso3] = country.name;
       });
+      // Update state with the lookup object
       setCountryLookup(lookup);
     });
-  }, []);
+  }, []); // Empty array = run only once on mount
 
-  // Handle mode toggle
+  // ===========================================================================
+  // EVENT HANDLERS (Functions that respond to user interactions)
+  // ===========================================================================
+
+  /**
+   * Toggle between Quiz mode and Explore mode
+   * Quiz mode: User guesses countries from artwork
+   * Explore mode: User clicks any country to see its artwork
+   */
   const handleModeToggle = () => {
+    // Toggle between 'quiz' and 'explore'
     const newMode = mode === 'quiz' ? 'explore' : 'quiz';
     setMode(newMode);
+
+    // Reset explore country when switching to quiz mode
     if (newMode === 'quiz') {
       setExploreCountry(null);
     }
   };
 
-  // Handle explore mode country click
+  /**
+   * Handle when user clicks a country on the globe
+   * Behavior differs based on current mode:
+   * - Explore mode: Show country's artwork
+   * - Quiz mode: Check if answer is correct
+   */
   const handleExploreClick = (countryIso) => {
-    console.log('🔍 Country clicked:', { countryIso, mode });
     if (mode === 'explore') {
-      console.log('🗺️ Setting explore country to:', countryIso);
+      // Explore mode: Show the selected country's artwork
       setExploreCountry(countryIso);
       setInfoBarOpen(true); // Open info bar when country is selected
     } else {
@@ -124,56 +224,63 @@ function App() {
         style={{ '--bg-gradient': COLORS.backgroundGradient }}
       >
         <div className="app-container">
-          {loading ? (
-            <p className="loading-message" style={{ '--text-color': COLORS.text }}>
-              Loading game...
-            </p>
-          ) : (
-            <>
-              <div className="app-content">
-                {/* Map container - Full width */}
-                <div
-                  className="map-container map-container-full"
-                  style={{
+          <div className="app-content">
+            {/* Map container - Full width */}
+            <div
+              className="map-container map-container-full"
+              style={{
+                '--card-bg': COLORS.cardBg,
+                '--glow-color': COLORS.glow,
+                '--border-color': COLORS.border
+              }}
+            >
+              <WorldMap
+                onCountryClick={handleExploreClick}
+                targetCountry={mode === 'quiz' ? targetCountry?.iso : null}
+                targetCountryName={mode === 'quiz' ? targetCountry?.name : null}
+                region={mode === 'quiz' ? (targetCountry?.subregion || targetCountry?.continent) : null}
+                gameStatus={gameStatus}
+                colors={COLORS}
+                onNewGame={fetchNewCountry}
+                onStartOver={fetchNewCountry}
+                mode={mode}
+                onModeToggle={handleModeToggle}
+              />
+
+              {/* Loading overlay - shown while quiz data is loading */}
+              {loading && mode === 'quiz' && (
+                <div className="loading-overlay">
+                  <div className="loading-content" style={{
                     '--card-bg': COLORS.cardBg,
+                    '--text-color': COLORS.text,
                     '--glow-color': COLORS.glow,
                     '--border-color': COLORS.border
-                  }}
-                >
-                  <WorldMap
-                    onCountryClick={handleExploreClick}
-                    targetCountry={mode === 'quiz' ? targetCountry?.iso : null}
-                    targetCountryName={mode === 'quiz' ? targetCountry?.name : null}
-                    region={mode === 'quiz' ? (targetCountry?.subregion || targetCountry?.continent) : null}
-                    gameStatus={gameStatus}
-                    colors={COLORS}
-                    onNewGame={fetchNewCountry}
-                    onStartOver={fetchNewCountry}
-                    mode={mode}
-                    onModeToggle={handleModeToggle}
-                  />
-
-                  {/* Artwork Info Bar - Overlay centered over map */}
-                  {infoBarOpen && currentCountry.iso && (
-                    <div className="artwork-backdrop" onClick={handleBackdropClick}>
-                      <div className="artwork-overlay">
-                        <ArtworkInfoBar
-                          countryISO={currentCountry.iso}
-                          countryName={currentCountry.name}
-                          colors={COLORS}
-                          mode={mode}
-                          answerSubmitted={answerSubmitted}
-                          isCorrectAnswer={clickedCountry === targetCountry?.iso}
-                          onClose={handleCloseInfoBar}
-                          onNext={handleNextCountry}
-                        />
-                      </div>
-                    </div>
-                  )}
+                  }}>
+                    <div className="loading-spinner"></div>
+                    <p className="loading-text">Loading quiz data...</p>
+                  </div>
                 </div>
-              </div>
-            </>
-          )}
+              )}
+
+              {/* Artwork Info Bar - Overlay centered over map */}
+              {infoBarOpen && currentCountry.iso && (
+                <div className="artwork-backdrop" onClick={handleBackdropClick}>
+                  <div className="artwork-overlay">
+                    <ArtworkInfoBar
+                      countryISO={currentCountry.iso}
+                      countryName={currentCountry.name}
+                      colors={COLORS}
+                      mode={mode}
+                      answerSubmitted={answerSubmitted}
+                      isCorrectAnswer={clickedCountry === targetCountry?.iso}
+                      onClose={handleCloseInfoBar}
+                      onNext={handleNextCountry}
+                    />
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
         </div>
       </div>
     </div>

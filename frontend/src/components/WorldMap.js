@@ -72,9 +72,7 @@ const WorldMap = ({
     const loadData = async () => {
       try {
         // Fetch countries from database first
-        console.log('📊 Fetching countries from database...');
         const dbCountries = await fetchCountries();
-        console.log(`✅ Fetched ${dbCountries.length} countries from database`);
 
         // Initialize M49→ISO3 mapping from database
         initializeCountryMapping(dbCountries);
@@ -109,7 +107,6 @@ const WorldMap = ({
         });
 
         setCountryPaths(paths);
-        console.log('🌍 Loaded country data:', data.features.length, 'countries');
       } catch (err) {
         console.error('Error loading country data:', err);
       }
@@ -123,31 +120,26 @@ const WorldMap = ({
   const hintCountryRef = useRef(null);  // Track which country hints are for
 
   useEffect(() => {
-    console.log('🔄 Hint effect running:', { targetCountry, mode, hintsEnabled });
 
     const showHints = async () => {
       if (targetCountry && mode === 'quiz' && hintsEnabled) {
         // Only generate new hints if this is a different country than last time
         if (hintCountryRef.current === targetCountry) {
-          console.log('♻️ Keeping same hints - same target country:', targetCountry);
           return; // Keep existing hints, don't regenerate
         }
 
         try {
-          console.log(`🎯 Target country: ${targetCountryName} (${targetCountry})`);
 
           // Find target country's M49 code from the countries data
           const targetCountryData = countries.features.find(f => getCountryIsoCode(f) === targetCountry);
           const targetM49 = targetCountryData?.id;
 
-          console.log(`🔢 Target country M49 code: ${targetM49} (${targetCountryName})`);
 
           const highlightM49s = [];
 
           // Always add the target country itself
           if (targetM49) {
             highlightM49s.push(targetM49);
-            console.log(`✨ Highlighting target country: ${targetCountryName} (M49: ${targetM49})`);
           }
 
           // Check if this is an island country (no land neighbors)
@@ -155,23 +147,19 @@ const WorldMap = ({
 
           if (islandData.is_island) {
             // For islands, show 2 other similar islands
-            console.log(`🏝️ ${targetCountryName} is an island! Showing similar islands from ${islandData.target_subregion || islandData.target_continent}`);
 
             if (islandData.islands && islandData.islands.length > 0) {
               const islandM49s = islandData.islands.map(island => {
                 const paddedM49 = String(island.m49).padStart(3, '0');
-                console.log(`✨ Highlighting similar island: ${island.name} (M49: ${paddedM49})`);
                 return paddedM49;
               }).filter(Boolean);
 
               highlightM49s.push(...islandM49s);
             } else {
-              console.log('⚠️ No similar islands found for hint');
             }
           } else {
             // For non-islands, use neighbors as before
             const neighbors = await fetchNeighbors(targetCountry);
-            console.log(`📍 Found ${neighbors.length} neighboring countries for ${targetCountryName}`);
 
             if (neighbors && neighbors.length > 0) {
               // Randomly select up to 2 neighbors to highlight
@@ -181,7 +169,6 @@ const WorldMap = ({
               // Add neighbor M49 codes (with zero-padding to match TopoJSON)
               const neighborM49s = selected.map(n => {
                 const paddedM49 = String(n.m49).padStart(3, '0');
-                console.log(`✨ Highlighting neighbor: ${n.name} (M49: ${paddedM49})`);
                 return paddedM49;
               }).filter(Boolean);
 
@@ -189,7 +176,6 @@ const WorldMap = ({
             }
           }
 
-          console.log(`🎨 Total countries to highlight: ${highlightM49s.length}`, highlightM49s);
           setHintNeighborsM49(highlightM49s);
           hintCountryRef.current = targetCountry; // Remember which country these hints are for
         } catch (err) {
@@ -197,7 +183,6 @@ const WorldMap = ({
         }
       } else {
         // Clear hints if not in quiz mode or hints disabled
-        console.log('🧹 Clearing hints - not in quiz mode or hints disabled');
         setHintNeighborsM49([]);
         hintCountryRef.current = null;
       }
@@ -210,7 +195,6 @@ const WorldMap = ({
   const prevTargetCountryRef = useRef(null);
   useEffect(() => {
     if (prevTargetCountryRef.current && prevTargetCountryRef.current !== targetCountry) {
-      console.log('🧹 Clearing hints and feedback - new target country:', targetCountry);
       setHintNeighborsM49([]);
       hintCountryRef.current = null; // Reset hint tracking
       setClickedCountry(null); // Clear visual feedback
@@ -222,17 +206,9 @@ const WorldMap = ({
   useEffect(() => {
     if (!globeEl.current) return;
 
-    console.log('🌍 Region changed:', {
-      newRegion: region,
-      previousRegion: previousRegionRef.current,
-      willRotate: region && region !== previousRegionRef.current
-    });
-
     if (region && region !== previousRegionRef.current) {
-      console.log('✅ Triggering rotation from', previousRegionRef.current, 'to', region);
       previousRegionRef.current = region;
       const targetView = REGION_VIEWS[region] || REGION_VIEWS['default'];
-      console.log('🎯 Target view:', targetView);
 
       // Smoothly transition to the region
       globeEl.current.pointOfView(
@@ -250,29 +226,13 @@ const WorldMap = ({
     if (!polygon || !polygon.properties) return;
 
     const iso3 = getCountryIsoCode(polygon);
-    const name = getCountryName(polygon.properties);
 
     if (!iso3) {
       console.warn('⚠️ Could not determine ISO code for clicked country');
-      console.log('📋 Debug info:', {
-        name,
-        hasId: !!polygon.id,
-        hasPropsId: !!polygon.properties?.id,
-        id: polygon.id,
-        propsId: polygon.properties?.id,
-        properties: polygon.properties
-      });
       // Still allow the click to proceed - let the artwork component handle missing data
       onCountryClick(null);
       return;
     }
-
-    console.log('🖱️ Clicked country:', {
-      name,
-      iso3,
-      rawISO_A3: polygon.properties.ISO_A3,
-      properties: polygon.properties
-    });
 
     setClickedCountry(iso3);
     onCountryClick(iso3);

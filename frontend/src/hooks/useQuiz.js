@@ -19,7 +19,6 @@ export const useQuiz = () => {
     try {
       setGameStatus('playing');
       const country = await fetchRandomCountry();
-      console.log('🎲 Fetched new country:', country);
       setTargetCountry(country);
       setLoading(false);
     } catch (err) {
@@ -33,31 +32,12 @@ export const useQuiz = () => {
     fetchNewCountry();
   }, []);
 
-  // Log target country changes
-  useEffect(() => {
-    if (targetCountry) {
-      console.log('🗺️ Target country changed:', {
-        country: targetCountry.name,
-        continent: targetCountry.continent,
-        subregion: targetCountry.subregion,
-        iso: targetCountry.iso
-      });
-    }
-  }, [targetCountry]);
-
   // Handle country selection/answer
   const handleCountryClick = async (countryIso) => {
     if (gameStatus !== 'playing' || !targetCountry) return;
 
-    console.log('🎯 Checking answer:', {
-      clickedCountry: countryIso,
-      targetCountry: targetCountry.iso,
-      targetName: targetCountry.name
-    });
-
     try {
       const result = await checkAnswer(countryIso, targetCountry.iso);
-      console.log('📊 Answer result:', result);
 
       if (result.correct) {
         setGameStatus('correct');

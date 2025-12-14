@@ -43,3 +43,55 @@ button:disabled {
     font-size: 14px;
   }
 }
+
+/* Loading overlay */
+.loading-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(3px);
+  z-index: 100;
+  pointer-events: none;
+}
+
+.loading-content {
+  background: var(--card-bg, rgba(255, 255, 255, 0.95));
+  color: var(--text-color, #2c3e50);
+  padding: 30px 40px;
+  border-radius: 12px;
+  border: 2px solid var(--border-color, #bdc3c7);
+  box-shadow: 0 0 20px var(--glow-color, rgba(231, 181, 110, 0.5));
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 15px;
+  pointer-events: none;
+}
+
+.loading-spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid var(--border-color, #bdc3c7);
+  border-top-color: var(--glow-color, #e7b56e);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.loading-text {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 500;
+  color: var(--text-color, #2c3e50);
+}

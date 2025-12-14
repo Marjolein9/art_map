@@ -5,12 +5,11 @@ This file centralizes all configuration values used across the backend.
 Instead of hardcoding paths and settings in multiple files, we define them
 once here and import them where needed.
 
-Supports both local development (SQLite) and production deployment (PostgreSQL).
+This app uses PostgreSQL for both local development and production.
 
 Example usage in other files:
-    from config import DATABASE_PATH, PORT, ALLOWED_ORIGINS
+    from config import PORT, ALLOWED_ORIGINS
 
-    conn = sqlite3.connect(DATABASE_PATH)
     app.run(port=PORT)
 """
 import os
@@ -36,10 +35,11 @@ BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 # DATABASE CONFIGURATION
 # =============================================================================
 
-# DATABASE_PATH: Full path to the SQLite database file
-# os.path.join() combines directory paths safely across different operating systems
-# This creates: /Users/you/art_map/backend/database.db
-DATABASE_PATH = os.path.join(BASE_DIR, 'database.db')
+# This app uses PostgreSQL for database storage
+# The DATABASE_URL environment variable is configured in:
+#   - Local: backend/.env (e.g., postgresql://localhost/artmap_dev)
+#   - Production: Render dashboard environment variables
+# Connection is handled in db_utils.py using the psycopg2 library
 
 # =============================================================================
 # DATA FILES

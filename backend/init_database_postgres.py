@@ -792,6 +792,19 @@ def init_database():
             expected_path = os.path.join(base_dir, 'images', alpha3, 'children_artwork', target_filename)
             filepath = None
 
+            # IMPORTANT: Also check for URL-based filename (happens if file was manually downloaded)
+            # This prevents orphan cleanup from deleting manually downloaded files with different names
+            if not os.path.exists(expected_path) and image_url.startswith('http'):
+                # Get the URL's filename
+                parsed_url = urlparse(image_url)
+                url_filename = unquote(os.path.basename(parsed_url.path))
+                url_based_path = os.path.join(base_dir, 'images', alpha3, 'children_artwork', url_filename)
+
+                # If file exists with URL filename, rename it to standardized filename
+                if os.path.exists(url_based_path) and url_filename != target_filename:
+                    print(f"  ♻️  Renaming {url_filename} -> {target_filename}")
+                    os.rename(url_based_path, expected_path)
+
             if os.path.exists(expected_path):
                 # Image already exists, use it
                 filepath = f"images/{alpha3}/children_artwork/{target_filename}"
