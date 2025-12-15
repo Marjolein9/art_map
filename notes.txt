@@ -1,3 +1,134 @@
 During my maternity leave, I made a geography-learning website that is as Nerdfighters-coded as I could make it. It's a "find this country" quiz, but when you find the country, you seee that countries 1) painting depicting a child 2) art from the Met museum, 3) Public Domain Review articles, 4) historical photgraphs comissioned by Albert Kanh, a pacific with a a romantized view of the world. Why so many categories? I started with paintings of children, gave up eventually because all biases (selection biases, survivorship bias, etc), tried the next thing, gave up on that, but ultimately I got an okay countries coverage. The tricky part was my total ignorance of art history and fear of being harmfully ignorant, combined with only using art before 1923 (in the public domain). Not a great combination. There is a lot of very racist or simply wrong dipictions of other cultures out there! I relied on only sources that provided at least some context for me, and mostly have art about the culture made by people of the culture. That said, please let me know if anything is still wrong, and if you know of any great public domain resources yourself (with lots of background info), please tell me! This started as an attempt to advocate about child mortality (post-partum always makes me think too much about that), but I really admire how the Green brothers have built a community that fights child mortality with a lot of guinuine joy and love of many human things. So the child mortality rates from 1990 and 2023 are there from Our World in Data (check out the sponsor list of Our World in Data for a familiar name), but there are joyful human things there as well. 
 
   are still in there  (although I did learn a lot from this project) and articles from Public Domain Review. It also includes Our World in Data (two guesses on which familiar name is on their donor page.) Since I am in baby-mode, I started with the hope of finding paintings of babies from every country in the public domain. Anyone with a better grasp of art history or plain history than me can understand why I didn't succeed, but you can see my attempt. Maybe I'll just link the cool copy-right art in the future. I hope you all like it, and feedback would be welcome. I'd love ideas on additional public domiain or cc images to include, especially dipictions of children in art and open ~/.claude/plans/melodic-doodling-honey.md
+
+  refer in label infobar and quiz (everywhere) to the common name of the country using pycountry to get it if necessary, not the official name. use scrip to cacluate it and add it to the tables so it doesn't need to be calcuated each time. add the th m39 list as well. also what does lld and sids stand for in the m29 file? 
+
+
+
+  api.js:55  GET https://art-map-backend.onrender.com/api/game/random-country 500 (Internal Server Error)
+(anonymous) @ api.js:55
+l @ useQuiz.js:27
+(anonymous) @ useQuiz.js:46
+ml @ react-dom-client.production.js:8583
+eu @ react-dom-client.production.js:10126
+$l @ react-dom-client.production.js:10101
+eu @ react-dom-client.production.js:10241
+$l @ react-dom-client.production.js:10101
+eu @ react-dom-client.production.js:10137
+bc @ react-dom-client.production.js:11763
+_c @ react-dom-client.production.js:11739
+Vc @ react-dom-client.production.js:12085
+kc @ react-dom-client.production.js:11956
+vc @ react-dom-client.production.js:11726
+fc @ react-dom-client.production.js:11521
+Ku @ react-dom-client.production.js:10920
+Yu @ react-dom-client.production.js:10826
+zc @ react-dom-client.production.js:12078
+R @ scheduler.production.js:151Understand this error
+useQuiz.js:37 Error fetching random country: SyntaxError: Unexpected token '<', "<!doctype "... is not valid JSON
+l @ useQuiz.js:37
+await in l
+(anonymous) @ useQuiz.js:46
+ml @ react-dom-client.production.js:8583
+eu @ react-dom-client.production.js:10126
+$l @ react-dom-client.production.js:10101
+eu @ react-dom-client.production.js:10241
+$l @ react-dom-client.production.js:10101
+eu @ react-dom-client.production.js:10137
+bc @ react-dom-client.production.js:11763
+_c @ react-dom-client.production.js:11739
+Vc @ react-dom-client.production.js:12085
+kc @ react-dom-client.production.js:11956
+vc @ react-dom-client.production.js:11726
+fc @ react-dom-client.production.js:11521
+Ku @ react-dom-client.production.js:10920
+Yu @ react-dom-client.production.js:10826
+zc @ react-dom-client.production.js:12078
+R @ scheduler.production.js:151Understand this error
+api.js:72  GET https://art-map-backend.onrender.com/api/countries 500 (Internal Server Error)
+m2 @ api.js:72
+(anonymous) @ WorldMap.js:78
+(anonymous) @ WorldMap.js:118
+ml @ react-dom-client.production.js:8583
+eu @ react-dom-client.production.js:10126
+$l @ react-dom-client.production.js:10101
+eu @ react-dom-client.production.js:10241
+$l @ react-dom-client.production.js:10101
+eu @ react-dom-client.production.js:10241
+$l @ react-dom-client.production.js:10101
+eu @ react-dom-client.production.js:10241
+$l @ react-dom-client.production.js:10101
+eu @ react-dom-client.production.js:10241
+$l @ react-dom-client.production.js:10101
+eu @ react-dom-client.production.js:10241
+$l @ react-dom-client.production.js:10101
+eu @ react-dom-client.production.js:10120
+$l @ react-dom-client.production.js:10101
+eu @ react-dom-client.production.js:10241
+$l @ react-dom-client.production.js:10101
+eu @ react-dom-client.production.js:10137
+bc @ react-dom-client.production.js:11763
+_c @ react-dom-client.production.js:11739
+Vc @ react-dom-client.production.js:12085
+kc @ react-dom-client.production.js:11956
+vc @ react-dom-client.production.js:11726
+fc @ react-dom-client.production.js:11521
+Ku @ react-dom-client.production.js:10920
+Yu @ react-dom-client.production.js:10826
+zc @ react-dom-client.production.js:12078
+R @ scheduler.production.js:151Understand this error
+WorldMap.js:114 Error loading country data: SyntaxError: Unexpected token '<', "<!doctype "... is not valid JSON
+(anonymous) @ WorldMap.js:114
+await in (anonymous)
+(anonymous) @ WorldMap.js:118
+ml @ react-dom-client.production.js:8583
+eu @ react-dom-client.production.js:10126
+$l @ react-dom-client.production.js:10101
+eu @ react-dom-client.production.js:10241
+$l @ react-dom-client.production.js:10101
+eu @ react-dom-client.production.js:10241
+$l @ react-dom-client.production.js:10101
+eu @ react-dom-client.production.js:10241
+$l @ react-dom-client.production.js:10101
+eu @ react-dom-client.production.js:10241
+$l @ react-dom-client.production.js:10101
+eu @ react-dom-client.production.js:10241
+$l @ react-dom-client.production.js:10101
+eu @ react-dom-client.production.js:10120
+$l @ react-dom-client.production.js:10101
+eu @ react-dom-client.production.js:10241
+$l @ react-dom-client.production.js:10101
+eu @ react-dom-client.production.js:10137
+bc @ react-dom-client.production.js:11763
+_c @ react-dom-client.production.js:11739
+Vc @ react-dom-client.production.js:12085
+kc @ react-dom-client.production.js:11956
+vc @ react-dom-client.production.js:11726
+fc @ react-dom-client.production.js:11521
+Ku @ react-dom-client.production.js:10920
+Yu @ react-dom-client.production.js:10826
+zc @ react-dom-client.production.js:12078
+R @ scheduler.production.js:151Understand this error
+api.js:72  GET https://art-map-backend.onrender.com/api/countries 500 (Internal Server Error)
+m2 @ api.js:72
+(anonymous) @ App.js:105
+ml @ react-dom-client.production.js:8583
+eu @ react-dom-client.production.js:10126
+$l @ react-dom-client.production.js:10101
+eu @ react-dom-client.production.js:10241
+$l @ react-dom-client.production.js:10101
+eu @ react-dom-client.production.js:10137
+bc @ react-dom-client.production.js:11763
+_c @ react-dom-client.production.js:11739
+Vc @ react-dom-client.production.js:12085
+kc @ react-dom-client.production.js:11956
+vc @ react-dom-client.production.js:11726
+fc @ react-dom-client.production.js:11521
+Ku @ react-dom-client.production.js:10920
+Yu @ react-dom-client.production.js:10826
+zc @ react-dom-client.production.js:12078
+R @ scheduler.production.js:151Understand this error
+VM3201:1 Uncaught (in promise) SyntaxError: Unexpected token '<', "<!doctype "... is not valid JSON
+
+
