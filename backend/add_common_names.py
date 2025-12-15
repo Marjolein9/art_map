@@ -13,6 +13,14 @@ import os
 import psycopg2
 from psycopg2.extras import RealDictCursor
 
+# Load environment variables from .env file
+try:
+    from dotenv import load_dotenv
+    load_dotenv()
+    print("✅ Loaded environment variables from .env file")
+except ImportError:
+    print("⚠️  python-dotenv not installed, using system environment variables only")
+
 # Try to import pycountry, install if needed
 try:
     import pycountry
@@ -110,11 +118,12 @@ def main():
     if database_url.startswith('postgres://'):
         database_url = database_url.replace('postgres://', 'postgresql://', 1)
 
-    # Add SSL parameters to URL for Render PostgreSQL
-    if '?' in database_url:
-        database_url += '&sslmode=require'
-    else:
-        database_url += '?sslmode=require'
+    # Add SSL parameters only for remote databases (not localhost)
+    if 'localhost' not in database_url and '127.0.0.1' not in database_url:
+        if '?' in database_url:
+            database_url += '&sslmode=require'
+        else:
+            database_url += '?sslmode=require'
 
     print("📦 Connecting to PostgreSQL database...")
     conn = psycopg2.connect(database_url)
