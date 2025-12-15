@@ -227,6 +227,21 @@
   animation: slideIn 0.25s ease-in-out;
 }
 
+/* Universal link styling for entire infobar - ensures all links use sky blue */
+.artwork-info-container a {
+  color: #87CEEB;
+  text-decoration: underline;
+  text-decoration-color: rgba(135, 206, 235, 0.4);
+  transition: all 0.2s ease;
+  text-shadow: 0 0 8px rgba(135, 206, 235, 0.5);
+}
+
+.artwork-info-container a:hover {
+  color: #ADD8E6;
+  text-decoration-color: #ADD8E6;
+  text-shadow: 0 0 12px rgba(173, 216, 230, 0.8);
+}
+
 /* Custom scrollbar for better visibility */
 .artwork-info-container::-webkit-scrollbar {
   width: 16px;
@@ -395,11 +410,6 @@
   padding: 12px 15px;
   background-color: rgba(0, 0, 0, 0.3);
   border-bottom: 1px solid var(--border-color);
-  transition: background-color 0.2s ease;
-}
-
-.artwork-type-header:hover {
-  background-color: rgba(0, 0, 0, 0.4);
 }
 
 .artwork-type-title {
@@ -422,16 +432,22 @@
   display: inline-block;
   margin-top: 4px;
   font-size: 0.75em;
+  font-weight: 400;
+  letter-spacing: 0.5px;
+  color: var(--text-color);
+  opacity: 0.8;
+}
+
+a.collection-subtitle {
   color: #87CEEB;
   text-decoration: underline;
   text-decoration-color: rgba(135, 206, 235, 0.4);
   font-weight: 500;
-  letter-spacing: 0.5px;
   transition: all 0.2s ease;
   text-shadow: 0 0 8px rgba(135, 206, 235, 0.4);
 }
 
-.collection-subtitle:hover {
+a.collection-subtitle:hover {
   color: #ADD8E6;
   text-decoration-color: #ADD8E6;
   text-shadow: 0 0 12px rgba(173, 216, 230, 0.8);
@@ -565,9 +581,8 @@
 .artwork-title {
   font-size: 0.95em;
   color: rgba(229, 229, 229, 0.7);
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  word-wrap: break-word;
+  white-space: normal;
   margin-bottom: 10px;
 }
 
@@ -575,6 +590,8 @@
   font-size: 0.9em;
   color: rgba(229, 229, 229, 0.6);
   margin-top: 5px;
+  word-wrap: break-word;
+  white-space: normal;
 }
 
 .artwork-date {
@@ -587,6 +604,59 @@
   font-size: 0.85em;
   color: rgba(229, 229, 229, 0.5);
   margin-top: 5px;
+}
+
+.artwork-source {
+  font-size: 0.85em;
+  color: rgba(229, 229, 229, 0.6);
+  margin-top: 5px;
+}
+
+.artwork-article {
+  font-size: 0.85em;
+  color: rgba(229, 229, 229, 0.6);
+  margin-top: 8px;
+  word-wrap: break-word;
+  white-space: normal;
+}
+
+.artwork-culture {
+  font-size: 0.85em;
+  color: rgba(229, 229, 229, 0.5);
+  margin-top: 5px;
+}
+
+.artwork-caption {
+  background-color: rgba(0, 0, 0, 0.2);
+  padding: 12px;
+  border-radius: 4px;
+  margin-top: 8px;
+}
+
+/* All hyperlinks in artwork caption area */
+.artwork-caption a,
+.artwork-title a,
+.artwork-location a,
+.artwork-source a,
+.artwork-article a,
+.artwork-artist a {
+  color: #87CEEB;
+  text-decoration: underline;
+  text-decoration-color: rgba(135, 206, 235, 0.4);
+  transition: all 0.2s ease;
+  font-weight: 500;
+  text-shadow: 0 0 8px rgba(135, 206, 235, 0.5);
+}
+
+.artwork-caption a:hover,
+.artwork-title a:hover,
+.artwork-location a:hover,
+.artwork-source a:hover,
+.artwork-article a:hover,
+.artwork-artist a:hover {
+  color: #ADD8E6;
+  text-decoration-color: #ADD8E6;
+  text-shadow: 0 0 12px rgba(173, 216, 230, 0.8);
 }
 
 .artwork-local-badge {
@@ -1029,6 +1099,8 @@ input:checked + .toggle-slider:before {
   padding: 20px;
   border-top: 1px solid var(--border-color);
   margin-top: 10px;
+  background-color: rgba(0, 0, 0, 0.2);
+  border-radius: 8px;
 }
 
 /* Mortality statistics container */
@@ -1036,9 +1108,19 @@ input:checked + .toggle-slider:before {
   font-size: 14px;
   margin-bottom: 12px;
   display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 10px;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.mortality-stat-line {
+  line-height: 1.6;
+}
+
+/* Mortality context text */
+.mortality-context {
+  background-color: rgba(0, 0, 0, 0.2);
+  padding: 12px;
+  border-radius: 4px;
 }
 
 /* Mortality credits/attribution */
@@ -1047,6 +1129,28 @@ input:checked + .toggle-slider:before {
   margin-top: 12px;
   color: var(--text-color);
   opacity: 0.7;
+  background-color: rgba(0, 0, 0, 0.2);
+  padding: 12px;
+  border-radius: 4px;
+}
+
+/* All links in mortality section */
+.mortality-section a,
+.mortality-credits a,
+.mortality-context a {
+  color: #87CEEB !important;
+  text-decoration: underline;
+  text-decoration-color: rgba(135, 206, 235, 0.4);
+  transition: all 0.2s ease;
+  text-shadow: 0 0 8px rgba(135, 206, 235, 0.5);
+}
+
+.mortality-section a:hover,
+.mortality-credits a:hover,
+.mortality-context a:hover {
+  color: #ADD8E6 !important;
+  text-decoration-color: #ADD8E6;
+  text-shadow: 0 0 12px rgba(173, 216, 230, 0.8);
 }
 
 /* ==============================================================================

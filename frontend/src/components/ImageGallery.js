@@ -10,8 +10,7 @@ const API_BASE = (process.env.REACT_APP_API_URL || 'http://localhost:5000/api').
  *
  * @param {string} collection - Collection name
  * @param {Array} images - Array of image objects
- * @param {boolean} isCollapsed - Whether the collection is collapsed
- * @param {Function} onToggle - Handler for collapse/expand
+ * @param {string} countryName - Name of the country (for Children in Art subtitle)
  * @param {number} currentIndex - Current image index
  * @param {Function} onPrev - Handler for previous image
  * @param {Function} onNext - Handler for next image
@@ -20,8 +19,7 @@ const API_BASE = (process.env.REACT_APP_API_URL || 'http://localhost:5000/api').
 const ImageGallery = ({
   collection,
   images,
-  isCollapsed,
-  onToggle,
+  countryName,
   currentIndex,
   onPrev,
   onNext,
@@ -32,45 +30,82 @@ const ImageGallery = ({
   const currentImage = images[currentIndex] || images[0];
   const hasMultiple = images.length > 1;
 
+  // Helper function to get source institution name and URL
+  const getSourceInfo = (source) => {
+    switch(source?.toLowerCase()) {
+      case 'smithsonian':
+        return { name: 'Smithsonian', url: 'https://www.si.edu/explore/art' };
+      case 'wiki commons':
+        return { name: 'Wikimedia Commons', url: 'https://commons.wikimedia.org/wiki/Main_Page' };
+      case 'chicago':
+        return { name: 'Art Institute of Chicago', url: 'https://www.artic.edu/' };
+      default:
+        return null;
+    }
+  };
+
   // Helper function to render collection-specific caption
   const renderCaption = (image, collectionType) => {
     switch(collectionType) {
       case 'Albert Kahn':
         return (
           <>
-            {image.title && image.page_url ? (
+            {image.title && (
               <div className="artwork-title">
-                <a href={image.page_url} target="_blank" rel="noopener noreferrer">
-                  {image.title}
-                </a>
+                {image.title}
+                {image.page_url && (
+                  <>
+                    :{' '}
+                    <a href={image.page_url} target="_blank" rel="noopener noreferrer">
+                      Source
+                    </a>
+                  </>
+                )}
               </div>
-            ) : image.title ? (
-              <div className="artwork-title">{image.title}</div>
-            ) : null}
+            )}
             {image.location && <div className="artwork-location">{image.location}</div>}
             {image.date && <div className="artwork-date">{image.date}</div>}
+            <div className="artwork-source">
+              <a href="https://albert-kahn.hauts-de-seine.fr/en/" target="_blank" rel="noopener noreferrer">
+                musée départemental Albert-Kahn
+              </a>
+            </div>
           </>
         );
       case 'Children in Art':
+        const sourceInfo = getSourceInfo(image.source);
         return (
           <>
-            {image.title && image.work_url ? (
+            {image.title && (
               <div className="artwork-title">
-                <a href={image.work_url} target="_blank" rel="noopener noreferrer">
-                  {image.title}
-                </a>
+                {image.title}
+                {image.work_url && (
+                  <>
+                    :{' '}
+                    <a href={image.work_url} target="_blank" rel="noopener noreferrer">
+                      Source
+                    </a>
+                  </>
+                )}
               </div>
-            ) : image.title ? (
-              <div className="artwork-title">{image.title}</div>
-            ) : null}
+            )}
             {image.artist_name && (
               <div className="artwork-artist">
-                by {image.author_wikilink ? (
+                {image.author_wikilink ? (
                   <a href={image.author_wikilink} target="_blank" rel="noopener noreferrer">
                     {image.artist_name}
                   </a>
-                ) : image.artist_name}
-                {image.artist_nationality && ` (${image.artist_nationality})`}
+                ) : (
+                  image.artist_name
+                )}
+                {image.artist_nationality && `, ${image.artist_nationality}`}
+              </div>
+            )}
+            {sourceInfo && (
+              <div className="artwork-source">
+                <a href={sourceInfo.url} target="_blank" rel="noopener noreferrer">
+                  {sourceInfo.name}
+                </a>
               </div>
             )}
           </>
@@ -78,45 +113,72 @@ const ImageGallery = ({
       case 'Public Domain Review':
         return (
           <>
-            {image.title && image.source_url ? (
-              <div className="artwork-title">
-                <a href={image.source_url} target="_blank" rel="noopener noreferrer">
+            {image.description && (
+              <div className="artwork-location">
+                {image.description}
+                {image.source_link && (
+                  <>
+                    :{' '}
+                    <a href={image.source_link} target="_blank" rel="noopener noreferrer">
+                      Source
+                    </a>
+                  </>
+                )}
+              </div>
+            )}
+            {image.title && image.source_url && (
+              <div className="artwork-article">
+                Public Domain Review: <a href={image.source_url} target="_blank" rel="noopener noreferrer">
                   {image.title}
                 </a>
               </div>
-            ) : image.title ? (
-              <div className="artwork-title">{image.title}</div>
-            ) : null}
-            {image.description && image.source_link ? (
-              <div className="artwork-location">
-                <a href={image.source_link} target="_blank" rel="noopener noreferrer">
-                  {image.description}
-                </a>
-              </div>
-            ) : image.description ? (
-              <div className="artwork-location">{image.description}</div>
-            ) : null}
+            )}
           </>
         );
       case 'Met Museum':
         return (
           <>
-            {image.title && image.object_url ? (
+            {image.title && (
               <div className="artwork-title">
-                <a href={image.object_url} target="_blank" rel="noopener noreferrer">
-                  {image.title}
-                </a>
+                {image.title}
+                {image.object_url && (
+                  <>
+                    :{' '}
+                    <a href={image.object_url} target="_blank" rel="noopener noreferrer">
+                      Source
+                    </a>
+                  </>
+                )}
               </div>
-            ) : image.title ? (
-              <div className="artwork-title">{image.title}</div>
-            ) : null}
-            {image.artist_name && <div className="artwork-artist">by {image.artist_name}</div>}
+            )}
+            {image.artist_name && <div className="artwork-artist">{image.artist_name}</div>}
             {image.object_date && <div className="artwork-date">{image.object_date}</div>}
-            {image.medium && <div className="artwork-location">{image.medium}</div>}
+            {image.culture && <div className="artwork-culture">{image.culture}</div>}
+            <div className="artwork-source">
+              <a href="https://www.metmuseum.org/" target="_blank" rel="noopener noreferrer">
+                Metropolitan Museum of Art
+              </a>
+            </div>
           </>
         );
       default:
         return <div className="artwork-title">{image.title || 'Untitled'}</div>;
+    }
+  };
+
+  // Helper function to get collection title
+  const getCollectionTitle = (collectionType) => {
+    switch(collectionType) {
+      case 'Albert Kahn':
+        return "Albert Kahn's Archives of the Planet";
+      case 'Children in Art':
+        return "Children in Art";
+      case 'Public Domain Review':
+        return "Public Domain Review";
+      case 'Met Museum':
+        return "Met Museum";
+      default:
+        return collectionType;
     }
   };
 
@@ -126,31 +188,22 @@ const ImageGallery = ({
       case 'Albert Kahn':
         return (
           <a
-            href="https://collections.albert-kahn.hauts-de-seine.fr/"
+            href="https://publicdomainreview.org/essay/albert-kahns-archives-of-the-planet/"
             target="_blank"
             rel="noopener noreferrer"
             className="collection-subtitle"
           >
-            Early 20th century photography collection
+            The Color of Memory
           </a>
         );
       case 'Children in Art':
         return (
           <span className="collection-subtitle">
-            Historical paintings featuring children
+            Artists from {countryName || 'this country'}
           </span>
         );
       case 'Public Domain Review':
-        return (
-          <a
-            href="https://publicdomainreview.org/"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="collection-subtitle"
-          >
-            Curated public domain works
-          </a>
-        );
+        return null;
       case 'Met Museum':
         return (
           <a
@@ -169,24 +222,18 @@ const ImageGallery = ({
 
   return (
     <div className="artwork-type-section">
-      {/* Collection Header - Collapsible */}
-      <div
-        className="artwork-type-header"
-        onClick={onToggle}
-        style={{ cursor: 'pointer' }}
-      >
+      {/* Collection Header */}
+      <div className="artwork-type-header">
         <div>
           <h4 className="artwork-type-title">
-            {isCollapsed ? '▶' : '▼'} {collection}
-            <span className="artwork-type-count"> ({images.length})</span>
+            {getCollectionTitle(collection)}
           </h4>
           {getCollectionSubtitle(collection)}
         </div>
       </div>
 
-      {/* Collection Content - Collapsible */}
-      {!isCollapsed && (
-        <div className="artwork-type-content">
+      {/* Collection Content */}
+      <div className="artwork-type-content">
           <div className="artwork-item">
             <div className="artwork-image-container">
               <img
@@ -277,8 +324,7 @@ const ImageGallery = ({
               {renderCaption(currentImage, collection)}
             </div>
           </div>
-        </div>
-      )}
+      </div>
     </div>
   );
 };

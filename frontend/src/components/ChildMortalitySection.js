@@ -20,19 +20,43 @@ const ChildMortalitySection = ({ mortalityData }) => {
   return (
     <div className="mortality-section">
       <div className="mortality-stats">
-        <strong>Child Mortality Progress</strong>
-        <span>{mortalityData.start_year}: {mortalityData.start_rate.toFixed(2)}%</span>
-        <span>{mortalityData.end_year}: {mortalityData.end_rate.toFixed(2)}%</span>
-        <span>Change: {mortalityData.difference.toFixed(2)}%</span>
+        <strong>Child Mortality</strong>
+        <div className="mortality-stat-line">{mortalityData.start_year}: {mortalityData.start_rate.toFixed(2)}%</div>
+        <div className="mortality-stat-line">{mortalityData.end_year}: {mortalityData.end_rate.toFixed(2)}%</div>
+        <div className="mortality-stat-line">Percentage points decrease: {Math.abs(mortalityData.difference).toFixed(2)}%</div>
       </div>
 
       {mortalityData.candle_count > 0 && (
         <Candles count={mortalityData.candle_count} />
       )}
 
+      <div className="mortality-context" style={{ marginTop: '16px', fontSize: '13px', lineHeight: '1.6' }}>
+        <p style={{ margin: '0 0 10px 0' }}>
+          The events of 2024 and 2025 are not reflected in the numbers above. To learn more about the kind of work that reduced the child mortality rate over the last few decades, please watch{' '}
+          <a
+            href="https://www.pih.org/bending-the-arc"
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{ color: 'inherit', textDecoration: 'underline' }}
+          >
+            Bending the Arc
+          </a>
+          {' '}(Partners in Health) and read{' '}
+          <a
+            href="https://www.thelancet.com/journals/lancet/article/PIIS0140-6736(25)01186-9/fulltext"
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{ color: 'inherit', textDecoration: 'underline' }}
+          >
+            this Lancet article
+          </a>
+          .
+        </p>
+      </div>
+
       <div className="mortality-credits">
         <div>
-          Candle design by{' '}
+          Candle design adapted from{' '}
           <a
             href="https://codepen.io/shorinamaria/pen/VbepBe"
             target="_blank"
@@ -41,7 +65,7 @@ const ChildMortalitySection = ({ mortalityData }) => {
           >
             shorinamaria
           </a>
-          {' '}and{' '}
+          {' '}and infobar adapted from{' '}
           <a
             href="https://codepen.io/mirichan/pen/jEBmyG"
             target="_blank"
