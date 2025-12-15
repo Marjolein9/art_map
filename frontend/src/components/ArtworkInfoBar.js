@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { fetchImages, fetchChildMortality, fetchExternalLinks } from '../services/api';
 import ImageGallery from './ImageGallery';
 import ChildMortalitySection from './ChildMortalitySection';
+import ExternalLinks from './ExternalLinks';
 
 /**
  * ArtworkInfoBar Component
@@ -12,7 +13,6 @@ import ChildMortalitySection from './ChildMortalitySection';
 const ArtworkInfoBar = ({ countryISO, countryName, colors, mode, answerSubmitted, isCorrectAnswer, onClose, onNext }) => {
   const [imagesByCollection, setImagesByCollection] = useState({});
   const [loading, setLoading] = useState(false);
-  const [collapsedTypes, setCollapsedTypes] = useState({});
   const [currentImageIndex, setCurrentImageIndex] = useState({});
   const [mortalityData, setMortalityData] = useState(null);
   const [externalLinks, setExternalLinks] = useState(null);
@@ -84,14 +84,6 @@ const ArtworkInfoBar = ({ countryISO, countryName, colors, mode, answerSubmitted
         setExternalLinks(null);
       });
   }, [countryISO]);
-
-  // Toggle collection collapse
-  const toggleTypeCollapse = (type) => {
-    setCollapsedTypes(prev => ({
-      ...prev,
-      [type]: !prev[type]
-    }));
-  };
 
   // Navigate to next image for a collection
   const nextImage = (collection) => {
@@ -172,36 +164,10 @@ const ArtworkInfoBar = ({ countryISO, countryName, colors, mode, answerSubmitted
         <p className="artwork-no-data-subtitle">No images available for this country</p>
 
         {/* Show child mortality data if available */}
-        {mortalityData && (
-          <ChildMortalitySection mortalityData={mortalityData} colors={colors} />
-        )}
+        <ChildMortalitySection mortalityData={mortalityData} />
 
         {/* Show external links if available */}
-        {externalLinks && (externalLinks.gapminder_url || externalLinks.tasteatlas_url) && (
-          <div className="artwork-external-links" style={{ marginTop: '20px' }}>
-            <h4 style={{ color: colors.text, marginBottom: '10px' }}>Explore More</h4>
-            {externalLinks.gapminder_url && (
-              <a
-                href={externalLinks.gapminder_url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="external-link-btn"
-              >
-                🏠 Gapminder Dollar Street
-              </a>
-            )}
-            {externalLinks.tasteatlas_url && (
-              <a
-                href={externalLinks.tasteatlas_url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="external-link-btn"
-              >
-                🍽️ TasteAtlas
-              </a>
-            )}
-          </div>
-        )}
+        <ExternalLinks externalLinks={externalLinks} />
       </div>
     );
   }
@@ -220,9 +186,9 @@ const ArtworkInfoBar = ({ countryISO, countryName, colors, mode, answerSubmitted
       <div className="artwork-info-header">
         <h3 className="artwork-info-title">
           {mode === 'quiz' && answerSubmitted && isCorrectAnswer ? (
-            `✓ Correct: ${countryName || countryISO}`
+            `Correct: ${countryName || countryISO}`
           ) : mode === 'quiz' && answerSubmitted && !isCorrectAnswer ? (
-            `✗ Incorrect: ${countryName || countryISO}`
+            `Incorrect: ${countryName || countryISO}`
           ) : (
             countryName || countryISO
           )}
@@ -266,8 +232,7 @@ const ArtworkInfoBar = ({ countryISO, countryName, colors, mode, answerSubmitted
             key={collection}
             collection={collection}
             images={imagesByCollection[collection]}
-            isCollapsed={collapsedTypes[collection]}
-            onToggle={() => toggleTypeCollapse(collection)}
+            countryName={countryName}
             currentIndex={currentImageIndex[collection] || 0}
             onPrev={() => prevImage(collection)}
             onNext={() => nextImage(collection)}
@@ -276,51 +241,11 @@ const ArtworkInfoBar = ({ countryISO, countryName, colors, mode, answerSubmitted
         ))}
       </div>
 
-      <div className="artwork-count-footer">
-        Showing <strong>{collections.length}</strong> collection{collections.length !== 1 ? 's' : ''}
-      </div>
+      {/* External Links Section */}
+      <ExternalLinks externalLinks={externalLinks} />
 
       {/* Child Mortality Section */}
       <ChildMortalitySection mortalityData={mortalityData} />
-
-      {/* External Links Section */}
-      {externalLinks && (externalLinks.gapminder_url?.trim() || externalLinks.tasteatlas_url?.trim() || externalLinks.extra_links?.trim()) && (
-        <div className="external-links-section">
-          <h4 className="external-links-title">External Resources</h4>
-          <div className="external-links-list">
-            {externalLinks.gapminder_url?.trim() && (
-              <a
-                href={externalLinks.gapminder_url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="external-link"
-              >
-                Gapminder Dollar Street
-              </a>
-            )}
-            {externalLinks.tasteatlas_url?.trim() && (
-              <a
-                href={externalLinks.tasteatlas_url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="external-link"
-              >
-                Food Atlas
-              </a>
-            )}
-            {externalLinks.extra_links?.trim() && (
-              <a
-                href={externalLinks.extra_links}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="external-link"
-              >
-                Additional Links
-              </a>
-            )}
-          </div>
-        </div>
-      )}
     </div>
   );
 };

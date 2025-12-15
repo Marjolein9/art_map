@@ -112,7 +112,7 @@ def get_countries():
 @app.route('/api/game/random-country', methods=['GET'])
 def random_country():
     """
-    Return a random country that has artwork.
+    Return a random sovereign country (is_country = true).
 
     HTTP Method: GET
     URL: http://localhost:5000/api/game/random-country
@@ -129,67 +129,42 @@ def random_country():
     conn = get_db_connection()
     cursor = conn.cursor()
 
-    # Get all unique country codes that have at least one image from any collection
-    # SELECT DISTINCT: Get unique values only (no duplicates)
-    # UNION combines results from all three image tables
+    # Get all sovereign countries (is_country = true)
+    # Only sovereign countries are included in the quiz, not territories
     cursor.execute('''
-        SELECT DISTINCT alpha3 as iso3 FROM albert_kahn_images
-        UNION
-        SELECT DISTINCT alpha3 as iso3 FROM children_artwork_images
-        UNION
-        SELECT DISTINCT alpha3 as iso3 FROM public_domain_images
+        SELECT iso3, name, common_name, continent, subregion
+        FROM countries
+        WHERE is_country = TRUE
     ''')
 
-    # Extract just the iso3 codes into a Python list
-    country_isos = [row['iso3'] for row in cursor.fetchall()]
+    # Extract all sovereign countries into a Python list
+    countries = [dict(row) for row in cursor.fetchall()]
 
     # Error handling: What if database is empty?
     # This shouldn't happen in production, but good to check
-    if not country_isos:
+    if not countries:
         conn.close()
         # Return error response with HTTP status code 500 (Internal Server Error)
         # Format: (json_data, status_code)
         return jsonify({'error': 'No countries available'}), 500
 
-    # Select one random country code from the list
+    # Select one random country from the list
     # random.choice() picks one random item from a list
-    # Example: random.choice(['USA', 'FRA', 'JPN']) → 'FRA'
-    selected_iso = random.choice(country_isos)
+    # Example: random.choice([country1, country2, country3]) → country2
+    selected_country = random.choice(countries)
 
-    # Now fetch full details for that country from the countries table
-    # Why a second query? artworks table only has iso3, not full country details
-    #
-    # SQL INJECTION PREVENTION:
-    # ? is a placeholder - prevents SQL injection attacks
-    # NEVER do: f"WHERE iso3 = '{selected_iso}'" - DANGEROUS!
-    # Always use: 'WHERE iso3 = %s' with tuple parameter
-    # (selected_iso,) is a tuple with one element (comma makes it a tuple)
-    cursor.execute('''
-        SELECT iso3, name, common_name, continent, subregion
-        FROM countries
-        WHERE iso3 = %s
-    ''', (selected_iso,))
-
-    # fetchone() gets single result (vs fetchall() which gets all results)
-    # Returns None if no match found
-    country = cursor.fetchone()
     conn.close()
-
-    # Safety check: Country should exist (we got iso3 from artworks table)
-    # But database could be in inconsistent state, so check anyway
-    if not country:
-        return jsonify({'error': 'Country not found'}), 404
 
     # Return country details in nested structure
     # We create a nested dict so frontend gets: data.country.name
     # instead of: data.name (which would be confusing)
     return jsonify({
         'country': {
-            'iso': country['iso3'],
-            'name': country['name'],
-            'common_name': country['common_name'],
-            'continent': country['continent'],
-            'subregion': country['subregion']
+            'iso': selected_country['iso3'],
+            'name': selected_country['name'],
+            'common_name': selected_country['common_name'],
+            'continent': selected_country['continent'],
+            'subregion': selected_country['subregion']
         }
     })
 
@@ -225,7 +200,7 @@ def get_images(alpha3):
     cursor.execute('''
         SELECT 'Children in Art' as collection_type,
                filepath, title, artist_name,
-               artist_nationality, author_wikilink, work_url
+               artist_nationality, author_wikilink, work_url, source
         FROM children_artwork_images
         WHERE alpha3 = %s
     ''', (alpha3,))

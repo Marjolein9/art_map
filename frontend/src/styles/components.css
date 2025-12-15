@@ -227,19 +227,19 @@
   animation: slideIn 0.25s ease-in-out;
 }
 
-/* Universal link styling for entire infobar - ensures all links use sky blue */
+/* Universal link styling for entire infobar - ensures all links use vintage color */
 .artwork-info-container a {
-  color: #87CEEB;
+  color: #8fb3c9;
   text-decoration: underline;
-  text-decoration-color: rgba(135, 206, 235, 0.4);
+  text-decoration-color: rgba(143, 179, 201, 0.4);
   transition: all 0.2s ease;
-  text-shadow: 0 0 8px rgba(135, 206, 235, 0.5);
+  text-shadow: 0 0 8px rgba(143, 179, 201, 0.3);
 }
 
 .artwork-info-container a:hover {
-  color: #ADD8E6;
-  text-decoration-color: #ADD8E6;
-  text-shadow: 0 0 12px rgba(173, 216, 230, 0.8);
+  color: #b0d4e8;
+  text-decoration-color: #b0d4e8;
+  text-shadow: 0 0 12px rgba(176, 212, 232, 0.5);
 }
 
 /* Custom scrollbar for better visibility */
@@ -313,9 +313,9 @@
 
 /* Next button (quiz mode - correct answer) */
 .artwork-next-btn {
-  background-color: rgba(76, 175, 80, 0.8);
-  color: white;
-  border: 2px solid rgba(76, 175, 80, 1);
+  background-color: rgba(139, 115, 85, 0.8);
+  color: #f5f5dc;
+  border: 2px solid rgba(139, 115, 85, 1);
   border-radius: 20px;
   padding: 8px 20px;
   display: flex;
@@ -331,16 +331,16 @@
 }
 
 .artwork-next-btn:hover {
-  background-color: rgba(76, 175, 80, 1);
+  background-color: rgba(139, 115, 85, 1);
   transform: scale(1.05);
-  box-shadow: 0 0 15px rgba(76, 175, 80, 0.5);
+  box-shadow: 0 0 15px rgba(139, 115, 85, 0.5);
 }
 
 /* Try Again button (quiz mode - incorrect answer) */
 .artwork-try-again-btn {
-  background-color: rgba(244, 67, 54, 0.8);
-  color: white;
-  border: 2px solid rgba(244, 67, 54, 1);
+  background-color: rgba(139, 115, 85, 0.8);
+  color: #f5f5dc;
+  border: 2px solid rgba(139, 115, 85, 1);
   border-radius: 20px;
   padding: 8px 20px;
   display: flex;
@@ -356,9 +356,9 @@
 }
 
 .artwork-try-again-btn:hover {
-  background-color: rgba(244, 67, 54, 1);
+  background-color: rgba(139, 115, 85, 1);
   transform: scale(1.05);
-  box-shadow: 0 0 15px rgba(244, 67, 54, 0.5);
+  box-shadow: 0 0 15px rgba(139, 115, 85, 0.5);
 }
 
 .artwork-loading,
@@ -408,7 +408,7 @@
 
 .artwork-type-header {
   padding: 12px 15px;
-  background-color: rgba(0, 0, 0, 0.3);
+  background-color: rgb(87, 80, 72);
   border-bottom: 1px solid var(--border-color);
 }
 
@@ -416,7 +416,7 @@
   margin: 0;
   font-size: 1.1em;
   font-weight: 600;
-  color: var(--text-color);
+  color: rgba(229, 229, 229, 0.7);
   font-family: 'Roboto Condensed', Helvetica, sans-serif;
   text-transform: uppercase;
   letter-spacing: 1px;
@@ -434,23 +434,22 @@
   font-size: 0.75em;
   font-weight: 400;
   letter-spacing: 0.5px;
-  color: var(--text-color);
-  opacity: 0.8;
+  color: rgba(229, 229, 229, 0.7);
 }
 
 a.collection-subtitle {
-  color: #87CEEB;
+  color: #8fb3c9;
   text-decoration: underline;
-  text-decoration-color: rgba(135, 206, 235, 0.4);
+  text-decoration-color: rgba(143, 179, 201, 0.4);
   font-weight: 500;
   transition: all 0.2s ease;
-  text-shadow: 0 0 8px rgba(135, 206, 235, 0.4);
+  text-shadow: 0 0 8px rgba(143, 179, 201, 0.3);
 }
 
 a.collection-subtitle:hover {
-  color: #ADD8E6;
-  text-decoration-color: #ADD8E6;
-  text-shadow: 0 0 12px rgba(173, 216, 230, 0.8);
+  color: #b0d4e8;
+  text-decoration-color: #b0d4e8;
+  text-shadow: 0 0 12px rgba(176, 212, 232, 0.5);
   transform: translateX(2px);
 }
 
@@ -553,18 +552,18 @@ a.collection-subtitle:hover {
 }
 
 .artwork-details a {
-  color: #87CEEB;
+  color: #8fb3c9;
   text-decoration: underline;
-  text-decoration-color: rgba(135, 206, 235, 0.4);
+  text-decoration-color: rgba(143, 179, 201, 0.4);
   transition: all 0.2s ease;
   font-weight: 500;
-  text-shadow: 0 0 8px rgba(135, 206, 235, 0.5);
+  text-shadow: 0 0 8px rgba(143, 179, 201, 0.3);
 }
 
 .artwork-details a:hover {
-  color: #ADD8E6;
-  text-decoration-color: #ADD8E6;
-  text-shadow: 0 0 12px rgba(173, 216, 230, 0.8);
+  color: #b0d4e8;
+  text-decoration-color: #b0d4e8;
+  text-shadow: 0 0 12px rgba(176, 212, 232, 0.5);
 }
 
 .artwork-artist {
@@ -574,7 +573,7 @@ a.collection-subtitle:hover {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  color: var(--text-color);
+  color: rgba(229, 229, 229, 0.7);
   font-family: 'Roboto Condensed', Helvetica, sans-serif;
 }
 
@@ -608,7 +607,7 @@ a.collection-subtitle:hover {
 
 .artwork-source {
   font-size: 0.85em;
-  color: rgba(229, 229, 229, 0.6);
+  color: rgba(229, 229, 229, 0.7);
   margin-top: 5px;
 }
 
@@ -627,7 +626,7 @@ a.collection-subtitle:hover {
 }
 
 .artwork-caption {
-  background-color: rgba(0, 0, 0, 0.2);
+  background-color: rgb(87, 80, 72);
   padding: 12px;
   border-radius: 4px;
   margin-top: 8px;
@@ -640,12 +639,12 @@ a.collection-subtitle:hover {
 .artwork-source a,
 .artwork-article a,
 .artwork-artist a {
-  color: #87CEEB;
+  color: #8fb3c9;
   text-decoration: underline;
-  text-decoration-color: rgba(135, 206, 235, 0.4);
+  text-decoration-color: rgba(143, 179, 201, 0.4);
   transition: all 0.2s ease;
   font-weight: 500;
-  text-shadow: 0 0 8px rgba(135, 206, 235, 0.5);
+  text-shadow: 0 0 8px rgba(143, 179, 201, 0.3);
 }
 
 .artwork-caption a:hover,
@@ -654,9 +653,9 @@ a.collection-subtitle:hover {
 .artwork-source a:hover,
 .artwork-article a:hover,
 .artwork-artist a:hover {
-  color: #ADD8E6;
-  text-decoration-color: #ADD8E6;
-  text-shadow: 0 0 12px rgba(173, 216, 230, 0.8);
+  color: #b0d4e8;
+  text-decoration-color: #b0d4e8;
+  text-shadow: 0 0 12px rgba(176, 212, 232, 0.5);
 }
 
 .artwork-local-badge {
@@ -1118,18 +1117,26 @@ input:checked + .toggle-slider:before {
 
 /* Mortality context text */
 .mortality-context {
-  background-color: rgba(0, 0, 0, 0.2);
+  background-color: rgb(87, 80, 72);
   padding: 12px;
   border-radius: 4px;
+  margin-top: 16px;
+  font-size: 13px;
+  line-height: 1.6;
+  color: rgba(229, 229, 229, 0.7);
+}
+
+.mortality-context p {
+  margin: 0 0 10px 0;
+  color: rgba(229, 229, 229, 0.7);
 }
 
 /* Mortality credits/attribution */
 .mortality-credits {
   font-size: 11px;
   margin-top: 12px;
-  color: var(--text-color);
-  opacity: 0.7;
-  background-color: rgba(0, 0, 0, 0.2);
+  color: rgba(229, 229, 229, 0.7);
+  background-color: rgb(87, 80, 72);
   padding: 12px;
   border-radius: 4px;
 }
@@ -1138,19 +1145,19 @@ input:checked + .toggle-slider:before {
 .mortality-section a,
 .mortality-credits a,
 .mortality-context a {
-  color: #87CEEB !important;
+  color: inherit;
   text-decoration: underline;
-  text-decoration-color: rgba(135, 206, 235, 0.4);
   transition: all 0.2s ease;
-  text-shadow: 0 0 8px rgba(135, 206, 235, 0.5);
 }
 
 .mortality-section a:hover,
 .mortality-credits a:hover,
 .mortality-context a:hover {
-  color: #ADD8E6 !important;
-  text-decoration-color: #ADD8E6;
-  text-shadow: 0 0 12px rgba(173, 216, 230, 0.8);
+  opacity: 0.8;
+}
+
+.mortality-credits-item {
+  margin-top: 4px;
 }
 
 /* ==============================================================================
@@ -1161,7 +1168,7 @@ input:checked + .toggle-slider:before {
   padding: 20px;
   border-top: 2px solid var(--border-color);
   margin-top: 20px;
-  background-color: rgba(0, 0, 0, 0.2);
+  background-color: rgb(87, 80, 72);
   border-radius: 8px;
 }
 
@@ -1169,7 +1176,7 @@ input:checked + .toggle-slider:before {
   margin: 0 0 15px 0;
   font-size: 1.1em;
   font-weight: 600;
-  color: var(--text-color);
+  color: rgba(229, 229, 229, 0.7);
   font-family: 'Roboto Condensed', Helvetica, sans-serif;
   text-transform: uppercase;
   letter-spacing: 1px;
@@ -1188,20 +1195,18 @@ input:checked + .toggle-slider:before {
   background-color: rgba(0, 0, 0, 0.3);
   border: 2px solid var(--border-color);
   border-radius: 8px;
-  color: #87CEEB;
+  color: rgba(229, 229, 229, 0.7);
   text-decoration: none;
   font-size: 0.95em;
   font-weight: 500;
   text-align: center;
   transition: all 0.3s ease;
-  text-shadow: 0 0 8px rgba(135, 206, 235, 0.4);
 }
 
 .external-link:hover {
   background-color: rgba(0, 0, 0, 0.5);
   border-color: var(--glow-color);
-  color: #ADD8E6;
+  color: rgba(229, 229, 229, 0.9);
   transform: translateY(-2px);
   box-shadow: 0 0 15px var(--glow-color);
-  text-shadow: 0 0 12px rgba(173, 216, 230, 0.8);
 }

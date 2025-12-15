@@ -30,14 +30,13 @@ const ChildMortalitySection = ({ mortalityData }) => {
         <Candles count={mortalityData.candle_count} />
       )}
 
-      <div className="mortality-context" style={{ marginTop: '16px', fontSize: '13px', lineHeight: '1.6' }}>
-        <p style={{ margin: '0 0 10px 0' }}>
+      <div className="mortality-context">
+        <p>
           The events of 2024 and 2025 are not reflected in the numbers above. To learn more about the kind of work that reduced the child mortality rate over the last few decades, please watch{' '}
           <a
             href="https://www.pih.org/bending-the-arc"
             target="_blank"
             rel="noopener noreferrer"
-            style={{ color: 'inherit', textDecoration: 'underline' }}
           >
             Bending the Arc
           </a>
@@ -46,7 +45,6 @@ const ChildMortalitySection = ({ mortalityData }) => {
             href="https://www.thelancet.com/journals/lancet/article/PIIS0140-6736(25)01186-9/fulltext"
             target="_blank"
             rel="noopener noreferrer"
-            style={{ color: 'inherit', textDecoration: 'underline' }}
           >
             this Lancet article
           </a>
@@ -61,7 +59,6 @@ const ChildMortalitySection = ({ mortalityData }) => {
             href="https://codepen.io/shorinamaria/pen/VbepBe"
             target="_blank"
             rel="noopener noreferrer"
-            style={{ color: 'inherit', textDecoration: 'underline' }}
           >
             shorinamaria
           </a>
@@ -70,18 +67,16 @@ const ChildMortalitySection = ({ mortalityData }) => {
             href="https://codepen.io/mirichan/pen/jEBmyG"
             target="_blank"
             rel="noopener noreferrer"
-            style={{ color: 'inherit', textDecoration: 'underline' }}
           >
             mirichan
           </a>
         </div>
-        <div style={{ marginTop: '4px' }}>
+        <div className="mortality-credits-item">
           Data: Gapminder (2015); UN Inter-agency Group for Child Mortality Estimation (2025) – processed by Our World in Data.{' '}
           <a
             href="https://ourworldindata.org/child-mortality-big-problem-in-brief"
             target="_blank"
             rel="noopener noreferrer"
-            style={{ color: 'inherit', textDecoration: 'underline' }}
           >
             Read more
           </a>

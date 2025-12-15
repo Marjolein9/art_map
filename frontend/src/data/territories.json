@@ -1,0 +1,22 @@
+{
+  "territories": [
+    {
+      "iso3": "PSE",
+      "iso2": "PS",
+      "name": "State of Palestine",
+      "common_name": "Palestine",
+      "m49": "275",
+      "continent": "Asia",
+      "subregion": "Western Asia"
+    },
+    {
+      "iso3": "GRL",
+      "iso2": "GL",
+      "name": "Greenland",
+      "common_name": "Greenland",
+      "m49": "304",
+      "continent": "Americas",
+      "subregion": "Northern America"
+    }
+  ]
+}
