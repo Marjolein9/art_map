@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { fetchImages, fetchChildMortality } from '../services/api';
+import { fetchImages, fetchChildMortality, fetchExternalLinks } from '../services/api';
 import ImageGallery from './ImageGallery';
 import ChildMortalitySection from './ChildMortalitySection';
 
@@ -15,6 +15,7 @@ const ArtworkInfoBar = ({ countryISO, countryName, colors, mode, answerSubmitted
   const [collapsedTypes, setCollapsedTypes] = useState({});
   const [currentImageIndex, setCurrentImageIndex] = useState({});
   const [mortalityData, setMortalityData] = useState(null);
+  const [externalLinks, setExternalLinks] = useState(null);
   const imageRefs = useRef({});
 
   // Fetch images from API when country changes
@@ -65,6 +66,22 @@ const ArtworkInfoBar = ({ countryISO, countryName, colors, mode, answerSubmitted
       })
       .catch(err => {
         setMortalityData(null);
+      });
+  }, [countryISO]);
+
+  // Fetch external links when country changes
+  useEffect(() => {
+    if (!countryISO || countryISO === null) {
+      setExternalLinks(null);
+      return;
+    }
+
+    fetchExternalLinks(countryISO)
+      .then(data => {
+        setExternalLinks(data);
+      })
+      .catch(err => {
+        setExternalLinks(null);
       });
   }, [countryISO]);
 
@@ -233,6 +250,45 @@ const ArtworkInfoBar = ({ countryISO, countryName, colors, mode, answerSubmitted
 
       {/* Child Mortality Section */}
       <ChildMortalitySection mortalityData={mortalityData} />
+
+      {/* External Links Section */}
+      {externalLinks && (externalLinks.gapminder_url?.trim() || externalLinks.tasteatlas_url?.trim() || externalLinks.extra_links?.trim()) && (
+        <div className="external-links-section">
+          <h4 className="external-links-title">External Resources</h4>
+          <div className="external-links-list">
+            {externalLinks.gapminder_url?.trim() && (
+              <a
+                href={externalLinks.gapminder_url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="external-link"
+              >
+                Gapminder Dollar Street
+              </a>
+            )}
+            {externalLinks.tasteatlas_url?.trim() && (
+              <a
+                href={externalLinks.tasteatlas_url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="external-link"
+              >
+                Food Atlas
+              </a>
+            )}
+            {externalLinks.extra_links?.trim() && (
+              <a
+                href={externalLinks.extra_links}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="external-link"
+              >
+                Additional Links
+              </a>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 };

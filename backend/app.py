@@ -527,6 +527,39 @@ def get_child_mortality(country_code):
     })
 
 
+@app.route('/api/external-links/<iso3>', methods=['GET'])
+def get_external_links(iso3):
+    """
+    Get external links for a specific country.
+
+    HTTP Method: GET
+    URL: http://localhost:5000/api/external-links/<iso3>
+
+    Returns: JSON with Gapminder, TasteAtlas, and extra links
+    """
+    conn = get_db_connection()
+    cursor = conn.cursor()
+
+    cursor.execute('''
+        SELECT gapminder_url, tasteatlas_url, extra_links
+        FROM country_external_links
+        WHERE iso3 = %s
+    ''', (iso3,))
+
+    row = cursor.fetchone()
+    conn.close()
+
+    if not row:
+        return jsonify({'error': f'No links found for country: {iso3}'}), 404
+
+    return jsonify({
+        'iso3': iso3,
+        'gapminder_url': row['gapminder_url'] or '',
+        'tasteatlas_url': row['tasteatlas_url'] or '',
+        'extra_links': row['extra_links'] or ''
+    })
+
+
 @app.route('/api/health', methods=['GET'])
 def health():
     """

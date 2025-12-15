@@ -171,3 +171,17 @@ export const fetchChildMortality = async (iso3) => {
   const data = await response.json();
   return data;
 };
+
+/**
+ * Fetch external links for a specific country
+ * @param {string} iso3 - Country ISO3 code
+ * @returns {object} - {gapminder_url, tasteatlas_url, extra_links}
+ */
+export const fetchExternalLinks = async (iso3) => {
+  const response = await fetch(`${API_URL}/external-links/${iso3}`);
+  if (!response.ok) {
+    throw new Error('External links not available');
+  }
+  const data = await response.json();
+  return data;
+};

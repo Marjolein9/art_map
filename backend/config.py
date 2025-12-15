@@ -65,6 +65,10 @@ CHILDREN_ARTWORK_CSV_PATH = os.path.join(BASE_DIR, 'data', 'artwork_final.csv')
 PUBLIC_DOMAIN_CSV_PATH = os.path.join(BASE_DIR, 'data', 'public_review_images.csv')
 MET_METADATA_CSV_PATH = os.path.join(BASE_DIR, 'data', 'met_metadata.csv')
 
+# COUNTRY_EXTERNAL_LINKS_CSV_PATH: Path to external links for countries
+# Contains verified links to Gapminder Dollar Street and other resources
+COUNTRY_EXTERNAL_LINKS_CSV_PATH = os.path.join(BASE_DIR, 'data', 'country_external_links.csv')
+
 # =============================================================================
 # SERVER CONFIGURATION
 # =============================================================================
