@@ -151,7 +151,7 @@ const ArtworkInfoBar = ({ countryISO, countryName, colors, mode, answerSubmitted
     );
   }
 
-  // Show "no images" message
+  // Show "no images" message (but still show country info and external links)
   if (collections.length === 0) {
     return (
       <div
@@ -168,8 +168,40 @@ const ArtworkInfoBar = ({ countryISO, countryName, colors, mode, answerSubmitted
             ✕
           </button>
         )}
-        <h3 className="artwork-no-data-title">No images available</h3>
-        <p className="artwork-no-data-subtitle">Country: {countryISO}</p>
+        <h3 className="artwork-no-data-title">{countryName || countryISO}</h3>
+        <p className="artwork-no-data-subtitle">No images available for this country</p>
+
+        {/* Show child mortality data if available */}
+        {mortalityData && (
+          <ChildMortalitySection mortalityData={mortalityData} colors={colors} />
+        )}
+
+        {/* Show external links if available */}
+        {externalLinks && (externalLinks.gapminder_url || externalLinks.tasteatlas_url) && (
+          <div className="artwork-external-links" style={{ marginTop: '20px' }}>
+            <h4 style={{ color: colors.text, marginBottom: '10px' }}>Explore More</h4>
+            {externalLinks.gapminder_url && (
+              <a
+                href={externalLinks.gapminder_url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="external-link-btn"
+              >
+                🏠 Gapminder Dollar Street
+              </a>
+            )}
+            {externalLinks.tasteatlas_url && (
+              <a
+                href={externalLinks.tasteatlas_url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="external-link-btn"
+              >
+                🍽️ TasteAtlas
+              </a>
+            )}
+          </div>
+        )}
       </div>
     );
   }

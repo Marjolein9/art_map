@@ -37,6 +37,13 @@ from config import (
     JPEG_QUALITY
 )
 
+# Try to import pycountry for common names
+try:
+    import pycountry
+except ImportError:
+    print("⚠️  pycountry not installed, using official names only")
+    pycountry = None
+
 # UN M49 Region code to continent name
 REGION_NAMES = {
     2: "Africa",
@@ -82,6 +89,66 @@ SUBREGION_NAMES = {
     57: "Oceania",  # Micronesia
     61: "Oceania",  # Polynesia
 }
+
+def get_common_name(official_name, iso3, iso2):
+    """Get the common name for a country using pycountry"""
+    # Special cases where pycountry doesn't have the best common name
+    special_cases = {
+        'USA': 'United States',
+        'GBR': 'United Kingdom',
+        'BOL': 'Bolivia',
+        'VEN': 'Venezuela',
+        'TZA': 'Tanzania',
+        'COD': 'Democratic Republic of the Congo',
+        'COG': 'Republic of the Congo',
+        'MDA': 'Moldova',
+        'KOR': 'South Korea',
+        'PRK': 'North Korea',
+        'RUS': 'Russia',
+        'IRN': 'Iran',
+        'SYR': 'Syria',
+        'LAO': 'Laos',
+        'VNM': 'Vietnam',
+        'CIV': 'Ivory Coast',
+        'PSE': 'Palestine',
+        'VAT': 'Vatican City',
+    }
+
+    # Check special cases first
+    if iso3 in special_cases:
+        return special_cases[iso3]
+
+    # Try pycountry lookup if available
+    if pycountry:
+        if iso2:
+            try:
+                country = pycountry.countries.get(alpha_2=iso2.upper())
+                if country:
+                    return getattr(country, 'common_name', country.name)
+            except:
+                pass
+        if iso3:
+            try:
+                country = pycountry.countries.get(alpha_3=iso3.upper())
+                if country:
+                    return getattr(country, 'common_name', country.name)
+            except:
+                pass
+
+    # Fallback to cleaning up the official name
+    name = official_name
+    if '(' in name:
+        name = name.split('(')[0].strip()
+    name = name.replace('Republic of ', '')
+    name = name.replace('Kingdom of ', '')
+    name = name.replace('Plurinational State of ', '')
+    name = name.replace('Islamic Republic of ', '')
+    name = name.replace('Bolivarian Republic of ', '')
+    name = name.replace('United Republic of ', '')
+    name = name.replace('Democratic Republic of the ', '')
+    name = name.replace("People's Democratic Republic", '')
+    name = name.replace('Federated States of ', '')
+    return name.strip()
 
 # Image processing configuration
 MAX_IMAGE_SIZE_MB = 1  # Maximum file size in MB before optimization
@@ -350,10 +417,15 @@ def load_m49_data():
         else:
             subregion = SUBREGION_NAMES.get(subregion_code, continent)
 
+        alpha2 = country.get('alpha2', '')
+        name = country.get('name', '')
+        common_name = get_common_name(name, alpha3, alpha2)
+
         countries.append({
             'iso3': alpha3,
-            'iso2': country.get('alpha2', ''),
-            'name': country.get('name', ''),
+            'iso2': alpha2,
+            'name': name,
+            'common_name': common_name,
             'm49': country.get('m49code', ''),
             'continent': continent,
             'subregion': subregion
@@ -460,6 +532,12 @@ def init_database():
     if database_url.startswith('postgres://'):
         database_url = database_url.replace('postgres://', 'postgresql://', 1)
 
+    # Add SSL parameters to URL for Render PostgreSQL
+    if '?' in database_url:
+        database_url += '&sslmode=require'
+    else:
+        database_url += '?sslmode=require'
+
     # Connect to PostgreSQL
     print(f"📦 Connecting to PostgreSQL database...")
     conn = psycopg2.connect(database_url)
@@ -485,6 +563,7 @@ def init_database():
             iso3 TEXT PRIMARY KEY,
             iso2 TEXT,
             name TEXT NOT NULL,
+            common_name TEXT,
             m49 INTEGER,
             continent TEXT NOT NULL,
             subregion TEXT NOT NULL
@@ -641,12 +720,13 @@ def init_database():
     print(f"🌍 Inserting {len(m49_countries)} countries...")
     for country in m49_countries:
         cursor.execute('''
-            INSERT INTO countries (iso3, iso2, name, m49, continent, subregion)
-            VALUES (%s, %s, %s, %s, %s, %s)
+            INSERT INTO countries (iso3, iso2, name, common_name, m49, continent, subregion)
+            VALUES (%s, %s, %s, %s, %s, %s, %s)
         ''', (
             country['iso3'],
             country['iso2'],
             country['name'],
+            country['common_name'],
             country['m49'],
             country['continent'],
             country['subregion']

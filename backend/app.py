@@ -87,8 +87,8 @@ def get_countries():
     # Step 3: Execute SQL query
     # SELECT: Get data from database
     # FROM countries: From the 'countries' table
-    # ORDER BY name: Sort results alphabetically by country name
-    cursor.execute('SELECT iso3, iso2, name, m49, continent, subregion FROM countries ORDER BY name')
+    # ORDER BY common_name: Sort results alphabetically by common country name
+    cursor.execute('SELECT iso3, iso2, name, common_name, m49, continent, subregion FROM countries ORDER BY common_name')
 
     # Step 4: Fetch results and convert to list of dicts
     # cursor.fetchall() returns list of Row objects
@@ -165,7 +165,7 @@ def random_country():
     # Always use: 'WHERE iso3 = %s' with tuple parameter
     # (selected_iso,) is a tuple with one element (comma makes it a tuple)
     cursor.execute('''
-        SELECT iso3, name, continent, subregion
+        SELECT iso3, name, common_name, continent, subregion
         FROM countries
         WHERE iso3 = %s
     ''', (selected_iso,))
@@ -187,6 +187,7 @@ def random_country():
         'country': {
             'iso': country['iso3'],
             'name': country['name'],
+            'common_name': country['common_name'],
             'continent': country['continent'],
             'subregion': country['subregion']
         }
@@ -327,11 +328,11 @@ def get_neighbors(iso3):
 
     # Get all neighbors for this country with M49 codes
     cursor.execute('''
-        SELECT c.iso3, c.m49, c.name
+        SELECT c.iso3, c.m49, c.name, c.common_name
         FROM country_borders cb
         JOIN countries c ON cb.neighbor_iso3 = c.iso3
         WHERE cb.country_iso3 = %s
-        ORDER BY c.name
+        ORDER BY c.common_name
     ''', (iso3,))
 
     neighbors = [dict(row) for row in cursor.fetchall()]
@@ -379,7 +380,7 @@ def get_similar_islands(iso3):
 
     # Get the target country's details
     cursor.execute('''
-        SELECT iso3, name, m49, continent, subregion
+        SELECT iso3, name, common_name, m49, continent, subregion
         FROM countries
         WHERE iso3 = %s
     ''', (iso3,))
@@ -393,7 +394,7 @@ def get_similar_islands(iso3):
     # Priority: same subregion > same continent > any other islands
     # Also check if they have images in any collection
     cursor.execute('''
-        SELECT DISTINCT c.iso3, c.m49, c.name, c.continent, c.subregion,
+        SELECT DISTINCT c.iso3, c.m49, c.name, c.common_name, c.continent, c.subregion,
                CASE
                    WHEN c.subregion = %s THEN 1
                    WHEN c.continent = %s THEN 2
@@ -401,7 +402,7 @@ def get_similar_islands(iso3):
                END as priority
         FROM countries c
         LEFT JOIN country_borders cb ON c.iso3 = cb.country_iso3
-        WHERE c.iso3 != ?
+        WHERE c.iso3 != %s
         AND c.iso3 NOT IN ('ATA')  -- Exclude Antarctica
         GROUP BY c.iso3
         HAVING COUNT(cb.neighbor_iso3) = 0

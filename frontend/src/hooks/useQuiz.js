@@ -25,7 +25,12 @@ export const useQuiz = () => {
 
       setGameStatus('playing');
       const country = await fetchRandomCountry();
-      setTargetCountry(country);
+      // Use common_name if available, fallback to name
+      const countryWithDisplayName = {
+        ...country,
+        name: country.common_name || country.name
+      };
+      setTargetCountry(countryWithDisplayName);
 
       // Add 5-second delay ONLY on initial load for testing loading state
       if (isInitialLoad.current) {

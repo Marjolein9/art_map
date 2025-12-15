@@ -12,15 +12,19 @@
 // Store the M49→ISO3 mapping built from API data
 let m49ToIso3Mapping = {};
 
+// Store the M49→common_name mapping built from API data
+let m49ToCommonNameMapping = {};
+
 // Track M49 codes we've already warned about to avoid spam
 const warnedM49Codes = new Set();
 
 /**
- * Initialize the M49→ISO3 mapping from countries data
- * @param {Array} countries - Array of country objects from database with {iso3, m49, name}
+ * Initialize the M49→ISO3 and M49→common_name mappings from countries data
+ * @param {Array} countries - Array of country objects from database with {iso3, m49, name, common_name}
  */
 export const initializeCountryMapping = (countries) => {
   m49ToIso3Mapping = {};
+  m49ToCommonNameMapping = {};
   warnedM49Codes.clear(); // Clear warnings on re-initialization
 
   if (!countries || !Array.isArray(countries)) {
@@ -33,6 +37,10 @@ export const initializeCountryMapping = (countries) => {
       // Store as zero-padded 3-digit string to match TopoJSON IDs (e.g., "004", "032")
       const paddedM49 = String(country.m49).padStart(3, '0');
       m49ToIso3Mapping[paddedM49] = country.iso3;
+
+      // Also store common name mapping
+      const commonName = country.common_name || country.name;
+      m49ToCommonNameMapping[paddedM49] = commonName;
     }
   });
 };
@@ -64,11 +72,19 @@ export const getCountryIsoCode = (feature) => {
 };
 
 /**
- * Get country name from properties
+ * Get country name from properties (using common name if available)
  * @param {Object} properties - The properties object from TopoJSON feature
- * @returns {string} - The country name
+ * @returns {string} - The country common name (or official name as fallback)
  */
 export const getCountryName = (properties) => {
   if (!properties) return 'Unknown';
+
+  // Try to get common name from M49 mapping first
+  const m49Code = properties.id;
+  if (m49Code && m49ToCommonNameMapping[m49Code]) {
+    return m49ToCommonNameMapping[m49Code];
+  }
+
+  // Fallback to TopoJSON name
   return properties.name || 'Unknown';
 };

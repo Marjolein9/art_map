@@ -103,12 +103,13 @@ function App() {
   useEffect(() => {
     // Call API to get list of all countries
     fetchCountries().then(countries => {
-      // Build a lookup object for quick name retrieval
-      // Input: [{ iso3: 'USA', name: 'United States' }, ...]
+      // Build a lookup object for quick name retrieval using common_name
+      // Input: [{ iso3: 'USA', name: 'United States of America', common_name: 'United States' }, ...]
       // Output: { 'USA': 'United States', 'GBR': 'United Kingdom', ... }
       const lookup = {};
       countries.forEach(country => {
-        lookup[country.iso3] = country.name;
+        // Use common_name if available, fallback to name
+        lookup[country.iso3] = country.common_name || country.name;
       });
       // Update state with the lookup object
       setCountryLookup(lookup);
