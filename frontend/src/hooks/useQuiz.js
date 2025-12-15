@@ -1,13 +1,14 @@
 /**
  * Custom hook for quiz game logic
  */
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { fetchRandomCountry, checkAnswer } from '../services/api';
 
 export const useQuiz = () => {
   const [targetCountry, setTargetCountry] = useState(null);
   const [loading, setLoading] = useState(true);
   const [gameStatus, setGameStatus] = useState('playing'); // 'playing', 'correct', 'incorrect'
+  const isInitialLoad = useRef(true);
 
   // Function to reset game status back to playing (for retrying after incorrect answer)
   const resetGameStatus = () => {
@@ -17,13 +18,26 @@ export const useQuiz = () => {
   // Fetch a random country for the quiz
   const fetchNewCountry = async () => {
     try {
+      // Only show loading state on initial load
+      if (isInitialLoad.current) {
+        setLoading(true);
+      }
+
       setGameStatus('playing');
       const country = await fetchRandomCountry();
       setTargetCountry(country);
-      setLoading(false);
+
+      // Add 5-second delay ONLY on initial load for testing loading state
+      if (isInitialLoad.current) {
+        await new Promise(resolve => setTimeout(resolve, 5000));
+        isInitialLoad.current = false;
+        setLoading(false);
+      }
     } catch (err) {
       console.error('Error fetching random country:', err);
-      setLoading(false);
+      if (isInitialLoad.current) {
+        setLoading(false);
+      }
     }
   };
 

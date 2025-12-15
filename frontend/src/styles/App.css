@@ -47,16 +47,14 @@ button:disabled {
 /* Loading overlay */
 .loading-overlay {
   position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
   display: flex;
   justify-content: center;
-  align-items: center;
-  background: rgba(0, 0, 0, 0.5);
-  backdrop-filter: blur(3px);
-  z-index: 100;
+  align-items: flex-start;
+  background: transparent;
+  z-index: 2000;
   pointer-events: none;
 }
 

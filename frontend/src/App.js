@@ -238,13 +238,14 @@ function App() {
                 onCountryClick={handleExploreClick}
                 targetCountry={mode === 'quiz' ? targetCountry?.iso : null}
                 targetCountryName={mode === 'quiz' ? targetCountry?.name : null}
-                region={mode === 'quiz' ? (targetCountry?.subregion || targetCountry?.continent) : null}
+                region={mode === 'quiz' && !loading ? (targetCountry?.subregion || targetCountry?.continent) : null}
                 gameStatus={gameStatus}
                 colors={COLORS}
                 onNewGame={fetchNewCountry}
                 onStartOver={fetchNewCountry}
                 mode={mode}
                 onModeToggle={handleModeToggle}
+                loading={loading && mode === 'quiz'}
               />
 
               {/* Loading overlay - shown while quiz data is loading */}

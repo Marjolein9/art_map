@@ -15,11 +15,10 @@ const WorldMap = ({
   onNewGame,
   onStartOver,
   mode = 'quiz',
-  onModeToggle
+  onModeToggle,
+  loading = false
 }) => {
   const COLORS = colors;
-  // Auto-control tooltips based on mode: always ON in explore, always OFF in quiz
-  const tooltipsEnabled = mode === 'explore';
   const globeEl = useRef();
   const [countries, setCountries] = useState({ features: [] });
   const [countryPaths, setCountryPaths] = useState([]);
@@ -32,6 +31,10 @@ const WorldMap = ({
     height: window.innerHeight - 120
   });
   const [hintsEnabled, setHintsEnabled] = useState(false);
+  const [labelsEnabled, setLabelsEnabled] = useState(mode === 'explore');
+
+  // Control tooltips based on labels toggle or explore mode
+  const tooltipsEnabled = mode === 'explore' || labelsEnabled;
 
   // Handle window resize for responsive globe
   useEffect(() => {
@@ -137,9 +140,9 @@ const WorldMap = ({
 
           const highlightM49s = [];
 
-          // Always add the target country itself
+          // Always add the target country itself (with proper string formatting)
           if (targetM49) {
-            highlightM49s.push(targetM49);
+            highlightM49s.push(String(targetM49));
           }
 
           // Check if this is an island country (no land neighbors)
@@ -221,6 +224,23 @@ const WorldMap = ({
       );
     }
   }, [region]);
+
+  // Show Middle East region during loading
+  useEffect(() => {
+    if (!globeEl.current) return;
+
+    if (loading) {
+      // Always zoom to Middle East region during loading
+      globeEl.current.pointOfView(
+        {
+          lat: 30,
+          lng: 45,
+          altitude: 1.3 // Quiz zoom level
+        },
+        1000 // 1 second transition
+      );
+    }
+  }, [loading]);
   // Handle country click
   const handlePolygonClick = (polygon) => {
     if (!polygon || !polygon.properties) return;
@@ -438,6 +458,19 @@ const WorldMap = ({
                       type="checkbox"
                       checked={hintsEnabled}
                       onChange={() => setHintsEnabled(prev => !prev)}
+                    />
+                    <span className="toggle-slider-small"></span>
+                  </label>
+                </div>
+
+                {/* Labels Toggle */}
+                <div className="toggle-container-small">
+                  <span className="toggle-label-small">Labels</span>
+                  <label className="toggle-switch-small">
+                    <input
+                      type="checkbox"
+                      checked={labelsEnabled}
+                      onChange={() => setLabelsEnabled(prev => !prev)}
                     />
                     <span className="toggle-slider-small"></span>
                   </label>
