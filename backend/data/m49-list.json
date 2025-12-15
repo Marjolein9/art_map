@@ -14,7 +14,9 @@
       "nameES": "Afganistán",
       "nameRU": "Афганистан",
       "nameZH": "阿富汗",
-      "nameAR": " أفغانستان"
+      "nameAR": " أفغانستان",
+      "is_country": true,
+      "common_name": "Afghanistan"
     },
     {
       "region": 150,
@@ -27,7 +29,9 @@
       "nameES": "Albania",
       "nameRU": "Албания",
       "nameZH": "阿尔巴尼亚",
-      "nameAR": " ألبانيا"
+      "nameAR": " ألبانيا",
+      "is_country": true,
+      "common_name": "Albania"
     },
     {
       "region": 2,
@@ -40,7 +44,9 @@
       "nameES": "Argelia",
       "nameRU": "Алжир",
       "nameZH": "阿尔及利亚",
-      "nameAR": " الجزائر"
+      "nameAR": " الجزائر",
+      "is_country": true,
+      "common_name": "Algeria"
     },
     {
       "region": 9,
@@ -54,7 +60,9 @@
       "nameES": "Samoa Americana",
       "nameRU": "Американское Самоа",
       "nameZH": "美属萨摩亚",
-      "nameAR": " ساموا الأمريكية"
+      "nameAR": " ساموا الأمريكية",
+      "is_country": false,
+      "common_name": "American Samoa"
     },
     {
       "region": 150,
@@ -67,7 +75,9 @@
       "nameES": "Andorra",
       "nameRU": "Андорра",
       "nameZH": "安道尔",
-      "nameAR": " أندورا"
+      "nameAR": " أندورا",
+      "is_country": true,
+      "common_name": "Andorra"
     },
     {
       "region": 2,
@@ -82,7 +92,9 @@
       "nameES": "Angola",
       "nameRU": "Ангола",
       "nameZH": "安哥拉",
-      "nameAR": "أنغولا"
+      "nameAR": "أنغولا",
+      "is_country": true,
+      "common_name": "Angola"
     },
     {
       "region": 19,
@@ -97,7 +109,9 @@
       "nameES": "Anguila",
       "nameRU": "Ангилья",
       "nameZH": "安圭拉",
-      "nameAR": "أنغويلا"
+      "nameAR": "أنغويلا",
+      "is_country": false,
+      "common_name": "Anguilla"
     },
     {
       "name": "Antarctica",
@@ -108,7 +122,9 @@
       "nameES": "Antártida",
       "nameRU": "Антарктике",
       "nameZH": "南极洲",
-      "nameAR": "أنتاركتيكا"
+      "nameAR": "أنتاركتيكا",
+      "is_country": false,
+      "common_name": "Antarctica"
     },
     {
       "region": 19,
@@ -123,7 +139,9 @@
       "nameES": "Antigua y Barbuda",
       "nameRU": "Антигуа и Барбуда",
       "nameZH": "安提瓜和巴布达",
-      "nameAR": "أنتيغوا وبربودا"
+      "nameAR": "أنتيغوا وبربودا",
+      "is_country": true,
+      "common_name": "Antigua and Barbuda"
     },
     {
       "region": 19,
@@ -137,7 +155,9 @@
       "nameES": "Argentina",
       "nameRU": "Аргентина",
       "nameZH": "阿根廷",
-      "nameAR": "الأرجنتين"
+      "nameAR": "الأرجنتين",
+      "is_country": true,
+      "common_name": "Argentina"
     },
     {
       "region": 142,
@@ -151,7 +171,9 @@
       "nameES": "Armenia",
       "nameRU": "Армения",
       "nameZH": "亚美尼亚",
-      "nameAR": " أرمينيا"
+      "nameAR": " أرمينيا",
+      "is_country": true,
+      "common_name": "Armenia"
     },
     {
       "region": 19,
@@ -166,7 +188,9 @@
       "nameES": "Aruba",
       "nameRU": "Аруба",
       "nameZH": "阿鲁巴",
-      "nameAR": "أروبا"
+      "nameAR": "أروبا",
+      "is_country": false,
+      "common_name": "Aruba"
     },
     {
       "region": 9,
@@ -179,7 +203,9 @@
       "nameES": "Australia",
       "nameRU": "Австралия",
       "nameZH": "澳大利亚",
-      "nameAR": " أستراليا"
+      "nameAR": " أستراليا",
+      "is_country": true,
+      "common_name": "Australia"
     },
     {
       "region": 150,
@@ -192,7 +218,9 @@
       "nameES": "Austria",
       "nameRU": "Австрия",
       "nameZH": "奥地利",
-      "nameAR": " النمسا"
+      "nameAR": " النمسا",
+      "is_country": true,
+      "common_name": "Austria"
     },
     {
       "region": 142,
@@ -206,7 +234,9 @@
       "nameES": "Azerbaiyán",
       "nameRU": "Азербайджан",
       "nameZH": "阿塞拜疆",
-      "nameAR": " أذربيجان"
+      "nameAR": " أذربيجان",
+      "is_country": true,
+      "common_name": "Azerbaijan"
     },
     {
       "region": 19,
@@ -221,7 +251,9 @@
       "nameES": "Bahamas",
       "nameRU": "Багамские Острова",
       "nameZH": "巴哈马",
-      "nameAR": "جزر البهاما"
+      "nameAR": "جزر البهاما",
+      "is_country": true,
+      "common_name": "Bahamas"
     },
     {
       "region": 142,
@@ -234,7 +266,9 @@
       "nameES": "Bahrein",
       "nameRU": "Бахрейн",
       "nameZH": "巴林",
-      "nameAR": " البحرين"
+      "nameAR": " البحرين",
+      "is_country": true,
+      "common_name": "Bahrain"
     },
     {
       "region": 142,
@@ -248,7 +282,9 @@
       "nameES": "Bangladesh",
       "nameRU": "Бангладеш",
       "nameZH": "孟加拉国",
-      "nameAR": " بنغلاديش"
+      "nameAR": " بنغلاديش",
+      "is_country": true,
+      "common_name": "Bangladesh"
     },
     {
       "region": 19,
@@ -263,7 +299,9 @@
       "nameES": "Barbados",
       "nameRU": "Барбадос",
       "nameZH": "巴巴多斯",
-      "nameAR": "بربادوس"
+      "nameAR": "بربادوس",
+      "is_country": true,
+      "common_name": "Barbados"
     },
     {
       "region": 150,
@@ -276,7 +314,9 @@
       "nameES": "Belarús",
       "nameRU": "Беларусь",
       "nameZH": "白俄罗斯",
-      "nameAR": " بيلاروس"
+      "nameAR": " بيلاروس",
+      "is_country": true,
+      "common_name": "Belarus"
     },
     {
       "region": 150,
@@ -289,7 +329,9 @@
       "nameES": "Bélgica",
       "nameRU": "Бельгия",
       "nameZH": "比利时",
-      "nameAR": " بلجيكا"
+      "nameAR": " بلجيكا",
+      "is_country": true,
+      "common_name": "Belgium"
     },
     {
       "region": 19,
@@ -304,7 +346,9 @@
       "nameES": "Belice",
       "nameRU": "Белиз",
       "nameZH": "伯利兹",
-      "nameAR": "بليز"
+      "nameAR": "بليز",
+      "is_country": true,
+      "common_name": "Belize"
     },
     {
       "region": 2,
@@ -319,7 +363,9 @@
       "nameES": "Benin",
       "nameRU": "Бенин",
       "nameZH": "贝宁",
-      "nameAR": "بنن"
+      "nameAR": "بنن",
+      "is_country": true,
+      "common_name": "Benin"
     },
     {
       "region": 19,
@@ -332,7 +378,9 @@
       "nameES": "Bermuda",
       "nameRU": "Бермудские острова",
       "nameZH": "百慕大",
-      "nameAR": " برمودا"
+      "nameAR": " برمودا",
+      "is_country": false,
+      "common_name": "Bermuda"
     },
     {
       "region": 142,
@@ -347,7 +395,9 @@
       "nameES": "Bhután",
       "nameRU": "Бутан",
       "nameZH": "不丹",
-      "nameAR": " بوتان"
+      "nameAR": " بوتان",
+      "is_country": true,
+      "common_name": "Bhutan"
     },
     {
       "region": 19,
@@ -362,7 +412,9 @@
       "nameES": "Bolivia (Estado Plurinacional de)",
       "nameRU": "Боливия (Многонациональное Государство)",
       "nameZH": "多民族玻利维亚国",
-      "nameAR": "بوليفيا (دولة - المتعددة القوميات)"
+      "nameAR": "بوليفيا (دولة - المتعددة القوميات)",
+      "is_country": true,
+      "common_name": "Bolivia"
     },
     {
       "region": 19,
@@ -377,7 +429,9 @@
       "nameES": "Bonaire, San Eustaquio y Saba",
       "nameRU": "Бонайре, Синт-Эстатиус и Саба",
       "nameZH": "博纳尔，圣俄斯塔休斯和萨巴",
-      "nameAR": "بونير وسانت يوستاشيوس وسابا"
+      "nameAR": "بونير وسانت يوستاشيوس وسابا",
+      "is_country": false,
+      "common_name": "Bonaire, Sint Eustatius and Saba"
     },
     {
       "region": 150,
@@ -390,7 +444,9 @@
       "nameES": "Bosnia y Herzegovina",
       "nameRU": "Босния и Герцеговина",
       "nameZH": "波斯尼亚和黑塞哥维那",
-      "nameAR": " البوسنة والهرسك"
+      "nameAR": " البوسنة والهرسك",
+      "is_country": true,
+      "common_name": "Bosnia and Herzegovina"
     },
     {
       "region": 2,
@@ -405,7 +461,9 @@
       "nameES": "Botswana",
       "nameRU": "Ботсвана",
       "nameZH": "博茨瓦纳",
-      "nameAR": "بوتسوانا"
+      "nameAR": "بوتسوانا",
+      "is_country": true,
+      "common_name": "Botswana"
     },
     {
       "region": 19,
@@ -419,7 +477,9 @@
       "nameES": "Isla Bouvet",
       "nameRU": "Остров Буве",
       "nameZH": "布维岛",
-      "nameAR": "جزيرة بوفيت"
+      "nameAR": "جزيرة بوفيت",
+      "is_country": false,
+      "common_name": "Bouvet Island"
     },
     {
       "region": 19,
@@ -433,7 +493,9 @@
       "nameES": "Brasil",
       "nameRU": "Бразилия",
       "nameZH": "巴西",
-      "nameAR": "البرازيل"
+      "nameAR": "البرازيل",
+      "is_country": true,
+      "common_name": "Brazil"
     },
     {
       "region": 2,
@@ -447,7 +509,9 @@
       "nameES": "Territorio Británico del Océano Índico",
       "nameRU": "Британская территория в Индийском океане",
       "nameZH": "英属印度洋领土",
-      "nameAR": "المحيط الهندي الإقليم البريطاني في"
+      "nameAR": "المحيط الهندي الإقليم البريطاني في",
+      "is_country": false,
+      "common_name": "British Indian Ocean Territory"
     },
     {
       "region": 19,
@@ -462,7 +526,9 @@
       "nameES": "Islas Vírgenes Británicas",
       "nameRU": "Британские Виргинские острова",
       "nameZH": "英属维尔京群岛",
-      "nameAR": "جزر فرجن البريطانية"
+      "nameAR": "جزر فرجن البريطانية",
+      "is_country": false,
+      "common_name": "Virgin Islands, British"
     },
     {
       "region": 142,
@@ -475,7 +541,9 @@
       "nameES": "Brunei Darussalam",
       "nameRU": "Бруней-Даруссалам",
       "nameZH": "文莱达鲁萨兰国",
-      "nameAR": " بروني دار السلام"
+      "nameAR": " بروني دار السلام",
+      "is_country": true,
+      "common_name": "Brunei Darussalam"
     },
     {
       "region": 150,
@@ -488,7 +556,9 @@
       "nameES": "Bulgaria",
       "nameRU": "Болгария",
       "nameZH": "保加利亚",
-      "nameAR": " بلغاريا"
+      "nameAR": " بلغاريا",
+      "is_country": true,
+      "common_name": "Bulgaria"
     },
     {
       "region": 2,
@@ -504,7 +574,9 @@
       "nameES": "Burkina Faso",
       "nameRU": "Буркина-Фасо",
       "nameZH": "布基纳法索",
-      "nameAR": "بوركينا فاسو"
+      "nameAR": "بوركينا فاسو",
+      "is_country": true,
+      "common_name": "Burkina Faso"
     },
     {
       "region": 2,
@@ -520,7 +592,9 @@
       "nameES": "Burundi",
       "nameRU": "Бурунди",
       "nameZH": "布隆迪",
-      "nameAR": "بوروندي"
+      "nameAR": "بوروندي",
+      "is_country": true,
+      "common_name": "Burundi"
     },
     {
       "region": 2,
@@ -535,7 +609,9 @@
       "nameES": "Cabo Verde",
       "nameRU": "Кабо-Верде",
       "nameZH": "佛得角",
-      "nameAR": "كابو فيردي"
+      "nameAR": "كابو فيردي",
+      "is_country": true,
+      "common_name": "Cabo Verde"
     },
     {
       "region": 142,
@@ -549,7 +625,9 @@
       "nameES": "Camboya",
       "nameRU": "Камбоджа",
       "nameZH": "柬埔寨",
-      "nameAR": " كمبوديا"
+      "nameAR": " كمبوديا",
+      "is_country": true,
+      "common_name": "Cambodia"
     },
     {
       "region": 2,
@@ -563,7 +641,9 @@
       "nameES": "Camerún",
       "nameRU": "Камерун",
       "nameZH": "喀麦隆",
-      "nameAR": "الكاميرون"
+      "nameAR": "الكاميرون",
+      "is_country": true,
+      "common_name": "Cameroon"
     },
     {
       "region": 19,
@@ -576,7 +656,9 @@
       "nameES": "Canadá",
       "nameRU": "Канада",
       "nameZH": "加拿大",
-      "nameAR": " كندا"
+      "nameAR": " كندا",
+      "is_country": true,
+      "common_name": "Canada"
     },
     {
       "region": 19,
@@ -590,7 +672,9 @@
       "nameES": "Islas Caimán",
       "nameRU": "Кайман острова",
       "nameZH": "开曼群岛",
-      "nameAR": "جزر كايمان"
+      "nameAR": "جزر كايمان",
+      "is_country": false,
+      "common_name": "Cayman Islands"
     },
     {
       "region": 2,
@@ -606,7 +690,9 @@
       "nameES": "República Centroafricana",
       "nameRU": "Центральноафриканская Республика",
       "nameZH": "中非共和国",
-      "nameAR": "جمهورية أفريقيا الوسطى"
+      "nameAR": "جمهورية أفريقيا الوسطى",
+      "is_country": true,
+      "common_name": "Central African Republic"
     },
     {
       "region": 2,
@@ -622,7 +708,9 @@
       "nameES": "Chad",
       "nameRU": "Чад",
       "nameZH": "乍得",
-      "nameAR": "تشاد"
+      "nameAR": "تشاد",
+      "is_country": true,
+      "common_name": "Chad"
     },
     {
       "region": 19,
@@ -636,7 +724,9 @@
       "nameES": "Chile",
       "nameRU": "Чили",
       "nameZH": "智利",
-      "nameAR": "شيلي"
+      "nameAR": "شيلي",
+      "is_country": true,
+      "common_name": "Chile"
     },
     {
       "region": 142,
@@ -649,7 +739,9 @@
       "nameES": "China",
       "nameRU": "Китай",
       "nameZH": "中国",
-      "nameAR": " الصين"
+      "nameAR": " الصين",
+      "is_country": true,
+      "common_name": "China"
     },
     {
       "region": 142,
@@ -662,7 +754,9 @@
       "nameES": "China, región administrativa especial de Hong Kong",
       "nameRU": "Китай, Специальный административный район Гонконг",
       "nameZH": "中国香港特别行政区",
-      "nameAR": " الصين، منطقة هونغ كونغ الإدارية الخاصة"
+      "nameAR": " الصين، منطقة هونغ كونغ الإدارية الخاصة",
+      "is_country": false,
+      "common_name": "Hong Kong"
     },
     {
       "region": 142,
@@ -675,7 +769,9 @@
       "nameES": "China, región administrativa especial de Macao",
       "nameRU": "Китай, Специальный административный район Макао",
       "nameZH": "中国澳门特别行政区",
-      "nameAR": " الصين، منطقة ماكاو الإدارية الخاصة"
+      "nameAR": " الصين، منطقة ماكاو الإدارية الخاصة",
+      "is_country": false,
+      "common_name": "Macao"
     },
     {
       "region": 9,
@@ -688,7 +784,9 @@
       "nameES": "Isla Christmas",
       "nameRU": "остров Рождества",
       "nameZH": "圣诞岛",
-      "nameAR": " جزيرة عيد الميلاد"
+      "nameAR": " جزيرة عيد الميلاد",
+      "is_country": false,
+      "common_name": "Christmas Island"
     },
     {
       "region": 9,
@@ -701,7 +799,9 @@
       "nameES": "Islas Cocos (Keeling)",
       "nameRU": "Кокосовых (Килинг) островов",
       "nameZH": "科科斯（基林）群岛",
-      "nameAR": " جزر كوكس (كيلينغ)"
+      "nameAR": " جزر كوكس (كيلينغ)",
+      "is_country": false,
+      "common_name": "Cocos (Keeling) Islands"
     },
     {
       "region": 19,
@@ -715,7 +815,9 @@
       "nameES": "Colombia",
       "nameRU": "Колумбия",
       "nameZH": "哥伦比亚",
-      "nameAR": "كولومبيا"
+      "nameAR": "كولومبيا",
+      "is_country": true,
+      "common_name": "Colombia"
     },
     {
       "region": 2,
@@ -731,7 +833,9 @@
       "nameES": "Comoras",
       "nameRU": "Коморские Острова",
       "nameZH": "科摩罗",
-      "nameAR": "جزر القمر"
+      "nameAR": "جزر القمر",
+      "is_country": true,
+      "common_name": "Comoros"
     },
     {
       "region": 2,
@@ -745,7 +849,9 @@
       "nameES": "Congo",
       "nameRU": "Конго",
       "nameZH": "刚果",
-      "nameAR": "الكونغو"
+      "nameAR": "الكونغو",
+      "is_country": true,
+      "common_name": "Republic of the Congo"
     },
     {
       "region": 9,
@@ -759,7 +865,9 @@
       "nameES": "Islas Cook",
       "nameRU": "Острова Кука",
       "nameZH": "库克群岛",
-      "nameAR": " جزر كوك"
+      "nameAR": " جزر كوك",
+      "is_country": false,
+      "common_name": "Cook Islands"
     },
     {
       "region": 19,
@@ -773,7 +881,9 @@
       "nameES": "Costa Rica",
       "nameRU": "Коста-Рика",
       "nameZH": "哥斯达黎加",
-      "nameAR": "كوستاريكا"
+      "nameAR": "كوستاريكا",
+      "is_country": true,
+      "common_name": "Costa Rica"
     },
     {
       "region": 150,
@@ -786,7 +896,9 @@
       "nameES": "Croacia",
       "nameRU": "Хорватия",
       "nameZH": "克罗地亚",
-      "nameAR": " كرواتيا"
+      "nameAR": " كرواتيا",
+      "is_country": true,
+      "common_name": "Croatia"
     },
     {
       "region": 19,
@@ -801,7 +913,9 @@
       "nameES": "Cuba",
       "nameRU": "Куба",
       "nameZH": "古巴",
-      "nameAR": "كوبا"
+      "nameAR": "كوبا",
+      "is_country": true,
+      "common_name": "Cuba"
     },
     {
       "region": 19,
@@ -816,7 +930,9 @@
       "nameES": "Curazao",
       "nameRU": "Кюрасао",
       "nameZH": "库拉索",
-      "nameAR": "كوراساو"
+      "nameAR": "كوراساو",
+      "is_country": false,
+      "common_name": "Curaçao"
     },
     {
       "region": 142,
@@ -829,7 +945,9 @@
       "nameES": "Chipre",
       "nameRU": "Кипр",
       "nameZH": "塞浦路斯",
-      "nameAR": " قبرص"
+      "nameAR": " قبرص",
+      "is_country": true,
+      "common_name": "Cyprus"
     },
     {
       "region": 150,
@@ -842,7 +960,9 @@
       "nameES": "Chequia",
       "nameRU": "Чехия",
       "nameZH": "捷克",
-      "nameAR": " تشيكيا"
+      "nameAR": " تشيكيا",
+      "is_country": true,
+      "common_name": "Czechia"
     },
     {
       "region": 2,
@@ -856,7 +976,9 @@
       "nameES": "Côte d’Ivoire",
       "nameRU": "Кот-д'Ивуар",
       "nameZH": "科特迪瓦",
-      "nameAR": "كوت ديفوار"
+      "nameAR": "كوت ديفوار",
+      "is_country": true,
+      "common_name": "Ivory Coast"
     },
     {
       "region": 142,
@@ -869,7 +991,9 @@
       "nameES": "República Popular Democrática de Corea",
       "nameRU": "Корейская Народно-Демократическая Республика",
       "nameZH": "朝鲜民主主义人民共和国",
-      "nameAR": " جمهورية كوريا الشعبية الديمقراطية"
+      "nameAR": " جمهورية كوريا الشعبية الديمقراطية",
+      "is_country": true,
+      "common_name": "North Korea"
     },
     {
       "region": 2,
@@ -884,7 +1008,9 @@
       "nameES": "República Democrática del Congo",
       "nameRU": "Демократическая Республика Конго",
       "nameZH": "刚果民主共和国",
-      "nameAR": "جمهورية الكونغو الديمقراطية"
+      "nameAR": "جمهورية الكونغو الديمقراطية",
+      "is_country": true,
+      "common_name": "Democratic Republic of the Congo"
     },
     {
       "region": 150,
@@ -897,7 +1023,9 @@
       "nameES": "Dinamarca",
       "nameRU": "Дания",
       "nameZH": "丹麦",
-      "nameAR": " الدانمرك"
+      "nameAR": " الدانمرك",
+      "is_country": true,
+      "common_name": "Denmark"
     },
     {
       "region": 2,
@@ -912,7 +1040,9 @@
       "nameES": "Djibouti",
       "nameRU": "Джибути",
       "nameZH": "吉布提",
-      "nameAR": "جيبوتي"
+      "nameAR": "جيبوتي",
+      "is_country": true,
+      "common_name": "Djibouti"
     },
     {
       "region": 19,
@@ -927,7 +1057,9 @@
       "nameES": "Dominica",
       "nameRU": "Доминика",
       "nameZH": "多米尼克",
-      "nameAR": "دومينيكا"
+      "nameAR": "دومينيكا",
+      "is_country": true,
+      "common_name": "Dominica"
     },
     {
       "region": 19,
@@ -942,7 +1074,9 @@
       "nameES": "República Dominicana",
       "nameRU": "Доминиканская Республика",
       "nameZH": "多米尼加",
-      "nameAR": "الجمهورية الدومينيكية"
+      "nameAR": "الجمهورية الدومينيكية",
+      "is_country": true,
+      "common_name": "Dominican Republic"
     },
     {
       "region": 19,
@@ -956,7 +1090,9 @@
       "nameES": "Ecuador",
       "nameRU": "Эквадор",
       "nameZH": "厄瓜多尔",
-      "nameAR": "إكوادور"
+      "nameAR": "إكوادور",
+      "is_country": true,
+      "common_name": "Ecuador"
     },
     {
       "region": 2,
@@ -969,7 +1105,9 @@
       "nameES": "Egipto",
       "nameRU": "Египет",
       "nameZH": "埃及",
-      "nameAR": " مصر"
+      "nameAR": " مصر",
+      "is_country": true,
+      "common_name": "Egypt"
     },
     {
       "region": 19,
@@ -983,7 +1121,9 @@
       "nameES": "El Salvador",
       "nameRU": "Сальвадор",
       "nameZH": "萨尔瓦多",
-      "nameAR": "السلفادور"
+      "nameAR": "السلفادور",
+      "is_country": true,
+      "common_name": "El Salvador"
     },
     {
       "region": 2,
@@ -997,7 +1137,9 @@
       "nameES": "Guinea Ecuatorial",
       "nameRU": "Экваториальная Гвинея",
       "nameZH": "赤道几内亚",
-      "nameAR": "غينيا الاستوائية"
+      "nameAR": "غينيا الاستوائية",
+      "is_country": true,
+      "common_name": "Equatorial Guinea"
     },
     {
       "region": 2,
@@ -1012,7 +1154,9 @@
       "nameES": "Eritrea",
       "nameRU": "Эритрея",
       "nameZH": "厄立特里亚",
-      "nameAR": "إريتريا"
+      "nameAR": "إريتريا",
+      "is_country": true,
+      "common_name": "Eritrea"
     },
     {
       "region": 150,
@@ -1025,7 +1169,9 @@
       "nameES": "Estonia",
       "nameRU": "Эстония",
       "nameZH": "爱沙尼亚",
-      "nameAR": " إستونيا"
+      "nameAR": " إستونيا",
+      "is_country": true,
+      "common_name": "Estonia"
     },
     {
       "region": 2,
@@ -1040,7 +1186,9 @@
       "nameES": "Eswatini",
       "nameRU": "Эсватини",
       "nameZH": "斯威士兰",
-      "nameAR": "إسواتيني"
+      "nameAR": "إسواتيني",
+      "is_country": true,
+      "common_name": "Eswatini"
     },
     {
       "region": 2,
@@ -1056,7 +1204,9 @@
       "nameES": "Etiopía",
       "nameRU": "Эфиопия",
       "nameZH": "埃塞俄比亚",
-      "nameAR": "إثيوبيا"
+      "nameAR": "إثيوبيا",
+      "is_country": true,
+      "common_name": "Ethiopia"
     },
     {
       "region": 19,
@@ -1070,7 +1220,9 @@
       "nameES": "Islas Malvinas (Falkland)",
       "nameRU": "Фолклендские (Мальвинские) острова",
       "nameZH": "福克兰群岛（马尔维纳斯）",
-      "nameAR": "جزر فوكلاند (مالفيناس)"
+      "nameAR": "جزر فوكلاند (مالفيناس)",
+      "is_country": false,
+      "common_name": "Falkland Islands (Malvinas)"
     },
     {
       "region": 150,
@@ -1083,7 +1235,9 @@
       "nameES": "Islas Feroe",
       "nameRU": "Фарерские острова",
       "nameZH": "法罗群岛",
-      "nameAR": " جزر فايرو"
+      "nameAR": " جزر فايرو",
+      "is_country": false,
+      "common_name": "Faroe Islands"
     },
     {
       "region": 9,
@@ -1097,7 +1251,9 @@
       "nameES": "Fiji",
       "nameRU": "Фиджи",
       "nameZH": "斐济",
-      "nameAR": " فيجي"
+      "nameAR": " فيجي",
+      "is_country": true,
+      "common_name": "Fiji"
     },
     {
       "region": 150,
@@ -1110,7 +1266,9 @@
       "nameES": "Finlandia",
       "nameRU": "Финляндия",
       "nameZH": "芬兰",
-      "nameAR": " فنلندا"
+      "nameAR": " فنلندا",
+      "is_country": true,
+      "common_name": "Finland"
     },
     {
       "region": 150,
@@ -1123,7 +1281,9 @@
       "nameES": "Francia",
       "nameRU": "Франция",
       "nameZH": "法国",
-      "nameAR": " فرنسا"
+      "nameAR": " فرنسا",
+      "is_country": true,
+      "common_name": "France"
     },
     {
       "region": 19,
@@ -1137,7 +1297,9 @@
       "nameES": "Guayana Francesa",
       "nameRU": "Французская Гвиана",
       "nameZH": "法属圭亚那",
-      "nameAR": "غيانا الفرنسية"
+      "nameAR": "غيانا الفرنسية",
+      "is_country": false,
+      "common_name": "French Guiana"
     },
     {
       "region": 9,
@@ -1151,7 +1313,9 @@
       "nameES": "Polinesia Francesa",
       "nameRU": "Французская Полинезия",
       "nameZH": "法属波利尼西亚",
-      "nameAR": " بولينيزيا الفرنسية"
+      "nameAR": " بولينيزيا الفرنسية",
+      "is_country": false,
+      "common_name": "French Polynesia"
     },
     {
       "region": 2,
@@ -1165,7 +1329,9 @@
       "nameES": "Territorio de las Tierras Australes Francesas",
       "nameRU": "Южные земли (французская заморская территория)",
       "nameZH": "法属南方领地",
-      "nameAR": "الأراضي الفرنسية الجنوبية الجنوبية "
+      "nameAR": "الأراضي الفرنسية الجنوبية الجنوبية ",
+      "is_country": false,
+      "common_name": "French Southern Territories"
     },
     {
       "region": 2,
@@ -1179,7 +1345,9 @@
       "nameES": "Gabón",
       "nameRU": "Габон",
       "nameZH": "加蓬",
-      "nameAR": "غابون"
+      "nameAR": "غابون",
+      "is_country": true,
+      "common_name": "Gabon"
     },
     {
       "region": 2,
@@ -1194,7 +1362,9 @@
       "nameES": "Gambia",
       "nameRU": "Гамбия",
       "nameZH": "冈比亚",
-      "nameAR": "غامبيا"
+      "nameAR": "غامبيا",
+      "is_country": true,
+      "common_name": "Gambia"
     },
     {
       "region": 142,
@@ -1207,7 +1377,9 @@
       "nameES": "Georgia",
       "nameRU": "Грузия",
       "nameZH": "格鲁吉亚",
-      "nameAR": " جورجيا"
+      "nameAR": " جورجيا",
+      "is_country": true,
+      "common_name": "Georgia"
     },
     {
       "region": 150,
@@ -1220,7 +1392,9 @@
       "nameES": "Alemania",
       "nameRU": "Германия",
       "nameZH": "德国",
-      "nameAR": " ألمانيا"
+      "nameAR": " ألمانيا",
+      "is_country": true,
+      "common_name": "Germany"
     },
     {
       "region": 2,
@@ -1234,7 +1408,9 @@
       "nameES": "Ghana",
       "nameRU": "Гана",
       "nameZH": "加纳",
-      "nameAR": "غانا"
+      "nameAR": "غانا",
+      "is_country": true,
+      "common_name": "Ghana"
     },
     {
       "region": 150,
@@ -1247,7 +1423,9 @@
       "nameES": "Gibraltar",
       "nameRU": "Гибралтар",
       "nameZH": "直布罗陀",
-      "nameAR": " جبل طارق"
+      "nameAR": " جبل طارق",
+      "is_country": false,
+      "common_name": "Gibraltar"
     },
     {
       "region": 150,
@@ -1260,7 +1438,9 @@
       "nameES": "Grecia",
       "nameRU": "Греция",
       "nameZH": "希腊",
-      "nameAR": " اليونان"
+      "nameAR": " اليونان",
+      "is_country": true,
+      "common_name": "Greece"
     },
     {
       "region": 19,
@@ -1273,7 +1453,9 @@
       "nameES": "Groenlandia",
       "nameRU": "Гренландия",
       "nameZH": "格陵兰",
-      "nameAR": " غرينلند"
+      "nameAR": " غرينلند",
+      "is_country": false,
+      "common_name": "Greenland"
     },
     {
       "region": 19,
@@ -1288,7 +1470,9 @@
       "nameES": "Granada",
       "nameRU": "Гренада",
       "nameZH": "格林纳达",
-      "nameAR": "غرينادا"
+      "nameAR": "غرينادا",
+      "is_country": true,
+      "common_name": "Grenada"
     },
     {
       "region": 19,
@@ -1302,7 +1486,9 @@
       "nameES": "Guadalupe",
       "nameRU": "Гваделупа",
       "nameZH": "瓜德罗普",
-      "nameAR": "غوادلوب"
+      "nameAR": "غوادلوب",
+      "is_country": false,
+      "common_name": "Guadeloupe"
     },
     {
       "region": 9,
@@ -1316,7 +1502,9 @@
       "nameES": "Guam",
       "nameRU": "Гуам",
       "nameZH": "关岛",
-      "nameAR": " غوام"
+      "nameAR": " غوام",
+      "is_country": false,
+      "common_name": "Guam"
     },
     {
       "region": 19,
@@ -1330,7 +1518,9 @@
       "nameES": "Guatemala",
       "nameRU": "Гватемала",
       "nameZH": "危地马拉",
-      "nameAR": "غواتيمالا"
+      "nameAR": "غواتيمالا",
+      "is_country": true,
+      "common_name": "Guatemala"
     },
     {
       "region": 150,
@@ -1344,7 +1534,9 @@
       "nameES": "Guernsey",
       "nameRU": "Гернси",
       "nameZH": "格恩西",
-      "nameAR": "غيرنسي"
+      "nameAR": "غيرنسي",
+      "is_country": false,
+      "common_name": "Guernsey"
     },
     {
       "region": 2,
@@ -1359,7 +1551,9 @@
       "nameES": "Guinea",
       "nameRU": "Гвинея",
       "nameZH": "几内亚",
-      "nameAR": "غينيا"
+      "nameAR": "غينيا",
+      "is_country": true,
+      "common_name": "Guinea"
     },
     {
       "region": 2,
@@ -1375,7 +1569,9 @@
       "nameES": "Guinea-Bissau",
       "nameRU": "Гвинея-Бисау",
       "nameZH": "几内亚比绍",
-      "nameAR": "غينيا - بيساو"
+      "nameAR": "غينيا - بيساو",
+      "is_country": true,
+      "common_name": "Guinea-Bissau"
     },
     {
       "region": 19,
@@ -1390,7 +1586,9 @@
       "nameES": "Guyana",
       "nameRU": "Гайана",
       "nameZH": "圭亚那",
-      "nameAR": "غيانا"
+      "nameAR": "غيانا",
+      "is_country": true,
+      "common_name": "Guyana"
     },
     {
       "region": 19,
@@ -1406,7 +1604,9 @@
       "nameES": "Haití",
       "nameRU": "Гаити",
       "nameZH": "海地",
-      "nameAR": "هايتي"
+      "nameAR": "هايتي",
+      "is_country": true,
+      "common_name": "Haiti"
     },
     {
       "region": 9,
@@ -1419,7 +1619,9 @@
       "nameES": "Islas Heard y McDonald",
       "nameRU": "Остров Херд и острова Макдональд",
       "nameZH": "赫德岛和麦克唐纳岛",
-      "nameAR": " جزيرة هيرد وجزر ماكدونالد"
+      "nameAR": " جزيرة هيرد وجزر ماكدونالد",
+      "is_country": false,
+      "common_name": "Heard Island and McDonald Islands"
     },
     {
       "region": 150,
@@ -1432,7 +1634,9 @@
       "nameES": "Santa Sede",
       "nameRU": "Святой Престол",
       "nameZH": "教廷",
-      "nameAR": " الكرسي الرسولي"
+      "nameAR": " الكرسي الرسولي",
+      "is_country": false,
+      "common_name": "Vatican City"
     },
     {
       "region": 19,
@@ -1446,7 +1650,9 @@
       "nameES": "Honduras",
       "nameRU": "Гондурас",
       "nameZH": "洪都拉斯",
-      "nameAR": "هندوراس"
+      "nameAR": "هندوراس",
+      "is_country": true,
+      "common_name": "Honduras"
     },
     {
       "region": 150,
@@ -1459,7 +1665,9 @@
       "nameES": "Hungría",
       "nameRU": "Венгрия",
       "nameZH": "匈牙利",
-      "nameAR": " هنغاريا"
+      "nameAR": " هنغاريا",
+      "is_country": true,
+      "common_name": "Hungary"
     },
     {
       "region": 150,
@@ -1472,7 +1680,9 @@
       "nameES": "Islandia",
       "nameRU": "Исландия",
       "nameZH": "冰岛",
-      "nameAR": " آيسلندا"
+      "nameAR": " آيسلندا",
+      "is_country": true,
+      "common_name": "Iceland"
     },
     {
       "region": 142,
@@ -1485,7 +1695,9 @@
       "nameES": "India",
       "nameRU": "Индия",
       "nameZH": "印度",
-      "nameAR": " الهند"
+      "nameAR": " الهند",
+      "is_country": true,
+      "common_name": "India"
     },
     {
       "region": 142,
@@ -1498,7 +1710,9 @@
       "nameES": "Indonesia",
       "nameRU": "Индонезия",
       "nameZH": "印度尼西亚",
-      "nameAR": " إندونيسيا"
+      "nameAR": " إندونيسيا",
+      "is_country": true,
+      "common_name": "Indonesia"
     },
     {
       "region": 142,
@@ -1511,7 +1725,9 @@
       "nameES": "Irán (República Islámica del)",
       "nameRU": "Иран (Исламская Республика)",
       "nameZH": "伊朗伊斯兰共和国",
-      "nameAR": " إيران (جمهورية - الإسلامية)"
+      "nameAR": " إيران (جمهورية - الإسلامية)",
+      "is_country": true,
+      "common_name": "Iran"
     },
     {
       "region": 142,
@@ -1524,7 +1740,9 @@
       "nameES": "Iraq",
       "nameRU": "Ирак",
       "nameZH": "伊拉克",
-      "nameAR": " العراق"
+      "nameAR": " العراق",
+      "is_country": true,
+      "common_name": "Iraq"
     },
     {
       "region": 150,
@@ -1537,7 +1755,9 @@
       "nameES": "Irlanda",
       "nameRU": "Ирландия",
       "nameZH": "爱尔兰",
-      "nameAR": " آيرلندا"
+      "nameAR": " آيرلندا",
+      "is_country": true,
+      "common_name": "Ireland"
     },
     {
       "region": 150,
@@ -1550,7 +1770,9 @@
       "nameES": "Isla de Man",
       "nameRU": "Остров Мэн",
       "nameZH": "马恩岛",
-      "nameAR": " جزيرة مان"
+      "nameAR": " جزيرة مان",
+      "is_country": false,
+      "common_name": "Isle of Man"
     },
     {
       "region": 142,
@@ -1563,7 +1785,9 @@
       "nameES": "Israel",
       "nameRU": "Израиль",
       "nameZH": "以色列",
-      "nameAR": " إسرائيل"
+      "nameAR": " إسرائيل",
+      "is_country": true,
+      "common_name": "Israel"
     },
     {
       "region": 150,
@@ -1576,7 +1800,9 @@
       "nameES": "Italia",
       "nameRU": "Италия",
       "nameZH": "意大利",
-      "nameAR": " إيطاليا"
+      "nameAR": " إيطاليا",
+      "is_country": true,
+      "common_name": "Italy"
     },
     {
       "region": 19,
@@ -1591,7 +1817,9 @@
       "nameES": "Jamaica",
       "nameRU": "Ямайка",
       "nameZH": "牙买加",
-      "nameAR": "جامايكا"
+      "nameAR": "جامايكا",
+      "is_country": true,
+      "common_name": "Jamaica"
     },
     {
       "region": 142,
@@ -1604,7 +1832,9 @@
       "nameES": "Japón",
       "nameRU": "Япония",
       "nameZH": "日本",
-      "nameAR": " اليابان"
+      "nameAR": " اليابان",
+      "is_country": true,
+      "common_name": "Japan"
     },
     {
       "region": 150,
@@ -1618,7 +1848,9 @@
       "nameES": "Jersey",
       "nameRU": "Джерси",
       "nameZH": "泽西",
-      "nameAR": "جيرسي"
+      "nameAR": "جيرسي",
+      "is_country": false,
+      "common_name": "Jersey"
     },
     {
       "region": 142,
@@ -1631,7 +1863,9 @@
       "nameES": "Jordania",
       "nameRU": "Иордания",
       "nameZH": "约旦",
-      "nameAR": " الأردن"
+      "nameAR": " الأردن",
+      "is_country": true,
+      "common_name": "Jordan"
     },
     {
       "region": 142,
@@ -1645,7 +1879,9 @@
       "nameES": "Kazajstán",
       "nameRU": "Казахстан",
       "nameZH": "哈萨克斯坦",
-      "nameAR": " كازاخستان"
+      "nameAR": " كازاخستان",
+      "is_country": true,
+      "common_name": "Kazakhstan"
     },
     {
       "region": 2,
@@ -1659,7 +1895,9 @@
       "nameES": "Kenya",
       "nameRU": "Кения",
       "nameZH": "肯尼亚",
-      "nameAR": "كينيا"
+      "nameAR": "كينيا",
+      "is_country": true,
+      "common_name": "Kenya"
     },
     {
       "region": 9,
@@ -1674,7 +1912,9 @@
       "nameES": "Kiribati",
       "nameRU": "Кирибати",
       "nameZH": "基里巴斯",
-      "nameAR": " كيريباس"
+      "nameAR": " كيريباس",
+      "is_country": true,
+      "common_name": "Kiribati"
     },
     {
       "region": 142,
@@ -1687,7 +1927,9 @@
       "nameES": "Kuwait",
       "nameRU": "Кувейт",
       "nameZH": "科威特",
-      "nameAR": " الكويت"
+      "nameAR": " الكويت",
+      "is_country": true,
+      "common_name": "Kuwait"
     },
     {
       "region": 142,
@@ -1701,7 +1943,9 @@
       "nameES": "Kirguistán",
       "nameRU": "Кыргызстан",
       "nameZH": "吉尔吉斯斯坦",
-      "nameAR": " قيرغيزستان"
+      "nameAR": " قيرغيزستان",
+      "is_country": true,
+      "common_name": "Kyrgyzstan"
     },
     {
       "region": 142,
@@ -1716,7 +1960,9 @@
       "nameES": "República Democrática Popular Lao",
       "nameRU": "Лаосская Народно-Демократическая Республика",
       "nameZH": "老挝人民民主共和国",
-      "nameAR": " جمهورية لاو الديمقراطية الشعبية"
+      "nameAR": " جمهورية لاو الديمقراطية الشعبية",
+      "is_country": true,
+      "common_name": "Laos"
     },
     {
       "region": 150,
@@ -1729,7 +1975,9 @@
       "nameES": "Letonia",
       "nameRU": "Латвия",
       "nameZH": "拉脱维亚",
-      "nameAR": " لاتفيا"
+      "nameAR": " لاتفيا",
+      "is_country": true,
+      "common_name": "Latvia"
     },
     {
       "region": 142,
@@ -1742,7 +1990,9 @@
       "nameES": "Líbano",
       "nameRU": "Ливан",
       "nameZH": "黎巴嫩",
-      "nameAR": " لبنان"
+      "nameAR": " لبنان",
+      "is_country": true,
+      "common_name": "Lebanon"
     },
     {
       "region": 2,
@@ -1758,7 +2008,9 @@
       "nameES": "Lesotho",
       "nameRU": "Лесото",
       "nameZH": "莱索托",
-      "nameAR": "ليسوتو"
+      "nameAR": "ليسوتو",
+      "is_country": true,
+      "common_name": "Lesotho"
     },
     {
       "region": 2,
@@ -1773,7 +2025,9 @@
       "nameES": "Liberia",
       "nameRU": "Либерия",
       "nameZH": "利比里亚",
-      "nameAR": "ليبريا"
+      "nameAR": "ليبريا",
+      "is_country": true,
+      "common_name": "Liberia"
     },
     {
       "region": 2,
@@ -1786,7 +2040,9 @@
       "nameES": "Libia",
       "nameRU": "Ливия",
       "nameZH": "利比亚",
-      "nameAR": " ليبيا"
+      "nameAR": " ليبيا",
+      "is_country": true,
+      "common_name": "Libya"
     },
     {
       "region": 150,
@@ -1799,7 +2055,9 @@
       "nameES": "Liechtenstein",
       "nameRU": "Лихтенштейн",
       "nameZH": "列支敦士登",
-      "nameAR": " ليختنشتاين"
+      "nameAR": " ليختنشتاين",
+      "is_country": true,
+      "common_name": "Liechtenstein"
     },
     {
       "region": 150,
@@ -1812,7 +2070,9 @@
       "nameES": "Lituania",
       "nameRU": "Литва",
       "nameZH": "立陶宛",
-      "nameAR": " ليتوانيا"
+      "nameAR": " ليتوانيا",
+      "is_country": true,
+      "common_name": "Lithuania"
     },
     {
       "region": 150,
@@ -1825,7 +2085,9 @@
       "nameES": "Luxemburgo",
       "nameRU": "Люксембург",
       "nameZH": "卢森堡",
-      "nameAR": " لكسمبرغ"
+      "nameAR": " لكسمبرغ",
+      "is_country": true,
+      "common_name": "Luxembourg"
     },
     {
       "region": 2,
@@ -1840,7 +2102,9 @@
       "nameES": "Madagascar",
       "nameRU": "Мадагаскар",
       "nameZH": "马达加斯加",
-      "nameAR": "مدغشقر"
+      "nameAR": "مدغشقر",
+      "is_country": true,
+      "common_name": "Madagascar"
     },
     {
       "region": 2,
@@ -1856,7 +2120,9 @@
       "nameES": "Malawi",
       "nameRU": "Малави",
       "nameZH": "马拉维",
-      "nameAR": "ملاوي"
+      "nameAR": "ملاوي",
+      "is_country": true,
+      "common_name": "Malawi"
     },
     {
       "region": 142,
@@ -1869,7 +2135,9 @@
       "nameES": "Malasia",
       "nameRU": "Малайзия",
       "nameZH": "马来西亚",
-      "nameAR": " ماليزيا"
+      "nameAR": " ماليزيا",
+      "is_country": true,
+      "common_name": "Malaysia"
     },
     {
       "region": 142,
@@ -1883,7 +2151,9 @@
       "nameES": "Maldivas",
       "nameRU": "Мальдивские Острова",
       "nameZH": "马尔代夫",
-      "nameAR": " ملديف"
+      "nameAR": " ملديف",
+      "is_country": true,
+      "common_name": "Maldives"
     },
     {
       "region": 2,
@@ -1899,7 +2169,9 @@
       "nameES": "Malí",
       "nameRU": "Мали",
       "nameZH": "马里",
-      "nameAR": "مالي"
+      "nameAR": "مالي",
+      "is_country": true,
+      "common_name": "Mali"
     },
     {
       "region": 150,
@@ -1912,7 +2184,9 @@
       "nameES": "Malta",
       "nameRU": "Мальта",
       "nameZH": "马耳他",
-      "nameAR": " مالطة"
+      "nameAR": " مالطة",
+      "is_country": true,
+      "common_name": "Malta"
     },
     {
       "region": 9,
@@ -1926,7 +2200,9 @@
       "nameES": "Islas Marshall",
       "nameRU": "Маршалловы Острова",
       "nameZH": "马绍尔群岛",
-      "nameAR": " جزر مارشال"
+      "nameAR": " جزر مارشال",
+      "is_country": true,
+      "common_name": "Marshall Islands"
     },
     {
       "region": 19,
@@ -1940,7 +2216,9 @@
       "nameES": "Martinica",
       "nameRU": "Мартиника",
       "nameZH": "马提尼克",
-      "nameAR": "مارتينيك"
+      "nameAR": "مارتينيك",
+      "is_country": false,
+      "common_name": "Martinique"
     },
     {
       "region": 2,
@@ -1955,7 +2233,9 @@
       "nameES": "Mauritania",
       "nameRU": "Мавритания",
       "nameZH": "毛里塔尼亚",
-      "nameAR": "موريتانيا"
+      "nameAR": "موريتانيا",
+      "is_country": true,
+      "common_name": "Mauritania"
     },
     {
       "region": 2,
@@ -1970,7 +2250,9 @@
       "nameES": "Mauricio",
       "nameRU": "Маврикий",
       "nameZH": "毛里求斯",
-      "nameAR": "موريشيوس"
+      "nameAR": "موريشيوس",
+      "is_country": true,
+      "common_name": "Mauritius"
     },
     {
       "region": 2,
@@ -1984,7 +2266,9 @@
       "nameES": "Mayotte",
       "nameRU": "Остров Майотта",
       "nameZH": "马约特",
-      "nameAR": "مايوت"
+      "nameAR": "مايوت",
+      "is_country": false,
+      "common_name": "Mayotte"
     },
     {
       "region": 19,
@@ -1998,7 +2282,9 @@
       "nameES": "México",
       "nameRU": "Мексика",
       "nameZH": "墨西哥",
-      "nameAR": "المكسيك"
+      "nameAR": "المكسيك",
+      "is_country": true,
+      "common_name": "Mexico"
     },
     {
       "region": 9,
@@ -2012,7 +2298,9 @@
       "nameES": "Micronesia (Estados Federados de)",
       "nameRU": "Микронезия (Федеративные Штаты)",
       "nameZH": "密克罗尼西亚联邦",
-      "nameAR": " ميكرونيزيا (ولايات - الموحدة)"
+      "nameAR": " ميكرونيزيا (ولايات - الموحدة)",
+      "is_country": true,
+      "common_name": "Micronesia, Federated States of"
     },
     {
       "region": 150,
@@ -2025,7 +2313,9 @@
       "nameES": "Mónaco",
       "nameRU": "Монако",
       "nameZH": "摩纳哥",
-      "nameAR": " موناكو"
+      "nameAR": " موناكو",
+      "is_country": true,
+      "common_name": "Monaco"
     },
     {
       "region": 142,
@@ -2039,7 +2329,9 @@
       "nameES": "Mongolia",
       "nameRU": "Монголия",
       "nameZH": "蒙古",
-      "nameAR": " منغوليا"
+      "nameAR": " منغوليا",
+      "is_country": true,
+      "common_name": "Mongolia"
     },
     {
       "region": 150,
@@ -2052,7 +2344,9 @@
       "nameES": "Montenegro",
       "nameRU": "Черногория",
       "nameZH": "黑山",
-      "nameAR": " الجبل الأسود"
+      "nameAR": " الجبل الأسود",
+      "is_country": true,
+      "common_name": "Montenegro"
     },
     {
       "region": 19,
@@ -2067,7 +2361,9 @@
       "nameES": "Montserrat",
       "nameRU": "Монтсеррат",
       "nameZH": "蒙特塞拉特",
-      "nameAR": "مونتسيرات"
+      "nameAR": "مونتسيرات",
+      "is_country": false,
+      "common_name": "Montserrat"
     },
     {
       "region": 2,
@@ -2080,7 +2376,9 @@
       "nameES": "Marruecos",
       "nameRU": "Марокко",
       "nameZH": "摩洛哥",
-      "nameAR": " المغرب"
+      "nameAR": " المغرب",
+      "is_country": true,
+      "common_name": "Morocco"
     },
     {
       "region": 2,
@@ -2095,7 +2393,9 @@
       "nameES": "Mozambique",
       "nameRU": "Мозамбик",
       "nameZH": "莫桑比克",
-      "nameAR": "موزامبيق"
+      "nameAR": "موزامبيق",
+      "is_country": true,
+      "common_name": "Mozambique"
     },
     {
       "region": 142,
@@ -2109,7 +2409,9 @@
       "nameES": "Myanmar",
       "nameRU": "Мьянма",
       "nameZH": "缅甸",
-      "nameAR": " ميانمار"
+      "nameAR": " ميانمار",
+      "is_country": true,
+      "common_name": "Myanmar"
     },
     {
       "region": 2,
@@ -2123,7 +2425,9 @@
       "nameES": "Namibia",
       "nameRU": "Намибия",
       "nameZH": "纳米比亚",
-      "nameAR": "ناميبيا"
+      "nameAR": "ناميبيا",
+      "is_country": true,
+      "common_name": "Namibia"
     },
     {
       "region": 9,
@@ -2137,7 +2441,9 @@
       "nameES": "Nauru",
       "nameRU": "Науру",
       "nameZH": "瑙鲁",
-      "nameAR": " ناورو"
+      "nameAR": " ناورو",
+      "is_country": true,
+      "common_name": "Nauru"
     },
     {
       "region": 142,
@@ -2152,7 +2458,9 @@
       "nameES": "Nepal",
       "nameRU": "Непал",
       "nameZH": "尼泊尔",
-      "nameAR": " نيبال"
+      "nameAR": " نيبال",
+      "is_country": true,
+      "common_name": "Nepal"
     },
     {
       "region": 150,
@@ -2165,7 +2473,9 @@
       "nameES": "Países Bajos",
       "nameRU": "Нидерланды",
       "nameZH": "荷兰",
-      "nameAR": " هولندا"
+      "nameAR": " هولندا",
+      "is_country": true,
+      "common_name": "Netherlands"
     },
     {
       "region": 9,
@@ -2179,7 +2489,9 @@
       "nameES": "Nueva Caledonia",
       "nameRU": "Новая Каледония",
       "nameZH": "新喀里多尼亚",
-      "nameAR": " كاليدونيا الجديدة"
+      "nameAR": " كاليدونيا الجديدة",
+      "is_country": false,
+      "common_name": "New Caledonia"
     },
     {
       "region": 9,
@@ -2192,7 +2504,9 @@
       "nameES": "Nueva Zelandia",
       "nameRU": "Новая Зеландия",
       "nameZH": "新西兰",
-      "nameAR": " نيوزيلندا"
+      "nameAR": " نيوزيلندا",
+      "is_country": true,
+      "common_name": "New Zealand"
     },
     {
       "region": 19,
@@ -2206,7 +2520,9 @@
       "nameES": "Nicaragua",
       "nameRU": "Никарагуа",
       "nameZH": "尼加拉瓜",
-      "nameAR": "نيكاراغوا"
+      "nameAR": "نيكاراغوا",
+      "is_country": true,
+      "common_name": "Nicaragua"
     },
     {
       "region": 2,
@@ -2222,7 +2538,9 @@
       "nameES": "Níger",
       "nameRU": "Нигер",
       "nameZH": "尼日尔",
-      "nameAR": "النيجر"
+      "nameAR": "النيجر",
+      "is_country": true,
+      "common_name": "Niger"
     },
     {
       "region": 2,
@@ -2236,7 +2554,9 @@
       "nameES": "Nigeria",
       "nameRU": "Нигерия",
       "nameZH": "尼日利亚",
-      "nameAR": "نيجيريا"
+      "nameAR": "نيجيريا",
+      "is_country": true,
+      "common_name": "Nigeria"
     },
     {
       "region": 9,
@@ -2250,7 +2570,9 @@
       "nameES": "Niue",
       "nameRU": "Ниуэ",
       "nameZH": "纽埃",
-      "nameAR": " نيوي"
+      "nameAR": " نيوي",
+      "is_country": false,
+      "common_name": "Niue"
     },
     {
       "region": 9,
@@ -2263,7 +2585,9 @@
       "nameES": "Isla Norfolk",
       "nameRU": "Остров Норфолк",
       "nameZH": "诺福克岛",
-      "nameAR": " جزيرة نورفولك"
+      "nameAR": " جزيرة نورفولك",
+      "is_country": false,
+      "common_name": "Norfolk Island"
     },
     {
       "region": 150,
@@ -2277,7 +2601,9 @@
       "nameES": "Macedonia del Norte",
       "nameRU": "Северная Македония",
       "nameZH": "北马其顿",
-      "nameAR": " مقدونيا الشمالية"
+      "nameAR": " مقدونيا الشمالية",
+      "is_country": true,
+      "common_name": "North Macedonia"
     },
     {
       "region": 9,
@@ -2291,7 +2617,9 @@
       "nameES": "Islas Marianas Septentrionales",
       "nameRU": "Северные Марианские острова",
       "nameZH": "北马里亚纳群岛",
-      "nameAR": " جزر ماريانا الشمالية"
+      "nameAR": " جزر ماريانا الشمالية",
+      "is_country": false,
+      "common_name": "Northern Mariana Islands"
     },
     {
       "region": 150,
@@ -2304,7 +2632,9 @@
       "nameES": "Noruega",
       "nameRU": "Норвегия",
       "nameZH": "挪威",
-      "nameAR": " النرويج"
+      "nameAR": " النرويج",
+      "is_country": true,
+      "common_name": "Norway"
     },
     {
       "region": 142,
@@ -2317,7 +2647,9 @@
       "nameES": "Omán",
       "nameRU": "Оман",
       "nameZH": "阿曼",
-      "nameAR": " عمان"
+      "nameAR": " عمان",
+      "is_country": true,
+      "common_name": "Oman"
     },
     {
       "region": 142,
@@ -2330,7 +2662,9 @@
       "nameES": "Pakistán",
       "nameRU": "Пакистан",
       "nameZH": "巴基斯坦",
-      "nameAR": " باكستان"
+      "nameAR": " باكستان",
+      "is_country": true,
+      "common_name": "Pakistan"
     },
     {
       "region": 9,
@@ -2344,7 +2678,9 @@
       "nameES": "Palau",
       "nameRU": "Палау",
       "nameZH": "帕劳",
-      "nameAR": " بالاو"
+      "nameAR": " بالاو",
+      "is_country": true,
+      "common_name": "Palau"
     },
     {
       "region": 19,
@@ -2358,7 +2694,9 @@
       "nameES": "Panamá",
       "nameRU": "Панама",
       "nameZH": "巴拿马",
-      "nameAR": "بنما"
+      "nameAR": "بنما",
+      "is_country": true,
+      "common_name": "Panama"
     },
     {
       "region": 9,
@@ -2372,7 +2710,9 @@
       "nameES": "Papua Nueva Guinea",
       "nameRU": "Папуа-Новая Гвинея",
       "nameZH": "巴布亚新几内亚",
-      "nameAR": " بابوا غينيا الجديدة"
+      "nameAR": " بابوا غينيا الجديدة",
+      "is_country": true,
+      "common_name": "Papua New Guinea"
     },
     {
       "region": 19,
@@ -2387,7 +2727,9 @@
       "nameES": "Paraguay",
       "nameRU": "Парагвай",
       "nameZH": "巴拉圭",
-      "nameAR": "باراغواي"
+      "nameAR": "باراغواي",
+      "is_country": true,
+      "common_name": "Paraguay"
     },
     {
       "region": 19,
@@ -2401,7 +2743,9 @@
       "nameES": "Perú",
       "nameRU": "Перу",
       "nameZH": "秘鲁",
-      "nameAR": "بيرو"
+      "nameAR": "بيرو",
+      "is_country": true,
+      "common_name": "Peru"
     },
     {
       "region": 142,
@@ -2414,7 +2758,9 @@
       "nameES": "Filipinas",
       "nameRU": "Филиппины",
       "nameZH": "菲律宾",
-      "nameAR": " الفلبين"
+      "nameAR": " الفلبين",
+      "is_country": true,
+      "common_name": "Philippines"
     },
     {
       "region": 9,
@@ -2427,7 +2773,9 @@
       "nameES": "Pitcairn",
       "nameRU": "Питкэрн",
       "nameZH": "皮特凯恩",
-      "nameAR": " بيتكرن"
+      "nameAR": " بيتكرن",
+      "is_country": false,
+      "common_name": "Pitcairn"
     },
     {
       "region": 150,
@@ -2440,7 +2788,9 @@
       "nameES": "Polonia",
       "nameRU": "Польша",
       "nameZH": "波兰",
-      "nameAR": " بولندا"
+      "nameAR": " بولندا",
+      "is_country": true,
+      "common_name": "Poland"
     },
     {
       "region": 150,
@@ -2453,7 +2803,9 @@
       "nameES": "Portugal",
       "nameRU": "Португалия",
       "nameZH": "葡萄牙",
-      "nameAR": " البرتغال"
+      "nameAR": " البرتغال",
+      "is_country": true,
+      "common_name": "Portugal"
     },
     {
       "region": 19,
@@ -2468,7 +2820,9 @@
       "nameES": "Puerto Rico",
       "nameRU": "Пуэрто-Рико",
       "nameZH": "波多黎各",
-      "nameAR": "بورتوريكو"
+      "nameAR": "بورتوريكو",
+      "is_country": false,
+      "common_name": "Puerto Rico"
     },
     {
       "region": 142,
@@ -2481,7 +2835,9 @@
       "nameES": "Qatar",
       "nameRU": "Катар",
       "nameZH": "卡塔尔",
-      "nameAR": " قطر"
+      "nameAR": " قطر",
+      "is_country": true,
+      "common_name": "Qatar"
     },
     {
       "region": 142,
@@ -2494,7 +2850,9 @@
       "nameES": "República de Corea",
       "nameRU": "Республика Корея",
       "nameZH": "大韩民国",
-      "nameAR": " جمهورية كوريا"
+      "nameAR": " جمهورية كوريا",
+      "is_country": true,
+      "common_name": "South Korea"
     },
     {
       "region": 150,
@@ -2508,7 +2866,9 @@
       "nameES": "República de Moldova",
       "nameRU": "Республика Молдова",
       "nameZH": "摩尔多瓦共和国",
-      "nameAR": " جمهورية مولدوفا"
+      "nameAR": " جمهورية مولدوفا",
+      "is_country": true,
+      "common_name": "Moldova"
     },
     {
       "region": 150,
@@ -2521,7 +2881,9 @@
       "nameES": "Rumania",
       "nameRU": "Румыния",
       "nameZH": "罗马尼亚",
-      "nameAR": " رومانيا"
+      "nameAR": " رومانيا",
+      "is_country": true,
+      "common_name": "Romania"
     },
     {
       "region": 150,
@@ -2534,7 +2896,9 @@
       "nameES": "Federación de Rusia",
       "nameRU": "Российская Федерация",
       "nameZH": "俄罗斯联邦",
-      "nameAR": " الاتحاد الروسي"
+      "nameAR": " الاتحاد الروسي",
+      "is_country": true,
+      "common_name": "Russia"
     },
     {
       "region": 2,
@@ -2550,7 +2914,9 @@
       "nameES": "Rwanda",
       "nameRU": "Руанда",
       "nameZH": "卢旺达",
-      "nameAR": "رواندا"
+      "nameAR": "رواندا",
+      "is_country": true,
+      "common_name": "Rwanda"
     },
     {
       "region": 2,
@@ -2564,7 +2930,9 @@
       "nameES": "Reunión",
       "nameRU": "Реюньон",
       "nameZH": "留尼汪",
-      "nameAR": "ريونيون"
+      "nameAR": "ريونيون",
+      "is_country": false,
+      "common_name": "Réunion"
     },
     {
       "region": 19,
@@ -2578,7 +2946,9 @@
       "nameES": "San Barthélemy",
       "nameRU": "Сен-Бартелеми",
       "nameZH": "圣巴泰勒米",
-      "nameAR": "سان بارتليمي"
+      "nameAR": "سان بارتليمي",
+      "is_country": false,
+      "common_name": "Saint Barthélemy"
     },
     {
       "region": 2,
@@ -2592,7 +2962,9 @@
       "nameES": "Santa Elena",
       "nameRU": "Остров Святой Елены",
       "nameZH": "圣赫勒拿",
-      "nameAR": "سانت هيلانة"
+      "nameAR": "سانت هيلانة",
+      "is_country": false,
+      "common_name": "Saint Helena, Ascension and Tristan da Cunha"
     },
     {
       "region": 19,
@@ -2607,7 +2979,9 @@
       "nameES": "Saint Kitts y Nevis",
       "nameRU": "Сент-Китс и Невис",
       "nameZH": "圣基茨和尼维斯",
-      "nameAR": "سانت كيتس ونيفس"
+      "nameAR": "سانت كيتس ونيفس",
+      "is_country": true,
+      "common_name": "Saint Kitts and Nevis"
     },
     {
       "region": 19,
@@ -2622,7 +2996,9 @@
       "nameES": "Santa Lucía",
       "nameRU": "Сент-Люсия",
       "nameZH": "圣卢西亚",
-      "nameAR": "سانت لوسيا"
+      "nameAR": "سانت لوسيا",
+      "is_country": true,
+      "common_name": "Saint Lucia"
     },
     {
       "region": 19,
@@ -2636,7 +3012,9 @@
       "nameES": "San Martín (parte francesa)",
       "nameRU": "Сен-Мартен (французская часть)",
       "nameZH": "圣马丁（法属）",
-      "nameAR": "سانت مارتن (الجزء الفرنسي)"
+      "nameAR": "سانت مارتن (الجزء الفرنسي)",
+      "is_country": false,
+      "common_name": "Saint Martin (French part)"
     },
     {
       "region": 19,
@@ -2649,7 +3027,9 @@
       "nameES": "San Pedro y Miquelón",
       "nameRU": "Сен-Пьер и Микелон",
       "nameZH": "圣皮埃尔和密克隆",
-      "nameAR": " سان بيير وميكلون"
+      "nameAR": " سان بيير وميكلون",
+      "is_country": false,
+      "common_name": "Saint Pierre and Miquelon"
     },
     {
       "region": 19,
@@ -2664,7 +3044,9 @@
       "nameES": "San Vicente y las Granadinas",
       "nameRU": "Сент-Винсент и Гренадины",
       "nameZH": "圣文森特和格林纳丁斯",
-      "nameAR": "سانت فنسنت وجزر غرينادين"
+      "nameAR": "سانت فنسنت وجزر غرينادين",
+      "is_country": true,
+      "common_name": "Saint Vincent and the Grenadines"
     },
     {
       "region": 9,
@@ -2678,7 +3060,9 @@
       "nameES": "Samoa",
       "nameRU": "Самоа",
       "nameZH": "萨摩亚",
-      "nameAR": " ساموا"
+      "nameAR": " ساموا",
+      "is_country": true,
+      "common_name": "Samoa"
     },
     {
       "region": 150,
@@ -2691,7 +3075,9 @@
       "nameES": "San Marino",
       "nameRU": "Сан-Марино",
       "nameZH": "圣马力诺",
-      "nameAR": " سان مارينو"
+      "nameAR": " سان مارينو",
+      "is_country": true,
+      "common_name": "San Marino"
     },
     {
       "region": 2,
@@ -2707,7 +3093,9 @@
       "nameES": "Santo Tomé y Príncipe",
       "nameRU": "Сан-Томе и Принсипи",
       "nameZH": "圣多美和普林西比",
-      "nameAR": "سان تومي وبرينسيبي"
+      "nameAR": "سان تومي وبرينسيبي",
+      "is_country": true,
+      "common_name": "Sao Tome and Principe"
     },
     {
       "region": 150,
@@ -2719,7 +3107,9 @@
       "nameES": "Sark",
       "nameRU": "Сарк",
       "nameZH": "萨克",
-      "nameAR": "سارك"
+      "nameAR": "سارك",
+      "is_country": false,
+      "common_name": "Sark"
     },
     {
       "region": 142,
@@ -2732,7 +3122,9 @@
       "nameES": "Arabia Saudita",
       "nameRU": "Саудовская Аравия",
       "nameZH": "沙特阿拉伯",
-      "nameAR": " المملكة العربية السعودية"
+      "nameAR": " المملكة العربية السعودية",
+      "is_country": true,
+      "common_name": "Saudi Arabia"
     },
     {
       "region": 2,
@@ -2747,7 +3139,9 @@
       "nameES": "Senegal",
       "nameRU": "Сенегал",
       "nameZH": "塞内加尔",
-      "nameAR": "السنغال"
+      "nameAR": "السنغال",
+      "is_country": true,
+      "common_name": "Senegal"
     },
     {
       "region": 150,
@@ -2760,7 +3154,9 @@
       "nameES": "Serbia",
       "nameRU": "Сербия",
       "nameZH": "塞尔维亚",
-      "nameAR": " صربيا"
+      "nameAR": " صربيا",
+      "is_country": true,
+      "common_name": "Serbia"
     },
     {
       "region": 2,
@@ -2775,7 +3171,9 @@
       "nameES": "Seychelles",
       "nameRU": "Сейшельские Острова",
       "nameZH": "塞舌尔",
-      "nameAR": "سيشيل"
+      "nameAR": "سيشيل",
+      "is_country": true,
+      "common_name": "Seychelles"
     },
     {
       "region": 2,
@@ -2790,7 +3188,9 @@
       "nameES": "Sierra Leona",
       "nameRU": "Сьерра-Леоне",
       "nameZH": "塞拉利昂",
-      "nameAR": "سيراليون"
+      "nameAR": "سيراليون",
+      "is_country": true,
+      "common_name": "Sierra Leone"
     },
     {
       "region": 142,
@@ -2804,7 +3204,9 @@
       "nameES": "Singapur",
       "nameRU": "Сингапур",
       "nameZH": "新加坡",
-      "nameAR": " سنغافورة"
+      "nameAR": " سنغافورة",
+      "is_country": true,
+      "common_name": "Singapore"
     },
     {
       "region": 19,
@@ -2819,7 +3221,9 @@
       "nameES": "San Martín (parte Holandesa)",
       "nameRU": "Синт-Мартен (нидерландская часть)",
       "nameZH": "圣马丁（荷属）",
-      "nameAR": "سانت مارتن (الجزء الهولندي)"
+      "nameAR": "سانت مارتن (الجزء الهولندي)",
+      "is_country": false,
+      "common_name": "Sint Maarten (Dutch part)"
     },
     {
       "region": 150,
@@ -2832,7 +3236,9 @@
       "nameES": "Eslovaquia",
       "nameRU": "Словакия",
       "nameZH": "斯洛伐克",
-      "nameAR": " سلوفاكيا"
+      "nameAR": " سلوفاكيا",
+      "is_country": true,
+      "common_name": "Slovakia"
     },
     {
       "region": 150,
@@ -2845,7 +3251,9 @@
       "nameES": "Eslovenia",
       "nameRU": "Словения",
       "nameZH": "斯洛文尼亚",
-      "nameAR": " سلوفينيا"
+      "nameAR": " سلوفينيا",
+      "is_country": true,
+      "common_name": "Slovenia"
     },
     {
       "region": 9,
@@ -2860,7 +3268,9 @@
       "nameES": "Islas Salomón",
       "nameRU": "Соломоновы Острова",
       "nameZH": "所罗门群岛",
-      "nameAR": " جزر سليمان"
+      "nameAR": " جزر سليمان",
+      "is_country": true,
+      "common_name": "Solomon Islands"
     },
     {
       "region": 2,
@@ -2875,7 +3285,9 @@
       "nameES": "Somalia",
       "nameRU": "Сомали",
       "nameZH": "索马里",
-      "nameAR": "الصومال"
+      "nameAR": "الصومال",
+      "is_country": true,
+      "common_name": "Somalia"
     },
     {
       "region": 2,
@@ -2889,7 +3301,9 @@
       "nameES": "Sudáfrica",
       "nameRU": "Южная Африка",
       "nameZH": "南非",
-      "nameAR": "جنوب أفريقيا"
+      "nameAR": "جنوب أفريقيا",
+      "is_country": true,
+      "common_name": "South Africa"
     },
     {
       "region": 19,
@@ -2903,7 +3317,9 @@
       "nameES": "Georgia del Sur y las Islas Sandwich del Sur",
       "nameRU": "Южная Джорджия и Южные Сандвичевы острова",
       "nameZH": "南乔治亚岛和南桑德韦奇岛",
-      "nameAR": "جورجيا الجنوبية وجزر ساندويتش الجنوبية"
+      "nameAR": "جورجيا الجنوبية وجزر ساندويتش الجنوبية",
+      "is_country": false,
+      "common_name": "South Georgia and the South Sandwich Islands"
     },
     {
       "region": 2,
@@ -2919,7 +3335,9 @@
       "nameES": "Sudán del Sur",
       "nameRU": "Южный Судан",
       "nameZH": "南苏丹",
-      "nameAR": "جنوب السودان"
+      "nameAR": "جنوب السودان",
+      "is_country": true,
+      "common_name": "South Sudan"
     },
     {
       "region": 150,
@@ -2932,7 +3350,9 @@
       "nameES": "España",
       "nameRU": "Испания",
       "nameZH": "西班牙",
-      "nameAR": " إسبانيا"
+      "nameAR": " إسبانيا",
+      "is_country": true,
+      "common_name": "Spain"
     },
     {
       "region": 142,
@@ -2945,7 +3365,9 @@
       "nameES": "Sri Lanka",
       "nameRU": "Шри-Ланка",
       "nameZH": "斯里兰卡",
-      "nameAR": " سري لانكا"
+      "nameAR": " سري لانكا",
+      "is_country": true,
+      "common_name": "Sri Lanka"
     },
     {
       "region": 142,
@@ -2958,7 +3380,9 @@
       "nameES": "Estado de Palestina",
       "nameRU": "Государство Палестина",
       "nameZH": "巴勒斯坦国",
-      "nameAR": " دولة فلسطين"
+      "nameAR": " دولة فلسطين",
+      "is_country": false,
+      "common_name": "Palestine"
     },
     {
       "region": 2,
@@ -2972,7 +3396,9 @@
       "nameES": "Sudán",
       "nameRU": "Судан",
       "nameZH": "苏丹",
-      "nameAR": " السودان"
+      "nameAR": " السودان",
+      "is_country": true,
+      "common_name": "Sudan"
     },
     {
       "region": 19,
@@ -2987,7 +3413,9 @@
       "nameES": "Suriname",
       "nameRU": "Суринам",
       "nameZH": "苏里南",
-      "nameAR": "سورينام"
+      "nameAR": "سورينام",
+      "is_country": true,
+      "common_name": "Suriname"
     },
     {
       "region": 150,
@@ -3000,7 +3428,9 @@
       "nameES": "Islas Svalbard y Jan Mayen",
       "nameRU": "Острова Свальбард и Ян-Майен",
       "nameZH": "斯瓦尔巴群岛和扬马延岛",
-      "nameAR": " جزيرتي سفالبارد وجان مايِن"
+      "nameAR": " جزيرتي سفالبارد وجان مايِن",
+      "is_country": false,
+      "common_name": "Svalbard and Jan Mayen"
     },
     {
       "region": 150,
@@ -3013,7 +3443,9 @@
       "nameES": "Suecia",
       "nameRU": "Швеция",
       "nameZH": "瑞典",
-      "nameAR": " السويد"
+      "nameAR": " السويد",
+      "is_country": true,
+      "common_name": "Sweden"
     },
     {
       "region": 150,
@@ -3026,7 +3458,9 @@
       "nameES": "Suiza",
       "nameRU": "Швейцария",
       "nameZH": "瑞士",
-      "nameAR": " سويسرا"
+      "nameAR": " سويسرا",
+      "is_country": true,
+      "common_name": "Switzerland"
     },
     {
       "region": 142,
@@ -3039,7 +3473,9 @@
       "nameES": "República Árabe Siria",
       "nameRU": "Сирийская Арабская Республика",
       "nameZH": "阿拉伯叙利亚共和国",
-      "nameAR": " الجمهورية العربية السورية"
+      "nameAR": " الجمهورية العربية السورية",
+      "is_country": true,
+      "common_name": "Syria"
     },
     {
       "region": 142,
@@ -3053,7 +3489,9 @@
       "nameES": "Tayikistán",
       "nameRU": "Таджикистан",
       "nameZH": "塔吉克斯坦",
-      "nameAR": " طاجيكستان"
+      "nameAR": " طاجيكستان",
+      "is_country": true,
+      "common_name": "Tajikistan"
     },
     {
       "region": 142,
@@ -3066,7 +3504,9 @@
       "nameES": "Tailandia",
       "nameRU": "Таиланд",
       "nameZH": "泰国",
-      "nameAR": " تايلند"
+      "nameAR": " تايلند",
+      "is_country": true,
+      "common_name": "Thailand"
     },
     {
       "region": 142,
@@ -3081,7 +3521,9 @@
       "nameES": "Timor-Leste",
       "nameRU": "Тимор-Лешти",
       "nameZH": "东帝汶",
-      "nameAR": " تيمور - ليشتي"
+      "nameAR": " تيمور - ليشتي",
+      "is_country": true,
+      "common_name": "Timor-Leste"
     },
     {
       "region": 2,
@@ -3096,7 +3538,9 @@
       "nameES": "Togo",
       "nameRU": "Того",
       "nameZH": "多哥",
-      "nameAR": "توغو"
+      "nameAR": "توغو",
+      "is_country": true,
+      "common_name": "Togo"
     },
     {
       "region": 9,
@@ -3109,7 +3553,9 @@
       "nameES": "Tokelau",
       "nameRU": "Токелау",
       "nameZH": "托克劳",
-      "nameAR": " توكيلاو"
+      "nameAR": " توكيلاو",
+      "is_country": false,
+      "common_name": "Tokelau"
     },
     {
       "region": 9,
@@ -3123,7 +3569,9 @@
       "nameES": "Tonga",
       "nameRU": "Тонга",
       "nameZH": "汤加",
-      "nameAR": " تونغا"
+      "nameAR": " تونغا",
+      "is_country": true,
+      "common_name": "Tonga"
     },
     {
       "region": 19,
@@ -3138,7 +3586,9 @@
       "nameES": "Trinidad y Tabago",
       "nameRU": "Тринидад и Тобаго",
       "nameZH": "特立尼达和多巴哥",
-      "nameAR": "ترينيداد وتوباغو"
+      "nameAR": "ترينيداد وتوباغو",
+      "is_country": true,
+      "common_name": "Trinidad and Tobago"
     },
     {
       "region": 2,
@@ -3151,7 +3601,9 @@
       "nameES": "Túnez",
       "nameRU": "Тунис",
       "nameZH": "突尼斯",
-      "nameAR": " تونس"
+      "nameAR": " تونس",
+      "is_country": true,
+      "common_name": "Tunisia"
     },
     {
       "region": 142,
@@ -3165,7 +3617,9 @@
       "nameES": "Turkmenistán",
       "nameRU": "Туркменистан",
       "nameZH": "土库曼斯坦",
-      "nameAR": " تركمانستان"
+      "nameAR": " تركمانستان",
+      "is_country": true,
+      "common_name": "Turkmenistan"
     },
     {
       "region": 19,
@@ -3179,7 +3633,9 @@
       "nameES": "Islas Turcas y Caicos",
       "nameRU": "Острова Теркс и Кайкос",
       "nameZH": "特克斯和凯科斯群岛",
-      "nameAR": "جزر تركس وكايكوس"
+      "nameAR": "جزر تركس وكايكوس",
+      "is_country": false,
+      "common_name": "Turks and Caicos Islands"
     },
     {
       "region": 9,
@@ -3194,7 +3650,9 @@
       "nameES": "Tuvalu",
       "nameRU": "Тувалу",
       "nameZH": "图瓦卢",
-      "nameAR": " توفالو"
+      "nameAR": " توفالو",
+      "is_country": true,
+      "common_name": "Tuvalu"
     },
     {
       "region": 142,
@@ -3207,7 +3665,9 @@
       "nameES": "Türkiye",
       "nameRU": "Турция",
       "nameZH": "土耳其",
-      "nameAR": " تركيا"
+      "nameAR": " تركيا",
+      "is_country": true,
+      "common_name": "Türkiye"
     },
     {
       "region": 2,
@@ -3223,7 +3683,9 @@
       "nameES": "Uganda",
       "nameRU": "Уганда",
       "nameZH": "乌干达",
-      "nameAR": "أوغندا"
+      "nameAR": "أوغندا",
+      "is_country": true,
+      "common_name": "Uganda"
     },
     {
       "region": 150,
@@ -3236,7 +3698,9 @@
       "nameES": "Ucrania",
       "nameRU": "Украина",
       "nameZH": "乌克兰",
-      "nameAR": " أوكرانيا"
+      "nameAR": " أوكرانيا",
+      "is_country": true,
+      "common_name": "Ukraine"
     },
     {
       "region": 142,
@@ -3249,7 +3713,9 @@
       "nameES": "Emiratos Árabes Unidos",
       "nameRU": "Объединенные Арабские Эмираты",
       "nameZH": "阿拉伯联合酋长国",
-      "nameAR": " الإمارات العربية المتحدة"
+      "nameAR": " الإمارات العربية المتحدة",
+      "is_country": true,
+      "common_name": "United Arab Emirates"
     },
     {
       "region": 150,
@@ -3262,7 +3728,9 @@
       "nameES": "Reino Unido de Gran Bretaña e Irlanda del Norte",
       "nameRU": "Соединенное Королевство Великобритании и Северной Ирландии",
       "nameZH": "大不列颠及北爱尔兰联合王国",
-      "nameAR": " المملكة المتحدة لبريطانيا العظمى وآيرلندا الشمالية"
+      "nameAR": " المملكة المتحدة لبريطانيا العظمى وآيرلندا الشمالية",
+      "is_country": true,
+      "common_name": "United Kingdom"
     },
     {
       "region": 2,
@@ -3277,7 +3745,9 @@
       "nameES": "República Unida de Tanzanía",
       "nameRU": "Объединенная Республика Танзания",
       "nameZH": "坦桑尼亚联合共和国",
-      "nameAR": "جمهورية تنزانيا المتحدة"
+      "nameAR": "جمهورية تنزانيا المتحدة",
+      "is_country": true,
+      "common_name": "Tanzania"
     },
     {
       "region": 9,
@@ -3290,7 +3760,9 @@
       "nameES": "Islas menores alejadas de Estados Unidos",
       "nameRU": "Внешние малые острова Соединенных Штатов",
       "nameZH": "美国本土外小岛屿",
-      "nameAR": " نائية التابعة للولايات المتحدة "
+      "nameAR": " نائية التابعة للولايات المتحدة ",
+      "is_country": false,
+      "common_name": "United States Minor Outlying Islands"
     },
     {
       "region": 19,
@@ -3305,7 +3777,9 @@
       "nameES": "Islas Vírgenes de los Estados Unidos",
       "nameRU": "Виргинские острова Соединенных Штатов",
       "nameZH": "美属维尔京群岛",
-      "nameAR": "جزر فرجن التابعة للولايات المتحدة"
+      "nameAR": "جزر فرجن التابعة للولايات المتحدة",
+      "is_country": false,
+      "common_name": "Virgin Islands, U.S."
     },
     {
       "region": 19,
@@ -3318,7 +3792,9 @@
       "nameES": "Estados Unidos de América",
       "nameRU": "Соединенные Штаты Америки",
       "nameZH": "美利坚合众国",
-      "nameAR": " الولايات المتحدة الأمريكية"
+      "nameAR": " الولايات المتحدة الأمريكية",
+      "is_country": true,
+      "common_name": "United States"
     },
     {
       "region": 19,
@@ -3332,7 +3808,9 @@
       "nameES": "Uruguay",
       "nameRU": "Уругвай",
       "nameZH": "乌拉圭",
-      "nameAR": "أوروغواي"
+      "nameAR": "أوروغواي",
+      "is_country": true,
+      "common_name": "Uruguay"
     },
     {
       "region": 142,
@@ -3346,7 +3824,9 @@
       "nameES": "Uzbekistán",
       "nameRU": "Узбекистан",
       "nameZH": "乌兹别克斯坦",
-      "nameAR": " أوزبكستان"
+      "nameAR": " أوزبكستان",
+      "is_country": true,
+      "common_name": "Uzbekistan"
     },
     {
       "region": 9,
@@ -3360,7 +3840,9 @@
       "nameES": "Vanuatu",
       "nameRU": "Вануату",
       "nameZH": "瓦努阿图",
-      "nameAR": " فانواتو"
+      "nameAR": " فانواتو",
+      "is_country": true,
+      "common_name": "Vanuatu"
     },
     {
       "region": 19,
@@ -3374,7 +3856,9 @@
       "nameES": "Venezuela (República Bolivariana de)",
       "nameRU": "Венесуэла (Боливарианская Республика)",
       "nameZH": "委内瑞拉玻利瓦尔共和国",
-      "nameAR": "فنزويلا (جمهورية - البوليفارية)"
+      "nameAR": "فنزويلا (جمهورية - البوليفارية)",
+      "is_country": true,
+      "common_name": "Venezuela"
     },
     {
       "region": 142,
@@ -3387,7 +3871,9 @@
       "nameES": "Viet Nam",
       "nameRU": "Вьетнам",
       "nameZH": "越南",
-      "nameAR": " فييت نام"
+      "nameAR": " فييت نام",
+      "is_country": true,
+      "common_name": "Vietnam"
     },
     {
       "region": 9,
@@ -3400,7 +3886,9 @@
       "nameES": "Islas Wallis y Futuna",
       "nameRU": "Острова Уоллис и Футуна",
       "nameZH": "瓦利斯群岛和富图纳群岛",
-      "nameAR": " جزر واليس وفوتونا"
+      "nameAR": " جزر واليس وفوتونا",
+      "is_country": false,
+      "common_name": "Wallis and Futuna"
     },
     {
       "region": 2,
@@ -3413,7 +3901,9 @@
       "nameES": "Sáhara Occidental",
       "nameRU": "Западная Сахара",
       "nameZH": "西撒哈拉",
-      "nameAR": " الصحراء الغربية"
+      "nameAR": " الصحراء الغربية",
+      "is_country": false,
+      "common_name": "Western Sahara"
     },
     {
       "region": 142,
@@ -3427,7 +3917,9 @@
       "nameES": "Yemen",
       "nameRU": "Йемен",
       "nameZH": "也门",
-      "nameAR": " اليمن"
+      "nameAR": " اليمن",
+      "is_country": true,
+      "common_name": "Yemen"
     },
     {
       "region": 2,
@@ -3443,7 +3935,9 @@
       "nameES": "Zambia",
       "nameRU": "Замбия",
       "nameZH": "赞比亚",
-      "nameAR": "زامبيا"
+      "nameAR": "زامبيا",
+      "is_country": true,
+      "common_name": "Zambia"
     },
     {
       "region": 2,
@@ -3458,7 +3952,9 @@
       "nameES": "Zimbabwe",
       "nameRU": "Зимбабве",
       "nameZH": "津巴布韦",
-      "nameAR": "زمبابوي"
+      "nameAR": "زمبابوي",
+      "is_country": true,
+      "common_name": "Zimbabwe"
     },
     {
       "region": 150,
@@ -3471,7 +3967,9 @@
       "nameES": "Islas Åland",
       "nameRU": "Аландских островов",
       "nameZH": "奥兰群岛",
-      "nameAR": " جزر ألاند"
+      "nameAR": " جزر ألاند",
+      "is_country": false,
+      "common_name": "Åland Islands"
     }
   ]
 }

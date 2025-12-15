@@ -1,25 +1,16 @@
 #!/usr/bin/env python3
 """
-Add common country names to the database using pycountry
+Add common country names and is_country flag to m49-list.json
 
-This script:
-1. Reads countries from the database
-2. Uses pycountry to get common names
-3. Adds a common_name column if it doesn't exist
-4. Updates all countries with their common names
+This script updates the source of truth (m49-list.json) with:
+1. common_name - user-friendly country names using pycountry
+2. is_country - boolean flag indicating if the entry is a sovereign country (based on countries.json)
+
+After running this script, re-run init_database_postgres.py to update the database.
 """
 
-import os
-import psycopg2
-from psycopg2.extras import RealDictCursor
-
-# Load environment variables from .env file
-try:
-    from dotenv import load_dotenv
-    load_dotenv()
-    print("✅ Loaded environment variables from .env file")
-except ImportError:
-    print("⚠️  python-dotenv not installed, using system environment variables only")
+import json
+from pathlib import Path
 
 # Try to import pycountry, install if needed
 try:
@@ -29,6 +20,11 @@ except ImportError:
     import subprocess
     subprocess.check_call(['pip3', 'install', 'pycountry'])
     import pycountry
+
+# File paths
+SCRIPT_DIR = Path(__file__).parent
+M49_JSON_PATH = SCRIPT_DIR / 'data' / 'm49-list.json'
+COUNTRIES_JSON_PATH = SCRIPT_DIR / 'data' / 'countries.json'
 
 def get_common_name(official_name, iso3, iso2):
     """
@@ -65,8 +61,8 @@ def get_common_name(official_name, iso3, iso2):
     }
 
     # Check special cases first
-    if iso3 in special_cases:
-        return special_cases[iso3]
+    if iso3 and iso3.upper() in special_cases:
+        return special_cases[iso3.upper()]
 
     # Try pycountry lookup
     if iso2:
@@ -107,89 +103,61 @@ def get_common_name(official_name, iso3, iso2):
     return name.strip()
 
 def main():
-    # Get DATABASE_URL from environment
-    database_url = os.getenv('DATABASE_URL')
-    if not database_url:
-        print("❌ ERROR: DATABASE_URL environment variable not set!")
-        print("Usage: export DATABASE_URL='postgresql://user:pass@host:port/dbname'")
-        exit(1)
+    print("📥 Loading m49-list.json...")
+    with open(M49_JSON_PATH, 'r', encoding='utf-8') as f:
+        m49_data = json.load(f)
 
-    # Handle Render's postgres:// URL format
-    if database_url.startswith('postgres://'):
-        database_url = database_url.replace('postgres://', 'postgresql://', 1)
+    print(f"✅ Loaded {len(m49_data['countries'])} entries from m49-list.json")
 
-    # Add SSL parameters only for remote databases (not localhost)
-    if 'localhost' not in database_url and '127.0.0.1' not in database_url:
-        if '?' in database_url:
-            database_url += '&sslmode=require'
-        else:
-            database_url += '?sslmode=require'
+    print("\n📥 Loading countries.json...")
+    with open(COUNTRIES_JSON_PATH, 'r', encoding='utf-8') as f:
+        countries_data = json.load(f)
 
-    print("📦 Connecting to PostgreSQL database...")
-    conn = psycopg2.connect(database_url)
-    conn.autocommit = False
-    cursor = conn.cursor(cursor_factory=RealDictCursor)
+    print(f"✅ Loaded {len(countries_data)} sovereign countries from countries.json")
 
-    # Check if common_name column exists
-    cursor.execute("""
-        SELECT column_name
-        FROM information_schema.columns
-        WHERE table_name='countries' AND column_name='common_name'
-    """)
+    # Create a set of M49 codes that are sovereign countries
+    sovereign_m49_codes = {entry['id'] for entry in countries_data}
+    print(f"\n🌍 {len(sovereign_m49_codes)} sovereign country M49 codes identified")
 
-    if not cursor.fetchone():
-        print("➕ Adding common_name column to countries table...")
-        cursor.execute("ALTER TABLE countries ADD COLUMN common_name TEXT")
-        conn.commit()
-    else:
-        print("✅ common_name column already exists")
+    print("\n🔄 Processing entries...\n")
 
-    # Get all countries
-    cursor.execute("SELECT iso3, iso2, name FROM countries ORDER BY name")
-    countries = cursor.fetchall()
+    updated_count = 0
+    common_name_changes = 0
 
-    print(f"\n🌍 Processing {len(countries)} countries...\n")
+    for entry in m49_data['countries']:
+        m49_code = entry.get('m49code')
+        alpha3 = entry.get('alpha3', '').upper() if entry.get('alpha3') else None
+        alpha2 = entry.get('alpha2', '').upper() if entry.get('alpha2') else None
+        official_name = entry.get('name', '')
 
-    updated = 0
-    for country in countries:
-        iso3 = country['iso3']
-        iso2 = country['iso2']
-        official_name = country['name']
+        # Add is_country field
+        entry['is_country'] = m49_code in sovereign_m49_codes
 
-        common_name = get_common_name(official_name, iso3, iso2)
+        # Get common name
+        common_name = get_common_name(official_name, alpha3, alpha2)
 
-        # Update database
-        cursor.execute(
-            "UPDATE countries SET common_name = %s WHERE iso3 = %s",
-            (common_name, iso3)
-        )
+        # Add common_name field
+        entry['common_name'] = common_name
 
+        # Track changes
         if common_name != official_name:
-            print(f"✏️  {iso3}: '{official_name}' → '{common_name}'")
+            print(f"✏️  {alpha3 or 'N/A':3s} (M49:{m49_code:3d}): '{official_name}' → '{common_name}' [{'Country' if entry['is_country'] else 'Territory/Region'}]")
+            common_name_changes += 1
         else:
-            print(f"✓  {iso3}: '{official_name}' (no change)")
+            print(f"✓  {alpha3 or 'N/A':3s} (M49:{m49_code:3d}): '{official_name}' [{'Country' if entry['is_country'] else 'Territory/Region'}]")
 
-        updated += 1
+        updated_count += 1
 
-    conn.commit()
+    # Write updated data back to m49-list.json
+    print(f"\n💾 Writing updated data to {M49_JSON_PATH}...")
+    with open(M49_JSON_PATH, 'w', encoding='utf-8') as f:
+        json.dump(m49_data, f, indent=2, ensure_ascii=False)
 
-    print(f"\n✅ Done! Updated {updated} countries with common names")
-
-    # Show some examples
-    print("\n📊 Sample results:")
-    cursor.execute("""
-        SELECT iso3, name as official_name, common_name
-        FROM countries
-        WHERE name != common_name
-        ORDER BY name
-        LIMIT 10
-    """)
-
-    samples = cursor.fetchall()
-    for sample in samples:
-        print(f"  {sample['iso3']}: {sample['official_name']} → {sample['common_name']}")
-
-    conn.close()
+    print(f"\n✅ Done! Updated {updated_count} entries:")
+    print(f"   - {common_name_changes} entries with common name changes")
+    print(f"   - {len(sovereign_m49_codes)} entries marked as sovereign countries")
+    print(f"   - {updated_count - len(sovereign_m49_codes)} entries marked as territories/regions")
+    print(f"\n📝 Next step: Run 'python3 init_database_postgres.py' to update the database")
 
 if __name__ == '__main__':
     main()

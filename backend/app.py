@@ -88,7 +88,7 @@ def get_countries():
     # SELECT: Get data from database
     # FROM countries: From the 'countries' table
     # ORDER BY common_name: Sort results alphabetically by common country name
-    cursor.execute('SELECT iso3, iso2, name, common_name, m49, continent, subregion FROM countries ORDER BY common_name')
+    cursor.execute('SELECT iso3, iso2, name, common_name, m49, continent, subregion, is_country FROM countries ORDER BY common_name')
 
     # Step 4: Fetch results and convert to list of dicts
     # cursor.fetchall() returns list of Row objects

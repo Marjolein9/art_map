@@ -90,11 +90,12 @@ def get_db_connection():
     if database_url.startswith('postgres://'):
         database_url = database_url.replace('postgres://', 'postgresql://', 1)
 
-    # Add SSL parameters to URL for Render PostgreSQL
-    if '?' in database_url:
-        database_url += '&sslmode=require'
-    else:
-        database_url += '?sslmode=require'
+    # Add SSL parameters to URL for remote PostgreSQL (not localhost)
+    if 'localhost' not in database_url and '127.0.0.1' not in database_url:
+        if '?' in database_url:
+            database_url += '&sslmode=require'
+        else:
+            database_url += '?sslmode=require'
 
     # Connect to PostgreSQL with RealDictCursor for dict-like results
     conn = psycopg2.connect(database_url, cursor_factory=RealDictCursor)

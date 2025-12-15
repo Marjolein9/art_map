@@ -419,7 +419,9 @@ def load_m49_data():
 
         alpha2 = country.get('alpha2', '')
         name = country.get('name', '')
-        common_name = get_common_name(name, alpha3, alpha2)
+        # Read common_name and is_country directly from JSON (added by add_common_names.py)
+        common_name = country.get('common_name', name)
+        is_country = country.get('is_country', False)
 
         countries.append({
             'iso3': alpha3,
@@ -428,7 +430,8 @@ def load_m49_data():
             'common_name': common_name,
             'm49': country.get('m49code', ''),
             'continent': continent,
-            'subregion': subregion
+            'subregion': subregion,
+            'is_country': is_country
         })
 
     print(f"✅ Loaded {len(countries)} countries from UN M49 data")
@@ -532,11 +535,12 @@ def init_database():
     if database_url.startswith('postgres://'):
         database_url = database_url.replace('postgres://', 'postgresql://', 1)
 
-    # Add SSL parameters to URL for Render PostgreSQL
-    if '?' in database_url:
-        database_url += '&sslmode=require'
-    else:
-        database_url += '?sslmode=require'
+    # Add SSL parameters to URL for remote PostgreSQL (not localhost)
+    if 'localhost' not in database_url and '127.0.0.1' not in database_url:
+        if '?' in database_url:
+            database_url += '&sslmode=require'
+        else:
+            database_url += '?sslmode=require'
 
     # Connect to PostgreSQL
     print(f"📦 Connecting to PostgreSQL database...")
@@ -566,7 +570,8 @@ def init_database():
             common_name TEXT,
             m49 INTEGER,
             continent TEXT NOT NULL,
-            subregion TEXT NOT NULL
+            subregion TEXT NOT NULL,
+            is_country BOOLEAN NOT NULL DEFAULT FALSE
         )
     ''')
 
@@ -720,8 +725,8 @@ def init_database():
     print(f"🌍 Inserting {len(m49_countries)} countries...")
     for country in m49_countries:
         cursor.execute('''
-            INSERT INTO countries (iso3, iso2, name, common_name, m49, continent, subregion)
-            VALUES (%s, %s, %s, %s, %s, %s, %s)
+            INSERT INTO countries (iso3, iso2, name, common_name, m49, continent, subregion, is_country)
+            VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
         ''', (
             country['iso3'],
             country['iso2'],
@@ -729,7 +734,8 @@ def init_database():
             country['common_name'],
             country['m49'],
             country['continent'],
-            country['subregion']
+            country['subregion'],
+            country['is_country']
         ))
 
     print(f"✅ Inserted {len(m49_countries)} countries")
