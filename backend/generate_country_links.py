@@ -142,7 +142,7 @@ def generate_links(entity):
 
     # Generate TasteAtlas URL
     tasteatlas_name = get_tasteatlas_name(name, alpha2.upper() if alpha2 else None)
-    tasteatlas_url = f"https://www.tasteatlas.com/{tasteatlas_name}"
+    tasteatlas_url = f"https://www.tasteatlas.com/{tasteatlas_name}/map"
     links['tasteatlas_url'] = tasteatlas_url
     print(f"  TasteAtlas: {tasteatlas_url}")
 
