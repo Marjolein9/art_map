@@ -236,7 +236,7 @@ cd backend
 source venv/bin/activate
 
 # Use EXTERNAL URL
-export DATABASE_URL="postgresql://user:pass@dpg-xxxxx.oregon-postgres.render.com:5432/artmap"
+export DATABASE_URL="postgresql://artmap_user:jjurIu17RbDREmQElxSNl8WVA0ODkY2Z@dpg-d4v6stmr433s73e00eo0-a.oregon-postgres.render.com/artmap"
 
 # Run update
 python3 init_database_postgres.py  # Or custom script
