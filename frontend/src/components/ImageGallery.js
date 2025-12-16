@@ -30,11 +30,6 @@ const ImageGallery = ({
   const [maxHeight, setMaxHeight] = useState(150); // Start with min-height
   const containerRef = useRef(null);
 
-  if (!images || images.length === 0) return null;
-
-  const currentImage = images[currentIndex] || images[0];
-  const hasMultiple = images.length > 1;
-
   // Preload all images and calculate max height
   useEffect(() => {
     if (!images || images.length === 0) return;
@@ -66,6 +61,12 @@ const ImageGallery = ({
       console.log(`📏 Carousel max height set to ${tallest}px for ${collection}`);
     });
   }, [images, collection]);
+
+  // Early return after all hooks
+  if (!images || images.length === 0) return null;
+
+  const currentImage = images[currentIndex] || images[0];
+  const hasMultiple = images.length > 1;
 
   // Helper function to get source institution name and URL
   const getSourceInfo = (source) => {
