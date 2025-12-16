@@ -68,7 +68,7 @@ function App() {
 
   // Quiz game state from custom hook
   // This hook handles: random country selection, answer checking, game status
-  const { targetCountry, loading, gameStatus, handleCountryClick, fetchNewCountry, resetGameStatus } = useQuiz();
+  const { targetCountry, loading, gameStatus, handleCountryClick, fetchNewCountry, resetGameStatus, setManualTargetCountry } = useQuiz();
 
   // Mode: 'quiz' or 'explore'
   // Quiz mode: User guesses countries from artwork
@@ -268,6 +268,8 @@ function App() {
                 mode={mode}
                 onModeToggle={handleModeToggle}
                 loading={(loading && mode === 'quiz') || (exploreLoading && mode === 'explore')}
+                onManualCountrySelect={setManualTargetCountry}
+                countryLookup={countryLookup}
               />
 
               {/* Loading overlay - shown while data is loading */}

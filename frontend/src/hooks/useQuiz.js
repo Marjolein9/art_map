@@ -71,12 +71,26 @@ export const useQuiz = () => {
     }
   };
 
+  // Manually set target country (for testing)
+  const setManualTargetCountry = (country) => {
+    setGameStatus('playing');
+    const countryWithDisplayName = {
+      iso: country.iso3 || country.iso, // Map iso3 from database to iso for consistency
+      name: country.common_name || country.name,
+      common_name: country.common_name,
+      continent: country.continent,
+      subregion: country.subregion
+    };
+    setTargetCountry(countryWithDisplayName);
+  };
+
   return {
     targetCountry,
     loading,
     gameStatus,
     handleCountryClick,
     fetchNewCountry,
-    resetGameStatus
+    resetGameStatus,
+    setManualTargetCountry
   };
 };

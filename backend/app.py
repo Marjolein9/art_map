@@ -343,13 +343,14 @@ def get_neighbors(iso3):
 @app.route('/api/similar-islands/<iso3>', methods=['GET'])
 def get_similar_islands(iso3):
     """
-    Get similar island countries for hint purposes.
+    Get countries from the same subregion for island hint purposes.
 
     HTTP Method: GET
     URL: http://localhost:5000/api/similar-islands/JPN
-    Purpose: Used for quiz hints when target is an island - show other islands
+    Purpose: Used for quiz hints when target is an island - show 2 random countries from same subregion
+    Priority: Other islands in same subregion > Any countries in same subregion
 
-    Returns: JSON with list of similar island countries (preferably same subregion/continent)
+    Returns: JSON with list of 2 countries from the same subregion (preferring other islands)
     Example: {"islands": [{"iso3": "PHL", "m49": 608, "name": "Philippines"}, ...], "count": 2, "is_island": true}
     """
     conn = get_db_connection()
@@ -386,41 +387,36 @@ def get_similar_islands(iso3):
         conn.close()
         return jsonify({'error': 'Country not found'}), 404
 
-    # Find other islands (countries with no neighbors) excluding the target
-    # Priority: same subregion > same continent > any other islands
-    # Also check if they have images in any collection
+    # Find 2 random countries from the same subregion
+    # Priority: other islands in same subregion > any countries in same subregion
     cursor.execute('''
-        SELECT c.iso3, c.m49, c.name, c.common_name, c.continent, c.subregion,
+        SELECT c.iso3, c.m49, c.name, c.common_name,
                CASE
-                   WHEN c.subregion = %s THEN 1
-                   WHEN c.continent = %s THEN 2
-                   ELSE 3
+                   -- Check if it's an island (no neighbors)
+                   WHEN (SELECT COUNT(*) FROM country_borders WHERE country_iso3 = c.iso3) = 0 THEN 1
+                   ELSE 2
                END as priority
         FROM countries c
-        LEFT JOIN country_borders cb ON c.iso3 = cb.country_iso3
         WHERE c.iso3 != %s
+        AND c.subregion = %s
         AND c.iso3 NOT IN ('ATA')  -- Exclude Antarctica
-        GROUP BY c.iso3, c.m49, c.name, c.common_name, c.continent, c.subregion
-        HAVING COUNT(cb.neighbor_iso3) = 0
         ORDER BY priority, RANDOM()
         LIMIT 2
-    ''', (target['subregion'], target['continent'], iso3))
+    ''', (iso3, target['subregion']))
 
-    islands = [dict(row) for row in cursor.fetchall()]
+    subregion_countries = [dict(row) for row in cursor.fetchall()]
 
     # Remove the priority field before returning
-    for island in islands:
-        island.pop('priority', None)
-        island.pop('continent', None)
-        island.pop('subregion', None)
+    for country in subregion_countries:
+        country.pop('priority', None)
 
     conn.close()
 
     return jsonify({
         'country_iso3': iso3,
         'is_island': True,
-        'islands': islands,
-        'count': len(islands),
+        'islands': subregion_countries,  # Keep the same key name for backward compatibility
+        'count': len(subregion_countries),
         'target_subregion': target['subregion'],
         'target_continent': target['continent']
     })

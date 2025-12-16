@@ -16,7 +16,9 @@ const WorldMap = ({
   onStartOver,
   mode = 'quiz',
   onModeToggle,
-  loading = false
+  loading = false,
+  onManualCountrySelect = null,
+  countryLookup = {}
 }) => {
   const COLORS = colors;
   const globeEl = useRef();
@@ -31,6 +33,7 @@ const WorldMap = ({
     height: window.innerHeight - 120
   });
   const [hintsEnabled, setHintsEnabled] = useState(true);
+  const [allCountries, setAllCountries] = useState([]);
 
   // Control tooltips - always enabled in explore mode
   const tooltipsEnabled = mode === 'explore';
@@ -78,6 +81,11 @@ const WorldMap = ({
 
         // Initialize M49→ISO3 mapping from database
         initializeCountryMapping(dbCountries);
+
+        // Store all countries for dropdown (excluding territories)
+        const excluded = ['BES', 'BVT', 'CXR', 'CCK', 'GUF', 'GIB', 'GLP', 'MTQ', 'MYT', 'REU', 'SJM', 'TKL', 'TUV', 'UMI'];
+        const validCountries = dbCountries.filter(c => c.is_country && !excluded.includes(c.iso3));
+        setAllCountries(validCountries);
 
         // Load TopoJSON with database countries for validation
         const data = await loadTopoJSON(dbCountries);
@@ -131,24 +139,30 @@ const WorldMap = ({
         }
 
         try {
+          console.log('🔍 Generating hints for:', targetCountry);
 
           // Find target country's M49 code from the countries data
           const targetCountryData = countries.features.find(f => getCountryIsoCode(f) === targetCountry);
           const targetM49 = targetCountryData?.id;
+          console.log('  Target M49:', targetM49, '(found in TopoJSON:', !!targetCountryData, ')');
 
 
           const highlightM49s = [];
 
-          // Always add the target country itself (with proper string formatting)
+          // Always add the target country itself (with proper zero-padded string formatting)
           if (targetM49) {
-            highlightM49s.push(String(targetM49));
+            const paddedTargetM49 = String(targetM49).padStart(3, '0');
+            highlightM49s.push(paddedTargetM49);
+            console.log('  Added target to highlights:', paddedTargetM49);
           }
 
           // Check if this is an island country (no land neighbors)
           const islandData = await fetchSimilarIslands(targetCountry);
+          console.log('  Island data:', islandData);
 
           if (islandData.is_island) {
-            // For islands, show 2 other similar islands
+            // For islands, show 2 random countries from the same subregion
+            // Priority: other islands > any countries in the subregion
 
             if (islandData.islands && islandData.islands.length > 0) {
               const islandM49s = islandData.islands.map(island => {
@@ -291,7 +305,9 @@ const WorldMap = ({
     // Second layer: Only hint countries with green borders (rendered on top)
     countryPaths.forEach(path => {
       const m49 = path.id || path.properties?.id;
-      const isHint = m49 && hintNeighborsM49.includes(String(m49));
+      // Ensure M49 is padded to 3 digits for consistent comparison
+      const paddedM49 = m49 ? String(m49).padStart(3, '0') : null;
+      const isHint = paddedM49 && hintNeighborsM49.includes(paddedM49);
 
       if (isHint) {
         paths.push({ ...path, isHintOverlay: true });
@@ -319,6 +335,17 @@ const WorldMap = ({
       lat: currentView.lat,
       altitude: Math.min(currentView.altitude + 0.3, 3)
     }, 500);
+  };
+
+  // Handle manual country selection from dropdown (for testing)
+  const handleCountryDropdownChange = (e) => {
+    const iso3 = e.target.value;
+    if (!iso3 || !onManualCountrySelect) return;
+
+    const selectedCountry = allCountries.find(c => c.iso3 === iso3);
+    if (selectedCountry) {
+      onManualCountrySelect(selectedCountry);
+    }
   };
 
   return (
@@ -486,6 +513,33 @@ const WorldMap = ({
                     <span className="toggle-slider-small"></span>
                   </label>
                 </div>
+
+                <span className="controls-divider" />
+
+                {/* Test Country Dropdown */}
+                <select
+                  onChange={handleCountryDropdownChange}
+                  value={targetCountry || ''}
+                  className="country-dropdown"
+                  title="Select country to test"
+                  style={{
+                    padding: '4px 8px',
+                    fontSize: '13px',
+                    borderRadius: '4px',
+                    border: '1px solid var(--border-color)',
+                    background: 'var(--card-bg)',
+                    color: 'var(--text-color)',
+                    cursor: 'pointer',
+                    maxWidth: '150px'
+                  }}
+                >
+                  <option value="">Test country...</option>
+                  {allCountries.sort((a, b) => (a.common_name || a.name).localeCompare(b.common_name || b.name)).map(country => (
+                    <option key={country.iso3} value={country.iso3}>
+                      {country.common_name || country.name}
+                    </option>
+                  ))}
+                </select>
               </>
             )}
           </div>

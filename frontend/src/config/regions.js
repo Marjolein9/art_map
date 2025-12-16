@@ -34,12 +34,16 @@ export const REGION_VIEWS = {
   'Caribbean': { lat: 20, lng: -75, altitude: 1.3 },
   'South America': { lat: -15, lng: -60, altitude: 1.5 },
 
-  // Oceania
-  'Oceania': { lat: -25, lng: 135, altitude: 1.5 },
+  // Oceania subregions
+  'Australia and New Zealand': { lat: -30, lng: 145, altitude: 1.5 },
+  'Melanesia': { lat: -15, lng: 165, altitude: 1.3 },
+  'Micronesia': { lat: 7, lng: 160, altitude: 1.3 },
+  'Polynesia': { lat: -15, lng: -155, altitude: 1.5 },
 
   // Fallback for broad continents (if subregion not available)
   'Africa': { lat: 0, lng: 20, altitude: 1.5 },
   'Asia': { lat: 30, lng: 90, altitude: 1.5 },
   'Europe': { lat: 52, lng: 15, altitude: 1.3 },
+  'Oceania': { lat: -25, lng: 165, altitude: 1.7 },
   'default': { lat: 0, lng: 0, altitude: 1.3 }
 };

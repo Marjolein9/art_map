@@ -58,14 +58,17 @@ export const getCountryIsoCode = (feature) => {
   const m49Code = feature.id || feature.properties?.id;
   const name = feature.properties?.name || feature.name;
 
-  if (m49Code && m49ToIso3Mapping[m49Code]) {
-    return m49ToIso3Mapping[m49Code];
+  // Ensure M49 is padded to 3 digits for consistent lookup
+  const paddedM49 = m49Code ? String(m49Code).padStart(3, '0') : null;
+
+  if (paddedM49 && m49ToIso3Mapping[paddedM49]) {
+    return m49ToIso3Mapping[paddedM49];
   }
 
   // Only warn once per unique M49 code to avoid spam
-  if (m49Code && !warnedM49Codes.has(m49Code)) {
-    warnedM49Codes.add(m49Code);
-    console.warn(`⚠️ No M49 mapping for country: ${name || 'Unknown'} (M49: ${m49Code})`);
+  if (paddedM49 && !warnedM49Codes.has(paddedM49)) {
+    warnedM49Codes.add(paddedM49);
+    console.warn(`⚠️ No M49 mapping for country: ${name || 'Unknown'} (M49: ${paddedM49})`);
   }
 
   return null;
@@ -81,8 +84,11 @@ export const getCountryName = (properties) => {
 
   // Try to get common name from M49 mapping first
   const m49Code = properties.id;
-  if (m49Code && m49ToCommonNameMapping[m49Code]) {
-    return m49ToCommonNameMapping[m49Code];
+  // Ensure M49 is padded to 3 digits for consistent lookup
+  const paddedM49 = m49Code ? String(m49Code).padStart(3, '0') : null;
+
+  if (paddedM49 && m49ToCommonNameMapping[paddedM49]) {
+    return m49ToCommonNameMapping[paddedM49];
   }
 
   // Fallback to TopoJSON name
