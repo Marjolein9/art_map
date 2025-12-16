@@ -1,4 +1,4 @@
-import React, { memo, useState, useEffect, useRef } from 'react';
+import React, { memo, useState, useEffect, useRef, useMemo } from 'react';
 import Globe from 'react-globe.gl';
 import { getCountryIsoCode, getCountryName, initializeCountryMapping } from '../utils/countryCodeMapping';
 import { REGION_VIEWS } from '../config/regions';
@@ -278,6 +278,21 @@ const WorldMap = ({
     }, 500);
   };
 
+  // Sort paths so hint borders are always rendered on top of black borders
+  const sortedPaths = useMemo(() => {
+    return [...countryPaths].sort((a, b) => {
+      const aM49 = a.id || a.properties?.id;
+      const bM49 = b.id || b.properties?.id;
+      const aIsHint = aM49 && hintNeighborsM49.includes(String(aM49));
+      const bIsHint = bM49 && hintNeighborsM49.includes(String(bM49));
+
+      // Hints should come last (rendered on top)
+      if (aIsHint && !bIsHint) return 1;
+      if (!aIsHint && bIsHint) return -1;
+      return 0;
+    });
+  }, [countryPaths, hintNeighborsM49]);
+
   const zoomIn = () => {
     if (!globeEl.current) return;
     const currentView = globeEl.current.pointOfView();
@@ -327,8 +342,8 @@ const WorldMap = ({
           onPolygonHover={setHoverD}
           onPolygonClick={handlePolygonClick}
 
-          // Use pathsData for consistent border rendering
-          pathsData={countryPaths}
+          // Use pathsData for consistent border rendering (sorted so hints render on top)
+          pathsData={sortedPaths}
           pathPoints={d => {
             const coords = d.coords;
             // Convert polygon coordinates to path points

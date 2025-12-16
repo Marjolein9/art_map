@@ -16,16 +16,19 @@
 .candle-container {
   display: flex;
   flex-wrap: wrap;
-  gap: 25px;
+  row-gap: 5px;
   align-items: flex-end;
   padding-bottom: 20px;
   width: 100%;
 }
 
 .candle {
-  width: 34px;
+  flex: 0 0 20%;
+  max-width: 80px;
   position: relative;
-  height: 150px;
+  height: 100px;
+  display: flex;
+  justify-content: center;
 }
 
 /* Flame */

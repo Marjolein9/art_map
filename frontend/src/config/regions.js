@@ -41,5 +41,5 @@ export const REGION_VIEWS = {
   'Africa': { lat: 0, lng: 20, altitude: 1.5 },
   'Asia': { lat: 30, lng: 90, altitude: 1.5 },
   'Europe': { lat: 52, lng: 15, altitude: 1.3 },
-  'default': { lat: 0, lng: 0, altitude: 2.5 }
+  'default': { lat: 0, lng: 0, altitude: 1.3 }
 };
