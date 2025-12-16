@@ -36,7 +36,8 @@
 // Import React hooks for managing state and side effects
 // useState: Manage component state (data that can change)
 // useEffect: Run code when component mounts or updates
-import { useState, useEffect } from 'react';
+// useRef: Create a mutable reference that persists across renders
+import { useState, useEffect, useRef } from 'react';
 
 // Import CSS styles for this component
 import './styles/App.css';
@@ -90,6 +91,10 @@ function App() {
   // Track if user has submitted an answer (to show result)
   const [answerSubmitted, setAnswerSubmitted] = useState(false);
 
+  // Loading state for explore mode
+  const [exploreLoading, setExploreLoading] = useState(true);
+  const isExploreInitialLoad = useRef(true);
+
   // Use vintage color scheme (1900s themed UI colors)
   const COLORS = COLOR_SCHEME;
 
@@ -102,18 +107,34 @@ function App() {
   // This is like componentDidMount in class components
   useEffect(() => {
     // Call API to get list of all countries
-    fetchCountries().then(countries => {
-      // Build a lookup object for quick name retrieval using common_name
-      // Input: [{ iso3: 'USA', name: 'United States of America', common_name: 'United States' }, ...]
-      // Output: { 'USA': 'United States', 'GBR': 'United Kingdom', ... }
-      const lookup = {};
-      countries.forEach(country => {
-        // Use common_name if available, fallback to name
-        lookup[country.iso3] = country.common_name || country.name;
-      });
-      // Update state with the lookup object
-      setCountryLookup(lookup);
-    });
+    const loadCountries = async () => {
+      try {
+        const countries = await fetchCountries();
+        // Build a lookup object for quick name retrieval using common_name
+        // Input: [{ iso3: 'USA', name: 'United States of America', common_name: 'United States' }, ...]
+        // Output: { 'USA': 'United States', 'GBR': 'United Kingdom', ... }
+        const lookup = {};
+        countries.forEach(country => {
+          // Use common_name if available, fallback to name
+          lookup[country.iso3] = country.common_name || country.name;
+        });
+        // Update state with the lookup object
+        setCountryLookup(lookup);
+
+        // Add 5-second delay ONLY on initial load for explore mode (for testing)
+        if (isExploreInitialLoad.current) {
+          await new Promise(resolve => setTimeout(resolve, 5000));
+          isExploreInitialLoad.current = false;
+          setExploreLoading(false);
+        }
+      } catch (error) {
+        console.error('Error fetching countries:', error);
+        // Keep loading state true if backend is unavailable
+        // This shows the loading spinner until backend is available
+      }
+    };
+
+    loadCountries();
   }, []); // Empty array = run only once on mount
 
   // ===========================================================================
@@ -246,11 +267,11 @@ function App() {
                 onStartOver={fetchNewCountry}
                 mode={mode}
                 onModeToggle={handleModeToggle}
-                loading={loading && mode === 'quiz'}
+                loading={(loading && mode === 'quiz') || (exploreLoading && mode === 'explore')}
               />
 
-              {/* Loading overlay - shown while quiz data is loading */}
-              {loading && mode === 'quiz' && (
+              {/* Loading overlay - shown while data is loading */}
+              {((loading && mode === 'quiz') || (exploreLoading && mode === 'explore')) && (
                 <div className="loading-overlay">
                   <div className="loading-content" style={{
                     '--card-bg': COLORS.cardBg,
@@ -259,7 +280,9 @@ function App() {
                     '--border-color': COLORS.border
                   }}>
                     <div className="loading-spinner"></div>
-                    <p className="loading-text">Loading quiz data...</p>
+                    <p className="loading-text">
+                      {mode === 'quiz' ? 'Loading quiz data...' : 'Loading explore mode...'}
+                    </p>
                   </div>
                 </div>
               )}

@@ -278,19 +278,27 @@ const WorldMap = ({
     }, 500);
   };
 
-  // Sort paths so hint borders are always rendered on top of black borders
-  const sortedPaths = useMemo(() => {
-    return [...countryPaths].sort((a, b) => {
-      const aM49 = a.id || a.properties?.id;
-      const bM49 = b.id || b.properties?.id;
-      const aIsHint = aM49 && hintNeighborsM49.includes(String(aM49));
-      const bIsHint = bM49 && hintNeighborsM49.includes(String(bM49));
+  // Create layered paths: all countries in black, then hint countries in green on top
+  // This allows hint countries to show both black borders (100% opacity) and green thick borders
+  const layeredPaths = useMemo(() => {
+    const paths = [];
 
-      // Hints should come last (rendered on top)
-      if (aIsHint && !bIsHint) return 1;
-      if (!aIsHint && bIsHint) return -1;
-      return 0;
+    // First layer: All countries with normal styling
+    countryPaths.forEach(path => {
+      paths.push({ ...path, isHintOverlay: false });
     });
+
+    // Second layer: Only hint countries with green borders (rendered on top)
+    countryPaths.forEach(path => {
+      const m49 = path.id || path.properties?.id;
+      const isHint = m49 && hintNeighborsM49.includes(String(m49));
+
+      if (isHint) {
+        paths.push({ ...path, isHintOverlay: true });
+      }
+    });
+
+    return paths;
   }, [countryPaths, hintNeighborsM49]);
 
   const zoomIn = () => {
@@ -342,8 +350,8 @@ const WorldMap = ({
           onPolygonHover={setHoverD}
           onPolygonClick={handlePolygonClick}
 
-          // Use pathsData for consistent border rendering (sorted so hints render on top)
-          pathsData={sortedPaths}
+          // Use pathsData with layered rendering: black borders for all, then green hints on top
+          pathsData={layeredPaths}
           pathPoints={d => {
             const coords = d.coords;
             // Convert polygon coordinates to path points
@@ -355,6 +363,12 @@ const WorldMap = ({
           pathPointLat={p => p[1]}
           pathPointLng={p => p[0]}
           pathColor={d => {
+            // Check if this is a hint overlay layer (green borders on top)
+            if (d.isHintOverlay) {
+              return COLORS.correct; // Green color for hint overlays
+            }
+
+            // Base layer: normal country colors
             const iso3 = getCountryIsoCode(d);
             if (!iso3) return '#000';
 
@@ -364,22 +378,18 @@ const WorldMap = ({
               if (gameStatus === 'incorrect') return COLORS.incorrect;
             }
 
-            // Hint: Highlight borders of neighboring countries using M49 codes (highest priority)
-            const m49 = d.id || d.properties?.id;
-            if (m49 && hintNeighborsM49.includes(String(m49))) {
-              return COLORS.correct; // Use bright color for hint borders
-            }
-
             if (d === hoverD) return COLORS.selected;
+
+            // All countries (including hints) get black borders in base layer with 100% opacity
             return '#000';
           }}
           pathStroke={d => {
-            // Make hint neighbor borders much thicker and more visible using M49 codes
-            const m49 = d.id || d.properties?.id;
-            if (m49 && hintNeighborsM49.includes(String(m49))) {
-              return 4.0; // Extra thick for hints
+            // Hint overlay layer gets extra thick green borders
+            if (d.isHintOverlay) {
+              return 4.0;
             }
-            return 2.0; // Normal thickness (thicker black borders)
+            // Base layer: normal thickness black borders (100% opacity)
+            return 2.0;
           }}
           pathDashLength={1}
           pathDashGap={0}

@@ -155,20 +155,47 @@ const ArtworkInfoBar = ({ countryISO, countryName, colors, mode, answerSubmitted
           '--text-color': colors.text
         }}
       >
-        {onClose && (
-          <button className="artwork-close-btn" onClick={onClose} title="Close">
-            ✕
-          </button>
-        )}
-        <h3 className="artwork-info-title">
-          {mode === 'quiz' && answerSubmitted && isCorrectAnswer ? (
-            `Correct: ${countryName || countryISO}`
-          ) : mode === 'quiz' && answerSubmitted && !isCorrectAnswer ? (
-            `Incorrect: ${countryName || countryISO}`
-          ) : (
-            countryName || countryISO
-          )}
-        </h3>
+        <div className="artwork-info-header">
+          <h3 className="artwork-info-title">
+            {mode === 'quiz' && answerSubmitted && isCorrectAnswer ? (
+              `Correct: ${countryName || countryISO}`
+            ) : mode === 'quiz' && answerSubmitted && !isCorrectAnswer ? (
+              `Incorrect: ${countryName || countryISO}`
+            ) : (
+              countryName || countryISO
+            )}
+          </h3>
+
+          {/* Action buttons */}
+          {mode === 'quiz' && answerSubmitted && isCorrectAnswer && onNext ? (
+            <button
+              className="artwork-next-btn"
+              onClick={onNext}
+              title="Next Country"
+              aria-label="Next country"
+            >
+              Next →
+            </button>
+          ) : mode === 'quiz' && answerSubmitted && !isCorrectAnswer && onClose ? (
+            <button
+              className="artwork-next-btn"
+              onClick={onClose}
+              title="Try Again"
+              aria-label="Try again"
+            >
+              Try Again
+            </button>
+          ) : onClose ? (
+            <button
+              className="artwork-close-btn"
+              onClick={onClose}
+              title="Close"
+              aria-label="Close artwork panel"
+            >
+              ✕
+            </button>
+          ) : null}
+        </div>
 
         {/* Show child mortality data if available */}
         <ChildMortalitySection mortalityData={mortalityData} />

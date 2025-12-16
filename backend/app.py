@@ -129,13 +129,34 @@ def random_country():
     conn = get_db_connection()
     cursor = conn.cursor()
 
+    # List of territories to exclude from quiz mode
+    # These are small territories, overseas territories, and uninhabited islands
+    excluded_territories = [
+        'BES',  # Bonaire, Sint Eustatius and Saba
+        'BVT',  # Bouvet Island
+        'CXR',  # Christmas Island
+        'CCK',  # Cocos (Keeling) Islands
+        'GUF',  # French Guiana
+        'GIB',  # Gibraltar
+        'GLP',  # Guadeloupe
+        'MTQ',  # Martinique
+        'MYT',  # Mayotte
+        'REU',  # Réunion
+        'SJM',  # Svalbard and Jan Mayen
+        'TKL',  # Tokelau
+        'TUV',  # Tuvalu
+        'UMI'   # United States Minor Outlying Islands
+    ]
+
     # Get all sovereign countries (is_country = true)
     # Only sovereign countries are included in the quiz, not territories
+    # Exclude small territories that are difficult for quiz purposes
     cursor.execute('''
         SELECT iso3, name, common_name, continent, subregion
         FROM countries
         WHERE is_country = TRUE
-    ''')
+        AND iso3 NOT IN (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+    ''' % tuple(['%s'] * len(excluded_territories)), excluded_territories)
 
     # Extract all sovereign countries into a Python list
     countries = [dict(row) for row in cursor.fetchall()]
