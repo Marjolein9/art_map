@@ -837,7 +837,7 @@ a.collection-subtitle:hover {
 }
 
 .toggle-label-small {
-  font-size: 9px;
+  font-size: 13px;
   font-weight: bold;
   color: var(--text-color);
   opacity: 0.9;

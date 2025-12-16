@@ -341,7 +341,7 @@ const WorldMap = ({
           pathPointLng={p => p[0]}
           pathColor={d => {
             const iso3 = getCountryIsoCode(d);
-            if (!iso3) return COLORS.border;
+            if (!iso3) return '#000';
 
             // Target country gets correct/incorrect color
             if (clickedCountry === iso3) {
@@ -356,7 +356,7 @@ const WorldMap = ({
             }
 
             if (d === hoverD) return COLORS.selected;
-            return COLORS.border;
+            return '#000';
           }}
           pathStroke={d => {
             // Make hint neighbor borders much thicker and more visible using M49 codes
@@ -364,7 +364,7 @@ const WorldMap = ({
             if (m49 && hintNeighborsM49.includes(String(m49))) {
               return 4.0; // Extra thick for hints
             }
-            return 0.8; // Normal thickness
+            return 2.0; // Normal thickness (thicker black borders)
           }}
           pathDashLength={1}
           pathDashGap={0}
