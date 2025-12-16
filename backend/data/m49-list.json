@@ -3495,6 +3495,21 @@
     },
     {
       "region": 142,
+      "subRegion": 30,
+      "name": "Taiwan",
+      "m49code": 158,
+      "alpha2": "TW",
+      "alpha3": "TWN",
+      "nameFR": "Taïwan",
+      "nameES": "Taiwán",
+      "nameRU": "Тайвань",
+      "nameZH": "台湾",
+      "nameAR": "تايوان",
+      "is_country": true,
+      "common_name": "Taiwan"
+    },
+    {
+      "region": 142,
       "subRegion": 35,
       "name": "Thailand",
       "m49code": 764,
