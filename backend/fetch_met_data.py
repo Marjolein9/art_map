@@ -127,7 +127,7 @@ def process_met_data():
                     object_id = source_link.rstrip('/').split('/')[-1]
                     if object_id.isdigit():
                         met_entries.append({
-                            'alpha3': row.get('alpha3', '').strip(),
+                            'iso3': row.get('iso3', '').strip(),
                             'country': row.get('country', '').strip(),
                             'object_id': object_id,
                             'accession_number': row.get('Object_id', '').strip()
@@ -150,10 +150,10 @@ def process_met_data():
 
     for idx, entry in enumerate(met_entries, 1):
         object_id = entry['object_id']
-        alpha3 = entry['alpha3']
+        iso3 = entry['iso3']
         country = entry['country']
 
-        print(f"[{idx}/{len(met_entries)}] Processing {country} ({alpha3}) - Object ID: {object_id}")
+        print(f"[{idx}/{len(met_entries)}] Processing {country} ({iso3}) - Object ID: {object_id}")
 
         # Fetch object data from API
         success, data = fetch_object_data(object_id)
@@ -178,7 +178,7 @@ def process_met_data():
             # Still save metadata without image
             results.append({
                 'object_id': object_id,
-                'alpha3': alpha3,
+                'iso3': iso3,
                 'country_name': country,
                 'title': data.get('title', ''),
                 'artist_name': data.get('artistDisplayName', ''),
@@ -196,7 +196,7 @@ def process_met_data():
             continue
 
         # Prepare image directory
-        image_dir = os.path.join(IMAGES_BASE_DIR, alpha3, 'met')
+        image_dir = os.path.join(IMAGES_BASE_DIR, iso3, 'met')
         Path(image_dir).mkdir(parents=True, exist_ok=True)
 
         # Determine image filename
@@ -220,7 +220,7 @@ def process_met_data():
         # Add to results
         results.append({
             'object_id': object_id,
-            'alpha3': alpha3,
+            'iso3': iso3,
             'country_name': country,
             'title': data.get('title', ''),
             'artist_name': data.get('artistDisplayName', ''),
@@ -235,7 +235,7 @@ def process_met_data():
         })
 
         successful += 1
-        print(f"  ✓ Successfully processed {country} ({alpha3})\n")
+        print(f"  ✓ Successfully processed {country} ({iso3})\n")
 
         # Rate limiting delay
         time.sleep(REQUEST_DELAY)
@@ -245,7 +245,7 @@ def process_met_data():
         print(f"\n📝 Writing metadata to {OUTPUT_CSV_PATH}...")
         with open(OUTPUT_CSV_PATH, 'w', newline='', encoding='utf-8') as f:
             fieldnames = [
-                'object_id', 'alpha3', 'country_name', 'title', 'artist_name',
+                'object_id', 'iso3', 'country_name', 'title', 'artist_name',
                 'object_date', 'medium', 'department', 'culture', 'object_url',
                 'primary_image_url', 'filepath', 'json_file'
             ]

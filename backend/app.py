@@ -189,14 +189,14 @@ def random_country():
         }
     })
 
-@app.route('/api/images/<alpha3>', methods=['GET'])
-def get_images(alpha3):
+@app.route('/api/images/<iso3>', methods=['GET'])
+def get_images(iso3):
     """
     Get all images for a country from all three collections.
 
     HTTP Method: GET
     URL: http://localhost:5000/api/images/USA
-    URL Parameter: alpha3 (required) - three-letter country code in URL path
+    URL Parameter: iso3 (required) - three-letter country code in URL path
 
     Example Request: GET /api/images/USA
     Returns: JSON with images grouped by collection type
@@ -213,8 +213,8 @@ def get_images(alpha3):
                filepath, title_en as title, location, date,
                operator, inventory_number, page_url
         FROM albert_kahn_images
-        WHERE alpha3 = %s
-    ''', (alpha3,))
+        WHERE iso3 = %s
+    ''', (iso3,))
     albert_kahn = [dict(row) for row in cursor.fetchall()]
 
     # Query Children Artwork images
@@ -223,8 +223,8 @@ def get_images(alpha3):
                filepath, title, artist_name,
                artist_nationality, author_wikilink, work_url, source
         FROM children_artwork_images
-        WHERE alpha3 = %s
-    ''', (alpha3,))
+        WHERE artist_iso3 = %s
+    ''', (iso3,))
     children_art = [dict(row) for row in cursor.fetchall()]
 
     # Query Public Domain images
@@ -233,8 +233,8 @@ def get_images(alpha3):
                filepath, title, country, source_link,
                source_url, description
         FROM public_domain_images
-        WHERE alpha3 = %s
-    ''', (alpha3,))
+        WHERE iso3 = %s
+    ''', (iso3,))
     public_domain = [dict(row) for row in cursor.fetchall()]
 
     # Query Met Museum images
@@ -243,8 +243,8 @@ def get_images(alpha3):
                filepath, title, artist_name, object_date,
                medium, department, culture, object_url
         FROM met_images
-        WHERE alpha3 = %s
-    ''', (alpha3,))
+        WHERE iso3 = %s
+    ''', (iso3,))
     met_museum = [dict(row) for row in cursor.fetchall()]
 
     conn.close()
@@ -257,7 +257,7 @@ def get_images(alpha3):
             'Met Museum': met_museum
         },
         'total_count': len(albert_kahn) + len(children_art) + len(public_domain) + len(met_museum),
-        'alpha3': alpha3
+        'iso3': iso3
     })
 
 @app.route('/api/game/check-answer', methods=['POST'])
@@ -441,11 +441,11 @@ def get_empty_countries():
 
     # Get countries that have at least one image
     cursor.execute('''
-        SELECT DISTINCT alpha3 FROM albert_kahn_images
+        SELECT DISTINCT iso3 FROM albert_kahn_images
         UNION
-        SELECT DISTINCT alpha3 FROM children_artwork_images
+        SELECT DISTINCT artist_iso3 FROM children_artwork_images
         UNION
-        SELECT DISTINCT alpha3 FROM public_domain_images
+        SELECT DISTINCT iso3 FROM public_domain_images
     ''')
     countries_with_images = {row[0] for row in cursor.fetchall()}
 

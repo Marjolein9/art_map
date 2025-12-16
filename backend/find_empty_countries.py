@@ -19,11 +19,11 @@ def find_empty_countries():
 
     # Get countries that have at least one image
     cursor.execute('''
-        SELECT DISTINCT alpha3 FROM albert_kahn_images
+        SELECT DISTINCT iso3 FROM albert_kahn_images
         UNION
-        SELECT DISTINCT alpha3 FROM children_artwork_images
+        SELECT DISTINCT artist_iso3 FROM children_artwork_images
         UNION
-        SELECT DISTINCT alpha3 FROM public_domain_images
+        SELECT DISTINCT iso3 FROM public_domain_images
     ''')
     countries_with_images = {row[0] for row in cursor.fetchall()}
 

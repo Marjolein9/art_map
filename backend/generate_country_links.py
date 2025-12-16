@@ -121,7 +121,7 @@ def get_tasteatlas_name(country_name, alpha2=None):
 def generate_links(entity):
     """Generate external links for an entity (no verification - sites are JavaScript-rendered or block bots)"""
     alpha2 = entity.get('alpha2', '').lower()
-    alpha3 = entity.get('alpha3', '')
+    iso3 = entity.get('iso3', '')
     name = entity.get('name', '')
 
     links = {
@@ -163,17 +163,17 @@ def main():
     # Generate links for each country
     results = []
     for i, entity in enumerate(countries, 1):
-        alpha3 = entity.get('alpha3', '')
+        iso3 = entity.get('iso3', '')
         alpha2 = entity.get('alpha2', '')
         name = entity.get('name', '')
         m49code = entity.get('m49code', '')
 
-        print(f"[{i}/{len(countries)}] {name} ({alpha3})")
+        print(f"[{i}/{len(countries)}] {name} ({iso3})")
 
         links = generate_links(entity)
 
         results.append({
-            'iso3': alpha3,
+            'iso3': iso3,
             'iso2': alpha2,
             'name': name,
             'm49code': m49code,

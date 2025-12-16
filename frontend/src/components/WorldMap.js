@@ -1,6 +1,6 @@
 import React, { memo, useState, useEffect, useRef, useMemo } from 'react';
 import Globe from 'react-globe.gl';
-import { getCountryIsoCode, getCountryName, initializeCountryMapping } from '../utils/countryCodeMapping';
+import { getCountryIsoCode, initializeCountryMapping } from '../utils/countryCodeMapping';
 import { REGION_VIEWS } from '../config/regions';
 import { loadTopoJSON } from '../utils/topoJsonLoader';
 import { fetchCountries, fetchNeighbors, fetchSimilarIslands } from '../services/api';
@@ -34,9 +34,6 @@ const WorldMap = ({
   });
   const [hintsEnabled, setHintsEnabled] = useState(true);
   const [allCountries, setAllCountries] = useState([]);
-
-  // Control tooltips - always enabled in explore mode
-  const tooltipsEnabled = mode === 'explore';
 
   // Handle window resize for responsive globe
   useEffect(() => {
@@ -192,6 +189,7 @@ const WorldMap = ({
             }
           }
 
+          console.log('  Final highlights M49 codes:', highlightM49s);
           setHintNeighborsM49(highlightM49s);
           hintCountryRef.current = targetCountry; // Remember which country these hints are for
         } catch (err) {
@@ -199,6 +197,7 @@ const WorldMap = ({
         }
       } else {
         // Clear hints if not in quiz mode or hints disabled
+        console.log('  Clearing hints (mode:', mode, 'hintsEnabled:', hintsEnabled, ')');
         setHintNeighborsM49([]);
         hintCountryRef.current = null;
       }
@@ -365,15 +364,6 @@ const WorldMap = ({
           polygonStrokeColor={() => 'rgba(0, 0, 0, 0)'} // Hide polygon borders
           polygonAltitude={0.001}
 
-          polygonLabel={tooltipsEnabled ? (feature) => {
-            const name = getCountryName(feature.properties);
-            const iso = getCountryIsoCode(feature);
-            return `
-              <div style="background: ${COLORS.tooltipBg}; color: ${COLORS.tooltipText}; padding: 8px 12px; border-radius: 4px; font-family: system-ui; font-weight: bold; box-shadow: 0 0 10px ${COLORS.glow}; border: 2px solid ${COLORS.border};">
-                ${name}${iso ? ` (${iso})` : ''}
-              </div>
-            `;
-          } : undefined}
           onPolygonHover={setHoverD}
           onPolygonClick={handlePolygonClick}
 

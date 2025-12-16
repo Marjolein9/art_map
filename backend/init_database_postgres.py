@@ -5,6 +5,16 @@ PostgreSQL Database Initialization Script
 Initializes PostgreSQL database for production deployment (Render, Heroku, etc.)
 Reads UN M49 country data, artworks CSVs, borders, child mortality data, and Met Museum collection
 
+This script ONLY:
+- Creates database schema (tables, indexes, foreign keys)
+- Loads data from existing CSV files
+- Does NOT fetch new data from external APIs
+- Does NOT clean up orphaned images
+
+For maintenance tasks, use these separate scripts:
+- cleanup_orphaned_images.py - Remove image files not in database
+- fetch_met_data.py - Fetch new Met Museum data from API
+
 Usage:
     export DATABASE_URL="postgresql://user:pass@host:port/dbname"
     python3 init_database_postgres.py
@@ -400,8 +410,8 @@ def load_m49_data():
     countries = []
 
     for country in data['countries']:
-        alpha3 = country.get('alpha3')
-        if not alpha3:
+        iso3 = country.get('iso3')
+        if not iso3:
             continue
 
         region_code = country.get('region')
@@ -424,7 +434,7 @@ def load_m49_data():
         is_country = country.get('is_country', False)
 
         countries.append({
-            'iso3': alpha3,
+            'iso3': iso3,
             'iso2': alpha2,
             'name': name,
             'common_name': common_name,
@@ -590,7 +600,7 @@ def init_database():
             country_en TEXT,
             m49code INTEGER,
             alpha2 TEXT,
-            alpha3 TEXT NOT NULL,
+            iso3 TEXT NOT NULL,
             operator TEXT,
             author TEXT,
             mission TEXT,
@@ -609,10 +619,10 @@ def init_database():
             page_url TEXT,
             image_url TEXT,
             filepath TEXT,
-            FOREIGN KEY (alpha3) REFERENCES countries(iso3)
+            FOREIGN KEY (iso3) REFERENCES countries(iso3)
         )
     ''')
-    cursor.execute('CREATE INDEX idx_albert_kahn_alpha3 ON albert_kahn_images(alpha3)')
+    cursor.execute('CREATE INDEX idx_albert_kahn_iso3 ON albert_kahn_images(iso3)')
 
     # Create children_artwork_images table with ALL columns from CSV
     print("🎨 Creating children_artwork_images table...")
@@ -622,9 +632,9 @@ def init_database():
             artist_name TEXT,
             author_wikilink TEXT,
             artist_nationality TEXT,
-            alpha3 TEXT NOT NULL,
+            artist_iso3 TEXT NOT NULL,
             country_of_subject TEXT,
-            iso3 TEXT,
+            subject_iso3 TEXT,
             title TEXT,
             keep TEXT,
             image_url TEXT,
@@ -639,10 +649,10 @@ def init_database():
             more_info TEXT,
             is_local TEXT,
             filepath TEXT,
-            FOREIGN KEY (alpha3) REFERENCES countries(iso3)
+            FOREIGN KEY (artist_iso3) REFERENCES countries(iso3)
         )
     ''')
-    cursor.execute('CREATE INDEX idx_children_artwork_alpha3 ON children_artwork_images(alpha3)')
+    cursor.execute('CREATE INDEX idx_children_artwork_artist_iso3 ON children_artwork_images(artist_iso3)')
 
     # Create public_domain_images table with ALL columns from CSV
     print("📚 Creating public_domain_images table...")
@@ -654,14 +664,14 @@ def init_database():
             description TEXT,
             source_link TEXT,
             country TEXT,
-            alpha3 TEXT NOT NULL,
+            iso3 TEXT NOT NULL,
             image_url TEXT,
             remove TEXT,
             filepath TEXT,
-            FOREIGN KEY (alpha3) REFERENCES countries(iso3)
+            FOREIGN KEY (iso3) REFERENCES countries(iso3)
         )
     ''')
-    cursor.execute('CREATE INDEX idx_public_domain_alpha3 ON public_domain_images(alpha3)')
+    cursor.execute('CREATE INDEX idx_public_domain_iso3 ON public_domain_images(iso3)')
 
     # Create met_images table
     print("🏛️  Creating met_images table...")
@@ -669,7 +679,7 @@ def init_database():
         CREATE TABLE met_images (
             id SERIAL PRIMARY KEY,
             object_id TEXT NOT NULL,
-            alpha3 TEXT NOT NULL,
+            iso3 TEXT NOT NULL,
             country_name TEXT,
             title TEXT,
             artist_name TEXT,
@@ -681,10 +691,10 @@ def init_database():
             image_url TEXT,
             filepath TEXT,
             json_file TEXT,
-            FOREIGN KEY (alpha3) REFERENCES countries(iso3)
+            FOREIGN KEY (iso3) REFERENCES countries(iso3)
         )
     ''')
-    cursor.execute('CREATE INDEX idx_met_alpha3 ON met_images(alpha3)')
+    cursor.execute('CREATE INDEX idx_met_iso3 ON met_images(iso3)')
 
     # Create country_borders table
     print("🗺️  Creating country_borders table...")
@@ -798,10 +808,10 @@ def init_database():
         reader = csv.DictReader(f)
 
         for row in reader:
-            alpha3 = row.get('alpha3', '').strip()
+            iso3 = row.get('iso3', '').strip()
             image_url = row.get('image_url', '').strip()
 
-            if not alpha3 or not image_url:
+            if not iso3 or not image_url:
                 continue
 
             filepath = None
@@ -812,33 +822,33 @@ def init_database():
                 parsed_url = urlparse(image_url)
                 filename = unquote(os.path.basename(parsed_url.path))
                 # Check for both .jpg and original extension
-                expected_path_jpg = os.path.join(base_dir, 'images', alpha3, 'albert_kahn', filename.replace('.webp', '.jpg') if filename.endswith('.webp') else filename)
-                expected_path_original = os.path.join(base_dir, 'images', alpha3, 'albert_kahn', filename)
+                expected_path_jpg = os.path.join(base_dir, 'images', iso3, 'albert_kahn', filename.replace('.webp', '.jpg') if filename.endswith('.webp') else filename)
+                expected_path_original = os.path.join(base_dir, 'images', iso3, 'albert_kahn', filename)
 
                 if os.path.exists(expected_path_jpg):
-                    filepath = f"images/{alpha3}/albert_kahn/{os.path.basename(expected_path_jpg)}"
+                    filepath = f"images/{iso3}/albert_kahn/{os.path.basename(expected_path_jpg)}"
                 elif os.path.exists(expected_path_original):
-                    filepath = f"images/{alpha3}/albert_kahn/{filename}"
+                    filepath = f"images/{iso3}/albert_kahn/{filename}"
                 else:
                     # Download from URL
                     print(f"  🔄 Downloading from URL...")
-                    filepath = download_image(image_url, alpha3, 'albert_kahn')
+                    filepath = download_image(image_url, iso3, 'albert_kahn')
             else:
                 # Assume it's in Downloads folder
                 local_path = os.path.join(downloads_folder, image_url)
                 filename = os.path.basename(local_path)
                 # Check for both .jpg and original extension
-                expected_path_jpg = os.path.join(base_dir, 'images', alpha3, 'albert_kahn', filename.replace('.webp', '.jpg') if filename.endswith('.webp') else filename)
-                expected_path_original = os.path.join(base_dir, 'images', alpha3, 'albert_kahn', filename)
+                expected_path_jpg = os.path.join(base_dir, 'images', iso3, 'albert_kahn', filename.replace('.webp', '.jpg') if filename.endswith('.webp') else filename)
+                expected_path_original = os.path.join(base_dir, 'images', iso3, 'albert_kahn', filename)
 
                 if os.path.exists(expected_path_jpg):
-                    filepath = f"images/{alpha3}/albert_kahn/{os.path.basename(expected_path_jpg)}"
+                    filepath = f"images/{iso3}/albert_kahn/{os.path.basename(expected_path_jpg)}"
                 elif os.path.exists(expected_path_original):
-                    filepath = f"images/{alpha3}/albert_kahn/{filename}"
+                    filepath = f"images/{iso3}/albert_kahn/{filename}"
                 else:
                     # Copy from Downloads folder
                     print(f"  🔄 Copying from Downloads folder...")
-                    filepath = copy_local_image(local_path, alpha3, 'albert_kahn')
+                    filepath = copy_local_image(local_path, iso3, 'albert_kahn')
 
             # If filepath acquisition failed, skip
             if not filepath:
@@ -848,7 +858,7 @@ def init_database():
             cursor.execute('''
                 INSERT INTO albert_kahn_images (
                     file_path, image_filename, inventory_number, title_fr, title_en,
-                    location, country_fr, country_en, m49code, alpha2, alpha3,
+                    location, country_fr, country_en, m49code, alpha2, iso3,
                     operator, author, mission, date, theme, sub_theme, description,
                     domain, process, support, denomination, format, dimensions,
                     ownership, license, page_url, image_url, filepath
@@ -864,7 +874,7 @@ def init_database():
                 row.get('country_en', ''),
                 row.get('m49code', ''),
                 row.get('alpha2', ''),
-                alpha3,
+                iso3,
                 row.get('operator', ''),
                 row.get('author', ''),
                 row.get('mission', ''),
@@ -892,7 +902,6 @@ def init_database():
     # Use image_url to download, title to rename, filepath to save location
     print(f"🎨 Loading Children Artwork from: {CHILDREN_ARTWORK_CSV_PATH}")
     children_artwork_count = 0
-    processed_files = set()  # Track files that are in the database
 
     def sanitize_filename(title):
         """Convert title to safe filename with underscores"""
@@ -912,11 +921,11 @@ def init_database():
             if keep_status != 'keep':
                 continue
 
-            alpha3 = row.get('alpha3', '').strip()
+            artist_iso3 = row.get('artist_iso3', '').strip()
             image_url = row.get('image_url', '').strip()
             title = row.get('title', '').strip()
 
-            if not alpha3 or not image_url or not title:
+            if not artist_iso3 or not image_url or not title:
                 continue
 
             # Step 1: Create sanitized filename from title
@@ -925,7 +934,7 @@ def init_database():
                 continue
 
             # Step 2: Check if image already exists at expected path
-            expected_path = os.path.join(base_dir, 'images', alpha3, 'children_artwork', target_filename)
+            expected_path = os.path.join(base_dir, 'images', artist_iso3, 'children_artwork', target_filename)
             filepath = None
 
             # IMPORTANT: Also check for URL-based filename (happens if file was manually downloaded)
@@ -934,7 +943,7 @@ def init_database():
                 # Get the URL's filename
                 parsed_url = urlparse(image_url)
                 url_filename = unquote(os.path.basename(parsed_url.path))
-                url_based_path = os.path.join(base_dir, 'images', alpha3, 'children_artwork', url_filename)
+                url_based_path = os.path.join(base_dir, 'images', artist_iso3, 'children_artwork', url_filename)
 
                 # If file exists with URL filename, rename it to standardized filename
                 if os.path.exists(url_based_path) and url_filename != target_filename:
@@ -943,14 +952,13 @@ def init_database():
 
             if os.path.exists(expected_path):
                 # Image already exists, use it
-                filepath = f"images/{alpha3}/children_artwork/{target_filename}"
-                processed_files.add(expected_path)
+                filepath = f"images/{artist_iso3}/children_artwork/{target_filename}"
             else:
                 # Step 3: Image doesn't exist, download/copy from image_url
                 if image_url.startswith('http'):
                     # Download from URL with sanitized filename
                     print(f"  🔄 Downloading: {title}")
-                    filepath = download_image(image_url, alpha3, 'children_artwork', target_filename=target_filename)
+                    filepath = download_image(image_url, artist_iso3, 'children_artwork', target_filename=target_filename)
                 else:
                     # Handle local file paths
                     if image_url.startswith('/') or image_url.startswith('~'):
@@ -960,10 +968,7 @@ def init_database():
 
                     # Copy with sanitized filename
                     print(f"  🔄 Copying: {title}")
-                    filepath = copy_local_image(local_path, alpha3, 'children_artwork', target_filename=target_filename)
-
-                if filepath:
-                    processed_files.add(os.path.join(base_dir, filepath))
+                    filepath = copy_local_image(local_path, artist_iso3, 'children_artwork', target_filename=target_filename)
 
             # If filepath acquisition failed, skip
             if not filepath:
@@ -973,8 +978,8 @@ def init_database():
             # Step 4: Save filepath to database
             cursor.execute('''
                 INSERT INTO children_artwork_images (
-                    artist_name, author_wikilink, artist_nationality, alpha3,
-                    country_of_subject, iso3, title, keep, image_url, work_url,
+                    artist_name, author_wikilink, artist_nationality, artist_iso3,
+                    country_of_subject, subject_iso3, title, keep, image_url, work_url,
                     location_reason, author_background, birth_date, death_date, birth_place,
                     source, tags, more_info, is_local, filepath
                 ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
@@ -982,9 +987,9 @@ def init_database():
                 row.get('artist_name', ''),
                 row.get('Author WikiLink', ''),
                 row.get('Artist Nationality', ''),
-                alpha3,
+                artist_iso3,
                 row.get('Country of Subject: ', ''),
-                row.get('iso3', ''),
+                row.get('subject_iso3', ''),
                 row.get('title', ''),
                 row.get('Keep', ''),
                 row.get('image_url', ''),
@@ -1004,27 +1009,6 @@ def init_database():
 
     print(f"✅ Inserted {children_artwork_count} children artwork images")
 
-    # Clean up orphaned children_artwork images (files not in database)
-    print(f"🧹 Cleaning up orphaned children_artwork images...")
-    orphaned_count = 0
-    images_dir = os.path.join(base_dir, 'images')
-
-    if os.path.exists(images_dir):
-        for country_dir in os.listdir(images_dir):
-            children_artwork_dir = os.path.join(images_dir, country_dir, 'children_artwork')
-            if os.path.isdir(children_artwork_dir):
-                for filename in os.listdir(children_artwork_dir):
-                    file_path = os.path.join(children_artwork_dir, filename)
-                    if os.path.isfile(file_path) and file_path not in processed_files:
-                        print(f"  🗑️  Deleting orphaned file: {country_dir}/children_artwork/{filename}")
-                        os.remove(file_path)
-                        orphaned_count += 1
-
-    if orphaned_count > 0:
-        print(f"✅ Deleted {orphaned_count} orphaned children_artwork images")
-    else:
-        print(f"✅ No orphaned children_artwork images found")
-
     # Load Public Domain images (skip rows with Remove="yes") - use image_url column
     print(f"📚 Loading Public Domain images from: {PUBLIC_DOMAIN_CSV_PATH}")
     public_domain_count = 0
@@ -1037,10 +1021,10 @@ def init_database():
             if remove_status == 'yes':
                 continue
 
-            alpha3 = row.get('alpha3', '').strip()
+            iso3 = row.get('iso3', '').strip()
             image_url = row.get('image_url', '').strip()
 
-            if not alpha3 or not image_url:
+            if not iso3 or not image_url:
                 continue
 
             filepath = None
@@ -1051,33 +1035,33 @@ def init_database():
                 parsed_url = urlparse(image_url)
                 filename = unquote(os.path.basename(parsed_url.path))
                 # Check for both .jpg and original extension
-                expected_path_jpg = os.path.join(base_dir, 'images', alpha3, 'public_domain', filename.replace('.webp', '.jpg') if filename.endswith('.webp') else filename)
-                expected_path_original = os.path.join(base_dir, 'images', alpha3, 'public_domain', filename)
+                expected_path_jpg = os.path.join(base_dir, 'images', iso3, 'public_domain', filename.replace('.webp', '.jpg') if filename.endswith('.webp') else filename)
+                expected_path_original = os.path.join(base_dir, 'images', iso3, 'public_domain', filename)
 
                 if os.path.exists(expected_path_jpg):
-                    filepath = f"images/{alpha3}/public_domain/{os.path.basename(expected_path_jpg)}"
+                    filepath = f"images/{iso3}/public_domain/{os.path.basename(expected_path_jpg)}"
                 elif os.path.exists(expected_path_original):
-                    filepath = f"images/{alpha3}/public_domain/{filename}"
+                    filepath = f"images/{iso3}/public_domain/{filename}"
                 else:
                     # Download from URL
                     print(f"  🔄 Downloading from URL...")
-                    filepath = download_image(image_url, alpha3, 'public_domain')
+                    filepath = download_image(image_url, iso3, 'public_domain')
             else:
                 # Assume it's in Downloads folder
                 local_path = os.path.join(downloads_folder, image_url)
                 filename = os.path.basename(local_path)
                 # Check for both .jpg and original extension
-                expected_path_jpg = os.path.join(base_dir, 'images', alpha3, 'public_domain', filename.replace('.webp', '.jpg') if filename.endswith('.webp') else filename)
-                expected_path_original = os.path.join(base_dir, 'images', alpha3, 'public_domain', filename)
+                expected_path_jpg = os.path.join(base_dir, 'images', iso3, 'public_domain', filename.replace('.webp', '.jpg') if filename.endswith('.webp') else filename)
+                expected_path_original = os.path.join(base_dir, 'images', iso3, 'public_domain', filename)
 
                 if os.path.exists(expected_path_jpg):
-                    filepath = f"images/{alpha3}/public_domain/{os.path.basename(expected_path_jpg)}"
+                    filepath = f"images/{iso3}/public_domain/{os.path.basename(expected_path_jpg)}"
                 elif os.path.exists(expected_path_original):
-                    filepath = f"images/{alpha3}/public_domain/{filename}"
+                    filepath = f"images/{iso3}/public_domain/{filename}"
                 else:
                     # Copy from Downloads folder
                     print(f"  🔄 Copying from Downloads folder...")
-                    filepath = copy_local_image(local_path, alpha3, 'public_domain')
+                    filepath = copy_local_image(local_path, iso3, 'public_domain')
 
             # If filepath acquisition failed, skip
             if not filepath:
@@ -1087,7 +1071,7 @@ def init_database():
             cursor.execute('''
                 INSERT INTO public_domain_images (
                     source_url, title, description, source_link,
-                    country, alpha3, image_url, remove, filepath
+                    country, iso3, image_url, remove, filepath
                 ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
             ''', (
                 row.get('source_url', ''),
@@ -1095,7 +1079,7 @@ def init_database():
                 row.get('description', ''),
                 row.get('Source Link', ''),
                 row.get('Country', ''),
-                alpha3,
+                iso3,
                 row.get('image_url', ''),
                 row.get('Remove', ''),
                 filepath
@@ -1112,11 +1096,11 @@ def init_database():
         with open(MET_METADATA_CSV_PATH, 'r', encoding='utf-8') as f:
             reader = csv.DictReader(f)
             for row in reader:
-                alpha3 = row.get('alpha3', '').strip()
+                iso3 = row.get('iso3', '').strip()
                 filepath = row.get('filepath', '').strip()
 
-                # Skip if no alpha3 or filepath
-                if not alpha3 or not filepath:
+                # Skip if no iso3 or filepath
+                if not iso3 or not filepath:
                     continue
 
                 # Verify image exists
@@ -1126,13 +1110,13 @@ def init_database():
 
                 cursor.execute('''
                     INSERT INTO met_images (
-                        object_id, alpha3, country_name, title, artist_name,
+                        object_id, iso3, country_name, title, artist_name,
                         object_date, medium, department, culture, object_url,
                         image_url, filepath, json_file
                     ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
                 ''', (
                     row.get('object_id', ''),
-                    alpha3,
+                    iso3,
                     row.get('country_name', ''),
                     row.get('title', ''),
                     row.get('artist_name', ''),

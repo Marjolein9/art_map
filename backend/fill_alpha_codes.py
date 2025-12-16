@@ -18,10 +18,10 @@ def load_m49_mapping():
     # Create mapping: country name -> ISO3 code
     name_to_iso3 = {}
     for country in data['countries']:
-        alpha3 = country.get('alpha3')
+        iso3 = country.get('iso3')
         name = country.get('name')
-        if alpha3 and name:
-            name_to_iso3[name] = alpha3
+        if iso3 and name:
+            name_to_iso3[name] = iso3
 
     # Add custom mappings for common variations
     name_to_iso3['United States'] = 'USA'

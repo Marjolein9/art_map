@@ -126,7 +126,7 @@ def main():
 
     for entry in m49_data['countries']:
         m49_code = entry.get('m49code')
-        alpha3 = entry.get('alpha3', '').upper() if entry.get('alpha3') else None
+        iso3 = entry.get('iso3', '').upper() if entry.get('iso3') else None
         alpha2 = entry.get('alpha2', '').upper() if entry.get('alpha2') else None
         official_name = entry.get('name', '')
 
@@ -134,17 +134,17 @@ def main():
         entry['is_country'] = m49_code in sovereign_m49_codes
 
         # Get common name
-        common_name = get_common_name(official_name, alpha3, alpha2)
+        common_name = get_common_name(official_name, iso3, alpha2)
 
         # Add common_name field
         entry['common_name'] = common_name
 
         # Track changes
         if common_name != official_name:
-            print(f"✏️  {alpha3 or 'N/A':3s} (M49:{m49_code:3d}): '{official_name}' → '{common_name}' [{'Country' if entry['is_country'] else 'Territory/Region'}]")
+            print(f"✏️  {iso3 or 'N/A':3s} (M49:{m49_code:3d}): '{official_name}' → '{common_name}' [{'Country' if entry['is_country'] else 'Territory/Region'}]")
             common_name_changes += 1
         else:
-            print(f"✓  {alpha3 or 'N/A':3s} (M49:{m49_code:3d}): '{official_name}' [{'Country' if entry['is_country'] else 'Territory/Region'}]")
+            print(f"✓  {iso3 or 'N/A':3s} (M49:{m49_code:3d}): '{official_name}' [{'Country' if entry['is_country'] else 'Territory/Region'}]")
 
         updated_count += 1
 
