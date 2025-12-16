@@ -24,10 +24,10 @@ const Candles = ({ count = 5 }) => {
       const isLast = i === candleCount - 1;
       let innerStyle = '';
 
-      // Scale the last candle's flame if it's fractional (height only, preserve width)
+      // Scale the last candle's flame if it's fractional
       if (isLast && lastCandleScale > 0) {
-        const scaledHeight = lastCandleScale * 0.5;
-        innerStyle = ` style="transform: scaleY(${scaledHeight}); transform-origin: 50% 100%;"`;
+        const scaledSize = lastCandleScale * 0.5;
+        innerStyle = ` style="transform: scale(${scaledSize}); transform-origin: 50% 100%;"`;
       }
 
       candle.innerHTML = `
