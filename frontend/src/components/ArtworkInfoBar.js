@@ -160,14 +160,21 @@ const ArtworkInfoBar = ({ countryISO, countryName, colors, mode, answerSubmitted
             ✕
           </button>
         )}
-        <h3 className="artwork-no-data-title">{countryName || countryISO}</h3>
-        <p className="artwork-no-data-subtitle">No images available for this country</p>
+        <h3 className="artwork-info-title">
+          {mode === 'quiz' && answerSubmitted && isCorrectAnswer ? (
+            `Correct: ${countryName || countryISO}`
+          ) : mode === 'quiz' && answerSubmitted && !isCorrectAnswer ? (
+            `Incorrect: ${countryName || countryISO}`
+          ) : (
+            countryName || countryISO
+          )}
+        </h3>
 
         {/* Show child mortality data if available */}
         <ChildMortalitySection mortalityData={mortalityData} />
 
         {/* Show external links if available */}
-        <ExternalLinks externalLinks={externalLinks} />
+        <ExternalLinks externalLinks={externalLinks} countryName={countryName} />
       </div>
     );
   }
@@ -242,7 +249,7 @@ const ArtworkInfoBar = ({ countryISO, countryName, colors, mode, answerSubmitted
       </div>
 
       {/* External Links Section */}
-      <ExternalLinks externalLinks={externalLinks} />
+      <ExternalLinks externalLinks={externalLinks} countryName={countryName} />
 
       {/* Child Mortality Section */}
       <ChildMortalitySection mortalityData={mortalityData} />

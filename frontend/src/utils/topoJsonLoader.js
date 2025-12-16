@@ -10,6 +10,12 @@
 import * as topojson from 'topojson-client';
 import { getCountryIsoCode } from './countryCodeMapping';
 
+// Cache for TopoJSON files to avoid reloading
+const topoJSONCache = {
+  simple: null,
+  detailed: null
+};
+
 /**
  * Calculate the area of a polygon using the shoelace formula
  * @param {Array} coordinates - Array of [lng, lat] coordinates
@@ -79,9 +85,12 @@ const filterLargestIslands = (feature) => {
  */
 export const loadTopoJSON = async (countriesFromDB = []) => {
 
-  // Load simplified topology first
-  const simpleResponse = await fetch('/geo/countries-110m.json');
-  const simpleTopology = await simpleResponse.json();
+  // Load simplified topology first (use cache if available)
+  if (!topoJSONCache.simple) {
+    const simpleResponse = await fetch('/geo/countries-110m.json');
+    topoJSONCache.simple = await simpleResponse.json();
+  }
+  const simpleTopology = topoJSONCache.simple;
 
   // Convert to GeoJSON
   let simpleGeoJSON = topojson.feature(
@@ -112,9 +121,12 @@ export const loadTopoJSON = async (countriesFromDB = []) => {
 
   if (missingCountries.length > 0) {
 
-    // Load detailed topology
-    const detailedResponse = await fetch('/geo/countries-50m.json');
-    const detailedTopology = await detailedResponse.json();
+    // Load detailed topology (use cache if available)
+    if (!topoJSONCache.detailed) {
+      const detailedResponse = await fetch('/geo/countries-50m.json');
+      topoJSONCache.detailed = await detailedResponse.json();
+    }
+    const detailedTopology = topoJSONCache.detailed;
 
     // Convert to GeoJSON
     const detailedGeoJSON = topojson.feature(

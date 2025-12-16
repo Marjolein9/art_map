@@ -8,7 +8,7 @@ export const COLOR_SCHEME = {
   selected: '#d4a574',
   correct: '#6b8e23',
   incorrect: '#8b4513',
-  border: '#8b7355',
+  border: '#8fb3c9',
   text: '#2f2519',
   tooltipBg: '#f5ead6',
   tooltipText: '#2f2519',

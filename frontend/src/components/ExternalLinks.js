@@ -8,8 +8,9 @@
  * @param {string} externalLinks.gapminder_url - Gapminder Dollar Street URL
  * @param {string} externalLinks.tasteatlas_url - TasteAtlas URL
  * @param {string} externalLinks.extra_links - Additional external links
+ * @param {string} countryName - Name of the country
  */
-const ExternalLinks = ({ externalLinks }) => {
+const ExternalLinks = ({ externalLinks, countryName }) => {
   // Return null if no links are available
   if (!externalLinks ||
       (!externalLinks.gapminder_url?.trim() &&
@@ -23,24 +24,28 @@ const ExternalLinks = ({ externalLinks }) => {
       <h4 className="external-links-title">External Resources</h4>
       <div className="external-links-list">
         {externalLinks.gapminder_url?.trim() && (
-          <a
-            href={externalLinks.gapminder_url}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="external-link"
-          >
-            Gapminder Dollar Street
-          </a>
+          <div className="external-link">
+            <a
+              href={externalLinks.gapminder_url}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Gapminder's Dollar Street
+            </a>
+            : How people live in {countryName || 'this country'}
+          </div>
         )}
         {externalLinks.tasteatlas_url?.trim() && (
-          <a
-            href={externalLinks.tasteatlas_url}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="external-link"
-          >
-            Food Atlas
-          </a>
+          <div className="external-link">
+            <a
+              href={externalLinks.tasteatlas_url}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              TasteAtlas
+            </a>
+            : Food from {countryName || 'this country'}
+          </div>
         )}
         {externalLinks.extra_links?.trim() && (
           <a

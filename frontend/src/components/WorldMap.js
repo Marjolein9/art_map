@@ -30,11 +30,10 @@ const WorldMap = ({
     width: window.innerWidth - 60,
     height: window.innerHeight - 120
   });
-  const [hintsEnabled, setHintsEnabled] = useState(false);
-  const [labelsEnabled, setLabelsEnabled] = useState(mode === 'explore');
+  const [hintsEnabled, setHintsEnabled] = useState(true);
 
-  // Control tooltips based on labels toggle or explore mode
-  const tooltipsEnabled = mode === 'explore' || labelsEnabled;
+  // Control tooltips - always enabled in explore mode
+  const tooltipsEnabled = mode === 'explore';
 
   // Handle window resize for responsive globe
   useEffect(() => {
@@ -391,7 +390,7 @@ const WorldMap = ({
         >
           {/* Title text */}
           <div className="overlay-title">
-            {mode === 'quiz' && targetCountryName ? `Find: ${targetCountryName}` : 'Click to Explore'}
+            {mode === 'quiz' && targetCountryName ? `Find: ${targetCountryName}` : 'Click to Explore Artwork, Photographs and More'}
           </div>
 
           {/* Control buttons and toggles */}
@@ -458,19 +457,6 @@ const WorldMap = ({
                       type="checkbox"
                       checked={hintsEnabled}
                       onChange={() => setHintsEnabled(prev => !prev)}
-                    />
-                    <span className="toggle-slider-small"></span>
-                  </label>
-                </div>
-
-                {/* Labels Toggle */}
-                <div className="toggle-container-small">
-                  <span className="toggle-label-small">Labels</span>
-                  <label className="toggle-switch-small">
-                    <input
-                      type="checkbox"
-                      checked={labelsEnabled}
-                      onChange={() => setLabelsEnabled(prev => !prev)}
                     />
                     <span className="toggle-slider-small"></span>
                   </label>

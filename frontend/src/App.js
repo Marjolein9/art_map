@@ -72,7 +72,7 @@ function App() {
   // Mode: 'quiz' or 'explore'
   // Quiz mode: User guesses countries from artwork
   // Explore mode: User browses countries and their artwork freely
-  const [mode, setMode] = useState('quiz');
+  const [mode, setMode] = useState('explore');
 
   // Country selected in explore mode
   const [exploreCountry, setExploreCountry] = useState(null);

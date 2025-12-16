@@ -369,7 +369,7 @@ def get_similar_islands(iso3):
     # Priority: same subregion > same continent > any other islands
     # Also check if they have images in any collection
     cursor.execute('''
-        SELECT DISTINCT c.iso3, c.m49, c.name, c.common_name, c.continent, c.subregion,
+        SELECT c.iso3, c.m49, c.name, c.common_name, c.continent, c.subregion,
                CASE
                    WHEN c.subregion = %s THEN 1
                    WHEN c.continent = %s THEN 2
@@ -379,7 +379,7 @@ def get_similar_islands(iso3):
         LEFT JOIN country_borders cb ON c.iso3 = cb.country_iso3
         WHERE c.iso3 != %s
         AND c.iso3 NOT IN ('ATA')  -- Exclude Antarctica
-        GROUP BY c.iso3
+        GROUP BY c.iso3, c.m49, c.name, c.common_name, c.continent, c.subregion
         HAVING COUNT(cb.neighbor_iso3) = 0
         ORDER BY priority, RANDOM()
         LIMIT 2

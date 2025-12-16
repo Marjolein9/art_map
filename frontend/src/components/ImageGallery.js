@@ -1,3 +1,5 @@
+import { useState, useEffect, useRef } from 'react';
+
 // Get API base URL from environment variable
 // Remove /api suffix to get the base server URL for images
 const API_BASE = (process.env.REACT_APP_API_URL || 'http://localhost:5000/api').replace('/api', '');
@@ -25,10 +27,45 @@ const ImageGallery = ({
   onNext,
   imageRef
 }) => {
+  const [maxHeight, setMaxHeight] = useState(150); // Start with min-height
+  const containerRef = useRef(null);
+
   if (!images || images.length === 0) return null;
 
   const currentImage = images[currentIndex] || images[0];
   const hasMultiple = images.length > 1;
+
+  // Preload all images and calculate max height
+  useEffect(() => {
+    if (!images || images.length === 0) return;
+
+    // Create image elements to measure natural dimensions
+    const imagePromises = images.map((img) => {
+      return new Promise((resolve) => {
+        const tempImg = new Image();
+        tempImg.onload = () => {
+          // Calculate display height based on container width
+          const containerWidth = containerRef.current?.offsetWidth || 468; // Default width
+          const aspectRatio = tempImg.naturalHeight / tempImg.naturalWidth;
+          const displayHeight = Math.min(
+            containerWidth * aspectRatio,
+            600 // max-height from CSS
+          );
+          resolve(displayHeight);
+        };
+        tempImg.onerror = () => resolve(150); // Use min-height on error
+        tempImg.src = img.filepath.startsWith('http')
+          ? img.filepath
+          : `${API_BASE}/${img.filepath}`;
+      });
+    });
+
+    Promise.all(imagePromises).then((heights) => {
+      const tallest = Math.max(...heights, 150); // Ensure at least min-height
+      setMaxHeight(tallest);
+      console.log(`📏 Carousel max height set to ${tallest}px for ${collection}`);
+    });
+  }, [images, collection]);
 
   // Helper function to get source institution name and URL
   const getSourceInfo = (source) => {
@@ -50,25 +87,19 @@ const ImageGallery = ({
       case 'Albert Kahn':
         return (
           <>
-            {image.title && (
-              <div className="artwork-title">
-                {image.title}
-                {image.page_url && (
-                  <>
-                    :{' '}
-                    <a href={image.page_url} target="_blank" rel="noopener noreferrer">
-                      Source
-                    </a>
-                  </>
-                )}
-              </div>
-            )}
+            {image.title && <div className="artwork-title">{image.title}</div>}
             {image.location && <div className="artwork-location">{image.location}</div>}
             {image.date && <div className="artwork-date">{image.date}</div>}
             <div className="artwork-source">
-              <a href="https://albert-kahn.hauts-de-seine.fr/en/" target="_blank" rel="noopener noreferrer">
-                musée départemental Albert-Kahn
-              </a>
+              {image.page_url ? (
+                <a href={image.page_url} target="_blank" rel="noopener noreferrer">
+                  musée départemental Albert-Kahn
+                </a>
+              ) : (
+                <a href="https://albert-kahn.hauts-de-seine.fr/en/" target="_blank" rel="noopener noreferrer">
+                  musée départemental Albert-Kahn
+                </a>
+              )}
             </div>
           </>
         );
@@ -76,19 +107,7 @@ const ImageGallery = ({
         const sourceInfo = getSourceInfo(image.source);
         return (
           <>
-            {image.title && (
-              <div className="artwork-title">
-                {image.title}
-                {image.work_url && (
-                  <>
-                    :{' '}
-                    <a href={image.work_url} target="_blank" rel="noopener noreferrer">
-                      Source
-                    </a>
-                  </>
-                )}
-              </div>
-            )}
+            {image.title && <div className="artwork-title">{image.title}</div>}
             {image.artist_name && (
               <div className="artwork-artist">
                 {image.author_wikilink ? (
@@ -103,7 +122,7 @@ const ImageGallery = ({
             )}
             {sourceInfo && (
               <div className="artwork-source">
-                <a href={sourceInfo.url} target="_blank" rel="noopener noreferrer">
+                <a href={image.work_url || sourceInfo.url} target="_blank" rel="noopener noreferrer">
                   {sourceInfo.name}
                 </a>
               </div>
@@ -113,22 +132,17 @@ const ImageGallery = ({
       case 'Public Domain Review':
         return (
           <>
-            {image.description && (
-              <div className="artwork-location">
-                {image.description}
-                {image.source_link && (
-                  <>
-                    :{' '}
-                    <a href={image.source_link} target="_blank" rel="noopener noreferrer">
-                      Source
-                    </a>
-                  </>
-                )}
+            {image.description && <div className="artwork-location">{image.description}</div>}
+            {image.source_link && (
+              <div className="artwork-source">
+                <a href={image.source_link} target="_blank" rel="noopener noreferrer">
+                  Source
+                </a>
               </div>
             )}
             {image.title && image.source_url && (
               <div className="artwork-article">
-                Public Domain Review: <a href={image.source_url} target="_blank" rel="noopener noreferrer">
+                Featured in Public Domain Review: <a href={image.source_url} target="_blank" rel="noopener noreferrer">
                   {image.title}
                 </a>
               </div>
@@ -138,26 +152,20 @@ const ImageGallery = ({
       case 'Met Museum':
         return (
           <>
-            {image.title && (
-              <div className="artwork-title">
-                {image.title}
-                {image.object_url && (
-                  <>
-                    :{' '}
-                    <a href={image.object_url} target="_blank" rel="noopener noreferrer">
-                      Source
-                    </a>
-                  </>
-                )}
-              </div>
-            )}
+            {image.title && <div className="artwork-title">{image.title}</div>}
             {image.artist_name && <div className="artwork-artist">{image.artist_name}</div>}
             {image.object_date && <div className="artwork-date">{image.object_date}</div>}
             {image.culture && <div className="artwork-culture">{image.culture}</div>}
             <div className="artwork-source">
-              <a href="https://www.metmuseum.org/" target="_blank" rel="noopener noreferrer">
-                Metropolitan Museum of Art
-              </a>
+              {image.object_url ? (
+                <a href={image.object_url} target="_blank" rel="noopener noreferrer">
+                  Metropolitan Museum of Art
+                </a>
+              ) : (
+                <a href="https://www.metmuseum.org/" target="_blank" rel="noopener noreferrer">
+                  Metropolitan Museum of Art
+                </a>
+              )}
             </div>
           </>
         );
@@ -235,7 +243,11 @@ const ImageGallery = ({
       {/* Collection Content */}
       <div className="artwork-type-content">
           <div className="artwork-item">
-            <div className="artwork-image-container">
+            <div
+              className="artwork-image-container"
+              ref={containerRef}
+              style={{ height: `${maxHeight}px` }}
+            >
               <img
                 key={`${collection}-${currentIndex}`}
                 ref={imageRef}
@@ -249,18 +261,21 @@ const ImageGallery = ({
                 style={{ backgroundColor: '#ddd' }}
                 onLoad={(e) => {
                   const img = e.target;
+                  const container = img.parentElement;
 
-                  // Log successful load
+                  // Log successful load with dimensions
                   const loadedUrl = currentImage.filepath.startsWith('http')
                     ? currentImage.filepath
                     : `${API_BASE}/${currentImage.filepath}`;
 
-                  console.log('✅ Image loaded successfully:', {
+                  console.log('✅ Image loaded:', {
                     title: currentImage.title || 'Untitled',
                     collection: collection,
-                    filepath: currentImage.filepath,
-                    dimensions: `${img.naturalWidth}x${img.naturalHeight}`,
-                    url: loadedUrl
+                    naturalDimensions: `${img.naturalWidth}x${img.naturalHeight}`,
+                    displayedDimensions: `${img.offsetWidth}x${img.offsetHeight}`,
+                    containerDimensions: `${container.offsetWidth}x${container.offsetHeight}`,
+                    aspectRatio: (img.naturalWidth / img.naturalHeight).toFixed(2),
+                    orientation: img.naturalWidth > img.naturalHeight ? 'landscape' : 'portrait'
                   });
 
                   if (img.naturalWidth > 2000 || img.naturalHeight > 2000) {
