@@ -6,7 +6,7 @@ export const COLOR_SCHEME = {
   land: '#e8dcc4',
   hover: '#8b7355',
   selected: '#d4a574',
-  correct: '#6b8e23',
+  correct: '#7e215fff',
   incorrect: '#8b4513',
   border: '#8fb3c9',
   text: '#2f2519',

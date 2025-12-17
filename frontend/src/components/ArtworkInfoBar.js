@@ -4,96 +4,114 @@ import ImageGallery from './ImageGallery';
 import ChildMortalitySection from './ChildMortalitySection';
 import ExternalLinks from './ExternalLinks';
 
-/**
- * ArtworkInfoBar Component
- *
- * Displays artwork collections and child mortality data for a selected country.
- * Manages state for image collections, pagination, and data fetching.
- */
-const ArtworkInfoBar = ({ countryISO, countryName, colors, mode, answerSubmitted, isCorrectAnswer, onClose, onNext }) => {
+// Get API base URL from environment variable
+const API_BASE = (process.env.REACT_APP_API_URL || 'http://localhost:5000/api').replace('/api', '');
+
+const ArtworkInfoBar = ({
+  countryISO,
+  countryName,
+  colors,
+  mode,
+  answerSubmitted,
+  isCorrectAnswer,
+  onClose,
+  onNext
+}) => {
   const [imagesByCollection, setImagesByCollection] = useState({});
   const [loading, setLoading] = useState(false);
   const [currentImageIndex, setCurrentImageIndex] = useState({});
   const [mortalityData, setMortalityData] = useState(null);
   const [externalLinks, setExternalLinks] = useState(null);
-  const imageRefs = useRef({});
+  const [isVisible, setIsVisible] = useState(false);
 
-  // Fetch images from API when country changes
+  const imageRefs = useRef({});
+  const containerRef = useRef(null);
+
+  /* ------------------------------------------------------------
+     START FADE IMMEDIATELY (NO DELAY)
+     ------------------------------------------------------------ */
   useEffect(() => {
-    if (!countryISO || countryISO === null) {
+    if (!countryISO) return;
+
+    // Start invisible, then fade in immediately via CSS transition
+    setIsVisible(false);
+
+    // Next tick ensures opacity: 0 is painted first
+    requestAnimationFrame(() => {
+      setIsVisible(true);
+    });
+  }, [countryISO]);
+
+  /* ------------------------------------------------------------
+     FETCH IMAGES
+     ------------------------------------------------------------ */
+  useEffect(() => {
+    if (!countryISO) {
       setImagesByCollection({});
       return;
     }
 
     setLoading(true);
+
     fetchImages(countryISO)
       .then(data => {
-        // Filter out empty collections
         const filtered = {};
-        Object.entries(data).forEach(([collection, images]) => {
+        Object.entries(data || {}).forEach(([collection, images]) => {
           if (images && images.length > 0) {
             filtered[collection] = images;
           }
         });
 
         setImagesByCollection(filtered);
-        setLoading(false);
 
-        // Initialize current image index for each collection to 0
         const initialIndex = {};
-        Object.keys(filtered).forEach(collection => {
-          initialIndex[collection] = 0;
+        Object.keys(filtered).forEach(c => {
+          initialIndex[c] = 0;
         });
         setCurrentImageIndex(initialIndex);
       })
-      .catch(err => {
-        console.error('Error fetching images:', err);
+      .catch(() => {
         setImagesByCollection({});
+      })
+      .finally(() => {
         setLoading(false);
       });
   }, [countryISO]);
 
-  // Fetch child mortality data when country changes
+  /* ------------------------------------------------------------
+     FETCH CHILD MORTALITY
+     ------------------------------------------------------------ */
   useEffect(() => {
-    if (!countryISO || countryISO === null) {
+    if (!countryISO) {
       setMortalityData(null);
       return;
     }
 
     fetchChildMortality(countryISO)
-      .then(data => {
-        setMortalityData(data);
-      })
-      .catch(err => {
-        setMortalityData(null);
-      });
+      .then(setMortalityData)
+      .catch(() => setMortalityData(null));
   }, [countryISO]);
 
-  // Fetch external links when country changes
+  /* ------------------------------------------------------------
+     FETCH EXTERNAL LINKS
+     ------------------------------------------------------------ */
   useEffect(() => {
-    if (!countryISO || countryISO === null) {
+    if (!countryISO) {
       setExternalLinks(null);
       return;
     }
 
     fetchExternalLinks(countryISO)
-      .then(data => {
-        setExternalLinks(data);
-      })
-      .catch(err => {
-        setExternalLinks(null);
-      });
+      .then(setExternalLinks)
+      .catch(() => setExternalLinks(null));
   }, [countryISO]);
 
-  // Navigate to next image for a collection
+  /* ------------------------------------------------------------
+     IMAGE NAVIGATION
+     ------------------------------------------------------------ */
   const nextImage = (collection) => {
     const images = imagesByCollection[collection];
     if (!images) return;
-
-    // Cleanup current image before switching
-    if (imageRefs.current[collection]) {
-      imageRefs.current[collection].src = '';
-    }
 
     setCurrentImageIndex(prev => ({
       ...prev,
@@ -101,15 +119,9 @@ const ArtworkInfoBar = ({ countryISO, countryName, colors, mode, answerSubmitted
     }));
   };
 
-  // Navigate to previous image for a collection
   const prevImage = (collection) => {
     const images = imagesByCollection[collection];
     if (!images) return;
-
-    // Cleanup current image before switching
-    if (imageRefs.current[collection]) {
-      imageRefs.current[collection].src = '';
-    }
 
     setCurrentImageIndex(prev => ({
       ...prev,
@@ -117,12 +129,13 @@ const ArtworkInfoBar = ({ countryISO, countryName, colors, mode, answerSubmitted
     }));
   };
 
-  // Cleanup all images when country changes
+  /* ------------------------------------------------------------
+     CLEANUP IMAGE REFS
+     ------------------------------------------------------------ */
   useEffect(() => {
     return () => {
-      Object.keys(imageRefs.current).forEach(collection => {
-        if (imageRefs.current[collection]) {
-          const img = imageRefs.current[collection];
+      Object.values(imageRefs.current).forEach(img => {
+        if (img) {
           img.src = '';
           img.removeAttribute('src');
         }
@@ -131,155 +144,75 @@ const ArtworkInfoBar = ({ countryISO, countryName, colors, mode, answerSubmitted
     };
   }, [countryISO]);
 
-  // Get all available collections
+  if (!countryISO) return null;
+
   const collections = Object.keys(imagesByCollection);
-
-  // Show loading state
-  if (loading) {
-    return (
-      <div className="artwork-info-container loading">
-        <p>Loading images...</p>
-      </div>
-    );
-  }
-
-  // Show "no images" message (but still show country info and external links)
-  if (collections.length === 0) {
-    return (
-      <div
-        className="artwork-info-container"
-        style={{
-          '--card-bg': colors.cardBg,
-          '--glow-color': colors.glow,
-          '--border-color': colors.border,
-          '--text-color': colors.text
-        }}
-      >
-        <div className="artwork-info-header">
-          <h3 className="artwork-info-title">
-            {mode === 'quiz' && answerSubmitted && isCorrectAnswer ? (
-              `Correct: ${countryName || countryISO}`
-            ) : mode === 'quiz' && answerSubmitted && !isCorrectAnswer ? (
-              `Incorrect: ${countryName || countryISO}`
-            ) : (
-              countryName || countryISO
-            )}
-          </h3>
-
-          {/* Action buttons */}
-          {mode === 'quiz' && answerSubmitted && isCorrectAnswer && onNext ? (
-            <button
-              className="artwork-next-btn"
-              onClick={onNext}
-              title="Next Country"
-              aria-label="Next country"
-            >
-              Next →
-            </button>
-          ) : mode === 'quiz' && answerSubmitted && !isCorrectAnswer && onClose ? (
-            <button
-              className="artwork-next-btn"
-              onClick={onClose}
-              title="Try Again"
-              aria-label="Try again"
-            >
-              Try Again
-            </button>
-          ) : onClose ? (
-            <button
-              className="artwork-close-btn"
-              onClick={onClose}
-              title="Close"
-              aria-label="Close artwork panel"
-            >
-              ✕
-            </button>
-          ) : null}
-        </div>
-
-        {/* Show child mortality data if available */}
-        <ChildMortalitySection mortalityData={mortalityData} />
-
-        {/* Show external links if available */}
-        <ExternalLinks externalLinks={externalLinks} countryName={countryName} />
-      </div>
-    );
-  }
 
   return (
     <div
+      ref={containerRef}
       className="artwork-info-container"
       style={{
         '--card-bg': colors.cardBg,
         '--glow-color': colors.glow,
         '--border-color': colors.border,
         '--text-color': colors.text,
-        '--background-color': colors.background
+        '--background-color': colors.background,
+
+        opacity: isVisible ? 1 : 0,
+        transition: 'opacity 5s ease-in-out',
+        pointerEvents: isVisible ? 'auto' : 'none'
       }}
     >
-      <div className="artwork-info-header">
-        <h3 className="artwork-info-title">
-          {mode === 'quiz' && answerSubmitted && isCorrectAnswer ? (
-            `Correct: ${countryName || countryISO}`
-          ) : mode === 'quiz' && answerSubmitted && !isCorrectAnswer ? (
-            `Incorrect: ${countryName || countryISO}`
-          ) : (
-            countryName || countryISO
+      {loading && (
+        <div className="artwork-info-loading">
+          <p>Loading images…</p>
+        </div>
+      )}
+
+      {!loading && (
+        <>
+          <div className="artwork-info-header">
+            <h3 className="artwork-info-title">
+              {mode === 'quiz' && answerSubmitted
+                ? isCorrectAnswer
+                  ? `Correct: ${countryName || countryISO}`
+                  : `Incorrect: ${countryName || countryISO}`
+                : countryName || countryISO}
+            </h3>
+
+            {mode === 'quiz' && answerSubmitted && isCorrectAnswer && onNext ? (
+              <button className="artwork-next-btn" onClick={onNext}>
+                Next →
+              </button>
+            ) : onClose ? (
+              <button className="artwork-close-btn" onClick={onClose}>
+                ✕
+              </button>
+            ) : null}
+          </div>
+
+          {collections.length > 0 && (
+            <div className="artwork-types-list">
+              {collections.map(collection => (
+                <ImageGallery
+                  key={collection}
+                  collection={collection}
+                  images={imagesByCollection[collection]}
+                  countryName={countryName}
+                  currentIndex={currentImageIndex[collection] || 0}
+                  onPrev={() => prevImage(collection)}
+                  onNext={() => nextImage(collection)}
+                  imageRef={el => (imageRefs.current[collection] = el)}
+                />
+              ))}
+            </div>
           )}
-        </h3>
 
-        {/* Action buttons */}
-        {mode === 'quiz' && answerSubmitted && isCorrectAnswer && onNext ? (
-          <button
-            className="artwork-next-btn"
-            onClick={onNext}
-            title="Next Country"
-            aria-label="Next country"
-          >
-            Next →
-          </button>
-        ) : mode === 'quiz' && answerSubmitted && !isCorrectAnswer && onClose ? (
-          <button
-            className="artwork-next-btn"
-            onClick={onClose}
-            title="Try Again"
-            aria-label="Try again"
-          >
-            Try Again
-          </button>
-        ) : onClose ? (
-          <button
-            className="artwork-close-btn"
-            onClick={onClose}
-            title="Close"
-            aria-label="Close artwork panel"
-          >
-            ✕
-          </button>
-        ) : null}
-      </div>
-
-      {/* Image collections */}
-      <div className="artwork-types-list">
-        {collections.map(collection => (
-          <ImageGallery
-            key={collection}
-            collection={collection}
-            images={imagesByCollection[collection]}
-            countryName={countryName}
-            currentIndex={currentImageIndex[collection] || 0}
-            onPrev={() => prevImage(collection)}
-            onNext={() => nextImage(collection)}
-            imageRef={(el) => imageRefs.current[collection] = el}
-          />
-        ))}
-      </div>
-
-      {/* External Links Section */}
-      <ExternalLinks externalLinks={externalLinks} countryName={countryName} />
-
-      {/* Child Mortality Section */}
-      <ChildMortalitySection mortalityData={mortalityData} />
+          <ExternalLinks externalLinks={externalLinks} countryName={countryName} />
+          <ChildMortalitySection mortalityData={mortalityData} />
+        </>
+      )}
     </div>
   );
 };

@@ -226,7 +226,7 @@
   background-color: var(--card-bg);
   box-shadow: 0 0 20px var(--glow-color), 0 4px 6px rgba(0, 0, 0, 0.3);
   border-color: var(--border-color);
-  animation: slideIn 0.25s ease-in-out;
+  /* animation: slideIn 0.25s ease-in-out; */ /* Removed - using opacity transition instead */
 }
 
 /* Universal link styling for entire infobar - ensures all links use vintage color */

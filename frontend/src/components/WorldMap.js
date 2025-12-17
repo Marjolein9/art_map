@@ -34,6 +34,7 @@ const WorldMap = ({
   });
   const [hintsEnabled, setHintsEnabled] = useState(true);
   const [allCountries, setAllCountries] = useState([]);
+  const [showMeActivated, setShowMeActivated] = useState(false);
 
   // Handle window resize for responsive globe
   useEffect(() => {
@@ -213,9 +214,13 @@ const WorldMap = ({
       setHintNeighborsM49([]);
       hintCountryRef.current = null; // Reset hint tracking
       setClickedCountry(null); // Clear visual feedback
+      setShowMeActivated(false); // Reset Show Me
     }
     prevTargetCountryRef.current = targetCountry;
   }, [targetCountry]);
+
+  // Don't show hints when Show Me is activated
+  const activeHints = showMeActivated ? [] : hintNeighborsM49;
 
   // Rotate to region when it changes
   useEffect(() => {
@@ -247,7 +252,7 @@ const WorldMap = ({
         {
           lat: 30,
           lng: 45,
-          altitude: 1.3 // Quiz zoom level
+          altitude: 1 // Quiz zoom level
         },
         1000 // 1 second transition
       );
@@ -296,25 +301,36 @@ const WorldMap = ({
   const layeredPaths = useMemo(() => {
     const paths = [];
 
-    // First layer: All countries with normal styling
+    // First layer: All countries with normal styling (100% opacity black borders)
     countryPaths.forEach(path => {
-      paths.push({ ...path, isHintOverlay: false });
+      paths.push({ ...path, isHintOverlay: false, isShowMeOverlay: false });
     });
 
     // Second layer: Only hint countries with green borders (rendered on top)
+    // Don't show hints when Show Me is activated
     countryPaths.forEach(path => {
       const m49 = path.id || path.properties?.id;
       // Ensure M49 is padded to 3 digits for consistent comparison
       const paddedM49 = m49 ? String(m49).padStart(3, '0') : null;
-      const isHint = paddedM49 && hintNeighborsM49.includes(paddedM49);
+      const isHint = paddedM49 && activeHints.includes(paddedM49);
 
       if (isHint) {
-        paths.push({ ...path, isHintOverlay: true });
+        paths.push({ ...path, isHintOverlay: true, isShowMeOverlay: false });
       }
     });
 
+    // Third layer: Target country green overlay when Show Me is activated (rendered on top of everything)
+    if (showMeActivated && targetCountry) {
+      countryPaths.forEach(path => {
+        const iso3 = getCountryIsoCode(path);
+        if (iso3 === targetCountry) {
+          paths.push({ ...path, isHintOverlay: false, isShowMeOverlay: true });
+        }
+      });
+    }
+
     return paths;
-  }, [countryPaths, hintNeighborsM49]);
+  }, [countryPaths, activeHints, showMeActivated, targetCountry]);
 
   const zoomIn = () => {
     if (!globeEl.current) return;
@@ -345,6 +361,58 @@ const WorldMap = ({
     if (selectedCountry) {
       onManualCountrySelect(selectedCountry);
     }
+  };
+
+  // Calculate centroid of a polygon
+  const calculateCentroid = (coordinates) => {
+    let latSum = 0;
+    let lngSum = 0;
+    let count = 0;
+
+    const processCoords = (coords) => {
+      if (Array.isArray(coords[0]) && Array.isArray(coords[0][0])) {
+        // MultiPolygon or nested structure
+        coords.forEach(c => processCoords(c));
+      } else if (Array.isArray(coords[0]) && typeof coords[0][0] === 'number') {
+        // Array of [lng, lat] points
+        coords.forEach(([lng, lat]) => {
+          lngSum += lng;
+          latSum += lat;
+          count++;
+        });
+      }
+    };
+
+    processCoords(coordinates);
+    return count > 0 ? { lat: latSum / count, lng: lngSum / count } : null;
+  };
+
+  // Handle "Show Me" button click
+  const handleShowMe = () => {
+    if (!targetCountry || !globeEl.current) return;
+
+    // Find the target country in the features
+    const targetFeature = countries.features.find(f => getCountryIsoCode(f) === targetCountry);
+
+    if (targetFeature) {
+      // Calculate centroid
+      const centroid = calculateCentroid(targetFeature.geometry.coordinates);
+
+      if (centroid) {
+        // Center the globe on the country
+        globeEl.current.pointOfView(
+          {
+            lat: centroid.lat,
+            lng: centroid.lng,
+            altitude: .5
+          },
+          1000 // 1 second transition
+        );
+      }
+    }
+
+    // Activate coloring
+    setShowMeActivated(true);
   };
 
   return (
@@ -380,6 +448,11 @@ const WorldMap = ({
           pathPointLat={p => p[1]}
           pathPointLng={p => p[0]}
           pathColor={d => {
+            // Check if this is a show me overlay layer (green borders on top)
+            if (d.isShowMeOverlay) {
+              return COLORS.correct; // Green color for show me overlay
+            }
+
             // Check if this is a hint overlay layer (green borders on top)
             if (d.isHintOverlay) {
               return COLORS.correct; // Green color for hint overlays
@@ -397,14 +470,20 @@ const WorldMap = ({
 
             if (d === hoverD) return COLORS.selected;
 
-            // All countries (including hints) get black borders in base layer with 100% opacity
+            // All countries get black borders in base layer with 100% opacity
             return '#000';
           }}
           pathStroke={d => {
+            // Show Me overlay layer gets extra thick green borders
+            if (d.isShowMeOverlay) {
+              return 4.0;
+            }
+
             // Hint overlay layer gets extra thick green borders
             if (d.isHintOverlay) {
               return 4.0;
             }
+
             // Base layer: normal thickness black borders (100% opacity)
             return 2.0;
           }}
@@ -489,6 +568,19 @@ const WorldMap = ({
                   title="Next Country"
                 >
                   Next
+                </button>
+
+                <button
+                  onClick={handleShowMe}
+                  className="globe-control-btn-small"
+                  title="Show Me"
+                  disabled={showMeActivated}
+                  style={{
+                    opacity: showMeActivated ? 0.5 : 1,
+                    cursor: showMeActivated ? 'not-allowed' : 'pointer'
+                  }}
+                >
+                  {showMeActivated ? 'Shown!' : 'Show Me'}
                 </button>
 
                 {/* Hint Toggle */}

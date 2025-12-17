@@ -3,7 +3,7 @@
   "countries": [
     {
       "region": 142,
-      "subRegion": 34,
+      "subRegion": 145,
       "name": "Afghanistan",
       "m49code": 4,
       "alpha2": "AF",
@@ -2716,7 +2716,7 @@
     },
     {
       "region": 19,
-      "subRegion": 419,
+      "subRegion": 5,
       "intermediateRegion": 5,
       "name": "Paraguay",
       "m49code": 600,

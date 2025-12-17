@@ -91,7 +91,7 @@ SUBREGION_NAMES = {
     13: "Central America",
     5: "South America",
     21: "North America",
-    419: "Caribbean",  # Latin America and the Caribbean
+    419: "North South America",  # Latin America and the Caribbean
 
     # Oceania subregions
     53: "Oceania",  # Australia and New Zealand
