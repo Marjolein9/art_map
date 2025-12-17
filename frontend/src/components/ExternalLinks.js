@@ -21,10 +21,10 @@ const ExternalLinks = ({ externalLinks, countryName }) => {
 
   return (
     <div className="external-links-section">
-      <h4 className="external-links-title">External Resources</h4>
+      <h4 className="section-header section-header--external">External Resources</h4>
       <div className="external-links-list">
         {externalLinks.gapminder_url?.trim() && (
-          <div className="external-link">
+          <div className="card-item card-item--padded">
             <a
               href={externalLinks.gapminder_url}
               target="_blank"
@@ -36,7 +36,7 @@ const ExternalLinks = ({ externalLinks, countryName }) => {
           </div>
         )}
         {externalLinks.tasteatlas_url?.trim() && (
-          <div className="external-link">
+          <div className="card-item card-item--padded">
             <a
               href={externalLinks.tasteatlas_url}
               target="_blank"
@@ -52,7 +52,7 @@ const ExternalLinks = ({ externalLinks, countryName }) => {
             href={externalLinks.extra_links}
             target="_blank"
             rel="noopener noreferrer"
-            className="external-link"
+            className="card-item card-item--padded"
           >
             Additional Links
           </a>

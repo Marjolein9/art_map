@@ -174,7 +174,7 @@ const ArtworkInfoBar = ({
       {!loading && (
         <>
           <div className="artwork-info-header">
-            <h3 className="artwork-info-title">
+            <h3 className="section-header section-header--main">
               {mode === 'quiz' && answerSubmitted
                 ? isCorrectAnswer
                   ? `Correct: ${countryName || countryISO}`
@@ -183,7 +183,7 @@ const ArtworkInfoBar = ({
             </h3>
 
             {mode === 'quiz' && answerSubmitted && isCorrectAnswer && onNext ? (
-              <button className="artwork-next-btn" onClick={onNext}>
+              <button className="action-button" onClick={onNext}>
                 Next →
               </button>
             ) : onClose ? (

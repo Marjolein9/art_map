@@ -1,15 +1,38 @@
 /**
  * Component Styles
- * 
+ *
  * This file contains all styles for the application components.
  * Moved from inline styles to centralized CSS for better maintainability.
- * 
+ *
  * Benefits of CSS files over inline styles:
  * 1. Reusability - Define once, use many times
  * 2. Maintainability - Easy to find and update styles
  * 3. Performance - Browser can cache CSS files
  * 4. Separation of concerns - Structure (HTML/JSX) separate from styling
  */
+
+/* ==============================================================================
+   CSS VARIABLES
+   ============================================================================== */
+:root {
+  /* Text colors with opacity levels */
+  --text-primary: rgba(229, 229, 229, 0.7);
+  --text-secondary: rgba(229, 229, 229, 0.6);
+  --text-tertiary: rgba(229, 229, 229, 0.5);
+
+  /* Background colors */
+  --bg-brown-dark: rgb(87, 80, 72);
+  --bg-overlay-light: rgba(0, 0, 0, 0.2);
+  --bg-overlay-medium: rgba(0, 0, 0, 0.35);
+  --bg-overlay-heavy: rgba(0, 0, 0, 0.5);
+
+  /* Link colors */
+  --link-color: #8fb3c9;
+  --link-hover: #b0d4e8;
+  --link-underline: rgba(143, 179, 201, 0.4);
+  --link-shadow: rgba(143, 179, 201, 0.3);
+  --link-hover-shadow: rgba(176, 212, 232, 0.5);
+}
 
 /* ==============================================================================
    APP LAYOUT
@@ -210,6 +233,109 @@ body {
 
 @import url('https://fonts.googleapis.com/css2?family=Roboto+Condensed:wght@300;400;700&family=Roboto:wght@100;300;400;700;900&display=swap');
 
+/* ==============================================================================
+   CONSOLIDATED UTILITY CLASSES
+   ============================================================================== */
+
+/* Consolidated action button (replaces .artwork-next-btn and .artwork-try-again-btn) */
+.action-button {
+  background-color: rgba(139, 115, 85, 0.8);
+  color: #f5f5dc;
+  border: 2px solid rgba(139, 115, 85, 1);
+  border-radius: 20px;
+  padding: 8px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-weight: bold;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+  line-height: 1;
+  font-family: 'Roboto', sans-serif;
+}
+
+.action-button:hover {
+  background-color: rgba(139, 115, 85, 1);
+  transform: scale(1.05);
+  box-shadow: 0 0 15px rgba(139, 115, 85, 0.5);
+}
+
+/* Consolidated section header (replaces .artwork-info-title, .artwork-type-title, .external-links-title) */
+.section-header {
+  margin: 0;
+  font-family: 'Roboto Condensed', Helvetica, sans-serif;
+  color: var(--text-primary);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+/* Main title variant - larger, centered */
+.section-header--main {
+  font-size: 18pt;
+  text-align: center;
+  font-weight: 300;
+  letter-spacing: 1.5px;
+  color: var(--text-color);
+  flex: 1;
+}
+
+/* Collection title variant - bold, with border */
+.section-header--collection {
+  font-weight: 600;
+}
+
+/* External resources title variant - centered, margin */
+.section-header--external {
+  margin: 0 0 15px 0;
+  font-weight: 600;
+  text-align: center;
+}
+
+/* Consolidated info box (replaces .mortality-context, .mortality-credits, .artwork-caption) */
+.info-box {
+  background-color: var(--bg-brown-dark);
+  padding: 12px;
+  border-radius: 4px;
+  color: var(--text-primary);
+}
+
+/* Consolidated card item (replaces .external-link and .artwork-item) */
+.card-item {
+  border-radius: 8px;
+  overflow: hidden;
+  transition: transform 0.25s ease-in-out, box-shadow 0.25s ease-in-out, opacity 0.25s ease-in-out;
+  cursor: pointer;
+  opacity: 0.8;
+  box-sizing: border-box;
+  background-color: var(--bg-overlay-medium);
+  border: 2px solid var(--border-color);
+}
+
+.card-item:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 0 20px var(--glow-color), 0 4px 12px rgba(0, 0, 0, 0.5);
+  opacity: 1;
+}
+
+/* Modifier for cards that need padding */
+.card-item--padded {
+  padding: 12px 16px;
+  display: block;
+  color: var(--text-primary);
+  font-weight: 500;
+  text-align: center;
+  transition: all 0.3s ease;
+}
+
+.card-item--padded:hover {
+  background-color: var(--bg-overlay-heavy);
+  border-color: var(--glow-color);
+  color: rgba(229, 229, 229, 0.9);
+  transform: translateY(-2px);
+  box-shadow: 0 0 15px var(--glow-color);
+}
+
 .artwork-info-container {
   border-radius: 8px;
   padding: 15px;
@@ -228,17 +354,17 @@ body {
 
 /* Universal link styling for entire infobar - ensures all links use vintage color */
 .artwork-info-container a {
-  color: #8fb3c9;
+  color: var(--link-color);
   text-decoration: underline;
-  text-decoration-color: rgba(143, 179, 201, 0.4);
+  text-decoration-color: var(--link-underline);
   transition: all 0.2s ease;
-  text-shadow: 0 0 8px rgba(143, 179, 201, 0.3);
+  text-shadow: 0 0 8px var(--link-shadow);
 }
 
 .artwork-info-container a:hover {
-  color: #b0d4e8;
-  text-decoration-color: #b0d4e8;
-  text-shadow: 0 0 12px rgba(176, 212, 232, 0.5);
+  color: var(--link-hover);
+  text-decoration-color: var(--link-hover);
+  text-shadow: 0 0 12px var(--link-hover-shadow);
 }
 
 /* Custom scrollbar for better visibility */
@@ -271,18 +397,6 @@ body {
   gap: 15px;
 }
 
-.artwork-info-title {
-  margin: 0;
-  font-size: 18pt;
-  text-align: center;
-  text-transform: uppercase;
-  font-family: 'Roboto Condensed', Helvetica, sans-serif;
-  font-weight: 300;
-  letter-spacing: 1.5px;
-  color: var(--text-color);
-  flex: 1;
-}
-
 /* Close button */
 .artwork-close-btn {
   background-color: rgba(0, 0, 0, 0.3);
@@ -307,54 +421,6 @@ body {
   color: var(--background-color, #000);
   transform: scale(1.1) rotate(90deg);
   box-shadow: 0 0 10px var(--glow-color);
-}
-
-/* Next button (quiz mode - correct answer) */
-.artwork-next-btn {
-  background-color: rgba(139, 115, 85, 0.8);
-  color: #f5f5dc;
-  border: 2px solid rgba(139, 115, 85, 1);
-  border-radius: 20px;
-  padding: 8px 20px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  font-weight: bold;
-  transition: all 0.2s ease;
-  flex-shrink: 0;
-  line-height: 1;
-  font-family: 'Roboto', sans-serif;
-}
-
-.artwork-next-btn:hover {
-  background-color: rgba(139, 115, 85, 1);
-  transform: scale(1.05);
-  box-shadow: 0 0 15px rgba(139, 115, 85, 0.5);
-}
-
-/* Try Again button (quiz mode - incorrect answer) */
-.artwork-try-again-btn {
-  background-color: rgba(139, 115, 85, 0.8);
-  color: #f5f5dc;
-  border: 2px solid rgba(139, 115, 85, 1);
-  border-radius: 20px;
-  padding: 8px 20px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  font-weight: bold;
-  transition: all 0.2s ease;
-  flex-shrink: 0;
-  line-height: 1;
-  font-family: 'Roboto', sans-serif;
-}
-
-.artwork-try-again-btn:hover {
-  background-color: rgba(139, 115, 85, 1);
-  transform: scale(1.05);
-  box-shadow: 0 0 15px rgba(139, 115, 85, 0.5);
 }
 
 .artwork-loading,
@@ -398,23 +464,14 @@ body {
 .artwork-type-section {
   border-radius: 8px;
   overflow: hidden;
-  background-color: rgba(0, 0, 0, 0.2);
+  background-color: var(--bg-overlay-light);
   border: 1px solid var(--border-color);
 }
 
 .artwork-type-header {
   padding: 12px 15px;
-  background-color: rgb(87, 80, 72);
+  background-color: var(--bg-brown-dark);
   border-bottom: 1px solid var(--border-color);
-}
-
-.artwork-type-title {
-  margin: 0;
-  font-weight: 600;
-  color: rgba(229, 229, 229, 0.7);
-  font-family: 'Roboto Condensed', Helvetica, sans-serif;
-  text-transform: uppercase;
-  letter-spacing: 1px;
 }
 
 .artwork-type-count {
@@ -427,22 +484,15 @@ body {
   margin-top: 4px;
   font-weight: 400;
   letter-spacing: 0.5px;
-  color: rgba(229, 229, 229, 0.7);
+  color: var(--text-primary);
 }
 
 a.collection-subtitle {
-  color: #8fb3c9;
-  text-decoration: underline;
-  text-decoration-color: rgba(143, 179, 201, 0.4);
   font-weight: 500;
   transition: all 0.2s ease;
-  text-shadow: 0 0 8px rgba(143, 179, 201, 0.3);
 }
 
 a.collection-subtitle:hover {
-  color: #b0d4e8;
-  text-decoration-color: #b0d4e8;
-  text-shadow: 0 0 12px rgba(176, 212, 232, 0.5);
   transform: translateX(2px);
 }
 
@@ -455,23 +505,6 @@ a.collection-subtitle:hover {
   display: flex;
   flex-direction: column;
   gap: 20px;
-}
-
-.artwork-item {
-  border-radius: 8px;
-  overflow: hidden;
-  transition: transform 0.25s ease-in-out, box-shadow 0.25s ease-in-out, opacity 0.25s ease-in-out;
-  cursor: pointer;
-  opacity: 0.8;
-  box-sizing: border-box;
-  background-color: rgba(0, 0, 0, 0.4);
-  border: 2px solid var(--border-color);
-}
-
-.artwork-item:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 0 20px var(--glow-color), 0 4px 12px rgba(0, 0, 0, 0.5);
-  opacity: 1;
 }
 
 .artwork-image-container {
@@ -547,103 +580,55 @@ a.collection-subtitle:hover {
   font-family: 'Roboto', Helvetica, sans-serif;
 }
 
-.artwork-details a {
-  color: #8fb3c9;
-  text-decoration: underline;
-  text-decoration-color: rgba(143, 179, 201, 0.4);
-  transition: all 0.2s ease;
-  font-weight: 500;
-  text-shadow: 0 0 8px rgba(143, 179, 201, 0.3);
-}
-
-.artwork-details a:hover {
-  color: #b0d4e8;
-  text-decoration-color: #b0d4e8;
-  text-shadow: 0 0 12px rgba(176, 212, 232, 0.5);
-}
-
 .artwork-artist {
   font-weight: 700;
   margin-bottom: 5px;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  color: rgba(229, 229, 229, 0.7);
+  color: var(--text-primary);
   font-family: 'Roboto Condensed', Helvetica, sans-serif;
 }
 
 .artwork-title {
-  color: rgba(229, 229, 229, 0.7);
+  color: var(--text-primary);
   word-wrap: break-word;
   white-space: normal;
   margin-bottom: 10px;
 }
 
 .artwork-location {
-  color: rgba(229, 229, 229, 0.6);
+  color: var(--text-secondary);
   margin-top: 5px;
   word-wrap: break-word;
   white-space: normal;
 }
 
 .artwork-date {
-  color: rgba(229, 229, 229, 0.5);
+  color: var(--text-tertiary);
   margin-top: 5px;
 }
 
 .artwork-dates {
-  color: rgba(229, 229, 229, 0.5);
+  color: var(--text-tertiary);
   margin-top: 5px;
 }
 
 .artwork-source {
-  color: rgba(229, 229, 229, 0.7);
+  color: var(--text-primary);
   margin-top: 5px;
 }
 
 .artwork-article {
-  color: rgba(229, 229, 229, 0.6);
+  color: var(--text-secondary);
   margin-top: 8px;
   word-wrap: break-word;
   white-space: normal;
 }
 
 .artwork-culture {
-  color: rgba(229, 229, 229, 0.5);
+  color: var(--text-tertiary);
   margin-top: 5px;
-}
-
-.artwork-caption {
-  background-color: rgb(87, 80, 72);
-  padding: 12px;
-  border-radius: 4px;
-  margin-top: 8px;
-}
-
-/* All hyperlinks in artwork caption area */
-.artwork-caption a,
-.artwork-title a,
-.artwork-location a,
-.artwork-source a,
-.artwork-article a,
-.artwork-artist a {
-  color: #8fb3c9;
-  text-decoration: underline;
-  text-decoration-color: rgba(143, 179, 201, 0.4);
-  transition: all 0.2s ease;
-  font-weight: 500;
-  text-shadow: 0 0 8px rgba(143, 179, 201, 0.3);
-}
-
-.artwork-caption a:hover,
-.artwork-title a:hover,
-.artwork-location a:hover,
-.artwork-source a:hover,
-.artwork-article a:hover,
-.artwork-artist a:hover {
-  color: #b0d4e8;
-  text-decoration-color: #b0d4e8;
-  text-shadow: 0 0 12px rgba(176, 212, 232, 0.5);
 }
 
 .artwork-local-badge {
@@ -682,7 +667,7 @@ a.collection-subtitle:hover {
   margin-top: 20px;
   padding-top: 20px;
   border-top: 1px solid rgba(175, 225, 250, 0.3);
-  color: rgba(229, 229, 229, 0.7);
+  color: var(--text-primary);
   font-size: 12pt;
   font-family: 'Roboto', Helvetica, sans-serif;
 }
@@ -1093,7 +1078,7 @@ input:checked + .toggle-slider:before {
   padding: 20px;
   border-top: 1px solid var(--border-color);
   margin-top: 10px;
-  background-color: rgba(0, 0, 0, 0.2);
+  background-color: var(--bg-overlay-light);
   border-radius: 8px;
 }
 
@@ -1109,43 +1094,14 @@ input:checked + .toggle-slider:before {
   line-height: 1.6;
 }
 
-/* Mortality context text */
-.mortality-context {
-  background-color: rgb(87, 80, 72);
-  padding: 12px;
-  border-radius: 4px;
+/* Additional mortality section styling */
+.info-box {
   margin-top: 16px;
   line-height: 1.6;
-  color: rgba(229, 229, 229, 0.7);
 }
 
-.mortality-context p {
+.info-box p {
   margin: 0 0 10px 0;
-  color: rgba(229, 229, 229, 0.7);
-}
-
-/* Mortality credits/attribution */
-.mortality-credits {
-  margin-top: 12px;
-  color: rgba(229, 229, 229, 0.7);
-  background-color: rgb(87, 80, 72);
-  padding: 12px;
-  border-radius: 4px;
-}
-
-/* All links in mortality section */
-.mortality-section a,
-.mortality-credits a,
-.mortality-context a {
-  color: inherit;
-  text-decoration: underline;
-  transition: all 0.2s ease;
-}
-
-.mortality-section a:hover,
-.mortality-credits a:hover,
-.mortality-context a:hover {
-  opacity: 0.8;
 }
 
 .mortality-credits-item {
@@ -1160,18 +1116,8 @@ input:checked + .toggle-slider:before {
   padding: 20px;
   border-top: 2px solid var(--border-color);
   margin-top: 20px;
-  background-color: rgb(87, 80, 72);
+  background-color: var(--bg-brown-dark);
   border-radius: 8px;
-}
-
-.external-links-title {
-  margin: 0 0 15px 0;
-  font-weight: 600;
-  color: rgba(229, 229, 229, 0.7);
-  font-family: 'Roboto Condensed', Helvetica, sans-serif;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  text-align: center;
 }
 
 .external-links-list {
@@ -1180,34 +1126,3 @@ input:checked + .toggle-slider:before {
   gap: 12px;
 }
 
-.external-link {
-  display: block;
-  padding: 12px 16px;
-  background-color: rgba(0, 0, 0, 0.3);
-  border: 2px solid var(--border-color);
-  border-radius: 8px;
-  color: rgba(229, 229, 229, 0.7);
-  font-weight: 500;
-  text-align: center;
-  transition: all 0.3s ease;
-}
-
-.external-link:hover {
-  background-color: rgba(0, 0, 0, 0.5);
-  border-color: var(--glow-color);
-  color: rgba(229, 229, 229, 0.9);
-  transform: translateY(-2px);
-  box-shadow: 0 0 15px var(--glow-color);
-}
-
-.external-link a {
-  color: inherit;
-  text-decoration: underline;
-  text-decoration-color: rgba(143, 179, 201, 0.4);
-  transition: all 0.2s ease;
-  font-weight: 600;
-}
-
-.external-link a:hover {
-  text-decoration-color: #8fb3c9;
-}

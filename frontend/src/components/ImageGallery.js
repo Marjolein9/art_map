@@ -235,7 +235,7 @@ const ImageGallery = ({
       {/* Collection Header */}
       <div className="artwork-type-header">
         <div>
-          <h4 className="artwork-type-title">
+          <h4 className="section-header section-header--collection">
             {getCollectionTitle(collection)}
           </h4>
           {getCollectionSubtitle(collection)}
@@ -244,7 +244,7 @@ const ImageGallery = ({
 
       {/* Collection Content */}
       <div className="artwork-type-content">
-          <div className="artwork-item">
+          <div className="card-item">
             <div
               className="artwork-image-container"
               ref={containerRef}
@@ -337,7 +337,7 @@ const ImageGallery = ({
             </div>
 
             {/* Image metadata/caption */}
-            <div className="artwork-caption">
+            <div className="info-box">
               {renderCaption(currentImage, collection)}
             </div>
           </div>
