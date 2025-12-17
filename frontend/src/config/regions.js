@@ -16,31 +16,30 @@ export const REGION_VIEWS = {
   'Sub-Saharan Africa': { lat: -5, lng: 20, altitude: 1.3 }, // macro region
 
   // Asia subregions
-  'Eastern Asia': { lat: 35, lng: 110, altitude: 1.2 },
-  'Southeast Asia': { lat: 10, lng: 105, altitude: 1.2 },
-  'Southern Asia': { lat: 23, lng: 80, altitude: 1.2 },
-  'Central Asia': { lat: 45, lng: 65, altitude: 1.2 },
-  'Western Asia': { lat: 30, lng: 45, altitude: 0.75 }, // Middle East
+  'Eastern Asia': { lat: 35, lng: 110, altitude: 1.0 },
+  'Southeast Asia': { lat: 10, lng: 105, altitude: 1.0 },
+  'Southern Asia': { lat: 23, lng: 80, altitude: 1.0 },
+  'Central Asia': { lat: 45, lng: 65, altitude: 1.0 },
+  'Western Asia': { lat: 30, lng: 45, altitude: 1.0 }, // Middle East
 
   // Europe subregions
-  'Western Europe': { lat: 50, lng: 5, altitude: 1.2 },
-  'Eastern Europe': { lat: 52, lng: 30, altitude: 1.2 },
-  'Northern Europe': { lat: 62, lng: 15, altitude: 1.2 },
-  'Southern Europe': { lat: 42, lng: 15, altitude: 1.2 },
-  'Central Europe': { lat: 50, lng: 15, altitude: 1.2 },
-
+  'Western Europe': { lat: 50, lng: 5, altitude: 1.0 },
+  'Eastern Europe': { lat: 52, lng: 30, altitude: 1.0 },
+  'Northern Europe': { lat: 62, lng: 15, altitude: 1.0 },
+  'Southern Europe': { lat: 42, lng: 15, altitude: 1.0 },
+  'Central Europe': { lat: 50, lng: 15, altitude: 1.0 },
   // Americas subregions
-  'Northern America': { lat: 50, lng: -100, altitude: 1.2 },
-  'Central America': { lat: 15, lng: -90, altitude: 1.2 },
-  'Caribbean': { lat: 20, lng: -75, altitude: 0.75 },
-  'South America': { lat: -15, lng: -60, altitude: 1 },
-  'Latin America and the Caribbean': { lat: -5, lng: -60, altitude: 1.3 }, // macro region
+  'Northern America': { lat: 50, lng: -100, altitude: 1.0 },
+  'Central America': { lat: 15, lng: -90, altitude: 1.0 },
+  'Caribbean': { lat: 20, lng: -75, altitude: 1.0 },
+  'South America': { lat: -15, lng: -60, altitude: 1.0 },
+  'Latin America and the Caribbean': { lat: 15, lng: -88, altitude: 1.0 }, // macro region
 
   // Oceania subregions
-  'Australia and New Zealand': { lat: -30, lng: 145, altitude: 1.2 },
-  'Melanesia': { lat: -15, lng: 165, altitude: 1.2 },
-  'Micronesia': { lat: 7, lng: 160, altitude: 1.2 },
-  'Polynesia': { lat: -15, lng: -155, altitude: 1.2 },
+  'Australia and New Zealand': { lat: -30, lng: 145, altitude: 1.0  },
+  'Melanesia': { lat: -15, lng: 165, altitude: 1.0  },
+  'Micronesia': { lat: 7, lng: 160, altitude: 1.0  },
+  'Polynesia': { lat: -15, lng: -155, altitude: 1.0  },
 
   // Fallback for broad continents (if subregion not available)
   'Africa': { lat: 0, lng: 20, altitude: 1.5 },
