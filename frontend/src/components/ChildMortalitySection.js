@@ -31,7 +31,8 @@ const ChildMortalitySection = ({ mortalityData }) => {
 
       <div className="info-box">
         <p>
-          The events of 2024 and 2025 are not reflected in the numbers above. To learn more about the kind of work that reduced the child mortality rate over the last few decades, please watch{' '}
+          The events of 2024 and 2025 are not reflected in the numbers above.</p>
+          <p> To learn more about the kind of work that reduced the child mortality rate over the last few decades, please watch{' '}
           <a
             href="https://www.pih.org/bending-the-arc"
             target="_blank"
@@ -39,13 +40,13 @@ const ChildMortalitySection = ({ mortalityData }) => {
           >
             Bending the Arc
           </a>
-          {' '}(Partners in Health) and read{' '}
+          {' '}(Partners in Health) and read this {' '}
           <a
             href="https://www.thelancet.com/journals/lancet/article/PIIS0140-6736(25)01186-9/fulltext"
             target="_blank"
             rel="noopener noreferrer"
           >
-            this Lancet article
+          Lancet article
           </a>
           .
         </p>
@@ -77,7 +78,7 @@ const ChildMortalitySection = ({ mortalityData }) => {
             target="_blank"
             rel="noopener noreferrer"
           >
-            Read more
+            Read more about child mortality
           </a>
         </div>
       </div>

@@ -5,33 +5,33 @@ DZA,DZ,Algeria,Algeria,12,Africa,Northern Africa,True
 ASM,AS,American Samoa,American Samoa,16,Oceania,Polynesia,False
 AND,AD,Andorra,Andorra,20,Europe,Southern Europe,True
 AGO,AO,Angola,Angola,24,Africa,Middle Africa,True
-AIA,AI,Anguilla,Anguilla,660,Americas,Latin America and the Caribbean,False
+AIA,AI,Anguilla,Anguilla,660,Americas,Caribbean,False
 ATA,AQ,Antarctica,Antarctica,10,World,World,False
-ATG,AG,Antigua and Barbuda,Antigua and Barbuda,28,Americas,Latin America and the Caribbean,True
-ARG,AR,Argentina,Argentina,32,Americas,Latin America and the Caribbean,True
+ATG,AG,Antigua and Barbuda,Antigua and Barbuda,28,Americas,Caribbean,True
+ARG,AR,Argentina,Argentina,32,Americas,South America,True
 ARM,AM,Armenia,Armenia,51,Asia,Western Asia,True
-ABW,AW,Aruba,Aruba,533,Americas,Latin America and the Caribbean,False
+ABW,AW,Aruba,Aruba,533,Americas,Caribbean,False
 AUS,AU,Australia,Australia,36,Oceania,Australia and New Zealand,True
 AUT,AT,Austria,Austria,40,Europe,Western Europe,True
 AZE,AZ,Azerbaijan,Azerbaijan,31,Asia,Western Asia,True
-BHS,BS,Bahamas,Bahamas,44,Americas,Latin America and the Caribbean,True
+BHS,BS,Bahamas,Bahamas,44,Americas,Caribbean,True
 BHR,BH,Bahrain,Bahrain,48,Asia,Western Asia,True
 BGD,BD,Bangladesh,Bangladesh,50,Asia,Southern Asia,True
-BRB,BB,Barbados,Barbados,52,Americas,Latin America and the Caribbean,True
+BRB,BB,Barbados,Barbados,52,Americas,Caribbean,True
 BLR,BY,Belarus,Belarus,112,Europe,Eastern Europe,True
 BEL,BE,Belgium,Belgium,56,Europe,Western Europe,True
-BLZ,BZ,Belize,Belize,84,Americas,Latin America and the Caribbean,True
+BLZ,BZ,Belize,Belize,84,Americas,Central America,True
 BEN,BJ,Benin,Benin,204,Africa,Western Africa,True
 BMU,BM,Bermuda,Bermuda,60,Americas,Northern America,False
 BTN,BT,Bhutan,Bhutan,64,Asia,Southern Asia,True
-BOL,BO,Bolivia (Plurinational State of),Bolivia,68,Americas,Latin America and the Caribbean,True
-BES,BQ,"Bonaire, Sint Eustatius and Saba","Bonaire, Sint Eustatius and Saba",535,Americas,Latin America and the Caribbean,False
+BOL,BO,Bolivia (Plurinational State of),Bolivia,68,Americas,South America,True
+BES,BQ,"Bonaire, Sint Eustatius and Saba","Bonaire, Sint Eustatius and Saba",535,Americas,Caribbean,False
 BIH,BA,Bosnia and Herzegovina,Bosnia and Herzegovina,70,Europe,Southern Europe,True
 BWA,BW,Botswana,Botswana,72,Africa,Southern Africa,True
-BVT,BV,Bouvet Island,Bouvet Island,74,Americas,Latin America and the Caribbean,False
-BRA,BR,Brazil,Brazil,76,Americas,Latin America and the Caribbean,True
+BVT,BV,Bouvet Island,Bouvet Island,74,Americas,South America,False
+BRA,BR,Brazil,Brazil,76,Americas,South America,True
 IOT,IO,British Indian Ocean Territory,British Indian Ocean Territory,86,Africa,Eastern Africa,False
-VGB,VG,British Virgin Islands,"Virgin Islands, British",92,Americas,Latin America and the Caribbean,False
+VGB,VG,British Virgin Islands,"Virgin Islands, British",92,Americas,Caribbean,False
 BRN,BN,Brunei Darussalam,Brunei Darussalam,96,Asia,Southeast Asia,True
 BGR,BG,Bulgaria,Bulgaria,100,Europe,Eastern Europe,True
 BFA,BF,Burkina Faso,Burkina Faso,854,Africa,Western Africa,True
@@ -40,23 +40,23 @@ CPV,CV,Cabo Verde,Cabo Verde,132,Africa,Western Africa,True
 KHM,KH,Cambodia,Cambodia,116,Asia,Southeast Asia,True
 CMR,CM,Cameroon,Cameroon,120,Africa,Middle Africa,True
 CAN,CA,Canada,Canada,124,Americas,Northern America,True
-CYM,KY,Cayman Islands,Cayman Islands,136,Americas,Latin America and the Caribbean,False
+CYM,KY,Cayman Islands,Cayman Islands,136,Americas,Caribbean,False
 CAF,CF,Central African Republic,Central African Republic,140,Africa,Middle Africa,True
 TCD,TD,Chad,Chad,148,Africa,Middle Africa,True
-CHL,CL,Chile,Chile,152,Americas,Latin America and the Caribbean,True
+CHL,CL,Chile,Chile,152,Americas,South America,True
 CHN,CN,China,China,156,Asia,Eastern Asia,True
 HKG,HK,"China, Hong Kong Special Administrative Region",Hong Kong,344,Asia,Eastern Asia,False
 MAC,MO,"China, Macao Special Administrative Region",Macao,446,Asia,Eastern Asia,False
 CXR,CX,Christmas Island,Christmas Island,162,Oceania,Australia and New Zealand,False
 CCK,CC,Cocos (Keeling) Islands,Cocos (Keeling) Islands,166,Oceania,Australia and New Zealand,False
-COL,CO,Colombia,Colombia,170,Americas,Latin America and the Caribbean,True
+COL,CO,Colombia,Colombia,170,Americas,South America,True
 COM,KM,Comoros,Comoros,174,Africa,Eastern Africa,True
 COG,CG,Congo,Republic of the Congo,178,Africa,Middle Africa,True
 COK,CK,Cook Islands,Cook Islands,184,Oceania,Polynesia,False
-CRI,CR,Costa Rica,Costa Rica,188,Americas,Latin America and the Caribbean,True
+CRI,CR,Costa Rica,Costa Rica,188,Americas,Central America,True
 HRV,HR,Croatia,Croatia,191,Europe,Southern Europe,True
-CUB,CU,Cuba,Cuba,192,Americas,Latin America and the Caribbean,True
-CUW,CW,Curaçao,Curaçao,531,Americas,Latin America and the Caribbean,False
+CUB,CU,Cuba,Cuba,192,Americas,Caribbean,True
+CUW,CW,Curaçao,Curaçao,531,Americas,Caribbean,False
 CYP,CY,Cyprus,Cyprus,196,Asia,Western Asia,True
 CZE,CZ,Czechia,Czechia,203,Europe,Eastern Europe,True
 CIV,CI,Côte d’Ivoire,Ivory Coast,384,Africa,Western Africa,True
@@ -64,22 +64,22 @@ PRK,KP,Democratic People's Republic of Korea,North Korea,408,Asia,Eastern Asia,T
 COD,CD,Democratic Republic of the Congo,Democratic Republic of the Congo,180,Africa,Middle Africa,True
 DNK,DK,Denmark,Denmark,208,Europe,Northern Europe,True
 DJI,DJ,Djibouti,Djibouti,262,Africa,Eastern Africa,True
-DMA,DM,Dominica,Dominica,212,Americas,Latin America and the Caribbean,True
-DOM,DO,Dominican Republic,Dominican Republic,214,Americas,Latin America and the Caribbean,True
-ECU,EC,Ecuador,Ecuador,218,Americas,Latin America and the Caribbean,True
+DMA,DM,Dominica,Dominica,212,Americas,Caribbean,True
+DOM,DO,Dominican Republic,Dominican Republic,214,Americas,Caribbean,True
+ECU,EC,Ecuador,Ecuador,218,Americas,South America,True
 EGY,EG,Egypt,Egypt,818,Africa,Northern Africa,True
-SLV,SV,El Salvador,El Salvador,222,Americas,Latin America and the Caribbean,True
+SLV,SV,El Salvador,El Salvador,222,Americas,Central America,True
 GNQ,GQ,Equatorial Guinea,Equatorial Guinea,226,Africa,Middle Africa,True
 ERI,ER,Eritrea,Eritrea,232,Africa,Eastern Africa,True
 EST,EE,Estonia,Estonia,233,Europe,Northern Europe,True
 SWZ,SZ,Eswatini,Eswatini,748,Africa,Southern Africa,True
 ETH,ET,Ethiopia,Ethiopia,231,Africa,Eastern Africa,True
-FLK,FK,Falkland Islands (Malvinas),Falkland Islands (Malvinas),238,Americas,Latin America and the Caribbean,False
+FLK,FK,Falkland Islands (Malvinas),Falkland Islands (Malvinas),238,Americas,South America,False
 FRO,FO,Faroe Islands,Faroe Islands,234,Europe,Northern Europe,False
 FJI,FJ,Fiji,Fiji,242,Oceania,Melanesia,True
 FIN,FI,Finland,Finland,246,Europe,Northern Europe,True
 FRA,FR,France,France,250,Europe,Western Europe,True
-GUF,GF,French Guiana,French Guiana,254,Americas,Latin America and the Caribbean,False
+GUF,GF,French Guiana,French Guiana,254,Americas,South America,False
 PYF,PF,French Polynesia,French Polynesia,258,Oceania,Polynesia,False
 ATF,TF,French Southern Territories,French Southern Territories,260,Africa,Eastern Africa,False
 GAB,GA,Gabon,Gabon,266,Africa,Middle Africa,True
@@ -90,18 +90,18 @@ GHA,GH,Ghana,Ghana,288,Africa,Western Africa,True
 GIB,GI,Gibraltar,Gibraltar,292,Europe,Southern Europe,False
 GRC,GR,Greece,Greece,300,Europe,Southern Europe,True
 GRL,GL,Greenland,Greenland,304,Americas,Northern America,False
-GRD,GD,Grenada,Grenada,308,Americas,Latin America and the Caribbean,True
-GLP,GP,Guadeloupe,Guadeloupe,312,Americas,Latin America and the Caribbean,False
+GRD,GD,Grenada,Grenada,308,Americas,Caribbean,True
+GLP,GP,Guadeloupe,Guadeloupe,312,Americas,Caribbean,False
 GUM,GU,Guam,Guam,316,Oceania,Micronesia,False
-GTM,GT,Guatemala,Guatemala,320,Americas,Latin America and the Caribbean,True
+GTM,GT,Guatemala,Guatemala,320,Americas,Central America,True
 GGY,GG,Guernsey,Guernsey,831,Europe,Northern Europe,False
 GIN,GN,Guinea,Guinea,324,Africa,Western Africa,True
 GNB,GW,Guinea-Bissau,Guinea-Bissau,624,Africa,Western Africa,True
-GUY,GY,Guyana,Guyana,328,Americas,Latin America and the Caribbean,True
-HTI,HT,Haiti,Haiti,332,Americas,Latin America and the Caribbean,True
+GUY,GY,Guyana,Guyana,328,Americas,South America,True
+HTI,HT,Haiti,Haiti,332,Americas,Caribbean,True
 HMD,HM,Heard Island and McDonald Islands,Heard Island and McDonald Islands,334,Oceania,Australia and New Zealand,False
 VAT,VA,Holy See,Vatican City,336,Europe,Southern Europe,False
-HND,HN,Honduras,Honduras,340,Americas,Latin America and the Caribbean,True
+HND,HN,Honduras,Honduras,340,Americas,Central America,True
 HUN,HU,Hungary,Hungary,348,Europe,Eastern Europe,True
 ISL,IS,Iceland,Iceland,352,Europe,Northern Europe,True
 IND,IN,India,India,356,Asia,Southern Asia,True
@@ -112,7 +112,7 @@ IRL,IE,Ireland,Ireland,372,Europe,Northern Europe,True
 IMN,IM,Isle of Man,Isle of Man,833,Europe,Northern Europe,False
 ISR,IL,Israel,Israel,376,Asia,Western Asia,True
 ITA,IT,Italy,Italy,380,Europe,Southern Europe,True
-JAM,JM,Jamaica,Jamaica,388,Americas,Latin America and the Caribbean,True
+JAM,JM,Jamaica,Jamaica,388,Americas,Caribbean,True
 JPN,JP,Japan,Japan,392,Asia,Eastern Asia,True
 JEY,JE,Jersey,Jersey,832,Europe,Northern Europe,False
 JOR,JO,Jordan,Jordan,400,Asia,Western Asia,True
@@ -137,16 +137,16 @@ MDV,MV,Maldives,Maldives,462,Asia,Southern Asia,True
 MLI,ML,Mali,Mali,466,Africa,Western Africa,True
 MLT,MT,Malta,Malta,470,Europe,Southern Europe,True
 MHL,MH,Marshall Islands,Marshall Islands,584,Oceania,Micronesia,True
-MTQ,MQ,Martinique,Martinique,474,Americas,Latin America and the Caribbean,False
+MTQ,MQ,Martinique,Martinique,474,Americas,Caribbean,False
 MRT,MR,Mauritania,Mauritania,478,Africa,Western Africa,True
 MUS,MU,Mauritius,Mauritius,480,Africa,Eastern Africa,True
 MYT,YT,Mayotte,Mayotte,175,Africa,Eastern Africa,False
-MEX,MX,Mexico,Mexico,484,Americas,Latin America and the Caribbean,True
+MEX,MX,Mexico,Mexico,484,Americas,Central America,True
 FSM,FM,Micronesia (Federated States of),"Micronesia, Federated States of",583,Oceania,Micronesia,True
 MCO,MC,Monaco,Monaco,492,Europe,Western Europe,True
 MNG,MN,Mongolia,Mongolia,496,Asia,Eastern Asia,True
 MNE,ME,Montenegro,Montenegro,499,Europe,Southern Europe,True
-MSR,MS,Montserrat,Montserrat,500,Americas,Latin America and the Caribbean,False
+MSR,MS,Montserrat,Montserrat,500,Americas,Caribbean,False
 MAR,MA,Morocco,Morocco,504,Africa,Northern Africa,True
 MOZ,MZ,Mozambique,Mozambique,508,Africa,Eastern Africa,True
 MMR,MM,Myanmar,Myanmar,104,Asia,Southeast Asia,True
@@ -156,7 +156,7 @@ NPL,NP,Nepal,Nepal,524,Asia,Southern Asia,True
 NLD,NL,Netherlands,Netherlands,528,Europe,Western Europe,True
 NCL,NC,New Caledonia,New Caledonia,540,Oceania,Melanesia,False
 NZL,NZ,New Zealand,New Zealand,554,Oceania,Australia and New Zealand,True
-NIC,NI,Nicaragua,Nicaragua,558,Americas,Latin America and the Caribbean,True
+NIC,NI,Nicaragua,Nicaragua,558,Americas,Central America,True
 NER,NE,Niger,Niger,562,Africa,Western Africa,True
 NGA,NG,Nigeria,Nigeria,566,Africa,Western Africa,True
 NIU,NU,Niue,Niue,570,Oceania,Polynesia,False
@@ -167,15 +167,15 @@ NOR,NO,Norway,Norway,578,Europe,Northern Europe,True
 OMN,OM,Oman,Oman,512,Asia,Western Asia,True
 PAK,PK,Pakistan,Pakistan,586,Asia,Southern Asia,True
 PLW,PW,Palau,Palau,585,Oceania,Micronesia,True
-PAN,PA,Panama,Panama,591,Americas,Latin America and the Caribbean,True
+PAN,PA,Panama,Panama,591,Americas,Central America,True
 PNG,PG,Papua New Guinea,Papua New Guinea,598,Oceania,Melanesia,True
 PRY,PY,Paraguay,Paraguay,600,Americas,South America,True
-PER,PE,Peru,Peru,604,Americas,Latin America and the Caribbean,True
+PER,PE,Peru,Peru,604,Americas,South America,True
 PHL,PH,Philippines,Philippines,608,Asia,Southeast Asia,True
 PCN,PN,Pitcairn,Pitcairn,612,Oceania,Polynesia,False
 POL,PL,Poland,Poland,616,Europe,Eastern Europe,True
 PRT,PT,Portugal,Portugal,620,Europe,Southern Europe,True
-PRI,PR,Puerto Rico,Puerto Rico,630,Americas,Latin America and the Caribbean,False
+PRI,PR,Puerto Rico,Puerto Rico,630,Americas,Caribbean,False
 QAT,QA,Qatar,Qatar,634,Asia,Western Asia,True
 KOR,KR,Republic of Korea,South Korea,410,Asia,Eastern Asia,True
 MDA,MD,Republic of Moldova,Moldova,498,Europe,Eastern Europe,True
@@ -183,13 +183,13 @@ ROU,RO,Romania,Romania,642,Europe,Eastern Europe,True
 RUS,RU,Russian Federation,Russia,643,Europe,Eastern Europe,True
 RWA,RW,Rwanda,Rwanda,646,Africa,Eastern Africa,True
 REU,RE,Réunion,Réunion,638,Africa,Eastern Africa,False
-BLM,BL,Saint Barthélemy,Saint Barthélemy,652,Americas,Latin America and the Caribbean,False
+BLM,BL,Saint Barthélemy,Saint Barthélemy,652,Americas,Caribbean,False
 SHN,SH,Saint Helena,"Saint Helena, Ascension and Tristan da Cunha",654,Africa,Western Africa,False
-KNA,KN,Saint Kitts and Nevis,Saint Kitts and Nevis,659,Americas,Latin America and the Caribbean,True
-LCA,LC,Saint Lucia,Saint Lucia,662,Americas,Latin America and the Caribbean,True
-MAF,MF,Saint Martin (French Part),Saint Martin (French part),663,Americas,Latin America and the Caribbean,False
+KNA,KN,Saint Kitts and Nevis,Saint Kitts and Nevis,659,Americas,Caribbean,True
+LCA,LC,Saint Lucia,Saint Lucia,662,Americas,Caribbean,True
+MAF,MF,Saint Martin (French Part),Saint Martin (French part),663,Americas,Caribbean,False
 SPM,PM,Saint Pierre and Miquelon,Saint Pierre and Miquelon,666,Americas,Northern America,False
-VCT,VC,Saint Vincent and the Grenadines,Saint Vincent and the Grenadines,670,Americas,Latin America and the Caribbean,True
+VCT,VC,Saint Vincent and the Grenadines,Saint Vincent and the Grenadines,670,Americas,Caribbean,True
 WSM,WS,Samoa,Samoa,882,Oceania,Polynesia,True
 SMR,SM,San Marino,San Marino,674,Europe,Southern Europe,True
 STP,ST,Sao Tome and Principe,Sao Tome and Principe,678,Africa,Middle Africa,True
@@ -199,19 +199,19 @@ SRB,RS,Serbia,Serbia,688,Europe,Southern Europe,True
 SYC,SC,Seychelles,Seychelles,690,Africa,Eastern Africa,True
 SLE,SL,Sierra Leone,Sierra Leone,694,Africa,Western Africa,True
 SGP,SG,Singapore,Singapore,702,Asia,Southeast Asia,True
-SXM,SX,Sint Maarten (Dutch part),Sint Maarten (Dutch part),534,Americas,Latin America and the Caribbean,False
+SXM,SX,Sint Maarten (Dutch part),Sint Maarten (Dutch part),534,Americas,Caribbean,False
 SVK,SK,Slovakia,Slovakia,703,Europe,Eastern Europe,True
 SVN,SI,Slovenia,Slovenia,705,Europe,Southern Europe,True
 SLB,SB,Solomon Islands,Solomon Islands,90,Oceania,Melanesia,True
 SOM,SO,Somalia,Somalia,706,Africa,Eastern Africa,True
 ZAF,ZA,South Africa,South Africa,710,Africa,Southern Africa,True
-SGS,GS,South Georgia and the South Sandwich Islands,South Georgia and the South Sandwich Islands,239,Americas,Latin America and the Caribbean,False
+SGS,GS,South Georgia and the South Sandwich Islands,South Georgia and the South Sandwich Islands,239,Americas,South America,False
 SSD,SS,South Sudan,South Sudan,728,Africa,Eastern Africa,True
 ESP,ES,Spain,Spain,724,Europe,Southern Europe,True
 LKA,LK,Sri Lanka,Sri Lanka,144,Asia,Southern Asia,True
 PSE,PS,State of Palestine,Palestine,275,Asia,Western Asia,False
 SDN,SD,Sudan,Sudan,729,Africa,Northern Africa,True
-SUR,SR,Suriname,Suriname,740,Americas,Latin America and the Caribbean,True
+SUR,SR,Suriname,Suriname,740,Americas,South America,True
 SJM,SJ,Svalbard and Jan Mayen Islands,Svalbard and Jan Mayen,744,Europe,Northern Europe,False
 SWE,SE,Sweden,Sweden,752,Europe,Northern Europe,True
 CHE,CH,Switzerland,Switzerland,756,Europe,Western Europe,True
@@ -223,10 +223,10 @@ TLS,TL,Timor-Leste,Timor-Leste,626,Asia,Southeast Asia,True
 TGO,TG,Togo,Togo,768,Africa,Western Africa,True
 TKL,TK,Tokelau,Tokelau,772,Oceania,Polynesia,False
 TON,TO,Tonga,Tonga,776,Oceania,Polynesia,True
-TTO,TT,Trinidad and Tobago,Trinidad and Tobago,780,Americas,Latin America and the Caribbean,True
+TTO,TT,Trinidad and Tobago,Trinidad and Tobago,780,Americas,Caribbean,True
 TUN,TN,Tunisia,Tunisia,788,Africa,Northern Africa,True
 TKM,TM,Turkmenistan,Turkmenistan,795,Asia,Central Asia,True
-TCA,TC,Turks and Caicos Islands,Turks and Caicos Islands,796,Americas,Latin America and the Caribbean,False
+TCA,TC,Turks and Caicos Islands,Turks and Caicos Islands,796,Americas,Caribbean,False
 TUV,TV,Tuvalu,Tuvalu,798,Oceania,Polynesia,True
 TUR,TR,Türkiye,Türkiye,792,Asia,Western Asia,True
 UGA,UG,Uganda,Uganda,800,Africa,Eastern Africa,True
@@ -235,12 +235,12 @@ ARE,AE,United Arab Emirates,United Arab Emirates,784,Asia,Western Asia,True
 GBR,GB,United Kingdom of Great Britain and Northern Ireland,United Kingdom,826,Europe,Northern Europe,True
 TZA,TZ,United Republic of Tanzania,Tanzania,834,Africa,Eastern Africa,True
 UMI,UM,United States Minor Outlying Islands,United States Minor Outlying Islands,581,Oceania,Micronesia,False
-VIR,VI,United States Virgin Islands,"Virgin Islands, U.S.",850,Americas,Latin America and the Caribbean,False
+VIR,VI,United States Virgin Islands,"Virgin Islands, U.S.",850,Americas,Caribbean,False
 USA,US,United States of America,United States,840,Americas,Northern America,True
-URY,UY,Uruguay,Uruguay,858,Americas,Latin America and the Caribbean,True
+URY,UY,Uruguay,Uruguay,858,Americas,South America,True
 UZB,UZ,Uzbekistan,Uzbekistan,860,Asia,Central Asia,True
 VUT,VU,Vanuatu,Vanuatu,548,Oceania,Melanesia,True
-VEN,VE,Venezuela (Bolivarian Republic of),Venezuela,862,Americas,Latin America and the Caribbean,True
+VEN,VE,Venezuela (Bolivarian Republic of),Venezuela,862,Americas,South America,True
 VNM,VN,Viet Nam,Vietnam,704,Asia,Southeast Asia,True
 WLF,WF,Wallis and Futuna Islands,Wallis and Futuna,876,Oceania,Polynesia,False
 ESH,EH,Western Sahara,Western Sahara,732,Africa,Northern Africa,False

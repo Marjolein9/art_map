@@ -61,7 +61,7 @@ REGION_NAMES = {
     19: "Americas",
     142: "Asia",
     150: "Europe"
-}
+}#830
 
 # UN M49 SubRegion codes to subregion names
 SUBREGION_NAMES = {
@@ -429,7 +429,7 @@ def load_m49_data():
         continent = REGION_NAMES.get(region_code, 'World')
 
         # For Africa, prefer intermediateRegion if it exists (more specific)
-        if continent == 'Africa' and intermediate_code:
+        if intermediate_code and int(intermediate_code) != 830:
             subregion = SUBREGION_NAMES.get(intermediate_code, continent)
         else:
             subregion = SUBREGION_NAMES.get(subregion_code, continent)

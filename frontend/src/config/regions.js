@@ -33,7 +33,7 @@ export const REGION_VIEWS = {
   'Central America': { lat: 15, lng: -90, altitude: 1.0 },
   'Caribbean': { lat: 20, lng: -75, altitude: 1.0 },
   'South America': { lat: -15, lng: -60, altitude: 1.0 },
-  'Latin America and the Caribbean': { lat: 15, lng: -88, altitude: 1.0 }, // macro region
+  'Latin America and the Caribbean': { lat: 15, lng: -80, altitude: 1.0 }, // macro region
 
   // Oceania subregions
   'Australia and New Zealand': { lat: -30, lng: 145, altitude: 1.0  },

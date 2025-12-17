@@ -308,7 +308,7 @@ const WorldMap = ({
 
             {mode==='quiz' && (
               <>
-                <button onClick={onStartOver} className="globe-control-btn-small" title="Next Country">Next</button>
+                <button onClick={onStartOver} className="globe-control-btn-small" title="Next Country">Skip</button>
                 <button onClick={handleShowMe} className="globe-control-btn-small" title="Show Me" disabled={showMeActivated} style={{opacity:showMeActivated?0.5:1, cursor:showMeActivated?'not-allowed':'pointer'}}>
                   {showMeActivated?'Shown!':'Show Me'}
                 </button>
