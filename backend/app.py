@@ -1,18 +1,52 @@
 """
 Flask REST API for Art Map Quiz
 
-FLASK BASICS FOR BEGINNERS
-===========================
+INTERVIEW PREP: FLASK & REST API FUNDAMENTALS
+==============================================
+
 Flask is a lightweight Python web framework that handles HTTP requests and responses.
 
-Key Concepts:
-- Routes: Map URLs to Python functions (e.g., /api/countries → get_countries())
-- Decorators: @app.route() tells Flask which function handles which URL
-- HTTP Methods: GET (retrieve data), POST (send data)
-- JSON Responses: Convert Python dicts to JSON format for frontend
+Key Interview Topics to Discuss:
 
-Example Flow:
-Browser → GET /api/countries → Flask → get_countries() → Database → JSON → Browser
+1. REST API Principles:
+   - RESTful design uses standard HTTP methods (GET, POST, PUT, DELETE)
+   - Resources are accessed via URLs (/api/countries, /api/images/USA)
+   - Stateless communication (each request contains all needed info)
+   - Returns data in standard format (JSON)
+
+2. Flask Architecture:
+   - WSGI application (Web Server Gateway Interface)
+   - Request/Response cycle: Client → WSGI Server → Flask → Your Code → Response
+   - Decorator-based routing (@app.route)
+   - Context-based design (request, session available globally)
+
+3. Database Patterns:
+   - Connection pooling for performance
+   - Cursor pattern for query execution
+   - Parameterized queries prevent SQL injection
+   - Always close connections to prevent leaks
+
+4. Performance Considerations:
+   - Database queries in routes (consider caching for production)
+   - Image serving (could use CDN in production)
+   - CORS configuration (security vs accessibility)
+
+Example Request Flow:
+Browser → GET /api/countries → Flask Router → get_countries() → PostgreSQL →
+JSON Response → Browser
+
+Common Interview Questions:
+Q: "Why use Flask over Django?"
+A: Flask is lightweight and unopinionated. Django includes ORM, admin panel, etc.
+   Flask gives more control, Django gives more built-in features.
+
+Q: "How do you handle database connections?"
+A: Use connection pooling, context managers, always close connections.
+   We use psycopg2 with RealDictCursor for dict-like results.
+
+Q: "What's CORS and why do we need it?"
+A: Cross-Origin Resource Sharing. Browsers block requests between different origins
+   (protocol + domain + port). CORS headers tell browser which cross-origin requests to allow.
 """
 
 # Import Flask core components
@@ -192,22 +226,53 @@ def random_country():
 @app.route('/api/images/<iso3>', methods=['GET'])
 def get_images(iso3):
     """
-    Get all images for a country from all three collections.
+    Get all images for a country from all collections.
 
-    HTTP Method: GET
+    INTERVIEW TOPICS:
+    ================
+
+    1. RESTful URL Design:
+       - Uses path parameter /<iso3> instead of query param ?iso3=USA
+       - RESTful pattern: /resource/{identifier}
+       - More semantic and cleaner than query strings
+
+    2. Database Query Patterns:
+       - Multiple queries vs. single JOIN query (we use multiple for simplicity)
+       - Trade-off: More queries but simpler code and easier to debug
+       - Alternative: Use JOIN or UNION ALL (more efficient but complex)
+
+    3. SQL Injection Prevention:
+       - ALWAYS use parameterized queries (%s placeholders)
+       - NEVER use f-strings or string concatenation for SQL
+       - psycopg2 automatically escapes parameters
+       - Example: cursor.execute('WHERE iso3 = %s', (iso3,))
+
+    4. Data Transformation:
+       - Convert database rows to Python dicts
+       - List comprehension: [dict(row) for row in cursor.fetchall()]
+       - RealDictCursor returns dict-like objects, we convert to real dicts for JSON
+
+    5. Performance Considerations:
+       - Could cache results (country images rarely change)
+       - Could use connection pooling (psycopg2.pool)
+       - Could paginate results for countries with many images
+       - Always close connections to prevent connection pool exhaustion
+
+    HTTP Method: GET (idempotent - safe to call multiple times)
     URL: http://localhost:5000/api/images/USA
     URL Parameter: iso3 (required) - three-letter country code in URL path
 
-    Example Request: GET /api/images/USA
     Returns: JSON with images grouped by collection type
-
-    HTTP Status Codes:
-    - 200: Success
     """
+    # Get database connection from connection helper
+    # Interview Note: Using helper function for DRY principle
     conn = get_db_connection()
     cursor = conn.cursor()
 
     # Query Albert Kahn images
+    # Interview Note: Parameterized query prevents SQL injection
+    # %s is a placeholder, (iso3,) is a tuple of parameters
+    # psycopg2 automatically escapes and sanitizes the parameters
     cursor.execute('''
         SELECT 'Albert Kahn' as collection_type,
                filepath, title_en as title, location, date,
@@ -215,6 +280,7 @@ def get_images(iso3):
         FROM albert_kahn_images
         WHERE iso3 = %s
     ''', (iso3,))
+    # Convert rows to list of dicts for JSON serialization
     albert_kahn = [dict(row) for row in cursor.fetchall()]
 
     # Query Children Artwork images
@@ -226,7 +292,8 @@ def get_images(iso3):
         WHERE artist_iso3 = %s
     ''', (iso3,))
     children_art = [dict(row) for row in cursor.fetchall()]
-    print(f"Children Art: {children_art}")
+    print(f"Children Art: {children_art}")  # Debug logging
+
     # Query Public Domain images
     cursor.execute('''
         SELECT 'Public Domain Review' as collection_type,
@@ -247,8 +314,14 @@ def get_images(iso3):
     ''', (iso3,))
     met_museum = [dict(row) for row in cursor.fetchall()]
 
+    # IMPORTANT: Always close database connections
+    # Interview Note: Connection leaks cause "too many connections" errors
+    # In production, use context managers or try/finally blocks
     conn.close()
 
+    # Return JSON response
+    # Interview Note: jsonify() sets Content-Type: application/json header
+    # Also handles JSON serialization of Python objects
     return jsonify({
         'images': {
             'Albert Kahn': albert_kahn,

@@ -93,3 +93,88 @@ button:disabled {
   font-weight: 500;
   color: var(--text-color, #2c3e50);
 }
+
+/* Footer */
+.app-footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 8px 16px;
+  background: transparent;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 100;
+}
+
+.disclaimer-link {
+  background: none;
+  border: none;
+  color: var(--text-secondary, #020a0b);
+  font-size: 16px;
+  cursor: pointer;
+  padding: 4px 8px;
+  text-decoration: underline;
+  opacity: 0.7;
+  transition: opacity 0.2s ease;
+}
+
+.disclaimer-link:hover {
+  opacity: 1;
+}
+
+/* Disclaimer Modal */
+.disclaimer-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 3000;
+  padding: 20px;
+}
+
+.disclaimer-modal {
+  background: var(--card-bg, #fff);
+  color: var(--text-color, #2c3e50);
+  padding: 30px;
+  border-radius: 8px;
+  max-width: 600px;
+  max-height: 80vh;
+  overflow-y: auto;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+.disclaimer-modal h3 {
+  margin-top: 0;
+  margin-bottom: 20px;
+  font-size: 24px;
+  color: var(--text-color, #2c3e50);
+}
+
+.disclaimer-modal p {
+  margin-bottom: 16px;
+  line-height: 1.6;
+  font-size: 14px;
+}
+
+.disclaimer-close-btn {
+  background: var(--glow-color, #e7b56e);
+  color: #fff;
+  border: none;
+  padding: 10px 24px;
+  border-radius: 4px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  margin-top: 10px;
+}
+
+.disclaimer-close-btn:hover {
+  background: var(--border-color, #090603);
+}

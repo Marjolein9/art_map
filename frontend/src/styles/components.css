@@ -594,29 +594,29 @@ a.collection-subtitle:hover {
   color: var(--text-primary);
   word-wrap: break-word;
   white-space: normal;
-  margin-bottom: 10px;
+  margin-bottom: 4px;
 }
 
 .artwork-location {
   color: var(--text-secondary);
-  margin-top: 5px;
+  margin-top: 2px;
   word-wrap: break-word;
   white-space: normal;
 }
 
 .artwork-date {
   color: var(--text-tertiary);
-  margin-top: 5px;
+  margin-top: 2px;
 }
 
 .artwork-dates {
   color: var(--text-tertiary);
-  margin-top: 5px;
+  margin-top: 2px;
 }
 
 .artwork-source {
   color: var(--text-primary);
-  margin-top: 5px;
+  margin-top: 4px;
 }
 
 .artwork-article {
@@ -1097,11 +1097,11 @@ input:checked + .toggle-slider:before {
 /* Additional mortality section styling */
 .info-box {
   margin-top: 16px;
-  line-height: 1.6;
+  line-height: 1.4;
 }
 
 .info-box p {
-  margin: 0 0 10px 0;
+  margin: 0 0 6px 0;
 }
 
 .mortality-credits-item {
