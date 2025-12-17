@@ -606,7 +606,7 @@ def init_database():
             country_fr TEXT,
             country_en TEXT,
             m49code INTEGER,
-            alpha2 TEXT,
+            iso2 TEXT,
             iso3 TEXT NOT NULL,
             operator TEXT,
             author TEXT,
@@ -865,7 +865,7 @@ def init_database():
             cursor.execute('''
                 INSERT INTO albert_kahn_images (
                     file_path, image_filename, inventory_number, title_fr, title_en,
-                    location, country_fr, country_en, m49code, alpha2, iso3,
+                    location, country_fr, country_en, m49code, iso2, iso3,
                     operator, author, mission, date, theme, sub_theme, description,
                     domain, process, support, denomination, format, dimensions,
                     ownership, license, page_url, image_url, filepath
@@ -880,11 +880,11 @@ def init_database():
                 row.get('country_fr', ''),
                 row.get('country_en', ''),
                 row.get('m49code', ''),
-                row.get('alpha2', ''),
+                row.get('iso2', ''),
                 iso3,
                 row.get('operator', ''),
                 row.get('author', ''),
-                row.get('mission', ''),
+                row.get('Mission', ''),
                 row.get('date', ''),
                 row.get('theme', ''),
                 row.get('sub_theme', ''),

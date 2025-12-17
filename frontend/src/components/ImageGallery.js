@@ -155,17 +155,21 @@ const ImageGallery = ({
         return (
           <>
             {image.title && <div className="artwork-title">{image.title}</div>}
-            {image.artist_name && <div className="artwork-artist">{image.artist_name}</div>}
-            {image.object_date && <div className="artwork-date">{image.object_date}</div>}
+            {image.artist_name && (
+              <div className="artwork-artist">
+                {image.artist_name}
+                {image.object_date && ` (${image.object_date})`}
+              </div>
+            )}
             {image.culture && <div className="artwork-culture">{image.culture}</div>}
             <div className="artwork-source">
               {image.object_url ? (
                 <a href={image.object_url} target="_blank" rel="noopener noreferrer">
-                  Metropolitan Museum of Art
+                  Learn more at the Metropolitan Museum of Art
                 </a>
               ) : (
                 <a href="https://www.metmuseum.org/" target="_blank" rel="noopener noreferrer">
-                  Metropolitan Museum of Art
+                  Learn more at the Metropolitan Museum of Art
                 </a>
               )}
             </div>

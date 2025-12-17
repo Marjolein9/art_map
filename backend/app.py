@@ -211,7 +211,7 @@ def get_images(iso3):
     cursor.execute('''
         SELECT 'Albert Kahn' as collection_type,
                filepath, title_en as title, location, date,
-               operator, inventory_number, page_url
+               operator, inventory_number, page_url, mission
         FROM albert_kahn_images
         WHERE iso3 = %s
     ''', (iso3,))

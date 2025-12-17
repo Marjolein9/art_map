@@ -9,4 +9,4 @@ consolidate redundant classes, so for the infobar, child mortality and external 
 is there anything else where therre is redundant code? plan first
 add comments through out to explain what is happening so i can answer coding questions about it in interviews. high levels and details that someone new to react wouldnt knnow
 move loading the center of the screen
-add disclaimer that may be mistakes to link at bottom of the screen
+add standard disclaimer link on bottom foot to window that may be mistakes do own research with simple short but legal sounding to link at bottom of the screen
