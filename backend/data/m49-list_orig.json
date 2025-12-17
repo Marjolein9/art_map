@@ -1,9 +1,9 @@
 {
-  "lastUpdated": 1765943289431,
+  "lastUpdated": 1672386488820,
   "countries": [
     {
       "region": 142,
-      "subRegion": 34,
+      "subRegion": 145,
       "name": "Afghanistan",
       "m49code": 4,
       "alpha2": "AF",
@@ -81,7 +81,7 @@
     },
     {
       "region": 2,
-      "subRegion": 17,
+      "subRegion": 202,
       "intermediateRegion": 17,
       "name": "Angola",
       "m49code": 24,
@@ -352,7 +352,7 @@
     },
     {
       "region": 2,
-      "subRegion": 11,
+      "subRegion": 202,
       "intermediateRegion": 11,
       "name": "Benin",
       "m49code": 204,
@@ -450,7 +450,7 @@
     },
     {
       "region": 2,
-      "subRegion": 18,
+      "subRegion": 202,
       "intermediateRegion": 18,
       "name": "Botswana",
       "m49code": 72,
@@ -562,7 +562,7 @@
     },
     {
       "region": 2,
-      "subRegion": 11,
+      "subRegion": 202,
       "intermediateRegion": 11,
       "name": "Burkina Faso",
       "m49code": 854,
@@ -580,7 +580,7 @@
     },
     {
       "region": 2,
-      "subRegion": 14,
+      "subRegion": 202,
       "intermediateRegion": 14,
       "name": "Burundi",
       "m49code": 108,
@@ -598,7 +598,7 @@
     },
     {
       "region": 2,
-      "subRegion": 11,
+      "subRegion": 202,
       "intermediateRegion": 11,
       "name": "Cabo Verde",
       "m49code": 132,
@@ -631,7 +631,7 @@
     },
     {
       "region": 2,
-      "subRegion": 17,
+      "subRegion": 202,
       "intermediateRegion": 17,
       "name": "Cameroon",
       "m49code": 120,
@@ -678,7 +678,7 @@
     },
     {
       "region": 2,
-      "subRegion": 17,
+      "subRegion": 202,
       "intermediateRegion": 17,
       "name": "Central African Republic",
       "m49code": 140,
@@ -696,7 +696,7 @@
     },
     {
       "region": 2,
-      "subRegion": 17,
+      "subRegion": 202,
       "intermediateRegion": 17,
       "name": "Chad",
       "m49code": 148,
@@ -821,7 +821,7 @@
     },
     {
       "region": 2,
-      "subRegion": 14,
+      "subRegion": 202,
       "intermediateRegion": 14,
       "name": "Comoros",
       "m49code": 174,
@@ -839,7 +839,7 @@
     },
     {
       "region": 2,
-      "subRegion": 17,
+      "subRegion": 202,
       "intermediateRegion": 17,
       "name": "Congo",
       "m49code": 178,
@@ -966,7 +966,7 @@
     },
     {
       "region": 2,
-      "subRegion": 11,
+      "subRegion": 202,
       "intermediateRegion": 11,
       "name": "Côte d’Ivoire",
       "m49code": 384,
@@ -997,7 +997,7 @@
     },
     {
       "region": 2,
-      "subRegion": 17,
+      "subRegion": 202,
       "intermediateRegion": 17,
       "name": "Democratic Republic of the Congo",
       "m49code": 180,
@@ -1029,7 +1029,7 @@
     },
     {
       "region": 2,
-      "subRegion": 14,
+      "subRegion": 202,
       "intermediateRegion": 14,
       "name": "Djibouti",
       "m49code": 262,
@@ -1127,7 +1127,7 @@
     },
     {
       "region": 2,
-      "subRegion": 17,
+      "subRegion": 202,
       "intermediateRegion": 17,
       "name": "Equatorial Guinea",
       "m49code": 226,
@@ -1143,7 +1143,7 @@
     },
     {
       "region": 2,
-      "subRegion": 14,
+      "subRegion": 202,
       "intermediateRegion": 14,
       "name": "Eritrea",
       "m49code": 232,
@@ -1175,7 +1175,7 @@
     },
     {
       "region": 2,
-      "subRegion": 18,
+      "subRegion": 202,
       "intermediateRegion": 18,
       "name": "Eswatini",
       "m49code": 748,
@@ -1192,7 +1192,7 @@
     },
     {
       "region": 2,
-      "subRegion": 14,
+      "subRegion": 202,
       "intermediateRegion": 14,
       "name": "Ethiopia",
       "m49code": 231,
@@ -1335,7 +1335,7 @@
     },
     {
       "region": 2,
-      "subRegion": 17,
+      "subRegion": 202,
       "intermediateRegion": 17,
       "name": "Gabon",
       "m49code": 266,
@@ -1351,7 +1351,7 @@
     },
     {
       "region": 2,
-      "subRegion": 11,
+      "subRegion": 202,
       "intermediateRegion": 11,
       "name": "Gambia",
       "m49code": 270,
@@ -1398,7 +1398,7 @@
     },
     {
       "region": 2,
-      "subRegion": 11,
+      "subRegion": 202,
       "intermediateRegion": 11,
       "name": "Ghana",
       "m49code": 288,
@@ -1540,7 +1540,7 @@
     },
     {
       "region": 2,
-      "subRegion": 11,
+      "subRegion": 202,
       "intermediateRegion": 11,
       "name": "Guinea",
       "m49code": 324,
@@ -1557,7 +1557,7 @@
     },
     {
       "region": 2,
-      "subRegion": 11,
+      "subRegion": 202,
       "intermediateRegion": 11,
       "name": "Guinea-Bissau",
       "m49code": 624,
@@ -1885,7 +1885,7 @@
     },
     {
       "region": 2,
-      "subRegion": 14,
+      "subRegion": 202,
       "intermediateRegion": 14,
       "name": "Kenya",
       "m49code": 404,
@@ -1996,7 +1996,7 @@
     },
     {
       "region": 2,
-      "subRegion": 18,
+      "subRegion": 202,
       "intermediateRegion": 18,
       "name": "Lesotho",
       "m49code": 426,
@@ -2014,7 +2014,7 @@
     },
     {
       "region": 2,
-      "subRegion": 11,
+      "subRegion": 202,
       "intermediateRegion": 11,
       "name": "Liberia",
       "m49code": 430,
@@ -2091,7 +2091,7 @@
     },
     {
       "region": 2,
-      "subRegion": 14,
+      "subRegion": 202,
       "intermediateRegion": 14,
       "name": "Madagascar",
       "m49code": 450,
@@ -2108,7 +2108,7 @@
     },
     {
       "region": 2,
-      "subRegion": 14,
+      "subRegion": 202,
       "intermediateRegion": 14,
       "name": "Malawi",
       "m49code": 454,
@@ -2157,7 +2157,7 @@
     },
     {
       "region": 2,
-      "subRegion": 11,
+      "subRegion": 202,
       "intermediateRegion": 11,
       "name": "Mali",
       "m49code": 466,
@@ -2222,7 +2222,7 @@
     },
     {
       "region": 2,
-      "subRegion": 11,
+      "subRegion": 202,
       "intermediateRegion": 11,
       "name": "Mauritania",
       "m49code": 478,
@@ -2239,7 +2239,7 @@
     },
     {
       "region": 2,
-      "subRegion": 14,
+      "subRegion": 202,
       "intermediateRegion": 14,
       "name": "Mauritius",
       "m49code": 480,
@@ -2256,7 +2256,7 @@
     },
     {
       "region": 2,
-      "subRegion": 14,
+      "subRegion": 202,
       "intermediateRegion": 14,
       "name": "Mayotte",
       "m49code": 175,
@@ -2382,7 +2382,7 @@
     },
     {
       "region": 2,
-      "subRegion": 14,
+      "subRegion": 202,
       "intermediateRegion": 14,
       "name": "Mozambique",
       "m49code": 508,
@@ -2415,7 +2415,7 @@
     },
     {
       "region": 2,
-      "subRegion": 18,
+      "subRegion": 202,
       "intermediateRegion": 18,
       "name": "Namibia",
       "m49code": 516,
@@ -2526,7 +2526,7 @@
     },
     {
       "region": 2,
-      "subRegion": 11,
+      "subRegion": 202,
       "intermediateRegion": 11,
       "name": "Niger",
       "m49code": 562,
@@ -2544,7 +2544,7 @@
     },
     {
       "region": 2,
-      "subRegion": 11,
+      "subRegion": 202,
       "intermediateRegion": 11,
       "name": "Nigeria",
       "m49code": 566,
@@ -2902,7 +2902,7 @@
     },
     {
       "region": 2,
-      "subRegion": 14,
+      "subRegion": 202,
       "intermediateRegion": 14,
       "name": "Rwanda",
       "m49code": 646,
@@ -3081,7 +3081,7 @@
     },
     {
       "region": 2,
-      "subRegion": 17,
+      "subRegion": 202,
       "intermediateRegion": 17,
       "name": "Sao Tome and Principe",
       "m49code": 678,
@@ -3128,7 +3128,7 @@
     },
     {
       "region": 2,
-      "subRegion": 11,
+      "subRegion": 202,
       "intermediateRegion": 11,
       "name": "Senegal",
       "m49code": 686,
@@ -3160,7 +3160,7 @@
     },
     {
       "region": 2,
-      "subRegion": 14,
+      "subRegion": 202,
       "intermediateRegion": 14,
       "name": "Seychelles",
       "m49code": 690,
@@ -3177,7 +3177,7 @@
     },
     {
       "region": 2,
-      "subRegion": 11,
+      "subRegion": 202,
       "intermediateRegion": 11,
       "name": "Sierra Leone",
       "m49code": 694,
@@ -3274,7 +3274,7 @@
     },
     {
       "region": 2,
-      "subRegion": 14,
+      "subRegion": 202,
       "intermediateRegion": 14,
       "name": "Somalia",
       "m49code": 706,
@@ -3291,7 +3291,7 @@
     },
     {
       "region": 2,
-      "subRegion": 18,
+      "subRegion": 202,
       "intermediateRegion": 18,
       "name": "South Africa",
       "m49code": 710,
@@ -3323,7 +3323,7 @@
     },
     {
       "region": 2,
-      "subRegion": 14,
+      "subRegion": 202,
       "intermediateRegion": 14,
       "name": "South Sudan",
       "m49code": 728,
@@ -3542,7 +3542,7 @@
     },
     {
       "region": 2,
-      "subRegion": 11,
+      "subRegion": 202,
       "intermediateRegion": 11,
       "name": "Togo",
       "m49code": 768,
@@ -3686,7 +3686,7 @@
     },
     {
       "region": 2,
-      "subRegion": 14,
+      "subRegion": 202,
       "intermediateRegion": 14,
       "name": "Uganda",
       "m49code": 800,
@@ -3749,7 +3749,7 @@
     },
     {
       "region": 2,
-      "subRegion": 14,
+      "subRegion": 202,
       "intermediateRegion": 14,
       "name": "United Republic of Tanzania",
       "m49code": 834,
@@ -3938,7 +3938,7 @@
     },
     {
       "region": 2,
-      "subRegion": 14,
+      "subRegion": 202,
       "intermediateRegion": 14,
       "name": "Zambia",
       "m49code": 894,
@@ -3956,7 +3956,7 @@
     },
     {
       "region": 2,
-      "subRegion": 14,
+      "subRegion": 202,
       "intermediateRegion": 14,
       "name": "Zimbabwe",
       "m49code": 716,

@@ -66,19 +66,19 @@ REGION_NAMES = {
 # UN M49 SubRegion codes to subregion names
 SUBREGION_NAMES = {
     # Africa subregions
-    15: "North Africa",
-    11: "West Africa",
+    15: "Northern Africa",
+    11: "Western Africa",
     17: "Middle Africa",
-    14: "East Africa",
+    14: "Eastern Africa",
     18: "Southern Africa",
-    202: "Southern Africa",  # Sub-Saharan Africa (map to Southern)
+    202: "Sub-Saharan Africa",  # sometimes used
 
     # Asia subregions
     143: "Central Asia",
-    30: "East Asia",
-    34: "South Asia",
+    30: "Eastern Asia",
+    34: "Southern Asia",
     35: "Southeast Asia",
-    145: "Middle East",  # Western Asia
+    145: "Western Asia",  # often called Middle East
 
     # Europe subregions
     151: "Eastern Europe",
@@ -90,15 +90,22 @@ SUBREGION_NAMES = {
     29: "Caribbean",
     13: "Central America",
     5: "South America",
-    21: "North America",
-    419: "North South America",  # Latin America and the Caribbean
+    21: "Northern America",
+    419: "Latin America and the Caribbean",  # macro grouping
 
     # Oceania subregions
-    53: "Oceania",  # Australia and New Zealand
-    54: "Oceania",  # Melanesia
-    57: "Oceania",  # Micronesia
-    61: "Oceania",  # Polynesia
+    53: "Australia and New Zealand",
+    54: "Melanesia",
+    57: "Micronesia",
+    61: "Polynesia"
 }
+
+# Optional: Full list of all M49 intermediate or macro subregions
+MACRO_SUBREGIONS = {
+    419: "Latin America and the Caribbean",
+    202: "Sub-Saharan Africa"
+}
+
 
 def get_common_name(official_name, iso3, iso2):
     """Get the common name for a country using pycountry"""

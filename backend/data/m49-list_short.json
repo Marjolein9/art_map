@@ -1,0 +1,1005 @@
+{
+  "lastUpdated": 1765943002436,
+  "countries": [
+    {
+      "name": "Afghanistan",
+      "subregion number": 145
+    },
+    {
+      "name": "Albania",
+      "subregion number": 39
+    },
+    {
+      "name": "Algeria",
+      "subregion number": 15
+    },
+    {
+      "name": "American Samoa",
+      "subregion number": 61
+    },
+    {
+      "name": "Andorra",
+      "subregion number": 39
+    },
+    {
+      "name": "Angola",
+      "subregion number": 202
+    },
+    {
+      "name": "Anguilla",
+      "subregion number": 419
+    },
+    {
+      "name": "Antarctica",
+      "subregion number": null
+    },
+    {
+      "name": "Antigua and Barbuda",
+      "subregion number": 419
+    },
+    {
+      "name": "Argentina",
+      "subregion number": 419
+    },
+    {
+      "name": "Armenia",
+      "subregion number": 145
+    },
+    {
+      "name": "Aruba",
+      "subregion number": 419
+    },
+    {
+      "name": "Australia",
+      "subregion number": 53
+    },
+    {
+      "name": "Austria",
+      "subregion number": 155
+    },
+    {
+      "name": "Azerbaijan",
+      "subregion number": 145
+    },
+    {
+      "name": "Bahamas",
+      "subregion number": 419
+    },
+    {
+      "name": "Bahrain",
+      "subregion number": 145
+    },
+    {
+      "name": "Bangladesh",
+      "subregion number": 34
+    },
+    {
+      "name": "Barbados",
+      "subregion number": 419
+    },
+    {
+      "name": "Belarus",
+      "subregion number": 151
+    },
+    {
+      "name": "Belgium",
+      "subregion number": 155
+    },
+    {
+      "name": "Belize",
+      "subregion number": 419
+    },
+    {
+      "name": "Benin",
+      "subregion number": 202
+    },
+    {
+      "name": "Bermuda",
+      "subregion number": 21
+    },
+    {
+      "name": "Bhutan",
+      "subregion number": 34
+    },
+    {
+      "name": "Bolivia (Plurinational State of)",
+      "subregion number": 419
+    },
+    {
+      "name": "Bonaire, Sint Eustatius and Saba",
+      "subregion number": 419
+    },
+    {
+      "name": "Bosnia and Herzegovina",
+      "subregion number": 39
+    },
+    {
+      "name": "Botswana",
+      "subregion number": 202
+    },
+    {
+      "name": "Bouvet Island",
+      "subregion number": 419
+    },
+    {
+      "name": "Brazil",
+      "subregion number": 419
+    },
+    {
+      "name": "British Indian Ocean Territory",
+      "subregion number": 202
+    },
+    {
+      "name": "British Virgin Islands",
+      "subregion number": 419
+    },
+    {
+      "name": "Brunei Darussalam",
+      "subregion number": 35
+    },
+    {
+      "name": "Bulgaria",
+      "subregion number": 151
+    },
+    {
+      "name": "Burkina Faso",
+      "subregion number": 202
+    },
+    {
+      "name": "Burundi",
+      "subregion number": 202
+    },
+    {
+      "name": "Cabo Verde",
+      "subregion number": 202
+    },
+    {
+      "name": "Cambodia",
+      "subregion number": 35
+    },
+    {
+      "name": "Cameroon",
+      "subregion number": 202
+    },
+    {
+      "name": "Canada",
+      "subregion number": 21
+    },
+    {
+      "name": "Cayman Islands",
+      "subregion number": 419
+    },
+    {
+      "name": "Central African Republic",
+      "subregion number": 202
+    },
+    {
+      "name": "Chad",
+      "subregion number": 202
+    },
+    {
+      "name": "Chile",
+      "subregion number": 419
+    },
+    {
+      "name": "China",
+      "subregion number": 30
+    },
+    {
+      "name": "China, Hong Kong Special Administrative Region",
+      "subregion number": 30
+    },
+    {
+      "name": "China, Macao Special Administrative Region",
+      "subregion number": 30
+    },
+    {
+      "name": "Christmas Island",
+      "subregion number": 53
+    },
+    {
+      "name": "Cocos (Keeling) Islands",
+      "subregion number": 53
+    },
+    {
+      "name": "Colombia",
+      "subregion number": 419
+    },
+    {
+      "name": "Comoros",
+      "subregion number": 202
+    },
+    {
+      "name": "Congo",
+      "subregion number": 202
+    },
+    {
+      "name": "Cook Islands",
+      "subregion number": 61
+    },
+    {
+      "name": "Costa Rica",
+      "subregion number": 419
+    },
+    {
+      "name": "Croatia",
+      "subregion number": 39
+    },
+    {
+      "name": "Cuba",
+      "subregion number": 419
+    },
+    {
+      "name": "Curaçao",
+      "subregion number": 419
+    },
+    {
+      "name": "Cyprus",
+      "subregion number": 145
+    },
+    {
+      "name": "Czechia",
+      "subregion number": 151
+    },
+    {
+      "name": "Côte d’Ivoire",
+      "subregion number": 202
+    },
+    {
+      "name": "Democratic People's Republic of Korea",
+      "subregion number": 30
+    },
+    {
+      "name": "Democratic Republic of the Congo",
+      "subregion number": 202
+    },
+    {
+      "name": "Denmark",
+      "subregion number": 154
+    },
+    {
+      "name": "Djibouti",
+      "subregion number": 202
+    },
+    {
+      "name": "Dominica",
+      "subregion number": 419
+    },
+    {
+      "name": "Dominican Republic",
+      "subregion number": 419
+    },
+    {
+      "name": "Ecuador",
+      "subregion number": 419
+    },
+    {
+      "name": "Egypt",
+      "subregion number": 15
+    },
+    {
+      "name": "El Salvador",
+      "subregion number": 419
+    },
+    {
+      "name": "Equatorial Guinea",
+      "subregion number": 202
+    },
+    {
+      "name": "Eritrea",
+      "subregion number": 202
+    },
+    {
+      "name": "Estonia",
+      "subregion number": 154
+    },
+    {
+      "name": "Eswatini",
+      "subregion number": 202
+    },
+    {
+      "name": "Ethiopia",
+      "subregion number": 202
+    },
+    {
+      "name": "Falkland Islands (Malvinas)",
+      "subregion number": 419
+    },
+    {
+      "name": "Faroe Islands",
+      "subregion number": 154
+    },
+    {
+      "name": "Fiji",
+      "subregion number": 54
+    },
+    {
+      "name": "Finland",
+      "subregion number": 154
+    },
+    {
+      "name": "France",
+      "subregion number": 155
+    },
+    {
+      "name": "French Guiana",
+      "subregion number": 419
+    },
+    {
+      "name": "French Polynesia",
+      "subregion number": 61
+    },
+    {
+      "name": "French Southern Territories",
+      "subregion number": 202
+    },
+    {
+      "name": "Gabon",
+      "subregion number": 202
+    },
+    {
+      "name": "Gambia",
+      "subregion number": 202
+    },
+    {
+      "name": "Georgia",
+      "subregion number": 145
+    },
+    {
+      "name": "Germany",
+      "subregion number": 155
+    },
+    {
+      "name": "Ghana",
+      "subregion number": 202
+    },
+    {
+      "name": "Gibraltar",
+      "subregion number": 39
+    },
+    {
+      "name": "Greece",
+      "subregion number": 39
+    },
+    {
+      "name": "Greenland",
+      "subregion number": 21
+    },
+    {
+      "name": "Grenada",
+      "subregion number": 419
+    },
+    {
+      "name": "Guadeloupe",
+      "subregion number": 419
+    },
+    {
+      "name": "Guam",
+      "subregion number": 57
+    },
+    {
+      "name": "Guatemala",
+      "subregion number": 419
+    },
+    {
+      "name": "Guernsey",
+      "subregion number": 154
+    },
+    {
+      "name": "Guinea",
+      "subregion number": 202
+    },
+    {
+      "name": "Guinea-Bissau",
+      "subregion number": 202
+    },
+    {
+      "name": "Guyana",
+      "subregion number": 419
+    },
+    {
+      "name": "Haiti",
+      "subregion number": 419
+    },
+    {
+      "name": "Heard Island and McDonald Islands",
+      "subregion number": 53
+    },
+    {
+      "name": "Holy See",
+      "subregion number": 39
+    },
+    {
+      "name": "Honduras",
+      "subregion number": 419
+    },
+    {
+      "name": "Hungary",
+      "subregion number": 151
+    },
+    {
+      "name": "Iceland",
+      "subregion number": 154
+    },
+    {
+      "name": "India",
+      "subregion number": 34
+    },
+    {
+      "name": "Indonesia",
+      "subregion number": 35
+    },
+    {
+      "name": "Iran (Islamic Republic of)",
+      "subregion number": 34
+    },
+    {
+      "name": "Iraq",
+      "subregion number": 145
+    },
+    {
+      "name": "Ireland",
+      "subregion number": 154
+    },
+    {
+      "name": "Isle of Man",
+      "subregion number": 154
+    },
+    {
+      "name": "Israel",
+      "subregion number": 145
+    },
+    {
+      "name": "Italy",
+      "subregion number": 39
+    },
+    {
+      "name": "Jamaica",
+      "subregion number": 419
+    },
+    {
+      "name": "Japan",
+      "subregion number": 30
+    },
+    {
+      "name": "Jersey",
+      "subregion number": 154
+    },
+    {
+      "name": "Jordan",
+      "subregion number": 145
+    },
+    {
+      "name": "Kazakhstan",
+      "subregion number": 143
+    },
+    {
+      "name": "Kenya",
+      "subregion number": 202
+    },
+    {
+      "name": "Kiribati",
+      "subregion number": 57
+    },
+    {
+      "name": "Kuwait",
+      "subregion number": 145
+    },
+    {
+      "name": "Kyrgyzstan",
+      "subregion number": 143
+    },
+    {
+      "name": "Lao People's Democratic Republic",
+      "subregion number": 35
+    },
+    {
+      "name": "Latvia",
+      "subregion number": 154
+    },
+    {
+      "name": "Lebanon",
+      "subregion number": 145
+    },
+    {
+      "name": "Lesotho",
+      "subregion number": 202
+    },
+    {
+      "name": "Liberia",
+      "subregion number": 202
+    },
+    {
+      "name": "Libya",
+      "subregion number": 15
+    },
+    {
+      "name": "Liechtenstein",
+      "subregion number": 155
+    },
+    {
+      "name": "Lithuania",
+      "subregion number": 154
+    },
+    {
+      "name": "Luxembourg",
+      "subregion number": 155
+    },
+    {
+      "name": "Madagascar",
+      "subregion number": 202
+    },
+    {
+      "name": "Malawi",
+      "subregion number": 202
+    },
+    {
+      "name": "Malaysia",
+      "subregion number": 35
+    },
+    {
+      "name": "Maldives",
+      "subregion number": 34
+    },
+    {
+      "name": "Mali",
+      "subregion number": 202
+    },
+    {
+      "name": "Malta",
+      "subregion number": 39
+    },
+    {
+      "name": "Marshall Islands",
+      "subregion number": 57
+    },
+    {
+      "name": "Martinique",
+      "subregion number": 419
+    },
+    {
+      "name": "Mauritania",
+      "subregion number": 202
+    },
+    {
+      "name": "Mauritius",
+      "subregion number": 202
+    },
+    {
+      "name": "Mayotte",
+      "subregion number": 202
+    },
+    {
+      "name": "Mexico",
+      "subregion number": 419
+    },
+    {
+      "name": "Micronesia (Federated States of)",
+      "subregion number": 57
+    },
+    {
+      "name": "Monaco",
+      "subregion number": 155
+    },
+    {
+      "name": "Mongolia",
+      "subregion number": 30
+    },
+    {
+      "name": "Montenegro",
+      "subregion number": 39
+    },
+    {
+      "name": "Montserrat",
+      "subregion number": 419
+    },
+    {
+      "name": "Morocco",
+      "subregion number": 15
+    },
+    {
+      "name": "Mozambique",
+      "subregion number": 202
+    },
+    {
+      "name": "Myanmar",
+      "subregion number": 35
+    },
+    {
+      "name": "Namibia",
+      "subregion number": 202
+    },
+    {
+      "name": "Nauru",
+      "subregion number": 57
+    },
+    {
+      "name": "Nepal",
+      "subregion number": 34
+    },
+    {
+      "name": "Netherlands",
+      "subregion number": 155
+    },
+    {
+      "name": "New Caledonia",
+      "subregion number": 54
+    },
+    {
+      "name": "New Zealand",
+      "subregion number": 53
+    },
+    {
+      "name": "Nicaragua",
+      "subregion number": 419
+    },
+    {
+      "name": "Niger",
+      "subregion number": 202
+    },
+    {
+      "name": "Nigeria",
+      "subregion number": 202
+    },
+    {
+      "name": "Niue",
+      "subregion number": 61
+    },
+    {
+      "name": "Norfolk Island",
+      "subregion number": 53
+    },
+    {
+      "name": "North Macedonia",
+      "subregion number": 39
+    },
+    {
+      "name": "Northern Mariana Islands",
+      "subregion number": 57
+    },
+    {
+      "name": "Norway",
+      "subregion number": 154
+    },
+    {
+      "name": "Oman",
+      "subregion number": 145
+    },
+    {
+      "name": "Pakistan",
+      "subregion number": 34
+    },
+    {
+      "name": "Palau",
+      "subregion number": 57
+    },
+    {
+      "name": "Panama",
+      "subregion number": 419
+    },
+    {
+      "name": "Papua New Guinea",
+      "subregion number": 54
+    },
+    {
+      "name": "Paraguay",
+      "subregion number": 5
+    },
+    {
+      "name": "Peru",
+      "subregion number": 419
+    },
+    {
+      "name": "Philippines",
+      "subregion number": 35
+    },
+    {
+      "name": "Pitcairn",
+      "subregion number": 61
+    },
+    {
+      "name": "Poland",
+      "subregion number": 151
+    },
+    {
+      "name": "Portugal",
+      "subregion number": 39
+    },
+    {
+      "name": "Puerto Rico",
+      "subregion number": 419
+    },
+    {
+      "name": "Qatar",
+      "subregion number": 145
+    },
+    {
+      "name": "Republic of Korea",
+      "subregion number": 30
+    },
+    {
+      "name": "Republic of Moldova",
+      "subregion number": 151
+    },
+    {
+      "name": "Romania",
+      "subregion number": 151
+    },
+    {
+      "name": "Russian Federation",
+      "subregion number": 151
+    },
+    {
+      "name": "Rwanda",
+      "subregion number": 202
+    },
+    {
+      "name": "Réunion",
+      "subregion number": 202
+    },
+    {
+      "name": "Saint Barthélemy",
+      "subregion number": 419
+    },
+    {
+      "name": "Saint Helena",
+      "subregion number": 202
+    },
+    {
+      "name": "Saint Kitts and Nevis",
+      "subregion number": 419
+    },
+    {
+      "name": "Saint Lucia",
+      "subregion number": 419
+    },
+    {
+      "name": "Saint Martin (French Part)",
+      "subregion number": 419
+    },
+    {
+      "name": "Saint Pierre and Miquelon",
+      "subregion number": 21
+    },
+    {
+      "name": "Saint Vincent and the Grenadines",
+      "subregion number": 419
+    },
+    {
+      "name": "Samoa",
+      "subregion number": 61
+    },
+    {
+      "name": "San Marino",
+      "subregion number": 39
+    },
+    {
+      "name": "Sao Tome and Principe",
+      "subregion number": 202
+    },
+    {
+      "name": "Sark",
+      "subregion number": 154
+    },
+    {
+      "name": "Saudi Arabia",
+      "subregion number": 145
+    },
+    {
+      "name": "Senegal",
+      "subregion number": 202
+    },
+    {
+      "name": "Serbia",
+      "subregion number": 39
+    },
+    {
+      "name": "Seychelles",
+      "subregion number": 202
+    },
+    {
+      "name": "Sierra Leone",
+      "subregion number": 202
+    },
+    {
+      "name": "Singapore",
+      "subregion number": 35
+    },
+    {
+      "name": "Sint Maarten (Dutch part)",
+      "subregion number": 419
+    },
+    {
+      "name": "Slovakia",
+      "subregion number": 151
+    },
+    {
+      "name": "Slovenia",
+      "subregion number": 39
+    },
+    {
+      "name": "Solomon Islands",
+      "subregion number": 54
+    },
+    {
+      "name": "Somalia",
+      "subregion number": 202
+    },
+    {
+      "name": "South Africa",
+      "subregion number": 202
+    },
+    {
+      "name": "South Georgia and the South Sandwich Islands",
+      "subregion number": 419
+    },
+    {
+      "name": "South Sudan",
+      "subregion number": 202
+    },
+    {
+      "name": "Spain",
+      "subregion number": 39
+    },
+    {
+      "name": "Sri Lanka",
+      "subregion number": 34
+    },
+    {
+      "name": "State of Palestine",
+      "subregion number": 145
+    },
+    {
+      "name": "Sudan",
+      "subregion number": 15
+    },
+    {
+      "name": "Suriname",
+      "subregion number": 419
+    },
+    {
+      "name": "Svalbard and Jan Mayen Islands",
+      "subregion number": 154
+    },
+    {
+      "name": "Sweden",
+      "subregion number": 154
+    },
+    {
+      "name": "Switzerland",
+      "subregion number": 155
+    },
+    {
+      "name": "Syrian Arab Republic",
+      "subregion number": 145
+    },
+    {
+      "name": "Tajikistan",
+      "subregion number": 143
+    },
+    {
+      "name": "Taiwan",
+      "subregion number": 30
+    },
+    {
+      "name": "Thailand",
+      "subregion number": 35
+    },
+    {
+      "name": "Timor-Leste",
+      "subregion number": 35
+    },
+    {
+      "name": "Togo",
+      "subregion number": 202
+    },
+    {
+      "name": "Tokelau",
+      "subregion number": 61
+    },
+    {
+      "name": "Tonga",
+      "subregion number": 61
+    },
+    {
+      "name": "Trinidad and Tobago",
+      "subregion number": 419
+    },
+    {
+      "name": "Tunisia",
+      "subregion number": 15
+    },
+    {
+      "name": "Turkmenistan",
+      "subregion number": 143
+    },
+    {
+      "name": "Turks and Caicos Islands",
+      "subregion number": 419
+    },
+    {
+      "name": "Tuvalu",
+      "subregion number": 61
+    },
+    {
+      "name": "Türkiye",
+      "subregion number": 145
+    },
+    {
+      "name": "Uganda",
+      "subregion number": 202
+    },
+    {
+      "name": "Ukraine",
+      "subregion number": 151
+    },
+    {
+      "name": "United Arab Emirates",
+      "subregion number": 145
+    },
+    {
+      "name": "United Kingdom of Great Britain and Northern Ireland",
+      "subregion number": 154
+    },
+    {
+      "name": "United Republic of Tanzania",
+      "subregion number": 202
+    },
+    {
+      "name": "United States Minor Outlying Islands",
+      "subregion number": 57
+    },
+    {
+      "name": "United States Virgin Islands",
+      "subregion number": 419
+    },
+    {
+      "name": "United States of America",
+      "subregion number": 21
+    },
+    {
+      "name": "Uruguay",
+      "subregion number": 419
+    },
+    {
+      "name": "Uzbekistan",
+      "subregion number": 143
+    },
+    {
+      "name": "Vanuatu",
+      "subregion number": 54
+    },
+    {
+      "name": "Venezuela (Bolivarian Republic of)",
+      "subregion number": 419
+    },
+    {
+      "name": "Viet Nam",
+      "subregion number": 35
+    },
+    {
+      "name": "Wallis and Futuna Islands",
+      "subregion number": 61
+    },
+    {
+      "name": "Western Sahara",
+      "subregion number": 15
+    },
+    {
+      "name": "Yemen",
+      "subregion number": 145
+    },
+    {
+      "name": "Zambia",
+      "subregion number": 202
+    },
+    {
+      "name": "Zimbabwe",
+      "subregion number": 202
+    },
+    {
+      "name": "Åland Islands",
+      "subregion number": 154
+    }
+  ]
+}
