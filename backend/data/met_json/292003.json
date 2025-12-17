@@ -1,0 +1,98 @@
+{
+  "objectID": 292003,
+  "isHighlight": false,
+  "accessionNumber": "2005.100.504.31",
+  "accessionYear": "2005",
+  "isPublicDomain": true,
+  "primaryImage": "https://images.metmuseum.org/CRDImages/ph/original/DP-387-011.jpg",
+  "primaryImageSmall": "https://images.metmuseum.org/CRDImages/ph/web-large/DP-387-011.jpg",
+  "additionalImages": [
+    "https://images.metmuseum.org/CRDImages/ph/original/DP-387-010.jpg"
+  ],
+  "constituents": [
+    {
+      "constituentID": 54836,
+      "role": "Artist",
+      "name": "Charles Clifford",
+      "constituentULAN_URL": "http://vocab.getty.edu/page/ulan/500040721",
+      "constituentWikidata_URL": "https://www.wikidata.org/wiki/Q559325",
+      "gender": ""
+    }
+  ],
+  "department": "Photographs",
+  "objectName": "Photograph",
+  "title": "Monserrat, Vista general de la montaña desde Monistrol",
+  "culture": "",
+  "period": "",
+  "dynasty": "",
+  "reign": "",
+  "portfolio": "",
+  "artistRole": "Artist",
+  "artistPrefix": "",
+  "artistDisplayName": "Charles Clifford",
+  "artistDisplayBio": "Welsh, 1819–1863",
+  "artistSuffix": "",
+  "artistAlphaSort": "Clifford, Charles",
+  "artistNationality": "British",
+  "artistBeginDate": "1819",
+  "artistEndDate": "1863",
+  "artistGender": "",
+  "artistWikidata_URL": "https://www.wikidata.org/wiki/Q559325",
+  "artistULAN_URL": "http://vocab.getty.edu/page/ulan/500040721",
+  "objectDate": "1860",
+  "objectBeginDate": 1860,
+  "objectEndDate": 1860,
+  "medium": "Albumen silver print from glass negative",
+  "dimensions": "Image: 31.7 × 41.5 cm (12 1/2 × 16 5/16 in.)\r\nMount: 42.3 × 58.2 cm (16 5/8 × 22 15/16 in.)",
+  "measurements": [
+    {
+      "elementName": "Image",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Height": 31.7,
+        "Width": 41.5
+      }
+    },
+    {
+      "elementName": "Mount",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Height": 42.3,
+        "Width": 58.2
+      }
+    }
+  ],
+  "creditLine": "Gilman Collection, Purchase, Mr. and Mrs. Henry R. Kravis Gift, 2005",
+  "geographyType": "",
+  "city": "",
+  "state": "",
+  "county": "",
+  "country": "",
+  "region": "",
+  "subregion": "",
+  "locale": "",
+  "locus": "",
+  "excavation": "",
+  "river": "",
+  "classification": "Photographs",
+  "rightsAndReproduction": "",
+  "linkResource": "",
+  "metadataDate": "2025-03-06T04:54:30Z",
+  "repository": "Metropolitan Museum of Art, New York, NY",
+  "objectURL": "https://www.metmuseum.org/art/collection/search/292003",
+  "tags": [
+    {
+      "term": "Mountains",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300008795",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q8502"
+    },
+    {
+      "term": "Landscapes",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300132294",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q191163"
+    }
+  ],
+  "objectWikidata_URL": "",
+  "isTimelineWork": false,
+  "GalleryNumber": ""
+}

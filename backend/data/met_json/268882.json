@@ -1,0 +1,88 @@
+{
+  "objectID": 268882,
+  "isHighlight": false,
+  "accessionNumber": "46.1.109",
+  "accessionYear": "1946",
+  "isPublicDomain": true,
+  "primaryImage": "https://images.metmuseum.org/CRDImages/ph/original/DP115250.jpg",
+  "primaryImageSmall": "https://images.metmuseum.org/CRDImages/ph/web-large/DP115250.jpg",
+  "additionalImages": [],
+  "constituents": [
+    {
+      "constituentID": 55831,
+      "role": "Artist",
+      "name": "Attributed to Calvert Richard Jones",
+      "constituentULAN_URL": "http://vocab.getty.edu/page/ulan/500118848",
+      "constituentWikidata_URL": "https://www.wikidata.org/wiki/Q5024269",
+      "gender": ""
+    }
+  ],
+  "department": "Photographs",
+  "objectName": "Photograph",
+  "title": "[Strada Levante, Valletta, Malta]",
+  "culture": "",
+  "period": "",
+  "dynasty": "",
+  "reign": "",
+  "portfolio": "",
+  "artistRole": "Artist",
+  "artistPrefix": "Attributed to",
+  "artistDisplayName": "Calvert Richard Jones",
+  "artistDisplayBio": "British, Swansea, Wales 1802–1877 Bath, England",
+  "artistSuffix": "",
+  "artistAlphaSort": "Jones, Calvert Richard",
+  "artistNationality": "British, Welsh",
+  "artistBeginDate": "1802",
+  "artistEndDate": "1877",
+  "artistGender": "",
+  "artistWikidata_URL": "https://www.wikidata.org/wiki/Q5024269",
+  "artistULAN_URL": "http://vocab.getty.edu/page/ulan/500118848",
+  "objectDate": "1850s",
+  "objectBeginDate": 1850,
+  "objectEndDate": 1859,
+  "medium": "Salted paper print from paper negative",
+  "dimensions": "Image: 21.7 x 17.4 cm (8 9/16 x 6 7/8 in.)",
+  "measurements": [
+    {
+      "elementName": "Image",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Height": 21.7,
+        "Width": 17.4
+      }
+    }
+  ],
+  "creditLine": "David Hunter McAlpin Fund, 1946",
+  "geographyType": "",
+  "city": "",
+  "state": "",
+  "county": "",
+  "country": "",
+  "region": "",
+  "subregion": "",
+  "locale": "",
+  "locus": "",
+  "excavation": "",
+  "river": "",
+  "classification": "Photographs",
+  "rightsAndReproduction": "",
+  "linkResource": "",
+  "metadataDate": "2025-03-06T04:54:30Z",
+  "repository": "Metropolitan Museum of Art, New York, NY",
+  "objectURL": "https://www.metmuseum.org/art/collection/search/268882",
+  "tags": [
+    {
+      "term": "Buildings",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300004789",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q41176"
+    },
+    {
+      "term": "Stairs",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300003228",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q12511"
+    }
+  ],
+  "objectWikidata_URL": "",
+  "isTimelineWork": false,
+  "GalleryNumber": ""
+}

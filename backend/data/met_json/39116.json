@@ -1,0 +1,78 @@
+{
+  "objectID": 39116,
+  "isHighlight": true,
+  "accessionNumber": "1986.501.7",
+  "accessionYear": "1986",
+  "isPublicDomain": true,
+  "primaryImage": "https://images.metmuseum.org/CRDImages/as/original/1986_501_7.jpg",
+  "primaryImageSmall": "https://images.metmuseum.org/CRDImages/as/web-large/1986_501_7.jpg",
+  "additionalImages": [],
+  "constituents": null,
+  "department": "Asian Art",
+  "objectName": "Figure",
+  "title": "Seated Amitāyus, the Buddha of Eternal Life",
+  "culture": "Burma",
+  "period": "Pagan period",
+  "dynasty": "",
+  "reign": "",
+  "portfolio": "",
+  "artistRole": "",
+  "artistPrefix": "",
+  "artistDisplayName": "",
+  "artistDisplayBio": "",
+  "artistSuffix": "",
+  "artistAlphaSort": "",
+  "artistNationality": "",
+  "artistBeginDate": "",
+  "artistEndDate": "",
+  "artistGender": "",
+  "artistWikidata_URL": "",
+  "artistULAN_URL": "",
+  "objectDate": "ca. 11th–12th century",
+  "objectBeginDate": 950,
+  "objectEndDate": 1250,
+  "medium": "Bronze",
+  "dimensions": "H. 9 3/8 in. (23.8 cm)",
+  "measurements": [
+    {
+      "elementName": "Overall",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Height": 23.8
+      }
+    }
+  ],
+  "creditLine": "Gift of Evelyn Kossak, The Kronos Collections, 1986",
+  "geographyType": "",
+  "city": "",
+  "state": "",
+  "county": "",
+  "country": "",
+  "region": "",
+  "subregion": "",
+  "locale": "",
+  "locus": "",
+  "excavation": "",
+  "river": "",
+  "classification": "Sculpture",
+  "rightsAndReproduction": "",
+  "linkResource": "",
+  "metadataDate": "2025-10-15T04:51:40.863Z",
+  "repository": "Metropolitan Museum of Art, New York, NY",
+  "objectURL": "https://www.metmuseum.org/art/collection/search/39116",
+  "tags": [
+    {
+      "term": "Buddhism",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300073738",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q748"
+    },
+    {
+      "term": "Buddha",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300262950",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q7055"
+    }
+  ],
+  "objectWikidata_URL": "https://www.wikidata.org/wiki/Q116374411",
+  "isTimelineWork": false,
+  "GalleryNumber": "250"
+}
