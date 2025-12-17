@@ -160,7 +160,8 @@ const ArtworkInfoBar = ({
         '--background-color': colors.background,
 
         opacity: isVisible ? 1 : 0,
-        transition: 'opacity 5s ease-in-out',
+     transition: 'opacity 5s cubic-bezier(0.4, 0.0, 0.2, 1)',
+
         pointerEvents: isVisible ? 'auto' : 'none'
       }}
     >

@@ -226,7 +226,7 @@ def get_images(iso3):
         WHERE artist_iso3 = %s
     ''', (iso3,))
     children_art = [dict(row) for row in cursor.fetchall()]
-
+    print(f"Children Art: {children_art}")
     # Query Public Domain images
     cursor.execute('''
         SELECT 'Public Domain Review' as collection_type,

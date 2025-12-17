@@ -89,12 +89,12 @@ const ImageGallery = ({
         return (
           <>
             {image.title && <div className="artwork-title">{image.title}</div>}
-            {image.location && <div className="artwork-location">{image.location}</div>}
+            {image.mission && <div className="artwork-location">{image.mission}</div>}
             {image.date && <div className="artwork-date">{image.date}</div>}
             <div className="artwork-source">
               {image.page_url ? (
                 <a href={image.page_url} target="_blank" rel="noopener noreferrer">
-                  musée départemental Albert-Kahn
+                  Musée départemental Albert-Kahn
                 </a>
               ) : (
                 <a href="https://albert-kahn.hauts-de-seine.fr/en/" target="_blank" rel="noopener noreferrer">
@@ -111,6 +111,7 @@ const ImageGallery = ({
             {image.title && <div className="artwork-title">{image.title}</div>}
             {image.artist_name && (
               <div className="artwork-artist">
+                
                 {image.author_wikilink ? (
                   <a href={image.author_wikilink} target="_blank" rel="noopener noreferrer">
                     {image.artist_name}

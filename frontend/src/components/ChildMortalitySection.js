@@ -21,9 +21,8 @@ const ChildMortalitySection = ({ mortalityData }) => {
     <div className="mortality-section">
       <div className="mortality-stats">
         <strong>Child Mortality</strong>
-        <div className="mortality-stat-line">{mortalityData.start_year}: {mortalityData.start_rate.toFixed(2)}%</div>
-        <div className="mortality-stat-line">{mortalityData.end_year}: {mortalityData.end_rate.toFixed(2)}%</div>
-        <div className="mortality-stat-line">Percentage points decrease: {Math.abs(mortalityData.difference).toFixed(2)}%</div>
+        <div className="mortality-stat-line">{mortalityData.start_year}: {mortalityData.start_rate.toFixed(1)} {mortalityData.end_year}: {mortalityData.end_rate.toFixed(1)}%</div>
+        <div className="mortality-stat-line"><b>Percentage points decrease: {Math.abs(mortalityData.difference).toFixed(1)}</b>%</div>
       </div>
 
       {mortalityData.candle_count > 0 && (

@@ -16,10 +16,10 @@ from io import BytesIO
 
 # Configuration
 MET_API_BASE = "https://collectionapi.metmuseum.org/public/collection/v1/objects"
-MET_CSV_PATH = "backend/data/met.csv"
-OUTPUT_CSV_PATH = "backend/data/met_metadata.csv"
-JSON_DIR = "backend/data/met_json"
-IMAGES_BASE_DIR = "backend/images"
+MET_CSV_PATH = "data/met.csv"
+OUTPUT_CSV_PATH = "data/met_metadata.csv"
+JSON_DIR = "data/met_json"
+IMAGES_BASE_DIR = "images"
 REQUEST_DELAY = 0.1  # 100ms delay between requests (well below 80 req/sec limit)
 MAX_IMAGE_SIZE = 1200  # Max dimension in pixels
 JPEG_QUALITY = 85

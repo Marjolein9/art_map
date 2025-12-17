@@ -14,7 +14,9 @@
 /* ==============================================================================
    APP LAYOUT
    ============================================================================== */
-
+body {
+  font-size: 16px;
+}
 .app-background {
   min-height: 100vh;
   padding: 5px;
@@ -36,7 +38,6 @@
 
 .loading-message {
   text-align: center;
-  font-size: 1.2em;
   color: var(--text-color);
 }
 
@@ -126,7 +127,6 @@
   pointer-events: none;
   padding: 12px 24px;
   border-radius: 8px;
-  font-size: 20px;
   font-weight: bold;
 }
 
@@ -154,7 +154,6 @@
   padding: 10px 20px;
   border: none;
   border-radius: 6px;
-  font-size: 14px;
   cursor: pointer;
   transition: all 0.3s ease;
   font-weight: 500;
@@ -177,7 +176,6 @@
 }
 
 .settings-label {
-  font-size: 14px;
   font-weight: 500;
 }
 
@@ -185,7 +183,6 @@
   padding: 8px 12px;
   border-radius: 4px;
   border: 1px solid;
-  font-size: 14px;
   cursor: pointer;
   transition: border-color 0.3s ease;
 }
@@ -298,7 +295,6 @@
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  font-size: 18px;
   font-weight: bold;
   transition: all 0.2s ease;
   flex-shrink: 0;
@@ -324,7 +320,6 @@
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  font-size: 14px;
   font-weight: bold;
   transition: all 0.2s ease;
   flex-shrink: 0;
@@ -349,7 +344,6 @@
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  font-size: 14px;
   font-weight: bold;
   transition: all 0.2s ease;
   flex-shrink: 0;
@@ -416,7 +410,6 @@
 
 .artwork-type-title {
   margin: 0;
-  font-size: 1.1em;
   font-weight: 600;
   color: rgba(229, 229, 229, 0.7);
   font-family: 'Roboto Condensed', Helvetica, sans-serif;
@@ -426,14 +419,12 @@
 
 .artwork-type-count {
   opacity: 0.7;
-  font-size: 0.9em;
   font-weight: 400;
 }
 
 .collection-subtitle {
   display: inline-block;
   margin-top: 4px;
-  font-size: 0.75em;
   font-weight: 400;
   letter-spacing: 0.5px;
   color: rgba(229, 229, 229, 0.7);
@@ -519,13 +510,12 @@ a.collection-subtitle:hover {
   color: white;
   border: 1px solid var(--border-color, rgba(255, 255, 255, 0.3));
   border-radius: 50%;
-  width: 30px;
-  height: 30px;
+  width: 50px;
+  height: 50px;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  font-size: 12px;
   transition: all 0.2s ease;
 }
 
@@ -536,7 +526,6 @@ a.collection-subtitle:hover {
 
 .pagination-info {
   color: white;
-  font-size: 13px;
   font-weight: 600;
   min-width: 50px;
   text-align: center;
@@ -575,7 +564,6 @@ a.collection-subtitle:hover {
 
 .artwork-artist {
   font-weight: 700;
-  font-size: 1.1em;
   margin-bottom: 5px;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -585,7 +573,6 @@ a.collection-subtitle:hover {
 }
 
 .artwork-title {
-  font-size: 0.95em;
   color: rgba(229, 229, 229, 0.7);
   word-wrap: break-word;
   white-space: normal;
@@ -593,7 +580,6 @@ a.collection-subtitle:hover {
 }
 
 .artwork-location {
-  font-size: 0.9em;
   color: rgba(229, 229, 229, 0.6);
   margin-top: 5px;
   word-wrap: break-word;
@@ -601,25 +587,21 @@ a.collection-subtitle:hover {
 }
 
 .artwork-date {
-  font-size: 0.85em;
   color: rgba(229, 229, 229, 0.5);
   margin-top: 5px;
 }
 
 .artwork-dates {
-  font-size: 0.85em;
   color: rgba(229, 229, 229, 0.5);
   margin-top: 5px;
 }
 
 .artwork-source {
-  font-size: 0.85em;
   color: rgba(229, 229, 229, 0.7);
   margin-top: 5px;
 }
 
 .artwork-article {
-  font-size: 0.85em;
   color: rgba(229, 229, 229, 0.6);
   margin-top: 8px;
   word-wrap: break-word;
@@ -627,7 +609,6 @@ a.collection-subtitle:hover {
 }
 
 .artwork-culture {
-  font-size: 0.85em;
   color: rgba(229, 229, 229, 0.5);
   margin-top: 5px;
 }
@@ -669,7 +650,6 @@ a.collection-subtitle:hover {
   display: inline-block;
   padding: 4px 8px;
   border-radius: 4px;
-  font-size: 0.75em;
   margin-top: 8px;
   font-weight: 700;
   text-transform: uppercase;
@@ -688,7 +668,6 @@ a.collection-subtitle:hover {
   padding: 6px 12px;
   border-radius: 4px;
   text-decoration: none;
-  font-size: 0.85em;
   transition: all 0.2s ease;
   border: 1px solid;
 }
@@ -788,7 +767,6 @@ a.collection-subtitle:hover {
 }
 
 .overlay-title {
-  font-size: 16px;
   font-weight: bold;
   font-family: system-ui;
   color: var(--text-color);
@@ -808,7 +786,6 @@ a.collection-subtitle:hover {
   padding: 3px 8px;
   border-radius: 3px;
   cursor: pointer;
-  font-size: 11px;
   font-weight: bold;
   transition: all 0.2s ease;
   background-color: rgba(40, 40, 40, 0.85);
@@ -839,7 +816,6 @@ a.collection-subtitle:hover {
 }
 
 .toggle-label-small {
-  font-size: 13px;
   font-weight: bold;
   color: var(--text-color);
   opacity: 0.9;
@@ -911,7 +887,6 @@ input:checked + .toggle-slider-small:before {
   padding: 4px 8px;
   border-radius: 3px;
   cursor: pointer;
-  font-size: 11px;
   font-weight: bold;
   transition: all 0.3s ease;
   background-color: var(--button-bg);
@@ -960,7 +935,7 @@ input:checked + .toggle-slider-small:before {
 }
 
 .toggle-label {
-  font-size: 10px;
+  
   font-weight: bold;
   color: var(--text-color);
   opacity: 0.8;
@@ -1124,7 +1099,6 @@ input:checked + .toggle-slider:before {
 
 /* Mortality statistics container */
 .mortality-stats {
-  font-size: 14px;
   margin-bottom: 12px;
   display: flex;
   flex-direction: column;
@@ -1141,7 +1115,6 @@ input:checked + .toggle-slider:before {
   padding: 12px;
   border-radius: 4px;
   margin-top: 16px;
-  font-size: 13px;
   line-height: 1.6;
   color: rgba(229, 229, 229, 0.7);
 }
@@ -1153,7 +1126,6 @@ input:checked + .toggle-slider:before {
 
 /* Mortality credits/attribution */
 .mortality-credits {
-  font-size: 11px;
   margin-top: 12px;
   color: rgba(229, 229, 229, 0.7);
   background-color: rgb(87, 80, 72);
@@ -1194,7 +1166,6 @@ input:checked + .toggle-slider:before {
 
 .external-links-title {
   margin: 0 0 15px 0;
-  font-size: 1.1em;
   font-weight: 600;
   color: rgba(229, 229, 229, 0.7);
   font-family: 'Roboto Condensed', Helvetica, sans-serif;
@@ -1216,7 +1187,6 @@ input:checked + .toggle-slider:before {
   border: 2px solid var(--border-color);
   border-radius: 8px;
   color: rgba(229, 229, 229, 0.7);
-  font-size: 0.95em;
   font-weight: 500;
   text-align: center;
   transition: all 0.3s ease;
