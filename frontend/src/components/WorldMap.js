@@ -289,7 +289,7 @@ const WorldMap = ({
 
         <div className="control-overlay" style={{ '--card-bg': COLORS.cardBg, '--text-color': COLORS.text, '--glow-color': COLORS.glow, '--border-color': COLORS.border }}>
           <div className="overlay-title">
-            {mode==='quiz' && targetCountryName ? `Find: ${targetCountryName}` : 'Click countries to see info or turn on quiz mode'}
+            {mode==='quiz' && targetCountryName ? `Find: ${targetCountryName}` : ''}
           </div>
 
           <div className="overlay-controls">

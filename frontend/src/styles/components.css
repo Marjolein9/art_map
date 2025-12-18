@@ -1209,11 +1209,11 @@ input:checked + .toggle-slider:before {
 }
 
 .welcome-main-content::-webkit-scrollbar {
-  width: 8px;
+  width: 12px;
 }
 
 .welcome-main-content::-webkit-scrollbar-track {
-  background: rgba(0, 0, 0, 0.3);
+  background: rgba(241, 239, 239, 0.3);
 }
 
 .welcome-main-content::-webkit-scrollbar-thumb {
@@ -1400,7 +1400,6 @@ input:checked + .toggle-slider:before {
 .welcome-example-image {
   width: 100%;
   height: auto;
-  max-height: 200px;
   object-fit: cover;
   border-radius: 4px;
 }
@@ -1494,7 +1493,8 @@ input:checked + .toggle-slider:before {
   align-items: center;
   gap: 12px;
   padding: 8px;
-  background: rgba(0, 0, 0, 0.15);
+  
+  background: rgba(0, 0, 0, 0.2);
   border-radius: 4px;
 }
 
@@ -1607,10 +1607,7 @@ input:checked + .toggle-slider-small:before {
     padding: 15px;
   }
 
-  .welcome-example-image {
-    max-height: 150px;
-  }
-
+ 
   .welcome-control-button {
     padding: 8px 12px;
     font-size: 11px;
@@ -1637,9 +1634,7 @@ input:checked + .toggle-slider-small:before {
     gap: 12px;
   }
 
-  .welcome-example-image {
-    max-height: 120px;
-  }
+
 
   .welcome-card-country-name {
     font-size: 14px;
