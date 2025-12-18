@@ -770,7 +770,7 @@ a.collection-subtitle:hover {
 .globe-control-btn-small {
   padding: 3px 8px;
   border-radius: 3px;
-  font-size: 16px;
+  font-size: 12px;
   cursor: pointer;
   font-weight: bold;
   transition: all 0.2s ease;
@@ -1127,3 +1127,15 @@ input:checked + .toggle-slider:before {
   gap: 12px;
 }
 
+@media (max-width: 768px) {
+  .control-overlay {
+    left: 8px;
+    right: 8px;
+    transform: none;
+
+    width: auto;
+    max-width: none;
+
+    padding: 12px 14px;
+  }
+}
