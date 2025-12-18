@@ -1139,3 +1139,12 @@ input:checked + .toggle-slider:before {
     padding: 12px 14px;
   }
 }
+.overlay-line-break {
+  flex-basis: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  margin-top: 6px;
+  flex-wrap: wrap;
+}

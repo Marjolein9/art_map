@@ -306,31 +306,75 @@ const WorldMap = ({
               </label>
             </div>
 
-            {mode==='quiz' && (
-              <>
-                <button onClick={onStartOver} className="globe-control-btn-small" title="Next Country">Skip</button>
-                <button onClick={handleShowMe} className="globe-control-btn-small" title="Show Me" disabled={showMeActivated} style={{opacity:showMeActivated?0.5:1, cursor:showMeActivated?'not-allowed':'pointer'}}>
-                  {showMeActivated?'Shown!':'Show Me'}
-                </button>
+{mode === 'quiz' && (
+  <div className="overlay-line-break">
+    <button
+      onClick={onStartOver}
+      className="globe-control-btn-small"
+      title="Next Country"
+    >
+      Skip
+    </button>
 
-                <div className="toggle-container-small">
-                  <span className="toggle-label-small">Hint</span>
-                  <label className="toggle-switch-small">
-                    <input type="checkbox" checked={hintsEnabled} onChange={()=>setHintsEnabled(prev=>!prev)} />
-                    <span className="toggle-slider-small"></span>
-                  </label>
-                </div>
+    <button
+      onClick={handleShowMe}
+      className="globe-control-btn-small"
+      title="Show Me"
+      disabled={showMeActivated}
+      style={{
+        opacity: showMeActivated ? 0.5 : 1,
+        cursor: showMeActivated ? 'not-allowed' : 'pointer'
+      }}
+    >
+      {showMeActivated ? 'Shown!' : 'Show Me'}
+    </button>
 
-                <span className="controls-divider" />
+    <div className="toggle-container-small">
+      <span className="toggle-label-small">Hint</span>
+      <label className="toggle-switch-small">
+        <input
+          type="checkbox"
+          checked={hintsEnabled}
+          onChange={() => setHintsEnabled(prev => !prev)}
+        />
+        <span className="toggle-slider-small" />
+      </label>
+    </div>
 
-                <select onChange={handleCountryDropdownChange} value={targetCountry||''} className="country-dropdown" title="Select country to test" style={{ padding:'4px 8px', fontSize:'13px', borderRadius:'4px', border:'1px solid var(--border-color)', background:'var(--card-bg)', color:'var(--text-color)', cursor:'pointer', maxWidth:'150px' }}>
-                  <option value="">Test country...</option>
-                  {allCountries.sort((a,b)=>(a.common_name||a.name).localeCompare(b.common_name||b.name)).map(c=>(
-                    <option key={c.iso3} value={c.iso3}>{c.common_name||c.name}</option>
-                  ))}
-                </select>
-              </>
-            )}
+    <span className="controls-divider" />
+
+    <select
+      onChange={handleCountryDropdownChange}
+      value={targetCountry || ''}
+      className="country-dropdown"
+      title="Select country to test"
+      style={{
+        padding: '4px 8px',
+        fontSize: '13px',
+        borderRadius: '4px',
+        border: '1px solid var(--border-color)',
+        background: 'var(--card-bg)',
+        color: 'var(--text-color)',
+        cursor: 'pointer',
+        maxWidth: '150px'
+      }}
+    >
+      <option value="">Test country...</option>
+      {allCountries
+        .sort((a, b) =>
+          (a.common_name || a.name).localeCompare(
+            b.common_name || b.name
+          )
+        )
+        .map(c => (
+          <option key={c.iso3} value={c.iso3}>
+            {c.common_name || c.name}
+          </option>
+        ))}
+    </select>
+  </div>
+)}
+
           </div>
         </div>
       </div>
