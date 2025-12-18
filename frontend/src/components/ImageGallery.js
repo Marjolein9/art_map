@@ -235,11 +235,11 @@ const ImageGallery = ({
   };
 
   return (
-    <div className="artwork-type-section">
+    <div className="overlay-section">
       {/* Collection Header */}
-      <div className="artwork-type-header">
+      <div className="overlay-section-header">
         <div>
-          <h4 className="section-header section-header--collection">
+          <h4 className="overlay-section-title">
             {getCollectionTitle(collection)}
           </h4>
           {getCollectionSubtitle(collection)}
@@ -247,7 +247,7 @@ const ImageGallery = ({
       </div>
 
       {/* Collection Content */}
-      <div className="artwork-type-content">
+      <div className="overlay-section-content">
           <div className="card-item">
             <div
               className="artwork-image-container"
@@ -341,7 +341,7 @@ const ImageGallery = ({
             </div>
 
             {/* Image metadata/caption */}
-            <div className="info-box">
+            <div className="overlay-caption">
               {renderCaption(currentImage, collection)}
             </div>
           </div>

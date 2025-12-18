@@ -18,7 +18,7 @@ export const welcomeExamples = {
           description:
             'Photographs from Albert Kahn’s project to document everyday life with color photography in the early 20th century.',
           link:
-            'https://albert-kahn.hauts-de-seine.fr/collections/en/document/une-femme-et-son-enfant-posent-pour-l-operateur/617a7a44cf8b8968b3384d52',
+            'https://albert-kahn.hauts-de-seine.fr/',
           image: '/welcome-examples/egy-woman-child.jpg',
         },
       },

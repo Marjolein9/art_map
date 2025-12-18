@@ -29,7 +29,7 @@ const ChildMortalitySection = ({ mortalityData }) => {
         <Candles count={mortalityData.candle_count} />
       )}
 
-      <div className="info-box">
+      <div className="overlay-caption">
         <p>
           The events of 2024 and 2025 are not reflected in the numbers above.</p>
           <p> To learn more about the kind of work that reduced the child mortality rate over the last few decades, please watch{' '}
@@ -52,7 +52,7 @@ const ChildMortalitySection = ({ mortalityData }) => {
         </p>
       </div>
 
-      <div className="info-box">
+      <div className="overlay-caption">
         <div>
           Candle design adapted from{' '}
           <a

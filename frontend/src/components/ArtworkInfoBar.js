@@ -151,7 +151,7 @@ const ArtworkInfoBar = ({
   return (
     <div
       ref={containerRef}
-      className="artwork-info-container"
+      className="overlay-container"
       style={{
         '--card-bg': colors.cardBg,
         '--glow-color': colors.glow,
@@ -173,8 +173,8 @@ const ArtworkInfoBar = ({
 
       {!loading && (
         <>
-          <div className="artwork-info-header">
-            <h3 className="section-header section-header--main">
+          <div className="overlay-header">
+            <h3 className="overlay-title">
               {mode === 'quiz' && answerSubmitted
                 ? isCorrectAnswer
                   ? `Correct: ${countryName || countryISO}`
