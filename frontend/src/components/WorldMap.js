@@ -19,7 +19,8 @@ const WorldMap = ({
   loading = false,
   onManualCountrySelect = null,
   countryLookup = {},
-  backendReady = false, // <-- added
+  backendReady = false, 
+    setShowWelcome,
 }) => {
   const COLORS = colors;
   const globeEl = useRef();
@@ -304,6 +305,15 @@ const WorldMap = ({
                 <input type="checkbox" checked={mode==='quiz'} onChange={onModeToggle} />
                 <span className="toggle-slider-small"></span>
               </label>
+                {/* Welcome Overlay Icon */}
+<button
+  className="welcome-control-button welcome-icon-button"
+  onClick={() => setShowWelcome(true)}
+  title="Open Welcome Menu"
+  aria-label="Open Welcome Menu"
+>
+  ℹ
+</button>
             </div>
 
 {mode === 'quiz' && (

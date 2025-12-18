@@ -1191,17 +1191,21 @@ input:checked + .toggle-slider:before {
   flex-shrink: 0;
   text-align: center;
 }
-
-/* BUTTONS - STACKED VERTICALLY, FULL WIDTH */
+/* BUTTONS - SIDE BY SIDE */
 .welcome-buttons-stack {
   display: flex;
-  flex-direction: column;
-  gap: 10px;
+  flex-direction: row;   /* ← change from column */
+  gap: 12px;
   flex-shrink: 0;
+}
+
+.welcome-control-button {
+  flex: 1;               /* makes both buttons equal width */
 }
 
 /* MAIN CONTENT - Right Scrollable Panel */
 .welcome-main-content {
+  background-color: var(--bg-brown-dark);
   flex: 1;
   display: flex;
   flex-direction: column;
@@ -1211,6 +1215,7 @@ input:checked + .toggle-slider:before {
 }
 
 .welcome-section-header-text {
+  color: var(--text-secondary);
   text-align: center;
   padding: 15px;
   background: rgba(0, 0, 0, 0.2);
@@ -1219,14 +1224,18 @@ input:checked + .toggle-slider:before {
   margin-bottom: 10px;
 }
 
-.welcome-section-header-text h3 {
+.welcome-section-header h3 {
   margin: 0;
   font-size: 18px;
   font-weight: 600;
-  color: var(--link-color);
+  color: var(--text-primary);
   font-family: 'Roboto Condensed', Helvetica, sans-serif;
   text-transform: uppercase;
   letter-spacing: 1.5px;
+}
+.welcome-section-header-text p {
+  
+  color: var(--text-color);
 }
 
 .welcome-main-content::-webkit-scrollbar {
@@ -1614,5 +1623,35 @@ input:checked + .toggle-slider-small:before {
   .welcome-section-blurb {
     font-size: 11px;
   }
+}
+/* Horizontal button row */
+.welcome-buttons-row {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
+/* Existing button styles remain */
+.welcome-control-button {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+}
+
+/* Optional: Distinguish the icon button */
+.welcome-icon-button {
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  background: var(--bg-overlay-heavy);
+  color: var(--link-color);
 }
 

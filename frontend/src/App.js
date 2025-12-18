@@ -421,6 +421,7 @@ function App() {
                 loading={(loading && mode === 'quiz') || (exploreLoading && mode === 'explore')}
                 onManualCountrySelect={setManualTargetCountry}
                 countryLookup={countryLookup}
+                 setShowWelcome={setShowWelcome}
               />
 
               {((loading && mode === 'quiz') || (exploreLoading && mode === 'explore')) && (
