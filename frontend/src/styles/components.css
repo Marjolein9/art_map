@@ -742,7 +742,7 @@ a.collection-subtitle:hover {
   border-radius: 8px;
   backdrop-filter: blur(10px);
   z-index: 1000;
-  background-color: var(--card-bg);
+  background-color: var(--bg-overlay-medium);
   box-shadow: 0 0 20px var(--glow-color), 0 4px 6px rgba(0,0,0,0.3);
   border: 2px solid var(--border-color);
   display: flex;
@@ -755,7 +755,7 @@ a.collection-subtitle:hover {
   font-size: 16pt;
   font-weight: bold;
   font-family: system-ui;
-  color: var(--text-color);
+  color: var(--link-color);
   text-align: center;
 }
 
@@ -1067,7 +1067,7 @@ input:checked + .toggle-slider:before {
 .artwork-info-header {
   position: sticky;
   top: 0;
-  background-color: var(--card-bg);
+  background-color: var(--bg-overlay-medium);
   z-index: 10;
   padding-top: 8px;
   padding-bottom: 8px;
