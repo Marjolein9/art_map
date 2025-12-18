@@ -4,9 +4,24 @@ During my maternity leave, I made a geography-learning website that is as Nerdfi
 
   refer in label infobar and quiz (everywhere) to the common name of the country using pycountry to get it if necessary, not the official name. use scrip to cacluate it and add it to the tables so it doesn't need to be calcuated each time. add the th m39 list as well. also what does lld and sids stand for in the m29 file? 
 
+1. add met info
+2. check links
+3. check all countries
+4. study code
+5. try to do without claude: 
+add general info after loaded
 
-consolidate redundant classes, so for the infobar, child mortality and external links, same clases are used, one for header, one for more info. keep the light colored font and general format, I just want less classes. so if the differences are small between classes (different shade of white, different shadows) just consolidate. make sure to upate for all teh components. be careful not to loss features beyond text formatting. the overlays, and general look should stay the same. use inline bold italic simple stuff ;ike that. keep complicating formating in ccs. plan first
-is there anything else where therre is redundant code? plan first
-add comments through out to explain what is happening so i can answer coding questions about it in interviews. high levels and details that someone new to react wouldnt knnow
-move loading the center of the screen
-add standard disclaimer link on bottom foot to window that may be mistakes do own research with simple short but legal sounding to link at bottom of the screen
+get rid of 5 second wait
+
+figure out how to wait until images loaded
+
+don't wait if no images
+
+images random first than others
+ 
+
+paths different colors per country
+
+remove wrong hints
+
+move candles below next
