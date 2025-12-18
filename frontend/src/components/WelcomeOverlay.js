@@ -207,9 +207,9 @@ const WelcomeOverlay = ({ onStartQuiz, onExplore, colors }) => {
           <div className="welcome-main-content">
 
             <div className="welcome-section-header-text">
-              <h3>More Information</h3>
-        The app includes Quiz and Explore modes. In both modes, selecting a country opens an info bar. The info bar shows public domain images, child mortality changes from 1989 to 2023, and external resources. Most countries have at least one image source, though some do not.     
-</div>
+              <h3>Click on a country to get the public domain images and info described below</h3>
+            </div>
+
             {/* COUNTRY EXAMPLES */}
             {welcomeExamples.countries.map((country) => (
               <React.Fragment key={country.iso3}>
