@@ -25,3 +25,8 @@ paths different colors per country
 remove wrong hints
 
 move candles below next
+
+country assignment as temporary overlay
+
+start with overlay with Start Quiz or Explore button, explains info categories, hints, candles
+

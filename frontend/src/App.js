@@ -11,6 +11,7 @@ import './styles/App.css';
 import './styles/components.css';
 import WorldMap from './components/WorldMap';
 import ArtworkInfoBar from './components/ArtworkInfoBar';
+import WelcomeOverlay from './components/WelcomeOverlay';
 import COLOR_SCHEME from './styles/colorSchemes';
 import { useQuiz } from './hooks/useQuiz';
 import { fetchCountries } from './services/api';
@@ -72,6 +73,9 @@ function App() {
 
   // Controls disclaimer modal visibility
   const [disclaimerOpen, setDisclaimerOpen] = useState(false);
+
+  // Controls welcome overlay visibility on initial load
+  const [showWelcome, setShowWelcome] = useState(true);
 
   /**
    * Interview Note: useRef Hook
@@ -386,6 +390,22 @@ function App() {
                 '--border-color': COLORS.border,
               }}
             >
+              {/* Welcome Overlay - Shows on initial load */}
+              {showWelcome && (
+                <WelcomeOverlay
+                  onStartQuiz={() => {
+                    setShowWelcome(false);
+                    setMode('quiz');
+                    fetchNewCountry();
+                  }}
+                  onExplore={() => {
+                    setShowWelcome(false);
+                    setMode('explore');
+                  }}
+                  colors={COLORS}
+                />
+              )}
+
               <WorldMap
                 backendReady={backendReady}
                 onCountryClick={handleExploreClick}

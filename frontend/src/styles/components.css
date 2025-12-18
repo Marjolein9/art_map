@@ -752,6 +752,7 @@ a.collection-subtitle:hover {
 }
 
 .overlay-title {
+  font-size: 16pt;
   font-weight: bold;
   font-family: system-ui;
   color: var(--text-color);
@@ -1148,3 +1149,514 @@ input:checked + .toggle-slider:before {
   margin-top: 6px;
   flex-wrap: wrap;
 }
+
+/* ==============================================================================
+   WELCOME OVERLAY STYLES
+   ============================================================================== */
+
+/* Full Height Welcome Overlay Container */
+.welcome-full-height {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+.welcome-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  height: calc(100vh - 60px);
+  max-width: 100%;
+}
+
+/* TOP INFO-BAR - Horizontal bar at top */
+.welcome-top-bar {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  padding: 15px 20px;
+  background: rgba(0, 0, 0, 0.3);
+  border-bottom: 1px solid var(--link-underline);
+  flex-shrink: 0;
+  gap: 12px;
+}
+
+.welcome-bar-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--link-color);
+  margin: 0;
+  flex-shrink: 0;
+  text-align: center;
+}
+
+/* BUTTONS - STACKED VERTICALLY, FULL WIDTH */
+.welcome-buttons-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
+/* MAIN CONTENT - Right Scrollable Panel */
+.welcome-main-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  padding: 20px;
+  gap: 18px;
+}
+
+.welcome-main-content::-webkit-scrollbar {
+  width: 8px;
+}
+
+.welcome-main-content::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.3);
+}
+
+.welcome-main-content::-webkit-scrollbar-thumb {
+  background: var(--link-color);
+  border-radius: 4px;
+}
+
+.welcome-main-content::-webkit-scrollbar-thumb:hover {
+  background: var(--link-hover);
+}
+
+/* Welcome intro text */
+.welcome-intro-text {
+  margin: 0;
+  text-align: center;
+  padding: 15px;
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 6px;
+  border-left: 3px solid var(--link-color);
+}
+
+.welcome-intro-text p {
+  margin: 0;
+  line-height: 1.6;
+  font-size: 12px;
+}
+
+/* Section Headers with Blurbs - Educational Context */
+.welcome-section {
+  padding: 15px;
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 6px;
+  border-left: 3px solid var(--link-color);
+}
+
+.welcome-section-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--link-color);
+  margin: 0 0 8px 0;
+}
+
+.welcome-section-blurb {
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+/* Country Card - No Icons, Clean Layout */
+.welcome-country-card {
+  padding: 12px;
+  background: rgba(0, 0, 0, 0.3);
+  border-left: 4px solid var(--link-underline);
+  border-radius: 4px;
+}
+
+.welcome-card-header {
+  margin-bottom: 10px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--link-underline);
+}
+
+.welcome-card-country-name {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--link-color);
+  margin: 0;
+  text-shadow: 0 0 8px var(--link-shadow);
+}
+
+/* Card Content */
+.welcome-card-content {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.welcome-collection-item {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* Collection Header - Shows source instead of country */
+.welcome-collection-header {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--link-underline);
+  margin-bottom: 8px;
+}
+
+.welcome-collection-source {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--link-color);
+  margin: 0;
+  text-shadow: 0 0 8px var(--link-shadow);
+}
+
+.welcome-country-label {
+  font-size: 14px;
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
+.section-header {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--link-color);
+  margin: 0 0 8px 0;
+}
+
+.section-header--main {
+  font-size: 16px;
+}
+
+.section-header--collection {
+  font-size: 13px;
+}
+
+/* Caption styling */
+.welcome-caption {
+  padding: 8px;
+  font-size: 13px;
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 4px;
+}
+
+.artwork-subtitle {
+  font-style: italic;
+  font-size: 13px;
+  color: var(--text-secondary);
+  margin-bottom: 4px;
+  font-weight: 500;
+}
+
+.artwork-title {
+  font-weight: 600;
+  color: var(--link-color);
+  margin-bottom: 4px;
+  font-size: 14px;
+}
+
+.artwork-artist {
+  font-size: 13px;
+  color: var(--text-secondary);
+  margin-bottom: 2px;
+}
+
+.artwork-date {
+  font-size: 12px;
+  color: var(--text-tertiary);
+  margin-bottom: 4px;
+}
+
+.artwork-source {
+  font-size: 10px;
+  margin-top: 6px;
+  padding-top: 6px;
+  border-top: 1px solid var(--link-underline);
+}
+
+.artwork-source a {
+  color: var(--link-color);
+  text-decoration: none;
+}
+
+.artwork-source a:hover {
+  text-decoration: underline;
+  color: var(--link-hover);
+}
+
+.welcome-description {
+  font-size: 13px;
+  line-height: 1.4;
+  color: var(--text-secondary);
+  font-style: italic;
+}
+
+/* Example Image */
+.welcome-example-image {
+  width: 100%;
+  height: auto;
+  max-height: 200px;
+  object-fit: cover;
+  border-radius: 4px;
+}
+
+/* Close Button - Top Right Corner */
+.welcome-close-button {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  width: 40px;
+  height: 40px;
+  border: 2px solid var(--link-color);
+  background: rgba(0, 0, 0, 0.6);
+  color: var(--link-color);
+  border-radius: 50%;
+  font-size: 24px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  z-index: 100;
+}
+
+.welcome-close-button:hover {
+  background: rgba(0, 0, 0, 0.8);
+  box-shadow: 0 0 12px var(--link-color);
+  transform: scale(1.1);
+}
+
+/* Top Control Buttons - Top Bar (BIGGER) */
+.welcome-control-button {
+  padding: 14px 28px;
+  font-size: 14px;
+  font-weight: 600;
+  border: 2px solid var(--link-color);
+  background: rgba(0, 0, 0, 0.4);
+  color: var(--link-color);
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  box-sizing: border-box;
+  width: 100%;
+}
+
+.welcome-control-button:hover {
+  background: rgba(143, 179, 201, 0.15);
+  box-shadow: 0 0 12px var(--link-color);
+  transform: translateY(-2px);
+}
+
+.explore-button {
+  border-color: #8fb3c9;
+  color: #8fb3c9;
+}
+
+.explore-button:hover {
+  box-shadow: 0 0 12px #8fb3c9;
+}
+
+.quiz-button {
+  border-color: #d4a574;
+  color: #d4a574;
+}
+
+.quiz-button:hover {
+  box-shadow: 0 0 12px #d4a574;
+}
+
+/* Button Descriptions - REMOVED */
+
+/* Candle Display */
+.welcome-candle-display {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 12px 0;
+}
+
+/* Controls List - One Per Line */
+.welcome-controls-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.welcome-control-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px;
+  background: rgba(0, 0, 0, 0.15);
+  border-radius: 4px;
+}
+
+.welcome-control-item .globe-control-btn-small,
+.welcome-control-item .toggle-container-small {
+  flex-shrink: 0;
+}
+
+.control-explanation {
+  font-size: 12px;
+  color: var(--text-secondary);
+  line-height: 1.3;
+}
+
+/* Global control button small version */
+.globe-control-btn-small {
+  padding: 6px 12px;
+  font-size: 12px;
+  font-weight: 600;
+  border: 1px solid var(--link-color);
+  background: rgba(0, 0, 0, 0.4);
+  color: var(--link-color);
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.globe-control-btn-small:hover {
+  background: rgba(143, 179, 201, 0.15);
+  box-shadow: 0 0 8px var(--link-color);
+}
+
+/* Toggle container small version */
+.toggle-container-small {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px;
+}
+
+.toggle-label-small {
+  font-size: 11px;
+  color: var(--link-color);
+  font-weight: 600;
+}
+
+.toggle-switch-small {
+  position: relative;
+  display: inline-block;
+  width: 32px;
+  height: 18px;
+}
+
+.toggle-switch-small input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.toggle-slider-small {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.4);
+  transition: 0.3s;
+  border-radius: 18px;
+  border: 1px solid var(--link-underline);
+}
+
+.toggle-slider-small:before {
+  position: absolute;
+  content: "";
+  height: 14px;
+  width: 14px;
+  left: 2px;
+  bottom: 2px;
+  background-color: var(--link-color);
+  transition: 0.3s;
+  border-radius: 50%;
+}
+
+input:checked + .toggle-slider-small {
+  background-color: rgba(143, 179, 201, 0.2);
+}
+
+input:checked + .toggle-slider-small:before {
+  transform: translateX(14px);
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+  .welcome-top-bar {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+  }
+
+  .welcome-bar-title {
+    text-align: center;
+  }
+
+  .welcome-buttons-inline {
+    justify-content: center;
+  }
+
+  .welcome-main-content {
+    padding: 15px;
+  }
+
+  .welcome-example-image {
+    max-height: 150px;
+  }
+
+  .welcome-control-button {
+    padding: 8px 12px;
+    font-size: 11px;
+  }
+}
+
+@media (max-width: 480px) {
+  .welcome-top-bar {
+    padding: 12px;
+    gap: 8px;
+  }
+
+  .welcome-bar-title {
+    font-size: 14px;
+  }
+
+  .welcome-buttons-inline {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .welcome-main-content {
+    padding: 12px;
+    gap: 12px;
+  }
+
+  .welcome-example-image {
+    max-height: 120px;
+  }
+
+  .welcome-card-country-name {
+    font-size: 14px;
+  }
+
+  .welcome-control-button {
+    padding: 6px 10px;
+    font-size: 10px;
+    letter-spacing: 0.3px;
+  }
+
+  .welcome-section-title {
+    font-size: 14px;
+  }
+
+  .welcome-section-blurb {
+    font-size: 11px;
+  }
+}
+
