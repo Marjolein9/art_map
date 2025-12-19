@@ -150,6 +150,8 @@ const WorldMap = ({
   const prevTargetCountryRef = useRef(null);
   useEffect(() => {
     if (prevTargetCountryRef.current && prevTargetCountryRef.current !== targetCountry) {
+      console.log(`🔄 NEW TARGET: ${prevTargetCountryRef.current} → ${targetCountry}`);
+      console.log(`  Clearing: clickedCountry, hints, showMe`);
       setHintNeighborsM49([]);
       hintCountryRef.current = null;
       setClickedCountry(null);
@@ -157,6 +159,11 @@ const WorldMap = ({
     }
     prevTargetCountryRef.current = targetCountry;
   }, [targetCountry]);
+
+  // Debug: Log state changes
+  useEffect(() => {
+    console.log(`📊 GAME STATE: gameStatus=${gameStatus}, clickedCountry=${clickedCountry}, targetCountry=${targetCountry}`);
+  }, [gameStatus, clickedCountry, targetCountry]);
 
   const activeHints = showMeActivated ? [] : hintNeighborsM49;
 

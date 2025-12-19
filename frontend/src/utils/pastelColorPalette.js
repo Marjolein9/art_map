@@ -110,6 +110,11 @@ export const getPathColor = (
 ) => {
   const pathIso = getCountryIsoCode(path);
   
+  // DEBUG: Log color decision for clicked countries
+  if (pathIso === clickedCountry) {
+    console.log(`🎨 PATH COLOR: iso=${pathIso}, gameStatus=${gameStatus}, clickedCountry=${clickedCountry}, targetCountry=${targetCountry}, isHint=${isHintOverlay}, isShowMe=${isShowMeOverlay}`);
+  }
+  
   // Incorrect answer stays red until a NEW country is assigned
   // Only show red if: clicked this country, it was wrong, AND we're still on the same target
   if (
@@ -117,11 +122,13 @@ export const getPathColor = (
     gameStatus === 'incorrect' && 
     clickedCountry !== targetCountry  // NOT the target, so it was a wrong guess
   ) {
+    console.log(`🔴 SHOWING RED for ${pathIso} (clicked but wrong, target is ${targetCountry})`);
     return '#FF6B6B'; // Bright red for wrong answer
   }
   
   // Correct answer shows in correct color from theme
   if (clickedCountry === pathIso && gameStatus === 'correct') {
+    console.log(`✅ SHOWING CORRECT COLOR for ${pathIso}`);
     return colors.correct;
   }
   
