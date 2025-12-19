@@ -304,7 +304,7 @@ const WelcomeOverlay = ({ onStartQuiz, onExplore, colors }) => {
               <div className="overlay-section-content">
                 <div className="overlay-caption">
                   Each candle represents one percentage point decrease in the
-                  under-five child mortality of the country between 1990 and 2023.
+                  under-five child mortality of the country between 1989 and 2023.
                 </div>
                 <div className="welcome-candle-display">
                   <center><Candles count={1} /></center>

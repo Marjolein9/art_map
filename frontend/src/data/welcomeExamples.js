@@ -16,7 +16,7 @@ export const welcomeExamples = {
           title: 'A Woman and Her Child Pose for the Photographer',
           source: 'Musée départemental Albert-Kahn',
           description:
-            'Photographs from Albert Kahn’s project to document everyday life with color photography in the early 20th century.',
+            'Photographs from Albert Kahn’s project to document everyday life with color photography in the early 20th century organized by the location the photograph was taken.',
           link:
             'https://albert-kahn.hauts-de-seine.fr/',
           image: '/welcome-examples/egy-woman-child.jpg',
@@ -33,7 +33,7 @@ export const welcomeExamples = {
           nationality: 'Greek',
           source: 'Children in Art',
           description:
-            'Artwork that depicts children from artists from each country, mostly found using WikiArt and limited by my lack of art knowledge. All categories are incomplete, but this one is especially so.',
+            'Artwork that depicts children from artists from each country, mostly found using WikiArt. All categories are incomplete, but this one is especially so due to my lack of art knowledge.',
           link: 'https://www.wikiart.org/en/nikolaos-gyzis',
           image: '/welcome-examples/grc-peek-a-boo.jpg',
         },
@@ -48,7 +48,7 @@ export const welcomeExamples = {
           nationality: 'Latvian',
           source: 'Metropolitan Museum of Art',
           description:
-            'Art from the Metropolitan Museum of Art.',
+            'Metropolitan Museum of Art collection items related to the selected country. The Met collection often includes extensive background information on the items.',
           link: 'https://www.metmuseum.org/art/collection/search/84280',
           image: '/welcome-examples/lva-coat.jpg',
         },
@@ -64,7 +64,7 @@ export const welcomeExamples = {
           artist: 'Käthe Kollwitz',
           source: 'Public Domain Review',
           description:
-            'Images from The Public Domain Review, a online journal with essays on public domain works',
+            'Images from Public Domain Review essays that relate to selected country. The Public Domain Review is a free online journal that reviews works in the public domain.',
           link: 'https://publicdomainreview.org/essay/our-mortal-waltz-the-dance-of-death-across-centuries/',
           image: '/welcome-examples/deu-waltz.jpg',
         },
