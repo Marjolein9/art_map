@@ -1,16 +1,12 @@
+import { Box, Typography, Card, Link } from '@mui/material';
+
 /**
- * ExternalLinks Component
+ * ExternalLinks Component (Pure MUI Version)
  *
  * Displays external resource links for a country.
- * Handles Gapminder Dollar Street, Food Atlas, and other external links.
- *
- * @param {Object} externalLinks - External links data object
- * @param {string} externalLinks.gapminder_url - Gapminder Dollar Street URL
- * @param {string} externalLinks.tasteatlas_url - TasteAtlas URL
- * @param {string} externalLinks.extra_links - Additional external links
- * @param {string} countryName - Name of the country
+ * No CSS classes - only MUI sx prop styling
  */
-const ExternalLinks = ({ externalLinks, countryName }) => {
+const ExternalLinks = ({ externalLinks, countryName, colors }) => {
   // Return null if no links are available
   if (!externalLinks ||
       (!externalLinks.gapminder_url?.trim() &&
@@ -20,45 +16,141 @@ const ExternalLinks = ({ externalLinks, countryName }) => {
   }
 
   return (
-    <div className="external-links-section">
-      <h4 className="section-header section-header--external">External Resources</h4>
-      <div className="external-links-list">
+    <Box
+      sx={{
+        p: 2.5,
+        borderTop: `2px solid ${colors?.border}`,
+        mt: 2.5,
+        bgcolor: colors?.bgBrownDark || 'rgb(87, 80, 72)',
+        borderRadius: 1,
+      }}
+    >
+      <Typography
+        variant="h4"
+        sx={{
+          m: '0 0 15px 0',
+          fontWeight: 600,
+          textAlign: 'center',
+          fontSize: '14px',
+          fontFamily: "'Roboto Condensed', Helvetica, sans-serif",
+          color: colors?.textPrimary,
+          textTransform: 'uppercase',
+          letterSpacing: '1px',
+        }}
+      >
+        External Resources
+      </Typography>
+      <Box
+        sx={{
+          display: 'flex',
+          flexDirection: 'column',
+          gap: 1.5,
+        }}
+      >
         {externalLinks.gapminder_url?.trim() && (
-          <div className="card-item card-item--padded">
-            <a
+          <Card
+            sx={{
+              borderRadius: 1,
+              overflow: 'hidden',
+              transition: 'all 0.25s ease-in-out',
+              cursor: 'pointer',
+              opacity: 0.8,
+              bgcolor: 'rgba(0, 0, 0, 0.35)',
+              border: `2px solid ${colors?.border}`,
+              p: '12px 16px',
+              color: colors?.textPrimary,
+              fontWeight: 500,
+              textAlign: 'center',
+              '&:hover': {
+                transform: 'translateY(-2px)',
+                boxShadow: `0 0 15px ${colors?.glow}`,
+                opacity: 1,
+                bgcolor: 'rgba(0, 0, 0, 0.5)',
+                borderColor: colors?.glow,
+                color: 'rgba(229, 229, 229, 0.9)',
+              },
+            }}
+          >
+            <Link
               href={externalLinks.gapminder_url}
               target="_blank"
               rel="noopener noreferrer"
+              sx={{ textDecoration: 'none', color: 'inherit' }}
             >
               Gapminder's Dollar Street
-            </a>
+            </Link>
             : How people live in {countryName || 'this country'}
-          </div>
+          </Card>
         )}
         {externalLinks.tasteatlas_url?.trim() && (
-          <div className="card-item card-item--padded">
-            <a
+          <Card
+            sx={{
+              borderRadius: 1,
+              overflow: 'hidden',
+              transition: 'all 0.25s ease-in-out',
+              cursor: 'pointer',
+              opacity: 0.8,
+              bgcolor: 'rgba(0, 0, 0, 0.35)',
+              border: `2px solid ${colors?.border}`,
+              p: '12px 16px',
+              color: colors?.textPrimary,
+              fontWeight: 500,
+              textAlign: 'center',
+              '&:hover': {
+                transform: 'translateY(-2px)',
+                boxShadow: `0 0 15px ${colors?.glow}`,
+                opacity: 1,
+                bgcolor: 'rgba(0, 0, 0, 0.5)',
+                borderColor: colors?.glow,
+                color: 'rgba(229, 229, 229, 0.9)',
+              },
+            }}
+          >
+            <Link
               href={externalLinks.tasteatlas_url}
               target="_blank"
               rel="noopener noreferrer"
+              sx={{ textDecoration: 'none', color: 'inherit' }}
             >
               TasteAtlas
-            </a>
+            </Link>
             : Food from {countryName || 'this country'}
-          </div>
+          </Card>
         )}
         {externalLinks.extra_links?.trim() && (
-          <a
+          <Card
+            component={Link}
             href={externalLinks.extra_links}
             target="_blank"
             rel="noopener noreferrer"
-            className="card-item card-item--padded"
+            sx={{
+              borderRadius: 1,
+              overflow: 'hidden',
+              transition: 'all 0.25s ease-in-out',
+              cursor: 'pointer',
+              opacity: 0.8,
+              bgcolor: 'rgba(0, 0, 0, 0.35)',
+              border: `2px solid ${colors?.border}`,
+              p: '12px 16px',
+              color: colors?.textPrimary,
+              fontWeight: 500,
+              textAlign: 'center',
+              textDecoration: 'none',
+              '&:hover': {
+                transform: 'translateY(-2px)',
+                boxShadow: `0 0 15px ${colors?.glow}`,
+                opacity: 1,
+                bgcolor: 'rgba(0, 0, 0, 0.5)',
+                borderColor: colors?.glow,
+                color: 'rgba(229, 229, 229, 0.9)',
+              },
+            }}
           >
             Additional Links
-          </a>
+          </Card>
         )}
-      </div>
-    </div>
+      </Box>
+    </Box>
   );
 };
 

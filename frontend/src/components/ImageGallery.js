@@ -1,22 +1,17 @@
 import { useState, useEffect, useRef } from 'react';
+import { Box, Typography, IconButton, Link } from '@mui/material';
+import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
+import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 
 // Get API base URL from environment variable
 // Remove /api suffix to get the base server URL for images
 const API_BASE = (process.env.REACT_APP_API_URL || 'http://localhost:5000/api').replace('/api', '');
 
 /**
- * ImageGallery Component
+ * ImageGallery Component (MUI Version)
  *
  * Displays a single image collection with pagination controls.
  * Handles different metadata formats for each collection type.
- *
- * @param {string} collection - Collection name
- * @param {Array} images - Array of image objects
- * @param {string} countryName - Name of the country (for Children in Art subtitle)
- * @param {number} currentIndex - Current image index
- * @param {Function} onPrev - Handler for previous image
- * @param {Function} onNext - Handler for next image
- * @param {Function} imageRef - Ref callback for image element
  */
 const ImageGallery = ({
   collection,
@@ -88,95 +83,94 @@ const ImageGallery = ({
       case 'Albert Kahn':
         return (
           <>
-            {image.title && <div className="artwork-title">{image.title}</div>}
-            {image.mission && <div className="artwork-location">{image.mission}</div>}
-            {image.date && <div className="artwork-date">{image.date}</div>}
-            <div className="artwork-source">
+            {image.title && <Typography className="artwork-title">{image.title}</Typography>}
+            {image.mission && <Typography className="artwork-location">{image.mission}</Typography>}
+            {image.date && <Typography className="artwork-date">{image.date}</Typography>}
+            <Typography className="artwork-source">
               {image.page_url ? (
-                <a href={image.page_url} target="_blank" rel="noopener noreferrer">
+                <Link href={image.page_url} target="_blank" rel="noopener noreferrer">
                   Musée départemental Albert-Kahn
-                </a>
+                </Link>
               ) : (
-                <a href="https://albert-kahn.hauts-de-seine.fr/en/" target="_blank" rel="noopener noreferrer">
+                <Link href="https://albert-kahn.hauts-de-seine.fr/en/" target="_blank" rel="noopener noreferrer">
                   musée départemental Albert-Kahn
-                </a>
+                </Link>
               )}
-            </div>
+            </Typography>
           </>
         );
       case 'Children in Art':
         const sourceInfo = getSourceInfo(image.source);
         return (
           <>
-            {image.title && <div className="artwork-title">{image.title}</div>}
+            {image.title && <Typography className="artwork-title">{image.title}</Typography>}
             {image.artist_name && (
-              <div className="artwork-artist">
-                
+              <Typography className="artwork-artist">
                 {image.author_wikilink ? (
-                  <a href={image.author_wikilink} target="_blank" rel="noopener noreferrer">
+                  <Link href={image.author_wikilink} target="_blank" rel="noopener noreferrer">
                     {image.artist_name}
-                  </a>
+                  </Link>
                 ) : (
                   image.artist_name
                 )}
                 {image.artist_nationality && `, ${image.artist_nationality}`}
-              </div>
+              </Typography>
             )}
             {sourceInfo && (
-              <div className="artwork-source">
-                <a href={image.work_url || sourceInfo.url} target="_blank" rel="noopener noreferrer">
+              <Typography className="artwork-source">
+                <Link href={image.work_url || sourceInfo.url} target="_blank" rel="noopener noreferrer">
                   {sourceInfo.name}
-                </a>
-              </div>
+                </Link>
+              </Typography>
             )}
           </>
         );
       case 'Public Domain Review':
         return (
           <>
-            {image.description && <div className="artwork-location">{image.description}</div>}
+            {image.description && <Typography className="artwork-location">{image.description}</Typography>}
             {image.source_link && (
-              <div className="artwork-source">
-                <a href={image.source_link} target="_blank" rel="noopener noreferrer">
+              <Typography className="artwork-source">
+                <Link href={image.source_link} target="_blank" rel="noopener noreferrer">
                   Source
-                </a>
-              </div>
+                </Link>
+              </Typography>
             )}
             {image.title && image.source_url && (
-              <div className="artwork-article">
-                Featured in Public Domain Review: <a href={image.source_url} target="_blank" rel="noopener noreferrer">
+              <Typography className="artwork-article">
+                Featured in Public Domain Review: <Link href={image.source_url} target="_blank" rel="noopener noreferrer">
                   {image.title}
-                </a>
-              </div>
+                </Link>
+              </Typography>
             )}
           </>
         );
       case 'Met Museum':
         return (
           <>
-            {image.title && <div className="artwork-title">{image.title}</div>}
+            {image.title && <Typography className="artwork-title">{image.title}</Typography>}
             {image.artist_name && (
-              <div className="artwork-artist">
+              <Typography className="artwork-artist">
                 {image.artist_name}
                 {image.object_date && ` (${image.object_date})`}
-              </div>
+              </Typography>
             )}
-            {image.culture && <div className="artwork-culture">{image.culture}</div>}
-            <div className="artwork-source">
+            {image.culture && <Typography className="artwork-culture">{image.culture}</Typography>}
+            <Typography className="artwork-source">
               {image.object_url ? (
-                <a href={image.object_url} target="_blank" rel="noopener noreferrer">
+                <Link href={image.object_url} target="_blank" rel="noopener noreferrer">
                   Learn more at the Metropolitan Museum of Art
-                </a>
+                </Link>
               ) : (
-                <a href="https://www.metmuseum.org/" target="_blank" rel="noopener noreferrer">
+                <Link href="https://www.metmuseum.org/" target="_blank" rel="noopener noreferrer">
                   Learn more at the Metropolitan Museum of Art
-                </a>
+                </Link>
               )}
-            </div>
+            </Typography>
           </>
         );
       default:
-        return <div className="artwork-title">{image.title || 'Untitled'}</div>;
+        return <Typography className="artwork-title">{image.title || 'Untitled'}</Typography>;
     }
   };
 
@@ -201,33 +195,33 @@ const ImageGallery = ({
     switch(collectionType) {
       case 'Albert Kahn':
         return (
-          <a
+          <Link
             href="https://publicdomainreview.org/essay/albert-kahns-archives-of-the-planet/"
             target="_blank"
             rel="noopener noreferrer"
             className="collection-subtitle"
           >
             The Color of Memory
-          </a>
+          </Link>
         );
       case 'Children in Art':
         return (
-          <span className="collection-subtitle">
+          <Typography component="span" className="collection-subtitle">
             Artists from {countryName || 'this country'}
-          </span>
+          </Typography>
         );
       case 'Public Domain Review':
         return null;
       case 'Met Museum':
         return (
-          <a
+          <Link
             href="https://www.metmuseum.org/"
             target="_blank"
             rel="noopener noreferrer"
             className="collection-subtitle"
           >
             Metropolitan Museum of Art collection
-          </a>
+          </Link>
         );
       default:
         return null;
@@ -235,118 +229,114 @@ const ImageGallery = ({
   };
 
   return (
-    <div className="overlay-section">
+    <Box className="overlay-section">
       {/* Collection Header */}
-      <div className="overlay-section-header">
-        <div>
-          <h4 className="overlay-section-title">
+      <Box className="overlay-section-header">
+        <Box>
+          <Typography variant="h4" className="overlay-section-title">
             {getCollectionTitle(collection)}
-          </h4>
+          </Typography>
           {getCollectionSubtitle(collection)}
-        </div>
-      </div>
+        </Box>
+      </Box>
 
       {/* Collection Content */}
-      <div className="overlay-section-content">
-          <div className="card-item">
-            <div
-              className="artwork-image-container"
-              ref={containerRef}
-              style={{ height: `${maxHeight}px` }}
-            >
-              <img
-                key={`${collection}-${currentIndex}`}
-                ref={imageRef}
-                src={currentImage.filepath.startsWith('http')
+      <Box className="overlay-section-content">
+        <Box className="card-item">
+          <Box
+            className="artwork-image-container"
+            ref={containerRef}
+            sx={{ height: `${maxHeight}px` }}
+          >
+            <img
+              key={`${collection}-${currentIndex}`}
+              ref={imageRef}
+              src={currentImage.filepath.startsWith('http')
+                ? currentImage.filepath
+                : `${API_BASE}/${currentImage.filepath}`}
+              alt={currentImage.title || 'Image'}
+              className="artwork-image"
+              loading="lazy"
+              decoding="async"
+              style={{ backgroundColor: '#ddd' }}
+              onLoad={(e) => {
+                const img = e.target;
+                const container = img.parentElement;
+
+                console.log('✅ Image loaded:', {
+                  title: currentImage.title || 'Untitled',
+                  collection: collection,
+                  naturalDimensions: `${img.naturalWidth}x${img.naturalHeight}`,
+                  displayedDimensions: `${img.offsetWidth}x${img.offsetHeight}`,
+                  containerDimensions: `${container.offsetWidth}x${container.offsetHeight}`,
+                  aspectRatio: (img.naturalWidth / img.naturalHeight).toFixed(2),
+                  orientation: img.naturalWidth > img.naturalHeight ? 'landscape' : 'portrait'
+                });
+
+                if (img.naturalWidth > 2000 || img.naturalHeight > 2000) {
+                  console.warn('⚠️ Large image detected:', currentImage.filepath,
+                    `${img.naturalWidth}x${img.naturalHeight}`);
+                }
+              }}
+              onError={(e) => {
+                const attemptedUrl = currentImage.filepath.startsWith('http')
                   ? currentImage.filepath
-                  : `${API_BASE}/${currentImage.filepath}`}
-                alt={currentImage.title || 'Image'}
-                className="artwork-image"
-                loading="lazy"
-                decoding="async"
-                style={{ backgroundColor: '#ddd' }}
-                onLoad={(e) => {
-                  const img = e.target;
-                  const container = img.parentElement;
+                  : `${API_BASE}/${currentImage.filepath}`;
 
-                  // Log successful load with dimensions
-                  const loadedUrl = currentImage.filepath.startsWith('http')
-                    ? currentImage.filepath
-                    : `${API_BASE}/${currentImage.filepath}`;
+                console.error('❌ Image failed to load:', {
+                  title: currentImage.title || 'Untitled',
+                  collection: collection,
+                  filepath: currentImage.filepath,
+                  attemptedUrl: attemptedUrl,
+                  apiBase: API_BASE
+                });
 
-                  console.log('✅ Image loaded:', {
-                    title: currentImage.title || 'Untitled',
-                    collection: collection,
-                    naturalDimensions: `${img.naturalWidth}x${img.naturalHeight}`,
-                    displayedDimensions: `${img.offsetWidth}x${img.offsetHeight}`,
-                    containerDimensions: `${container.offsetWidth}x${container.offsetHeight}`,
-                    aspectRatio: (img.naturalWidth / img.naturalHeight).toFixed(2),
-                    orientation: img.naturalWidth > img.naturalHeight ? 'landscape' : 'portrait'
-                  });
+                // Set placeholder image
+                e.target.src = 'data:image/svg+xml,' + encodeURIComponent(`
+                  <svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200">
+                    <rect fill="#cccccc" width="200" height="200"/>
+                    <text x="50%" y="50%" text-anchor="middle" dominant-baseline="middle"
+                          font-family="Arial, sans-serif" font-size="14" fill="#666666">
+                      Image Not Available
+                    </text>
+                  </svg>
+                `);
+              }}
+            />
 
-                  if (img.naturalWidth > 2000 || img.naturalHeight > 2000) {
-                    console.warn('⚠️ Large image detected:', currentImage.filepath,
-                      `${img.naturalWidth}x${img.naturalHeight}`);
-                  }
-                }}
-                onError={(e) => {
-                  // Log detailed error information for debugging
-                  const attemptedUrl = currentImage.filepath.startsWith('http')
-                    ? currentImage.filepath
-                    : `${API_BASE}/${currentImage.filepath}`;
+            {/* Pagination controls for multiple images */}
+            {hasMultiple && (
+              <Box className="artwork-pagination">
+                <IconButton
+                  className="pagination-btn"
+                  onClick={onPrev}
+                  size="small"
+                  title="Previous"
+                >
+                  <ChevronLeftIcon fontSize="small" />
+                </IconButton>
+                <Typography className="pagination-info">
+                  {currentIndex + 1} / {images.length}
+                </Typography>
+                <IconButton
+                  className="pagination-btn"
+                  onClick={onNext}
+                  size="small"
+                  title="Next"
+                >
+                  <ChevronRightIcon fontSize="small" />
+                </IconButton>
+              </Box>
+            )}
+          </Box>
 
-                  console.error('❌ Image failed to load:', {
-                    title: currentImage.title || 'Untitled',
-                    collection: collection,
-                    filepath: currentImage.filepath,
-                    attemptedUrl: attemptedUrl,
-                    apiBase: API_BASE
-                  });
-
-                  // Set placeholder image
-                  e.target.src = 'data:image/svg+xml,' + encodeURIComponent(`
-                    <svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200">
-                      <rect fill="#cccccc" width="200" height="200"/>
-                      <text x="50%" y="50%" text-anchor="middle" dominant-baseline="middle"
-                            font-family="Arial, sans-serif" font-size="14" fill="#666666">
-                        Image Not Available
-                      </text>
-                    </svg>
-                  `);
-                }}
-              />
-
-              {/* Pagination controls for multiple images */}
-              {hasMultiple && (
-                <div className="artwork-pagination">
-                  <button
-                    className="pagination-btn"
-                    onClick={onPrev}
-                    title="Previous"
-                  >
-                    ◀
-                  </button>
-                  <span className="pagination-info">
-                    {currentIndex + 1} / {images.length}
-                  </span>
-                  <button
-                    className="pagination-btn"
-                    onClick={onNext}
-                    title="Next"
-                  >
-                    ▶
-                  </button>
-                </div>
-              )}
-            </div>
-
-            {/* Image metadata/caption */}
-            <div className="overlay-caption">
-              {renderCaption(currentImage, collection)}
-            </div>
-          </div>
-      </div>
-    </div>
+          {/* Image metadata/caption */}
+          <Box className="overlay-caption">
+            {renderCaption(currentImage, collection)}
+          </Box>
+        </Box>
+      </Box>
+    </Box>
   );
 };
 

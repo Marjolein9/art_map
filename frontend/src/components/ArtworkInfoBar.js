@@ -1,4 +1,13 @@
 import { useState, useEffect, useRef } from 'react';
+import {
+  Box,
+  Typography,
+  IconButton,
+  Button,
+  CircularProgress,
+} from '@mui/material';
+import CloseIcon from '@mui/icons-material/Close';
+import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import { fetchImages, fetchChildMortality, fetchExternalLinks } from '../services/api';
 import ImageGallery from './ImageGallery';
 import ChildMortalitySection from './ChildMortalitySection';
@@ -27,24 +36,18 @@ const ArtworkInfoBar = ({
   const imageRefs = useRef({});
   const containerRef = useRef(null);
 
-  /* ------------------------------------------------------------
-     START FADE IMMEDIATELY (NO DELAY)
-     ------------------------------------------------------------ */
+  /* START FADE IMMEDIATELY (NO DELAY) */
   useEffect(() => {
     if (!countryISO) return;
 
-    // Start invisible, then fade in immediately via CSS transition
     setIsVisible(false);
 
-    // Next tick ensures opacity: 0 is painted first
     requestAnimationFrame(() => {
       setIsVisible(true);
     });
   }, [countryISO]);
 
-  /* ------------------------------------------------------------
-     FETCH IMAGES
-     ------------------------------------------------------------ */
+  /* FETCH IMAGES */
   useEffect(() => {
     if (!countryISO) {
       setImagesByCollection({});
@@ -78,9 +81,7 @@ const ArtworkInfoBar = ({
       });
   }, [countryISO]);
 
-  /* ------------------------------------------------------------
-     FETCH CHILD MORTALITY
-     ------------------------------------------------------------ */
+  /* FETCH CHILD MORTALITY */
   useEffect(() => {
     if (!countryISO) {
       setMortalityData(null);
@@ -92,9 +93,7 @@ const ArtworkInfoBar = ({
       .catch(() => setMortalityData(null));
   }, [countryISO]);
 
-  /* ------------------------------------------------------------
-     FETCH EXTERNAL LINKS
-     ------------------------------------------------------------ */
+  /* FETCH EXTERNAL LINKS */
   useEffect(() => {
     if (!countryISO) {
       setExternalLinks(null);
@@ -106,9 +105,7 @@ const ArtworkInfoBar = ({
       .catch(() => setExternalLinks(null));
   }, [countryISO]);
 
-  /* ------------------------------------------------------------
-     IMAGE NAVIGATION
-     ------------------------------------------------------------ */
+  /* IMAGE NAVIGATION */
   const nextImage = (collection) => {
     const images = imagesByCollection[collection];
     if (!images) return;
@@ -129,9 +126,7 @@ const ArtworkInfoBar = ({
     }));
   };
 
-  /* ------------------------------------------------------------
-     CLEANUP IMAGE REFS
-     ------------------------------------------------------------ */
+  /* CLEANUP IMAGE REFS */
   useEffect(() => {
     return () => {
       Object.values(imageRefs.current).forEach(img => {
@@ -149,52 +144,139 @@ const ArtworkInfoBar = ({
   const collections = Object.keys(imagesByCollection);
 
   return (
-    <div
+    <Box
       ref={containerRef}
-      className="overlay-container"
-      style={{
-        '--card-bg': colors.cardBg,
-        '--glow-color': colors.glow,
-        '--border-color': colors.border,
-        '--text-color': colors.text,
-        '--background-color': colors.background,
-
+      sx={{
+        borderRadius: 1,
+        p: 2,
+        pb: 6,
+        mb: 4,
+        border: '5px solid',
+        borderColor: colors.border,
+        backdropFilter: 'blur(10px)',
+        fontFamily: "'Roboto', Helvetica, sans-serif",
+        maxHeight: 'calc(100vh - 120px)',
+        overflowY: 'auto',
+        bgcolor: colors.cardBg,
+        boxShadow: `0 0 20px ${colors.glow}, 0 4px 6px rgba(0, 0, 0, 0.3)`,
         opacity: isVisible ? 1 : 0,
-     transition: 'opacity 5s cubic-bezier(0.4, 0.0, 0.2, 1)',
-
-        pointerEvents: isVisible ? 'auto' : 'none'
+        transition: 'opacity 5s cubic-bezier(0.4, 0.0, 0.2, 1)',
+        pointerEvents: isVisible ? 'auto' : 'none',
+        '&::-webkit-scrollbar': {
+          width: '16px',
+        },
+        '&::-webkit-scrollbar-track': {
+          background: 'rgba(0, 0, 0, 0.4)',
+          borderRadius: 1,
+          m: 0.5,
+        },
+        '&::-webkit-scrollbar-thumb': {
+          background: 'rgba(200, 200, 200, 0.7)',
+          borderRadius: 1,
+          border: '3px solid rgba(0, 0, 0, 0.3)',
+        },
+        '&::-webkit-scrollbar-thumb:hover': {
+          background: 'rgba(230, 230, 230, 0.9)',
+        },
       }}
     >
       {loading && (
-        <div className="artwork-info-loading">
-          <p>Loading images…</p>
-        </div>
+        <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', p: 4 }}>
+          <CircularProgress sx={{ color: colors.linkColor }} />
+          <Typography sx={{ ml: 2, color: colors.textPrimary }}>
+            Loading images…
+          </Typography>
+        </Box>
       )}
 
       {!loading && (
         <>
-          <div className="overlay-header">
-            <h3 className="overlay-title">
+          <Box
+            sx={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              mb: 2,
+              gap: 2,
+              position: 'sticky',
+              top: 0,
+              bgcolor: 'rgba(0, 0, 0, 0.35)',
+              zIndex: 10,
+              pt: 1,
+              pb: 1,
+              borderBottom: `1px solid ${colors.border}`,
+            }}
+          >
+            <Typography
+              variant="h3"
+              sx={{
+                m: 0,
+                fontFamily: "'Roboto Condensed', Helvetica, sans-serif",
+                color: colors.text,
+                fontSize: '18pt',
+                textAlign: 'center',
+                fontWeight: 300,
+                letterSpacing: '1.5px',
+                flex: 1,
+              }}
+            >
               {mode === 'quiz' && answerSubmitted
                 ? isCorrectAnswer
                   ? `Correct: ${countryName || countryISO}`
                   : `Incorrect: ${countryName || countryISO}`
                 : countryName || countryISO}
-            </h3>
+            </Typography>
 
             {mode === 'quiz' && answerSubmitted && isCorrectAnswer && onNext ? (
-              <button className="action-button" onClick={onNext}>
-                Next →
-              </button>
+              <Button
+                onClick={onNext}
+                endIcon={<ArrowForwardIcon />}
+                variant="contained"
+                sx={{
+                  bgcolor: colors.bgBrownDark,
+                  color: colors.linkColor,
+                  border: `2px solid ${colors.border}`,
+                  borderRadius: '20px',
+                  px: 2.5,
+                  py: 1,
+                  fontWeight: 'bold',
+                  flexShrink: 0,
+                  '&:hover': {
+                    bgcolor: colors.buttonPrimary,
+                    transform: 'scale(1.05)',
+                    boxShadow: '0 0 15px rgba(139, 115, 85, 0.5)',
+                  },
+                }}
+              >
+                Next
+              </Button>
             ) : onClose ? (
-              <button className="artwork-close-btn" onClick={onClose}>
-                ✕
-              </button>
+              <IconButton
+                onClick={onClose}
+                sx={{
+                  bgcolor: 'rgba(0, 0, 0, 0.2)',
+                  color: colors.linkColor,
+                  border: `2px solid ${colors.border}`,
+                  borderRadius: '50%',
+                  width: 32,
+                  height: 32,
+                  flexShrink: 0,
+                  p: 0,
+                  '&:hover': {
+                    bgcolor: colors.glow,
+                    color: colors.background,
+                    transform: 'scale(1.1) rotate(90deg)',
+                    boxShadow: `0 0 10px ${colors.glow}`,
+                  },
+                }}
+              >
+                <CloseIcon />
+              </IconButton>
             ) : null}
-          </div>
+          </Box>
 
           {collections.length > 0 && (
-            <div className="artwork-types-list">
+            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
               {collections.map(collection => (
                 <ImageGallery
                   key={collection}
@@ -205,16 +287,17 @@ const ArtworkInfoBar = ({
                   onPrev={() => prevImage(collection)}
                   onNext={() => nextImage(collection)}
                   imageRef={el => (imageRefs.current[collection] = el)}
+                  colors={colors}
                 />
               ))}
-            </div>
+            </Box>
           )}
 
-          <ExternalLinks externalLinks={externalLinks} countryName={countryName} />
-          <ChildMortalitySection mortalityData={mortalityData} />
+          <ExternalLinks externalLinks={externalLinks} countryName={countryName} colors={colors} />
+          <ChildMortalitySection mortalityData={mortalityData} colors={colors} />
         </>
       )}
-    </div>
+    </Box>
   );
 };
 

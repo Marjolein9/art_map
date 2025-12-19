@@ -1,112 +1,31 @@
 /**
- * WelcomeOverlay Component - Interactive Welcome Screen
+ * WelcomeOverlay Component - Interactive Welcome Screen (Pure MUI Version)
  *
- * INTERVIEW PREP: REACT COMPONENTS & USER EXPERIENCE
- * ===================================================
- *
- * Component Purpose:
- * This component displays a comprehensive welcome screen on initial app load,
- * introducing users to the application's features and image collections.
- *
- * Key React Concepts Demonstrated:
- *
- * 1. Component State Management with useState:
- *    - Manages closing animation state
- *    - Handles user interactions (button clicks, backdrop clicks)
- *    - Interview Question: "How does React re-render when state changes?"
- *      Answer: When setState is called, React schedules a re-render, compares
- *      virtual DOM with actual DOM, and updates only what changed (reconciliation)
- *
- * 2. Controlled Transitions & Animations:
- *    - Uses state + CSS classes for smooth fade-out animations
- *    - setTimeout ensures animation completes before callback execution
- *    - Interview Question: "Why use setTimeout here?"
- *      Answer: CSS animations take time. We start the animation (isClosing=true),
- *      wait 300ms for it to complete, then trigger the callback.
- *
- * 3. Event Handling Patterns:
- *    - Backdrop click detection (e.target === e.currentTarget)
- *    - Multiple button handlers with different callbacks
- *    - Interview Question: "What's the difference between target and currentTarget?"
- *      Answer: target is the element that triggered the event (could be child),
- *      currentTarget is the element the listener is attached to (the backdrop div)
- *
- * 4. Props-Based Communication:
- *    - onStartQuiz: Callback to parent to enter quiz mode
- *    - onExplore: Callback to parent to enter explore mode
- *    - colors: Color scheme object for consistent theming
- *    - Interview Question: "Why pass callbacks as props?"
- *      Answer: React uses one-way data flow. Child components can't modify parent
- *      state directly. Callbacks let child notify parent to update state.
- *
- * 5. Dynamic Content Rendering:
- *    - Maps over welcomeExamples array to render collection cards
- *    - Conditional rendering for image metadata
- *    - React.Fragment for grouping without extra DOM nodes
- *    - Interview Question: "Why use React.Fragment instead of div?"
- *      Answer: Fragment doesn't create extra DOM elements. Useful when parent
- *      expects direct children or to avoid CSS layout issues.
- *
- * 6. CSS-in-JS with Inline Styles:
- *    - CSS custom properties (--card-bg, --glow-color) for theming
- *    - Dynamic opacity based on isClosing state
- *    - Interview Question: "When to use inline styles vs CSS classes?"
- *      Answer: Use inline styles for dynamic values (opacity based on state).
- *      Use CSS classes for static styling and pseudo-elements.
- *
- * User Experience Patterns:
- * - Modal overlay with backdrop click-to-close
- * - Explicit close button for accessibility
- * - Scrollable content area for mobile responsiveness
- * - Smooth transitions enhance perceived performance
- *
- * Accessibility Considerations:
- * - aria-label on close button for screen readers
- * - Semantic HTML (h2, h3 for headings)
- * - Links with target="_blank" include rel="noopener noreferrer" for security
- *
- * Common Interview Questions About This Component:
- *
- * Q: "How would you test this component?"
- * A: Test: 1) Initial render shows welcome content, 2) Click "Explore" triggers
- *    onExplore callback, 3) Click "Start Quiz" triggers onStartQuiz, 4) Backdrop
- *    click triggers close, 5) Animation completes before callback
- *
- * Q: "How could you improve performance?"
- * A: 1) Memoize welcomeExamples.countries.map with useMemo, 2) Lazy load images,
- *    3) Virtualize long lists if many countries, 4) Code-split this component
- *
- * Q: "What would happen without the setTimeout in handleClose?"
- * A: The overlay would disappear immediately without animation, creating jarring UX
+ * Fully migrated to Material-UI with sx prop styling - no CSS classes
  */
 import React, { useState } from 'react';
+import {
+  Dialog,
+  DialogContent,
+  Button,
+  Typography,
+  Box,
+  IconButton,
+  Stack,
+  Card,
+  CardContent,
+  CardMedia,
+  Link,
+  Switch,
+  FormControlLabel,
+} from '@mui/material';
+import CloseIcon from '@mui/icons-material/Close';
 import Candles from './Candles';
 import { welcomeExamples } from '../data/welcomeExamples';
 
 const WelcomeOverlay = ({ onStartQuiz, onExplore, colors }) => {
-  /**
-   * State: isClosing
-   * Controls the closing animation. When true, adds CSS class that triggers
-   * fade-out animation via opacity transition.
-   *
-   * Interview Note: We could use a single boolean "isOpen" instead, but having
-   * separate "isClosing" state allows us to keep the component mounted during
-   * animation, preventing abrupt disappearance.
-   */
   const [isClosing, setIsClosing] = useState(false);
 
-  /**
-   * handleClose - Initiates closing animation and navigates to explore mode
-   *
-   * Process:
-   * 1. Set isClosing to true (triggers CSS fade-out animation)
-   * 2. Wait 300ms for animation to complete
-   * 3. Call onExplore() callback to notify parent component
-   *
-   * Interview Note: This is a common pattern for exit animations in React.
-   * The setTimeout ensures the user sees the smooth fade-out before the
-   * component unmounts or mode changes.
-   */
   const handleClose = () => {
     setIsClosing(true);
     setTimeout(() => {
@@ -114,34 +33,6 @@ const WelcomeOverlay = ({ onStartQuiz, onExplore, colors }) => {
     }, 300);
   };
 
-  /**
-   * handleBackdropClick - Closes overlay when user clicks outside content
-   *
-   * UX Pattern: Modal with backdrop click-to-close
-   *
-   * Interview Question: "Why check e.target === e.currentTarget?"
-   * Answer: e.target is the actual element clicked (could be a child like button).
-   * e.currentTarget is always the element with the onClick listener (the backdrop).
-   * We only want to close when clicking the backdrop itself, not its children.
-   *
-   * Example:
-   * - Click on backdrop div → target === currentTarget → closes ✓
-   * - Click on content div → target !== currentTarget → doesn't close ✓
-   * - Click on button → target !== currentTarget → doesn't close ✓
-   */
-  const handleBackdropClick = (e) => {
-    if (e.target === e.currentTarget) {
-      handleClose();
-    }
-  };
-
-  /**
-   * handleStartQuiz - Initiates closing animation and navigates to quiz mode
-   *
-   * Same animation pattern as handleClose but triggers onStartQuiz callback
-   * instead of onExplore. This allows the parent App component to set mode
-   * state and initialize quiz mode properly.
-   */
   const handleStartQuiz = () => {
     setIsClosing(true);
     setTimeout(() => {
@@ -150,270 +41,510 @@ const WelcomeOverlay = ({ onStartQuiz, onExplore, colors }) => {
   };
 
   return (
-    <div
-      className={`artwork-backdrop welcome-backdrop ${isClosing ? 'closing' : ''}`}
-      onClick={handleBackdropClick}
-    >
-      <div
-        className="artwork-overlay welcome-overlay welcome-full-height"
-        style={{
-          '--card-bg': colors?.cardBg,
-          '--glow-color': colors?.glow,
-          '--border-color': colors?.border,
-          '--text-color': colors?.text,
-          '--background-color': colors?.background,
-        }}
-      >
-        {/* Close Button */}
-        <button
-          className="welcome-close-button"
-          onClick={handleClose}
-          aria-label="Close welcome overlay"
-        >
-          ✕
-        </button>
-
-        <div
-          className="overlay-container welcome-container welcome-full-container"
-          style={{
+    <Dialog
+      open={!isClosing}
+      onClose={handleClose}
+      maxWidth="md"
+      fullWidth
+      fullScreen
+      slotProps={{
+        paper: {
+          sx: {
+            bgcolor: colors?.cardBg || 'background.paper',
+            backgroundImage: 'none',
             opacity: isClosing ? 0 : 1,
             transition: 'opacity 0.3s ease',
+          },
+        },
+        backdrop: {
+          onClick: handleClose,
+        },
+      }}
+    >
+      <IconButton
+        onClick={handleClose}
+        sx={{
+          position: 'absolute',
+          right: 15,
+          top: 15,
+          color: colors?.linkColor || 'primary.main',
+          zIndex: 1,
+          border: `2px solid ${colors?.linkColor || 'primary.main'}`,
+          bgcolor: 'rgba(0, 0, 0, 0.6)',
+          '&:hover': {
+            bgcolor: 'rgba(0, 0, 0, 0.8)',
+            boxShadow: `0 0 12px ${colors?.linkColor}`,
+          },
+        }}
+      >
+        <CloseIcon />
+      </IconButton>
+
+      <DialogContent
+        sx={{
+          display: 'flex',
+          flexDirection: 'column',
+          height: '100vh',
+          p: 0,
+          overflow: 'hidden',
+        }}
+      >
+        {/* Top Bar */}
+        <Box
+          sx={{
             display: 'flex',
             flexDirection: 'column',
+            p: 2.5,
+            bgcolor: 'rgba(0, 0, 0, 0.3)',
+            borderBottom: `1px solid ${colors?.linkUnderline || 'divider'}`,
+            gap: 1.5,
           }}
         >
-          {/* TOP INFO-BAR */}
-          <div className="welcome-top-bar">
-            <h2 className="welcome-bar-title">Learn Geography Through Art</h2>
+          <Stack direction="row" spacing={1.5}>
+            <Button
+              variant="outlined"
+              size="large"
+              onClick={handleClose}
+              fullWidth
+              sx={{
+                py: 3,
+                fontSize: '18px',
+                borderColor: '#8fb3c9',
+                color: '#8fb3c9',
+                borderWidth: 2,
+                '&:hover': {
+                  borderColor: '#8fb3c9',
+                  bgcolor: 'rgba(143, 179, 201, 0.15)',
+                  borderWidth: 2,
+                },
+              }}
+            >
+              Explore
+            </Button>
+            <Button
+              variant="outlined"
+              size="large"
+              onClick={handleStartQuiz}
+              fullWidth
+              sx={{
+                py: 3,
+                fontSize: '18px',
+                borderColor: '#d4a574',
+                color: '#d4a574',
+                borderWidth: 2,
+                '&:hover': {
+                  borderColor: '#d4a574',
+                  bgcolor: 'rgba(212, 165, 116, 0.15)',
+                  borderWidth: 2,
+                },
+              }}
+            >
+              Start Quiz
+            </Button>
+          </Stack>
+        </Box>
 
-            <div className="welcome-buttons-stack">
-              <button
-                className="welcome-control-button explore-button"
-                onClick={handleClose}
-              >
-                Explore
-              </button>
+        {/* Main Content */}
+        <Box
+          sx={{
+            flex: 1,
+            overflowY: 'auto',
+            p: 2.5,
+            bgcolor: colors?.bgBrownDark || 'rgb(87, 80, 72)',
+            display: 'flex',
+            flexDirection: 'column',
+            gap: 2.25,
+            '&::-webkit-scrollbar': {
+              width: '12px',
+            },
+            '&::-webkit-scrollbar-track': {
+              background: 'rgba(241, 239, 239, 0.3)',
+            },
+            '&::-webkit-scrollbar-thumb': {
+              background: colors?.linkColor,
+              borderRadius: '4px',
+            },
+            '&::-webkit-scrollbar-thumb:hover': {
+              background: colors?.linkHover,
+            },
+          }}
+        >
+          {/* Info Header */}
+          <Box
+            sx={{
+              textAlign: 'center',
+              p: 2,
+              bgcolor: 'rgba(0, 0, 0, 0.2)',
+              borderRadius: 1,
+              borderLeft: `3px solid ${colors?.linkColor}`,
+            }}
+          >
+            <Typography
+              sx={{
+                m: 0,
+                fontSize: '14px',
+                color: colors?.textPrimary,
+                fontFamily: "'Roboto Condensed', Helvetica, sans-serif",
+                textTransform: 'uppercase',
+                letterSpacing: '1.5px',
+              }}
+            >
+              Click on a country to get the public domain images and info described below
+            </Typography>
+          </Box>
 
-              <button
-                className="welcome-control-button quiz-button"
-                onClick={handleStartQuiz}
-              >
-                Start Quiz
-              </button>
-            </div>
-          </div>
+          {/* Country Examples */}
+          {welcomeExamples.countries.map((country) => (
+            <React.Fragment key={country.iso3}>
+              {Object.entries(country.collections).map(
+                ([collectionName, image]) => (
+                  <Card
+                    key={collectionName}
+                    sx={{
+                      bgcolor: colors?.bgOverlayLight || 'rgba(0, 0, 0, 0.2)',
+                      border: `1px solid ${colors?.border}`,
+                      borderRadius: 1,
+                    }}
+                  >
+                    {/* Source Header */}
+                    <Box
+                      sx={{
+                        p: 1.5,
+                        bgcolor: colors?.bgBrownDark || 'rgb(87, 80, 72)',
+                        borderBottom: `1px solid ${colors?.border}`,
+                      }}
+                    >
+                      {image.link ? (
+                        <Link
+                          href={image.link}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          underline="hover"
+                          sx={{
+                            fontSize: '16px',
+                            fontWeight: 600,
+                            fontFamily: "'Roboto Condensed', Helvetica, sans-serif",
+                            textTransform: 'uppercase',
+                            letterSpacing: '1px',
+                          }}
+                        >
+                          {image.source || collectionName}
+                        </Link>
+                      ) : (
+                        <Typography
+                          sx={{
+                            fontSize: '16px',
+                            fontWeight: 600,
+                            color: colors?.linkColor,
+                            m: 0,
+                            textShadow: `0 0 8px ${colors?.linkShadow}`,
+                            fontFamily: "'Roboto Condensed', Helvetica, sans-serif",
+                            textTransform: 'uppercase',
+                            letterSpacing: '1px',
+                          }}
+                        >
+                          {image.source || collectionName}
+                        </Typography>
+                      )}
+                    </Box>
 
-          {/* MAIN CONTENT AREA */}
-          <div className="welcome-main-content">
+                    {/* Card Content */}
+                    <CardContent>
+                      {/* Description */}
+                      {image.description && (
+                        <Box
+                          sx={{
+                            bgcolor: colors?.bgBrownDark || 'rgb(87, 80, 72)',
+                            p: 1.5,
+                            borderRadius: 0.5,
+                            color: colors?.textPrimary,
+                            mb: 2,
+                            lineHeight: 1.4,
+                            fontSize: '14px',
+                          }}
+                        >
+                          {image.description}
+                        </Box>
+                      )}
 
-            <div className="welcome-section-header-text">
-              <h3>Click on a country to get the public domain images and info described below</h3>
-            </div>
+                      {/* Image */}
+                      <CardMedia
+                        component="img"
+                        image={image.image}
+                        alt={image.title || collectionName}
+                        sx={{
+                          width: '100%',
+                          maxHeight: 500,
+                          objectFit: 'contain',
+                          borderRadius: 0.5,
+                          display: 'block',
+                          margin: '0 auto',
+                        }}
+                      />
 
-            {/* COUNTRY EXAMPLES */}
-            {welcomeExamples.countries.map((country) => (
-              <React.Fragment key={country.iso3}>
-                {Object.entries(country.collections).map(
-                  ([collectionName, image]) => (
-                    <div key={collectionName} className="overlay-section">
-                      {/* SOURCE HEADER */}
-                      <div className="overlay-section-header">
-                        {image.link ? (
-                          <a
-                            href={image.link}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="overlay-section-title link"
+                      {/* Caption */}
+                      <Box
+                        sx={{
+                          bgcolor: colors?.bgBrownDark || 'rgb(87, 80, 72)',
+                          p: 1.5,
+                          borderRadius: 0.5,
+                          color: colors?.textPrimary,
+                          mt: 2,
+                          lineHeight: 1.4,
+                          fontSize: '14px',
+                        }}
+                      >
+                        {image.subtitle && (
+                          <Typography
+                            sx={{
+                              fontStyle: 'italic',
+                              fontSize: '14px',
+                              mb: 0.5,
+                              fontWeight: 500,
+                            }}
                           >
-                            {image.source || collectionName}
-                          </a>
-                        ) : (
-                          <h3 className="overlay-section-title">
-                            {image.source || collectionName}
-                          </h3>
+                            {image.subtitle}
+                          </Typography>
                         )}
-                      </div>
-
-                      {/* CONTENT */}
-                      <div className="overlay-section-content">
-                        {/* DESCRIPTION */}
-                        {image.description && (
-                          <div className="overlay-caption">
-                            <div className="welcome-source-description">
-                              {image.description}
-                            </div>
-                          </div>
+                        {image.title && (
+                          image.link ? (
+                            <Link
+                              href={image.link}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              underline="hover"
+                              sx={{ fontWeight: 700, fontSize: '14px' }}
+                            >
+                              {image.title}
+                            </Link>
+                          ) : (
+                            <Typography sx={{ fontWeight: 700, fontSize: '14px' }}>
+                              {image.title}
+                            </Typography>
+                          )
                         )}
+                        {image.artist && (
+                          <Typography sx={{ fontSize: '14px' }}>
+                            {image.artist}
+                          </Typography>
+                        )}
+                        {image.nationality && (
+                          <Typography sx={{ fontSize: '14px' }}>
+                            {image.nationality}
+                          </Typography>
+                        )}
+                        {image.date && (
+                          <Typography sx={{ fontSize: '14px' }}>
+                            {image.date}
+                          </Typography>
+                        )}
+                      </Box>
+                    </CardContent>
+                  </Card>
+                )
+              )}
+            </React.Fragment>
+          ))}
 
-                        {/* IMAGE */}
-                        <img
-                          src={image.image}
-                          alt={image.title || collectionName}
-                          className="welcome-example-image"
-                        />
+          {/* Child Mortality Section */}
+          <Card
+            sx={{
+              bgcolor: colors?.bgOverlayLight || 'rgba(0, 0, 0, 0.2)',
+              border: `1px solid ${colors?.border}`,
+              borderRadius: 1,
+            }}
+          >
+            <Box
+              sx={{
+                p: 1.5,
+                bgcolor: colors?.bgBrownDark || 'rgb(87, 80, 72)',
+                borderBottom: `1px solid ${colors?.border}`,
+              }}
+            >
+              <Typography
+                sx={{
+                  fontSize: '16px',
+                  fontWeight: 600,
+                  color: colors?.linkColor,
+                  m: 0,
+                  textShadow: `0 0 8px ${colors?.linkShadow}`,
+                  fontFamily: "'Roboto Condensed', Helvetica, sans-serif",
+                  textTransform: 'uppercase',
+                  letterSpacing: '1px',
+                }}
+              >
+                Child Mortality Progress
+              </Typography>
+            </Box>
+            <CardContent>
+              <Box
+                sx={{
+                  bgcolor: colors?.bgBrownDark || 'rgb(87, 80, 72)',
+                  p: 1.5,
+                  borderRadius: 0.5,
+                  color: colors?.textPrimary,
+                  lineHeight: 1.4,
+                  fontSize: '14px',
+                }}
+              >
+                Each candle represents one percentage point decrease in the
+                under-five child mortality of the country between 1989 and 2023.
+              </Box>
+              <Box sx={{ display: 'flex', justifyContent: 'center', py: 1.5 }}>
+                <Candles count={1} />
+              </Box>
+            </CardContent>
+          </Card>
 
-                        {/* CAPTION */}
-                        <div className="overlay-caption">
-                          {image.subtitle && (
-                            <div className="artwork-subtitle">
-                              {image.subtitle}
-                            </div>
-                          )}
-                          {image.title && (
-                            image.link ? (
-                              <a
-                                href={image.link}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="artwork-artist link"
-                              >
-                                {image.title}
-                              </a>
-                            ) : (
-                              <div className="artwork-artist">{image.title}</div>
-                            )
-                          )}
-                          {image.artist && (
-                            <div className="artwork-artist">
-                              {image.artist}
-                            </div>
-                          )}
-                          {image.nationality && (
-                            <div className="artwork-artist">
-                              {image.nationality}
-                            </div>
-                          )}
-                          {image.date && (
-                            <div className="artwork-date">{image.date}</div>
-                          )}
-                        </div>
-                      </div>
-                    </div>
-                  )
-                )}
-              </React.Fragment>
-            ))}
-
-            {/* CHILD MORTALITY SECTION */}
-            <div className="overlay-section">
-              <div className="overlay-section-header">
-                <h3 className="overlay-section-title">
-                  Child Mortality Progress
-                </h3>
-              </div>
-              <div className="overlay-section-content">
-                <div className="overlay-caption">
-                  Each candle represents one percentage point decrease in the
-                  under-five child mortality of the country between 1989 and 2023.
-                </div>
-                <div className="welcome-candle-display">
-                  <center><Candles count={1} /></center>
-                </div>
-              </div>
-            </div>
-
-            {/* QUIZ MODE CONTROLS SECTION */}
-            <div className="overlay-section">
-              <div className="overlay-section-header">
-                <h3 className="overlay-section-title">Quiz Mode Controls</h3>
-              </div>
-              <div className="overlay-section-content">
-
-              <div className="welcome-controls-list">
-                <div className="welcome-control-item">
-                  <button className="globe-control-btn-small" title="Rotate Left">
-                    ←
-                  </button>
-                  <span className="control-explanation">
-                    Rotate globe left
-                  </span>
-                </div>
-
-                <div className="welcome-control-item">
-                  <button
-                    className="globe-control-btn-small"
-                    title="Rotate Right"
+          {/* Quiz Mode Controls Section */}
+          <Card
+            sx={{
+              bgcolor: colors?.bgOverlayLight || 'rgba(0, 0, 0, 0.2)',
+              border: `1px solid ${colors?.border}`,
+              borderRadius: 1,
+            }}
+          >
+            <Box
+              sx={{
+                p: 1.5,
+                bgcolor: colors?.bgBrownDark || 'rgb(87, 80, 72)',
+                borderBottom: `1px solid ${colors?.border}`,
+              }}
+            >
+              <Typography
+                sx={{
+                  fontSize: '16px',
+                  fontWeight: 600,
+                  color: colors?.linkColor,
+                  m: 0,
+                  textShadow: `0 0 8px ${colors?.linkShadow}`,
+                  fontFamily: "'Roboto Condensed', Helvetica, sans-serif",
+                  textTransform: 'uppercase',
+                  letterSpacing: '1px',
+                }}
+              >
+                Quiz Mode Controls
+              </Typography>
+            </Box>
+            <CardContent>
+              <Stack spacing={1}>
+                {[
+                  { icon: '←', label: 'Rotate globe left' },
+                  { icon: '→', label: 'Rotate globe right' },
+                  { icon: '+', label: 'Zoom in to see details' },
+                  { icon: '−', label: 'Zoom out to see full globe' },
+                  { icon: 'Skip', label: 'Get a new country to find' },
+                  { icon: 'Show Me', label: 'Reveal the answer and its location' },
+                ].map((control, index) => (
+                  <Box
+                    key={index}
+                    sx={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: 1.5,
+                      p: 1,
+                      bgcolor: 'rgba(0, 0, 0, 0.2)',
+                      borderRadius: 0.5,
+                    }}
                   >
-                    →
-                  </button>
-                  <span className="control-explanation">
-                    Rotate globe right
-                  </span>
-                </div>
+                    <Button
+                      variant="outlined"
+                      size="small"
+                      sx={{
+                        minWidth: 'auto',
+                        px: 1.5,
+                        py: 0.75,
+                        fontSize: '12px',
+                        borderColor: colors?.linkColor,
+                        color: colors?.linkColor,
+                      }}
+                    >
+                      {control.icon}
+                    </Button>
+                    <Typography
+                      sx={{
+                        fontSize: '12px',
+                        color: colors?.textSecondary,
+                        lineHeight: 1.3,
+                      }}
+                    >
+                      {control.label}
+                    </Typography>
+                  </Box>
+                ))}
 
-                <div className="welcome-control-item">
-                  <button className="globe-control-btn-small" title="Zoom In">
-                    +
-                  </button>
-                  <span className="control-explanation">
-                    Zoom in to see details
-                  </span>
-                </div>
-
-                <div className="welcome-control-item">
-                  <button className="globe-control-btn-small" title="Zoom Out">
-                    −
-                  </button>
-                  <span className="control-explanation">
-                    Zoom out to see full globe
-                  </span>
-                </div>
-
-                <div className="welcome-control-item">
-                  <div className="toggle-container-small">
-                    <span className="toggle-label-small">Quiz</span>
-                    <label className="toggle-switch-small">
-                      <input type="checkbox" />
-                      <span className="toggle-slider-small"></span>
-                    </label>
-                  </div>
-                  <span className="control-explanation">
+                {/* Toggle Controls */}
+                <Box
+                  sx={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: 1.5,
+                    p: 1,
+                    bgcolor: 'rgba(0, 0, 0, 0.2)',
+                    borderRadius: 0.5,
+                  }}
+                >
+                  <FormControlLabel
+                    control={<Switch size="small" />}
+                    label="Quiz"
+                    sx={{
+                      m: 0,
+                      '& .MuiFormControlLabel-label': {
+                        fontSize: '11px',
+                        fontWeight: 600,
+                        color: colors?.linkColor,
+                      },
+                    }}
+                  />
+                  <Typography
+                    sx={{
+                      fontSize: '12px',
+                      color: colors?.textSecondary,
+                      lineHeight: 1.3,
+                    }}
+                  >
                     Turn Quiz Mode on/off
-                  </span>
-                </div>
+                  </Typography>
+                </Box>
 
-                <div className="welcome-control-item">
-                  <button
-                    className="globe-control-btn-small"
-                    title="Next Country"
+                <Box
+                  sx={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: 1.5,
+                    p: 1,
+                    bgcolor: 'rgba(0, 0, 0, 0.2)',
+                    borderRadius: 0.5,
+                  }}
+                >
+                  <FormControlLabel
+                    control={<Switch size="small" defaultChecked />}
+                    label="Hint"
+                    sx={{
+                      m: 0,
+                      '& .MuiFormControlLabel-label': {
+                        fontSize: '11px',
+                        fontWeight: 600,
+                        color: colors?.linkColor,
+                      },
+                    }}
+                  />
+                  <Typography
+                    sx={{
+                      fontSize: '12px',
+                      color: colors?.textSecondary,
+                      lineHeight: 1.3,
+                    }}
                   >
-                    Skip
-                  </button>
-                  <span className="control-explanation">
-                    Get a new country to find
-                  </span>
-                </div>
-
-                <div className="welcome-control-item">
-                  <button className="globe-control-btn-small" title="Show Me">
-                    Show Me
-                  </button>
-                  <span className="control-explanation">
-                    Reveal the answer and its location
-                  </span>
-                </div>
-
-                <div className="welcome-control-item">
-                  <div className="toggle-container-small">
-                    <span className="toggle-label-small">Hint</span>
-                    <label className="toggle-switch-small">
-                      <input type="checkbox" defaultChecked />
-                      <span className="toggle-slider-small"></span>
-                    </label>
-                  </div>
-                  <span className="control-explanation">
                     Show/hide the country and neighboring countries
-                  </span>
-                </div>
-              </div>
-              </div>
-            </div>
-
-
-          </div>
-        </div>
-      </div>
-    </div>
+                  </Typography>
+                </Box>
+              </Stack>
+            </CardContent>
+          </Card>
+        </Box>
+      </DialogContent>
+    </Dialog>
   );
 };
 

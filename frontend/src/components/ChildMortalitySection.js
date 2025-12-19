@@ -1,88 +1,133 @@
+import { Box, Typography, Link } from '@mui/material';
 import Candles from './Candles';
 
 /**
- * ChildMortalitySection Component
+ * ChildMortalitySection Component (Pure MUI Version)
  *
- * Displays child mortality statistics and candle visualization to represent
- * the improvement in child mortality rates over time.
- *
- * @param {Object} mortalityData - Child mortality data object
- * @param {number} mortalityData.start_year - Starting year
- * @param {number} mortalityData.start_rate - Mortality rate at start year
- * @param {number} mortalityData.end_year - Ending year
- * @param {number} mortalityData.end_rate - Mortality rate at end year
- * @param {number} mortalityData.difference - Change in mortality rate
- * @param {number} mortalityData.candle_count - Number of candles to display
+ * Displays child mortality statistics and candle visualization.
+ * No CSS classes - only MUI sx prop styling
  */
-const ChildMortalitySection = ({ mortalityData }) => {
+const ChildMortalitySection = ({ mortalityData, colors }) => {
   if (!mortalityData) return null;
 
   return (
-    <div className="mortality-section">
-      <div className="mortality-stats">
-        <strong>Child Mortality</strong>
-        <div className="mortality-stat-line">{mortalityData.start_year}: {mortalityData.start_rate.toFixed(1)} {mortalityData.end_year}: {mortalityData.end_rate.toFixed(1)}%</div>
-        <div className="mortality-stat-line"><b>Percentage points decrease: {Math.abs(mortalityData.difference).toFixed(1)}</b>%</div>
-      </div>
+    <Box
+      sx={{
+        p: 2.5,
+        borderTop: `1px solid ${colors?.border}`,
+        mt: 1.25,
+        bgcolor: 'rgba(0, 0, 0, 0.2)',
+        borderRadius: 1,
+      }}
+    >
+      <Box
+        sx={{
+          mb: 1.5,
+          display: 'flex',
+          flexDirection: 'column',
+          gap: 0.5,
+        }}
+      >
+        <Typography component="strong">Child Mortality</Typography>
+        <Typography sx={{ lineHeight: 1.6 }}>
+          {mortalityData.start_year}: {mortalityData.start_rate.toFixed(1)} {mortalityData.end_year}: {mortalityData.end_rate.toFixed(1)}%
+        </Typography>
+        <Typography sx={{ lineHeight: 1.6 }}>
+          <strong>Percentage points decrease: {Math.abs(mortalityData.difference).toFixed(1)}%</strong>
+        </Typography>
+      </Box>
 
       {mortalityData.candle_count > 0 && (
         <Candles count={mortalityData.candle_count} />
       )}
 
-      <div className="overlay-caption">
-        <p>
-          The events of 2024 and 2025 are not reflected in the numbers above.</p>
-          <p> To learn more about the kind of work that reduced the child mortality rate over the last few decades, please watch{' '}
-          <a
+      <Box
+        sx={{
+          bgcolor: colors?.bgBrownDark || 'rgb(87, 80, 72)',
+          p: 1.5,
+          borderRadius: 0.5,
+          color: colors?.textPrimary,
+          mt: 2,
+          lineHeight: 1.4,
+          '& p': {
+            m: '0 0 6px 0',
+            fontSize: '14px',
+            color: colors?.textPrimary,
+          },
+          '& div': {
+            fontSize: '14px',
+            color: colors?.textPrimary,
+          },
+        }}
+      >
+        <Typography component="p">
+          The events of 2024 and 2025 are not reflected in the numbers above.
+        </Typography>
+        <Typography component="p">
+          To learn more about the kind of work that reduced the child mortality rate over the last few decades, please watch{' '}
+          <Link
             href="https://www.pih.org/bending-the-arc"
             target="_blank"
             rel="noopener noreferrer"
           >
             Bending the Arc
-          </a>
+          </Link>
           {' '}(Partners in Health) and read this {' '}
-          <a
+          <Link
             href="https://www.thelancet.com/journals/lancet/article/PIIS0140-6736(25)01186-9/fulltext"
             target="_blank"
             rel="noopener noreferrer"
           >
-          Lancet article
-          </a>
+            Lancet article
+          </Link>
           .
-        </p>
-      </div>
+        </Typography>
+      </Box>
 
-      <div className="overlay-caption">
-        <div>
+      <Box
+        sx={{
+          bgcolor: colors?.bgBrownDark || 'rgb(87, 80, 72)',
+          p: 1.5,
+          borderRadius: 0.5,
+          color: colors?.textPrimary,
+          mt: 2,
+          lineHeight: 1.4,
+          '& div': {
+            fontSize: '14px',
+            color: colors?.textPrimary,
+          },
+        }}
+      >
+        <Typography>
           Candle design adapted from{' '}
-          <a
+          <Link
             href="https://codepen.io/shorinamaria/pen/VbepBe"
             target="_blank"
             rel="noopener noreferrer"
           >
             shorinamaria
-          </a>
+          </Link>
           {' '}and infobar adapted from{' '}
-          <a
+          <Link
             href="https://codepen.io/mirichan/pen/jEBmyG"
             target="_blank"
             rel="noopener noreferrer"
           >
             mirichan
-          </a>
-        </div>
-        <div className="mortality-credits-item">
+          </Link>
+        </Typography>
+        <Typography sx={{ mt: 0.5 }}>
           Data: Gapminder (2015); UN Inter-agency Group for Child Mortality Estimation (2025) – processed by Our World in Data.{' '}
-          <a
+          <Link
             href="https://ourworldindata.org/child-mortality-big-problem-in-brief"
             target="_blank"
             rel="noopener noreferrer"
           >
             Read more about child mortality
-          </a>
-        </div>
-      </div>
-    </div>
+          </Link>
+        </Typography>
+      </Box>
+    </Box>
   );
 };
 

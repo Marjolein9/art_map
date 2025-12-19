@@ -1,14 +1,14 @@
 /**
- * Component Styles
+ * Component Styles (Cleaned up - Post MUI Migration)
  *
- * This file contains all styles for the application components.
- * Moved from inline styles to centralized CSS for better maintainability.
+ * This file now contains ONLY styles still used by non-MUI components:
+ * - App.js layout
+ * - WorldMap.js controls
+ * - Candles.js
+ * - Loading states
+ * - Animations
  *
- * Benefits of CSS files over inline styles:
- * 1. Reusability - Define once, use many times
- * 2. Maintainability - Easy to find and update styles
- * 3. Performance - Browser can cache CSS files
- * 4. Separation of concerns - Structure (HTML/JSX) separate from styling
+ * All other component styling has been migrated to MUI's sx prop.
  */
 
 /* ==============================================================================
@@ -35,11 +35,12 @@
 }
 
 /* ==============================================================================
-   APP LAYOUT
+   APP LAYOUT (App.js)
    ============================================================================== */
 body {
   font-size: 16px;
 }
+
 .app-background {
   min-height: 100vh;
   padding: 5px;
@@ -64,7 +65,7 @@ body {
   color: var(--text-color);
 }
 
-/* Map container - Full width with relative positioning for overlay */
+/* Map container */
 .map-container {
   flex: 1;
   border-radius: 8px;
@@ -81,7 +82,7 @@ body {
   width: 100%;
 }
 
-/* Backdrop - Full screen overlay for clicking outside to close info bar */
+/* Backdrop - Full screen overlay (used by App.js) */
 .artwork-backdrop {
   position: absolute;
   top: 5px;
@@ -97,16 +98,7 @@ body {
   animation: fadeIn 0.2s ease-in-out;
 }
 
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
-}
-
-/* Artwork overlay - Centered info bar container */
+/* Artwork overlay - Centered container (used by App.js) */
 .artwork-overlay {
   z-index: 10000;
   width: 90%;
@@ -115,651 +107,133 @@ body {
   pointer-events: auto;
 }
 
-/* Artwork container inline - Below map with same margins (quiz mode) */
-.artwork-container-inline {
-  width: 100%;
-  max-width: 1200px;
-  margin: 10px auto 30px auto;
-  padding: 0 5px;
-  animation: slideIn 0.3s ease-out;
-  box-sizing: border-box;
+/* Loading overlay */
+.loading-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
 }
 
-@keyframes slideIn {
-  from {
-    opacity: 0;
-    transform: translateY(-20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+.loading-content {
+  text-align: center;
+  padding: 30px;
+  border-radius: 10px;
+  backdrop-filter: blur(10px);
+  background-color: var(--card-bg);
+  border: 2px solid var(--border-color);
+  box-shadow: 0 0 20px var(--glow-color);
+}
+
+.loading-spinner {
+  border: 4px solid rgba(255, 255, 255, 0.1);
+  border-top: 4px solid var(--glow-color);
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  animation: spin 1s linear infinite;
+  margin: 0 auto 20px;
+}
+
+.loading-text {
+  color: var(--text-color);
+  font-size: 16px;
+  margin: 0;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* ==============================================================================
+   DISCLAIMER MODAL (App.js)
+   ============================================================================== */
+.disclaimer-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10000;
+}
+
+.disclaimer-modal {
+  background: var(--bg-brown-dark);
+  padding: 30px;
+  border-radius: 8px;
+  max-width: 600px;
+  margin: 20px;
+  border: 2px solid var(--link-color);
+  box-shadow: 0 0 20px rgba(143, 179, 201, 0.4);
+}
+
+.disclaimer-modal h3 {
+  color: var(--link-color);
+  margin-top: 0;
+  font-family: 'Roboto Condensed', sans-serif;
+}
+
+.disclaimer-modal p {
+  color: var(--text-primary);
+  line-height: 1.6;
+  margin: 15px 0;
+}
+
+.disclaimer-close-btn {
+  margin-top: 20px;
+  padding: 10px 30px;
+  background: var(--link-color);
+  color: #1a1a1a;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: all 0.3s ease;
+}
+
+.disclaimer-close-btn:hover {
+  background: var(--link-hover);
+  transform: translateY(-2px);
+}
+
+.app-footer {
+  text-align: center;
+  padding: 20px;
+  margin-top: 20px;
+}
+
+.disclaimer-link {
+  background: none;
+  border: none;
+  color: var(--link-color);
+  cursor: pointer;
+  text-decoration: underline;
+  font-size: 14px;
+  padding: 0;
+}
+
+.disclaimer-link:hover {
+  color: var(--link-hover);
 }
 
 /* ==============================================================================
    WORLDMAP COMPONENT
    ============================================================================== */
-
-/* Quiz overlay - Shows country name to find */
-.quiz-overlay {
-  position: absolute;
-  top: 10px;
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 1000;
-  pointer-events: none;
-  padding: 12px 24px;
-  border-radius: 8px;
-  font-weight: bold;
-}
-
-.quiz-overlay-correct {
-  border: 3px solid;
-  animation: pulse 0.5s ease-in-out;
-}
-
-.quiz-overlay-incorrect {
-  border: 3px solid;
-  animation: shake 0.5s ease-in-out;
-}
-
-/* Quiz controls */
-.quiz-controls {
-  display: flex;
-  gap: 10px;
-  margin-bottom: 15px;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.quiz-button {
-  padding: 10px 20px;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  font-weight: 500;
-}
-
-.quiz-button:hover:not(:disabled) {
-  transform: translateY(-2px);
-}
-
-.quiz-button:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-
-/* Settings section */
-.settings-section {
-  display: flex;
-  gap: 10px;
-  align-items: center;
-}
-
-.settings-label {
-  font-weight: 500;
-}
-
-.color-scheme-select {
-  padding: 8px 12px;
-  border-radius: 4px;
-  border: 1px solid;
-  cursor: pointer;
-  transition: border-color 0.3s ease;
-}
-
-.color-scheme-select:focus {
-  outline: none;
-  border-width: 2px;
-}
-
-/* Globe container */
-.globe-container {
-  position: relative;
-  width: 100%;
-  min-height: calc(100vh - 60px);
-  border-radius: 8px;
-  overflow: hidden;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-/* ==============================================================================
-   SHARED OVERLAY STYLES (Welcome + Info Bar)
-   ============================================================================== */
-
-@import url('https://fonts.googleapis.com/css2?family=Roboto+Condensed:wght@300;400;700&family=Roboto:wght@100;300;400;700;900&display=swap');
-
-/* Shared overlay container - Used by both welcome and info bar */
-.overlay-container {
-  border-radius: 8px;
-  padding: 15px;
-  padding-bottom: 50px;
-  margin-bottom: 35px;
-  border: 5px solid;
-  backdrop-filter: blur(10px);
-  font-family: 'Roboto', Helvetica, sans-serif;
-  max-height: calc(100vh - 120px);
-  overflow-y: auto;
-  background-color: var(--card-bg);
-  box-shadow: 0 0 20px var(--glow-color), 0 4px 6px rgba(0, 0, 0, 0.3);
-  border-color: var(--border-color);
-}
-
-/* Shared overlay header - Both info bar and welcome use this */
-.overlay-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 15px;
-  gap: 15px;
-  position: sticky;
-  top: 0;
-  background-color: var(--bg-overlay-medium);
-  z-index: 10;
-  padding-top: 8px;
-  padding-bottom: 8px;
-  border-bottom: 1px solid var(--border-color);
-}
-
-/* Shared overlay title */
-.overlay-title {
-  margin: 0;
-  font-family: 'Roboto Condensed', Helvetica, sans-serif;
-  color: var(--text-color);
-  font-size: 18pt;
-  text-align: center;
-  font-weight: 300;
-  letter-spacing: 1.5px;
-  flex: 1;
-}
-
-/* Shared section wrapper (replaces both .welcome-country-card and .artwork-type-section) */
-.overlay-section {
-  border-radius: 8px;
-  background-color: var(--bg-overlay-light);
-  border: 1px solid var(--border-color);
-  margin-bottom: 15px;
-}
-
-/* Shared section header (replaces .welcome-collection-header and .artwork-type-header) */
-.overlay-section-header {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  padding: 12px 15px;
-  background-color: var(--bg-brown-dark);
-  border-bottom: 1px solid var(--border-color);
-}
-
-/* Shared section title (replaces .welcome-collection-source and .section-header--collection) */
-.overlay-section-title {
-  font-size: 16px;
-  font-weight: 600;
-  color: var(--link-color);
-  margin: 0;
-  text-shadow: 0 0 8px var(--link-shadow);
-  font-family: 'Roboto Condensed', Helvetica, sans-serif;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  word-wrap: break-word;
-  overflow-wrap: break-word;
-  word-break: break-word;
-}
-
-/* Shared caption/info box (consolidates .info-box and .welcome-caption) */
-.overlay-caption {
-  background-color: var(--bg-brown-dark);
-  padding: 12px;
-  border-radius: 4px;
-  color: var(--text-primary);
-  margin-top: 16px;
-  line-height: 1.4;
-  font-size: 14px;
-  /* Text wrapping */
-  white-space: normal;
-  overflow-wrap: break-word;   /* modern */
-  word-wrap: break-word;       /* legacy */
-  word-break: break-word;      /* fallback for very long strings */
-}
-
-.overlay-caption p {
-  margin: 0 0 6px 0;
-  font-size: 14px;
-  color: var(--text-primary);
-}
-
-.overlay-caption div {
-  font-size: 14px;
-  color: var(--text-primary);
-}
-
-/* Shared section content area */
-.overlay-section-content {
-  padding: 15px;
-  padding-bottom: 20px;
-}
-
-/* ==============================================================================
-   CONSOLIDATED UTILITY CLASSES
-   ============================================================================== */
-
-/* Consolidated action button (replaces .artwork-next-btn and .artwork-try-again-btn) */
-.action-button {
-  background-color: var(--bg-brown-dark);
-  color: var(--link-color);
-  border: 2px solid var(--border-color);
-  border-radius: 20px;
-  padding: 8px 20px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  font-weight: bold;
-  transition: all 0.2s ease;
-  flex-shrink: 0;
-  line-height: 1;
-  font-family: 'Roboto', sans-serif;
-}
-
-.action-button:hover {
-  background-color: var(--button-primary);
-  transform: scale(1.05);
-  box-shadow: 0 0 15px rgba(139, 115, 85, 0.5);
-}
-
-/* External resources title variant - centered, margin */
-.section-header--external {
-  margin: 0 0 15px 0;
-  font-weight: 600;
-  text-align: center;
-  font-size: 14px;
-  font-family: 'Roboto Condensed', Helvetica, sans-serif;
-  color: var(--text-primary);
-  text-transform: uppercase;
-  letter-spacing: 1px;
-}
-
-/* Consolidated card item (replaces .external-link and .artwork-item) */
-.card-item {
-  border-radius: 8px;
-  overflow: hidden;
-  transition: transform 0.25s ease-in-out, box-shadow 0.25s ease-in-out, opacity 0.25s ease-in-out;
-  cursor: pointer;
-  opacity: 0.8;
-  box-sizing: border-box;
-  background-color: var(--bg-overlay-medium);
-  border: 2px solid var(--border-color);
-}
-
-.card-item:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 0 20px var(--glow-color), 0 4px 12px rgba(0, 0, 0, 0.5);
-  opacity: 1;
-}
-
-/* Modifier for cards that need padding */
-.card-item--padded {
-  padding: 12px 16px;
-  display: block;
-  color: var(--text-primary);
-  font-weight: 500;
-  text-align: center;
-  transition: all 0.3s ease;
-}
-
-.card-item--padded:hover {
-  background-color: var(--bg-overlay-heavy);
-  border-color: var(--glow-color);
-  color: rgba(229, 229, 229, 0.9);
-  transform: translateY(-2px);
-  box-shadow: 0 0 15px var(--glow-color);
-}
-
-/* Universal link styling for entire infobar - ensures all links use vintage color */
-.overlay-container a {
-  color: var(--link-color);
-  text-decoration: underline;
-  text-decoration-color: var(--link-underline);
-  transition: all 0.2s ease;
-  text-shadow: 0 0 8px var(--link-shadow);
-}
-
-.overlay-container a:hover {
-  color: var(--link-hover);
-  text-decoration-color: var(--link-hover);
-  text-shadow: 0 0 12px var(--link-hover-shadow);
-}
-
-/* Custom scrollbar for better visibility */
-.overlay-container::-webkit-scrollbar {
-  width: 16px;
-}
-
-.overlay-container::-webkit-scrollbar-track {
-  background: rgba(0, 0, 0, 0.4);
-  border-radius: 8px;
-  margin: 4px;
-}
-
-.overlay-container::-webkit-scrollbar-thumb {
-  background: rgba(200, 200, 200, 0.7);
-  border-radius: 8px;
-  border: 3px solid rgba(0, 0, 0, 0.3);
-}
-
-.overlay-container::-webkit-scrollbar-thumb:hover {
-  background: rgba(230, 230, 230, 0.9);
-}
-
-/* Close button */
-.artwork-close-btn {
-  background-color: rgba(0, 0, 0, 0.3);
-  color: var(--text-color);
-  border: 2px solid var(--border-color);
-  border-radius: 50%;
-  width: 32px;
-  height: 32px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  font-weight: bold;
-  transition: all 0.2s ease;
-  flex-shrink: 0;
-  padding: 0;
-  line-height: 1;
-}
-
-.artwork-close-btn:hover {
-  background-color: var(--glow-color);
-  color: var(--background-color, #000);
-  transform: scale(1.1) rotate(90deg);
-  box-shadow: 0 0 10px var(--glow-color);
-}
-
-.artwork-loading,
-.artwork-waiting,
-.artwork-no-data {
-  text-align: center;
-  color: var(--text-color);
-  position: relative;
-  padding-top: 50px;
-}
-
-.artwork-loading .artwork-close-btn,
-.artwork-no-data .artwork-close-btn {
-  position: absolute;
-  top: 15px;
-  right: 15px;
-}
-
-.artwork-loading-title,
-.artwork-waiting-title,
-.artwork-no-data-title {
-  margin: 0 0 10px 0;
-  color: var(--glow-color);
-}
-
-.artwork-loading-subtitle,
-.artwork-waiting-subtitle,
-.artwork-no-data-subtitle {
-  margin: 0;
-  opacity: 0.7;
-}
-
-/* Artwork types list */
-.artwork-types-list {
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
-}
-
-.artwork-type-count {
-  opacity: 0.7;
-  font-weight: 400;
-}
-
-.collection-subtitle {
-  display: inline-block;
-  margin-top: 4px;
-  font-weight: 400;
-  letter-spacing: 0.5px;
-  color: var(--text-primary);
-  font-size: 14px;
-}
-
-a.collection-subtitle {
-  font-weight: 500;
-  transition: all 0.2s ease;
-}
-
-a.collection-subtitle:hover {
-  transform: translateX(2px);
-}
-
-/* Artwork grid/list */
-.artwork-list {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-}
-
-.artwork-image-container {
-  padding: 0px;
-  position: relative;
-  /* height is set dynamically via inline style based on tallest image in carousel */
-  max-height: 600px;
-  min-height: 150px;
-  max-width: 100%;
-  width: 100%;
-  margin: 0 auto;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background-color: rgba(232, 220, 196, 0.85);
-  overflow: visible;
-}
-
-/* Pagination controls */
-.artwork-pagination {
-  position: absolute;
-  bottom: 20px;
-  left: 50%;
-  transform: translateX(-50%);
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  background-color: rgba(0, 0, 0, 0.7);
-  padding: 8px 15px;
-  border-radius: 20px;
-  backdrop-filter: blur(10px);
-}
-
-.pagination-btn {
-  background-color: var(--button-bg, rgba(255, 255, 255, 0.2));
-  color: white;
-  border: 1px solid var(--border-color, rgba(255, 255, 255, 0.3));
-  border-radius: 50%;
-  width: 30px;
-  height: 30px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.pagination-btn:hover {
-  background-color: var(--glow-color, rgba(255, 255, 255, 0.3));
-  transform: scale(1.1);
-}
-
-.pagination-info {
-  color: white;
-  font-weight: 600;
-  min-width: 50px;
-  text-align: center;
-}
-
-.artwork-image {
-  max-width: 100%;
-  max-height: 100%;
-  width: auto;
-  height: auto;
-  display: block;
-  border-radius: 4px;
-  object-fit: contain;
-}
-
-.artwork-details {
-  padding: 15px;
-  color: var(--text-color);
-  font-family: 'Roboto', Helvetica, sans-serif;
-}
-
-.artwork-artist {
-  font-weight: 700;
-  margin-bottom: 5px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  color: var(--text-primary);
-  font-family: 'Roboto Condensed', Helvetica, sans-serif;
-  font-size: 14px;
-    /* Text wrapping */
-  white-space: normal;
-  overflow-wrap: break-word;   /* modern */
-  word-wrap: break-word;       /* legacy */
-  word-break: break-word;      /* fallback for very long strings */
-}
-
-
-.artwork-title {
-  color: var(--text-primary);
-  word-wrap: break-word;
-  white-space: normal;
-  margin-bottom: 4px;
-  font-size: 14px;
-}
-
-.artwork-location {
-  color: var(--text-primary);
-  margin-top: 2px;
-  word-wrap: break-word;
-  white-space: normal;
-  font-size: 14px;
-}
-
-.artwork-date {
-  color: var(--text-primary);
-  margin-top: 2px;
-  font-size: 14px;
-}
-
-.artwork-dates {
-  color: var(--text-primary);
-  margin-top: 2px;
-  font-size: 14px;
-}
-
-.artwork-source {
-  color: var(--text-primary);
-  margin-top: 4px;
-  font-size: 14px;
-}
-
-.artwork-article {
-  color: var(--text-primary);
-  margin-top: 8px;
-  word-wrap: break-word;
-  white-space: normal;
-  font-size: 14px;
-}
-
-.artwork-culture {
-  color: var(--text-primary);
-  margin-top: 5px;
-  font-size: 14px;
-}
-
-.artwork-local-badge {
-  display: inline-block;
-  padding: 4px 8px;
-  border-radius: 4px;
-  margin-top: 8px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  background-color: var(--glow-color);
-  color: var(--background-color);
-}
-
-.artwork-links {
-  display: flex;
-  gap: 10px;
-  flex-wrap: wrap;
-}
-
-.artwork-link {
-  padding: 6px 12px;
-  border-radius: 4px;
-  text-decoration: none;
-  transition: all 0.2s ease;
-  border: 1px solid;
-}
-
-.artwork-link:hover {
-  transform: translateY(-2px);
-}
-
-/* Artwork count footer */
-.artwork-count-footer {
-  text-align: center;
-  margin-top: 20px;
-  padding-top: 20px;
-  border-top: 1px solid rgba(175, 225, 250, 0.3);
-  color: var(--text-primary);
-  font-size: 12pt;
-  font-family: 'Roboto', Helvetica, sans-serif;
-}
-
-.artwork-count-footer strong {
-  color: var(--glow-color);
-}
-
-/* ==============================================================================
-   ANIMATIONS
-   ============================================================================== */
-
-@keyframes pulse {
-  0%, 100% { transform: translateX(-50%) scale(1); }
-  50% { transform: translateX(-50%) scale(1.05); }
-}
-
-@keyframes shake {
-  0%, 100% { transform: translateX(-50%) translateY(0); }
-  25% { transform: translateX(-50%) translateY(-5px); }
-  75% { transform: translateX(-50%) translateY(5px); }
-}
-
-/* ==============================================================================
-   SCROLLBAR STYLING
-   ============================================================================== */
-/* Scrollbar styles moved to .overlay-container section above */
-
-/* ==============================================================================
-   WORLDMAP - ADDITIONAL STYLES
-   ============================================================================== */
-
-/* WorldMap wrapper */
 .world-map-wrapper {
   width: 100%;
 }
 
-/* Globe position container */
 .globe-position-container {
   position: relative;
   width: 100%;
@@ -896,130 +370,43 @@ input:checked + .toggle-slider-small:before {
   opacity: 0.9;
 }
 
-/* Globe control buttons container */
-.globe-controls {
-  display: flex;
-  justify-content: center;
-  gap: 6px;
-  margin-top: 10px;
-  flex-wrap: wrap;
-  align-items: center;
+/* ==============================================================================
+   ANIMATIONS
+   ============================================================================== */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
-/* Base button style for globe controls */
-.globe-control-btn {
-  padding: 4px 8px;
-  border-radius: 3px;
-  cursor: pointer;
-  font-weight: bold;
-  transition: all 0.3s ease;
-  background-color: var(--button-bg);
-  color: white;
-  border: 1px solid var(--border-color);
-  box-shadow: 0 0 5px var(--glow-color);
+@keyframes pulse {
+  0%, 100% { transform: translateX(-50%) scale(1); }
+  50% { transform: translateX(-50%) scale(1.05); }
 }
 
-.globe-control-btn.primary {
-  background-color: var(--button-primary);
-  color: var(--text-color);
+@keyframes shake {
+  0%, 100% { transform: translateX(-50%) translateY(0); }
+  25% { transform: translateX(-50%) translateY(-5px); }
+  75% { transform: translateX(-50%) translateY(5px); }
 }
 
-.globe-control-btn.secondary {
-  background-color: var(--button-secondary);
-  color: var(--button-text);
-}
-
-.globe-control-btn.toggle-off {
-  background-color: var(--land-color);
-  color: var(--text-secondary);
-  box-shadow: none;
-}
-
-.globe-control-btn.toggle-on {
-  box-shadow: 0 0 8px var(--hover-color);
-}
-
-.globe-control-btn:hover:not(:disabled) {
-  transform: translateY(-2px);
-}
-
-/* Divider between button groups */
-.globe-controls-divider {
-  width: 1px;
-  height: 16px;
-  margin: 0 4px;
-  background-color: var(--border-color);
-}
-
-/* iPhone-style Toggle Switch */
-.toggle-container {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-
-.toggle-label {
-  
-  font-weight: bold;
-  color: var(--text-color);
-  opacity: 0.8;
-}
-
-.toggle-switch {
-  position: relative;
-  display: inline-block;
-  width: 40px;
-  height: 20px;
-}
-
-.toggle-switch input {
-  opacity: 0;
-  width: 0;
-  height: 0;
-}
-
-.toggle-slider {
-  position: absolute;
-  cursor: pointer;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: var(--toggle-bg);
-  transition: 0.3s;
-  border-radius: 20px;
-  border: 1px solid rgba(255, 255, 255, 0.3);
-}
-
-.toggle-slider:before {
-  position: absolute;
-  content: "";
-  height: 14px;
-  width: 14px;
-  left: 3px;
-  bottom: 2px;
-  background-color: var(--toggle-knob);
-  transition: 0.3s;
-  border-radius: 50%;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-}
-
-input:checked + .toggle-slider {
-  background-color: var(--toggle-active);
-}
-
-input:checked + .toggle-slider:before {
-  transform: translateX(20px);
-}
-
-.toggle-slider:hover {
-  opacity: 0.9;
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 /* ==============================================================================
    RESPONSIVE DESIGN
    ============================================================================== */
-
 @media (max-width: 1024px) {
   .app-content {
     flex-direction: column;
@@ -1028,14 +415,6 @@ input:checked + .toggle-slider:before {
   .artwork-overlay {
     width: 95%;
     max-height: 70vh;
-  }
-
-  .artwork-container-inline {
-    padding: 0 5px;
-  }
-
-  .artwork-info-container {
-    max-height: calc(100vh - 40px);
   }
 }
 
@@ -1051,620 +430,21 @@ input:checked + .toggle-slider:before {
     bottom: 5px;
   }
 
-  .quiz-controls {
-    flex-direction: column;
-    align-items: stretch;
-  }
-
-  .settings-section {
-    flex-direction: column;
-    align-items: stretch;
-  }
-
-  .globe-container {
-    min-height: calc(100vh - 60px);
-  }
-
   .artwork-overlay {
     width: 98%;
     max-height: 70vh;
-  }
-
-  .artwork-info-title {
-    font-size: 14pt;
-  }
-
-  .artwork-info-container {
-    max-height: calc(100vh - 100px);
-    padding: 15px;
-    padding-bottom: 50px;
   }
 
   .map-container {
     padding: 10px;
   }
 
-  .artwork-container-inline {
-    margin: 10px auto 10px auto;
-    padding: 0 5px;
-  }
-
-  .artwork-image-container {
-    /* height is set dynamically via inline style */
-    max-height: 350px;
-    min-height: 120px;
-  }
-}
-
-/* ==============================================================================
-   ADDITIONAL COMPONENT STYLES
-   ============================================================================== */
-
-/* Child mortality section */
-.mortality-section {
-  padding: 20px;
-  border-top: 1px solid var(--border-color);
-  margin-top: 10px;
-  background-color: var(--bg-overlay-light);
-  border-radius: 8px;
-}
-
-/* Mortality statistics container */
-.mortality-stats {
-  margin-bottom: 12px;
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-
-.mortality-stat-line {
-  line-height: 1.6;
-}
-
-.mortality-credits-item {
-  margin-top: 4px;
-}
-
-/* ==============================================================================
-   EXTERNAL LINKS SECTION
-   ============================================================================== */
-
-.external-links-section {
-  padding: 20px;
-  border-top: 2px solid var(--border-color);
-  margin-top: 20px;
-  background-color: var(--bg-brown-dark);
-  border-radius: 8px;
-}
-
-.external-links-list {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-@media (max-width: 768px) {
   .control-overlay {
     left: 8px;
     right: 8px;
     transform: none;
-
     width: auto;
     max-width: none;
-
     padding: 12px 14px;
   }
 }
-.overlay-line-break {
-  flex-basis: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 8px;
-  margin-top: 6px;
-  flex-wrap: wrap;
-}
-
-/* ==============================================================================
-   WELCOME OVERLAY STYLES
-   ============================================================================== */
-
-/* Full Height Welcome Overlay Container */
-.welcome-full-height {
-  display: flex;
-  flex-direction: column;
-  height: 100vh;
-}
-
-.welcome-container {
-  display: flex;
-  flex-direction: column;
-  gap: 0;
-  max-width: 100%;
-  /* Removed fixed height to allow proper scrolling */
-}
-
-/* TOP INFO-BAR - Horizontal bar at top */
-.welcome-top-bar {
-  display: flex;
-  flex-direction: column;
-  align-items: stretch;
-  padding: 15px 20px;
-  background: rgba(0, 0, 0, 0.3);
-  border-bottom: 1px solid var(--link-underline);
-  flex-shrink: 0;
-  gap: 12px;
-}
-
-.welcome-bar-title {
-  font-size: 18px;
-  font-weight: 600;
-  color: var(--link-color);
-  margin: 0;
-  flex-shrink: 0;
-  text-align: center;
-}
-/* BUTTONS - SIDE BY SIDE */
-.welcome-buttons-stack {
-  display: flex;
-  flex-direction: row;   /* ← change from column */
-  gap: 12px;
-  flex-shrink: 0;
-}
-
-.welcome-control-button {
-  flex: 1;               /* makes both buttons equal width */
-}
-
-/* MAIN CONTENT - Right Scrollable Panel */
-.welcome-main-content {
-  background-color: var(--bg-brown-dark);
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  overflow-y: auto;
-  padding: 20px;
-  gap: 18px;
-}
-
-.welcome-section-header-text {
-  color: var(--text-secondary);
-  text-align: center;
-  padding: 15px;
-  background: rgba(0, 0, 0, 0.2);
-  border-radius: 6px;
-  border-left: 3px solid var(--link-color);
-  margin-bottom: 10px;
-}
-
-.welcome-section-header h3 {
-  margin: 0;
-  font-size: 18px;
-  font-weight: 600;
-  color: var(--text-primary);
-  font-family: 'Roboto Condensed', Helvetica, sans-serif;
-  text-transform: uppercase;
-  letter-spacing: 1.5px;
-}
-.welcome-section-header-text p {
-  
-  color: var(--text-color);
-}
-
-.welcome-main-content::-webkit-scrollbar {
-  width: 12px;
-}
-
-.welcome-main-content::-webkit-scrollbar-track {
-  background: rgba(241, 239, 239, 0.3);
-}
-
-.welcome-main-content::-webkit-scrollbar-thumb {
-  background: var(--link-color);
-  border-radius: 4px;
-}
-
-.welcome-main-content::-webkit-scrollbar-thumb:hover {
-  background: var(--link-hover);
-}
-
-/* Welcome intro text */
-.welcome-intro-text {
-  margin: 0;
-  text-align: center;
-  padding: 15px;
-  background: rgba(0, 0, 0, 0.2);
-  border-radius: 6px;
-  border-left: 3px solid var(--link-color);
-}
-
-.welcome-intro-text p {
-  margin: 0;
-  line-height: 1.6;
-  font-size: 12px;
-}
-
-/* Section Headers with Blurbs - Educational Context */
-.welcome-section {
-  padding: 15px;
-  background: rgba(0, 0, 0, 0.2);
-  border-radius: 6px;
-  border-left: 3px solid var(--link-color);
-}
-
-.welcome-section-title {
-  font-size: 16px;
-  font-weight: 600;
-  color: var(--link-color);
-  margin: 0 0 8px 0;
-}
-
-.welcome-section-blurb {
-  font-size: 14px;
-  line-height: 1.5;
-  color: var(--text-primary);
-  margin: 0;
-}
-
-/* Card Content */
-.welcome-card-content {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.welcome-collection-item {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.welcome-country-label {
-  font-size: 14px;
-  color: var(--text-secondary);
-  font-weight: 500;
-}
-
-.artwork-subtitle {
-  font-style: italic;
-  font-size: 14px;
-  color: var(--text-primary);
-  margin-bottom: 4px;
-  font-weight: 500;
-}
-
-.artwork-title {
-  font-weight: 600;
-  color: var(--text-primary);
-  margin-bottom: 4px;
-  font-size: 14px;
-}
-
-.artwork-artist {
-  font-size: 14px;
-  color: var(--text-primary);
-  margin-bottom: 2px;
-}
-
-.artwork-date {
-  font-size: 14px;
-  color: var(--text-primary);
-  margin-bottom: 4px;
-}
-
-.artwork-source {
-  font-size: 14px;
-  margin-top: 6px;
-  padding-top: 6px;
-  border-top: 1px solid var(--link-underline);
-  color: var(--text-primary);
-}
-
-.artwork-source a {
-  color: var(--link-color);
-  text-decoration: none;
-}
-
-.artwork-source a:hover {
-  text-decoration: underline;
-  color: var(--link-hover);
-}
-
-.welcome-description {
-  font-size: 14px;
-  line-height: 1.4;
-  color: var(--text-primary);
-  font-style: italic;
-}
-
-/* Example Image */
-.welcome-example-image {
-  width: 100%;
-  max-height: 500px;
-  object-fit: contain;
-  border-radius: 4px;
-  display: block;
-  margin: 0 auto;
-}
-
-/* Close Button - Top Right Corner */
-.welcome-close-button {
-  position: absolute;
-  top: 15px;
-  right: 15px;
-  width: 40px;
-  height: 40px;
-  border: 2px solid var(--link-color);
-  background: rgba(0, 0, 0, 0.6);
-  color: var(--link-color);
-  border-radius: 50%;
-  font-size: 24px;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: all 0.2s ease;
-  z-index: 100;
-}
-
-.welcome-close-button:hover {
-  background: rgba(0, 0, 0, 0.8);
-  box-shadow: 0 0 12px var(--link-color);
-  transform: scale(1.1);
-}
-
-/* Top Control Buttons - Top Bar (BIGGER) */
-.welcome-control-button {
-  padding: 14px 28px;
-  font-size: 14px;
-  font-weight: 600;
-  border: 2px solid var(--link-color);
-  background: rgba(0, 0, 0, 0.4);
-  color: var(--link-color);
-  border-radius: 6px;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  box-sizing: border-box;
-  width: 100%;
-}
-
-.welcome-control-button:hover {
-  background: rgba(143, 179, 201, 0.15);
-  box-shadow: 0 0 12px var(--link-color);
-  transform: translateY(-2px);
-}
-
-.explore-button {
-  border-color: #8fb3c9;
-  color: #8fb3c9;
-}
-
-.explore-button:hover {
-  box-shadow: 0 0 12px #8fb3c9;
-}
-
-.quiz-button {
-  border-color: #d4a574;
-  color: #d4a574;
-}
-
-.quiz-button:hover {
-  box-shadow: 0 0 12px #d4a574;
-}
-
-/* Button Descriptions - REMOVED */
-
-/* Candle Display */
-.welcome-candle-display {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 12px 0;
-}
-
-/* Controls List - One Per Line */
-.welcome-controls-list {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.welcome-control-item {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 8px;
-  
-  background: rgba(0, 0, 0, 0.2);
-  border-radius: 4px;
-}
-
-.welcome-control-item .globe-control-btn-small,
-.welcome-control-item .toggle-container-small {
-  flex-shrink: 0;
-}
-
-.control-explanation {
-  font-size: 12px;
-  color: var(--text-secondary);
-  line-height: 1.3;
-}
-
-/* Global control button small version */
-.globe-control-btn-small {
-  padding: 6px 12px;
-  font-size: 12px;
-  font-weight: 600;
-  border: 1px solid var(--link-color);
-  background: rgba(0, 0, 0, 0.4);
-  color: var(--link-color);
-  border-radius: 4px;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.globe-control-btn-small:hover {
-  background: rgba(143, 179, 201, 0.15);
-  box-shadow: 0 0 8px var(--link-color);
-}
-
-/* Toggle container small version */
-.toggle-container-small {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 4px;
-}
-
-.toggle-label-small {
-  font-size: 11px;
-  color: var(--link-color);
-  font-weight: 600;
-}
-
-.toggle-switch-small {
-  position: relative;
-  display: inline-block;
-  width: 32px;
-  height: 18px;
-}
-
-.toggle-switch-small input {
-  opacity: 0;
-  width: 0;
-  height: 0;
-}
-
-.toggle-slider-small {
-  position: absolute;
-  cursor: pointer;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: rgba(0, 0, 0, 0.4);
-  transition: 0.3s;
-  border-radius: 18px;
-  border: 1px solid var(--link-underline);
-}
-
-.toggle-slider-small:before {
-  position: absolute;
-  content: "";
-  height: 14px;
-  width: 14px;
-  left: 2px;
-  bottom: 2px;
-  background-color: var(--link-color);
-  transition: 0.3s;
-  border-radius: 50%;
-}
-
-input:checked + .toggle-slider-small {
-  background-color: rgba(143, 179, 201, 0.2);
-}
-
-input:checked + .toggle-slider-small:before {
-  transform: translateX(14px);
-}
-
-/* Responsive Adjustments */
-@media (max-width: 768px) {
-  .welcome-top-bar {
-    flex-direction: column;
-    align-items: stretch;
-    gap: 10px;
-  }
-
-  .welcome-bar-title {
-    text-align: center;
-  }
-
-  .welcome-buttons-inline {
-    justify-content: center;
-  }
-
-  .welcome-main-content {
-    padding: 15px;
-  }
-
- 
-  .welcome-control-button {
-    padding: 8px 12px;
-    font-size: 11px;
-  }
-}
-
-@media (max-width: 480px) {
-  .welcome-top-bar {
-    padding: 12px;
-    gap: 8px;
-  }
-
-  .welcome-bar-title {
-    font-size: 14px;
-  }
-
-  .welcome-buttons-inline {
-    width: 100%;
-    justify-content: space-between;
-  }
-
-  .welcome-main-content {
-    padding: 12px;
-    gap: 12px;
-  }
-
-
-
-  .welcome-card-country-name {
-    font-size: 14px;
-  }
-
-  .welcome-control-button {
-    padding: 6px 10px;
-    font-size: 10px;
-    letter-spacing: 0.3px;
-  }
-
-  .welcome-section-title {
-    font-size: 14px;
-  }
-
-  .welcome-section-blurb {
-    font-size: 11px;
-  }
-}
-/* Horizontal button row */
-.welcome-buttons-row {
-  display: flex;
-  flex-direction: row;
-  gap: 10px;
-  flex-shrink: 0;
-}
-
-/* Existing button styles remain */
-.welcome-control-button {
-  padding: 8px 16px;
-  border: none;
-  border-radius: 6px;
-  font-size: 14px;
-  cursor: pointer;
-  transition: all 0.2s ease-in-out;
-}
-
-/* Optional: Distinguish the icon button */
-.welcome-icon-button {
-  width: 36px;
-  height: 36px;
-  padding: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 18px;
-  background: var(--bg-overlay-heavy);
-  color: var(--link-color);
-}
-
