@@ -6,6 +6,15 @@ This script updates the source of truth (m49-list.json) with:
 1. common_name - user-friendly country names using pycountry
 2. is_country - boolean flag indicating if the entry is a sovereign country (based on countries.json)
 
+REFACTORING NOTE: This script now uses CountryNameNormalizer from utils/country_transformations.py
+Before: Transformation logic was mixed with file I/O
+After: Business logic extracted to reusable utility class
+
+Benefits:
+- Can test transformations independently
+- Can reuse in other scripts (data imports, validation)
+- Easier to understand and maintain
+
 After running this script, re-run init_database_postgres.py to update the database.
 """
 
@@ -21,6 +30,9 @@ except ImportError:
     subprocess.check_call(['pip3', 'install', 'pycountry'])
     import pycountry
 
+# Import the transformation utility
+from utils.country_transformations import CountryNameNormalizer
+
 # File paths
 SCRIPT_DIR = Path(__file__).parent
 M49_JSON_PATH = SCRIPT_DIR / 'data' / 'm49-list.json'
@@ -29,6 +41,9 @@ COUNTRIES_JSON_PATH = SCRIPT_DIR / 'data' / 'countries.json'
 def get_common_name(official_name, iso3, iso2):
     """
     Get the common name for a country using pycountry
+    
+    REFACTORING: Now delegates to CountryNameNormalizer utility
+    This function is kept for backward compatibility but uses the new utility class.
 
     Args:
         official_name: Official name from M49
@@ -38,69 +53,7 @@ def get_common_name(official_name, iso3, iso2):
     Returns:
         Common name string
     """
-    # Special cases where pycountry doesn't have the best common name
-    special_cases = {
-        'USA': 'United States',
-        'GBR': 'United Kingdom',
-        'BOL': 'Bolivia',
-        'VEN': 'Venezuela',
-        'TZA': 'Tanzania',
-        'COD': 'Democratic Republic of the Congo',
-        'COG': 'Republic of the Congo',
-        'MDA': 'Moldova',
-        'KOR': 'South Korea',
-        'PRK': 'North Korea',
-        'RUS': 'Russia',
-        'IRN': 'Iran',
-        'SYR': 'Syria',
-        'LAO': 'Laos',
-        'VNM': 'Vietnam',
-        'CIV': 'Ivory Coast',
-        'PSE': 'Palestine',
-        'VAT': 'Vatican City',
-    }
-
-    # Check special cases first
-    if iso3 and iso3.upper() in special_cases:
-        return special_cases[iso3.upper()]
-
-    # Try pycountry lookup
-    if iso2:
-        try:
-            country = pycountry.countries.get(alpha_2=iso2.upper())
-            if country:
-                # Use common_name if available, otherwise name
-                return getattr(country, 'common_name', country.name)
-        except:
-            pass
-
-    if iso3:
-        try:
-            country = pycountry.countries.get(alpha_3=iso3.upper())
-            if country:
-                return getattr(country, 'common_name', country.name)
-        except:
-            pass
-
-    # Fallback to cleaning up the official name
-    name = official_name
-
-    # Remove parenthetical information
-    if '(' in name:
-        name = name.split('(')[0].strip()
-
-    # Common replacements
-    name = name.replace('Republic of ', '')
-    name = name.replace('Kingdom of ', '')
-    name = name.replace('Plurinational State of ', '')
-    name = name.replace('Islamic Republic of ', '')
-    name = name.replace('Bolivarian Republic of ', '')
-    name = name.replace('United Republic of ', '')
-    name = name.replace('Democratic Republic of the ', '')
-    name = name.replace("People's Democratic Republic", '')
-    name = name.replace('Federated States of ', '')
-
-    return name.strip()
+    return CountryNameNormalizer.normalize(official_name, iso3, iso2)
 
 def main():
     print("📥 Loading m49-list.json...")
