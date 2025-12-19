@@ -1,4 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
+import { Box, Typography, Button, IconButton, CircularProgress } from '@mui/material';
+import CloseIcon from '@mui/icons-material/Close';
+import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import { fetchImages, fetchChildMortality, fetchExternalLinks } from '../services/api';
 import ImageGallery from './ImageGallery';
 import ChildMortalitySection from './ChildMortalitySection';
@@ -149,7 +152,7 @@ const ArtworkInfoBar = ({
   const collections = Object.keys(imagesByCollection);
 
   return (
-    <div
+    <Box
       ref={containerRef}
       className="overlay-container"
       style={{
@@ -166,35 +169,40 @@ const ArtworkInfoBar = ({
       }}
     >
       {loading && (
-        <div className="artwork-info-loading">
-          <p>Loading images…</p>
-        </div>
+        <Box className="artwork-info-loading">
+          <CircularProgress />
+          <Typography>Loading images…</Typography>
+        </Box>
       )}
 
       {!loading && (
         <>
-          <div className="overlay-header">
-            <h3 className="overlay-title">
+          <Box className="overlay-header">
+            <Typography variant="h3" className="overlay-title">
               {mode === 'quiz' && answerSubmitted
                 ? isCorrectAnswer
                   ? `Correct: ${countryName || countryISO}`
                   : `Incorrect: ${countryName || countryISO}`
                 : countryName || countryISO}
-            </h3>
+            </Typography>
 
             {mode === 'quiz' && answerSubmitted && isCorrectAnswer && onNext ? (
-              <button className="action-button" onClick={onNext}>
-                Next →
-              </button>
+              <Button
+                className="action-button"
+                onClick={onNext}
+                endIcon={<ArrowForwardIcon />}
+              >
+                Next
+              </Button>
             ) : onClose ? (
-              <button className="artwork-close-btn" onClick={onClose}>
-                ✕
-              </button>
+              <IconButton className="artwork-close-btn" onClick={onClose}>
+                <CloseIcon />
+              </IconButton>
             ) : null}
-          </div>
+          </Box>
 
           {collections.length > 0 && (
-            <div className="artwork-types-list">
+            <Box className="artwork-types-list">
               {collections.map(collection => (
                 <ImageGallery
                   key={collection}
@@ -207,14 +215,14 @@ const ArtworkInfoBar = ({
                   imageRef={el => (imageRefs.current[collection] = el)}
                 />
               ))}
-            </div>
+            </Box>
           )}
 
           <ExternalLinks externalLinks={externalLinks} countryName={countryName} />
           <ChildMortalitySection mortalityData={mortalityData} />
         </>
       )}
-    </div>
+    </Box>
   );
 };
 

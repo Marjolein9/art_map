@@ -1,3 +1,5 @@
+import { Box, Typography, Link } from '@mui/material';
+
 /**
  * ExternalLinks Component
  *
@@ -20,45 +22,45 @@ const ExternalLinks = ({ externalLinks, countryName }) => {
   }
 
   return (
-    <div className="external-links-section">
-      <h4 className="section-header section-header--external">External Resources</h4>
-      <div className="external-links-list">
+    <Box className="external-links-section">
+      <Typography variant="h4" className="section-header section-header--external">External Resources</Typography>
+      <Box className="external-links-list">
         {externalLinks.gapminder_url?.trim() && (
-          <div className="card-item card-item--padded">
-            <a
+          <Box className="card-item card-item--padded">
+            <Link
               href={externalLinks.gapminder_url}
               target="_blank"
               rel="noopener noreferrer"
             >
               Gapminder's Dollar Street
-            </a>
+            </Link>
             : How people live in {countryName || 'this country'}
-          </div>
+          </Box>
         )}
         {externalLinks.tasteatlas_url?.trim() && (
-          <div className="card-item card-item--padded">
-            <a
+          <Box className="card-item card-item--padded">
+            <Link
               href={externalLinks.tasteatlas_url}
               target="_blank"
               rel="noopener noreferrer"
             >
               TasteAtlas
-            </a>
+            </Link>
             : Food from {countryName || 'this country'}
-          </div>
+          </Box>
         )}
         {externalLinks.extra_links?.trim() && (
-          <a
+          <Link
             href={externalLinks.extra_links}
             target="_blank"
             rel="noopener noreferrer"
             className="card-item card-item--padded"
           >
             Additional Links
-          </a>
+          </Link>
         )}
-      </div>
-    </div>
+      </Box>
+    </Box>
   );
 };
 

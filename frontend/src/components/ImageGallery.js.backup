@@ -8,18 +8,10 @@ import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 const API_BASE = (process.env.REACT_APP_API_URL || 'http://localhost:5000/api').replace('/api', '');
 
 /**
- * ImageGallery Component
+ * ImageGallery Component (MUI Version)
  *
  * Displays a single image collection with pagination controls.
  * Handles different metadata formats for each collection type.
- *
- * @param {string} collection - Collection name
- * @param {Array} images - Array of image objects
- * @param {string} countryName - Name of the country (for Children in Art subtitle)
- * @param {number} currentIndex - Current image index
- * @param {Function} onPrev - Handler for previous image
- * @param {Function} onNext - Handler for next image
- * @param {Function} imageRef - Ref callback for image element
  */
 const ImageGallery = ({
   collection,
@@ -91,10 +83,10 @@ const ImageGallery = ({
       case 'Albert Kahn':
         return (
           <>
-            {image.title && <Box className="artwork-title">{image.title}</Box>}
-            {image.mission && <Box className="artwork-location">{image.mission}</Box>}
-            {image.date && <Box className="artwork-date">{image.date}</Box>}
-            <Box className="artwork-source">
+            {image.title && <Typography className="artwork-title">{image.title}</Typography>}
+            {image.mission && <Typography className="artwork-location">{image.mission}</Typography>}
+            {image.date && <Typography className="artwork-date">{image.date}</Typography>}
+            <Typography className="artwork-source">
               {image.page_url ? (
                 <Link href={image.page_url} target="_blank" rel="noopener noreferrer">
                   Musée départemental Albert-Kahn
@@ -104,17 +96,16 @@ const ImageGallery = ({
                   musée départemental Albert-Kahn
                 </Link>
               )}
-            </Box>
+            </Typography>
           </>
         );
       case 'Children in Art':
         const sourceInfo = getSourceInfo(image.source);
         return (
           <>
-            {image.title && <Box className="artwork-title">{image.title}</Box>}
+            {image.title && <Typography className="artwork-title">{image.title}</Typography>}
             {image.artist_name && (
-              <Box className="artwork-artist">
-
+              <Typography className="artwork-artist">
                 {image.author_wikilink ? (
                   <Link href={image.author_wikilink} target="_blank" rel="noopener noreferrer">
                     {image.artist_name}
@@ -123,49 +114,49 @@ const ImageGallery = ({
                   image.artist_name
                 )}
                 {image.artist_nationality && `, ${image.artist_nationality}`}
-              </Box>
+              </Typography>
             )}
             {sourceInfo && (
-              <Box className="artwork-source">
+              <Typography className="artwork-source">
                 <Link href={image.work_url || sourceInfo.url} target="_blank" rel="noopener noreferrer">
                   {sourceInfo.name}
                 </Link>
-              </Box>
+              </Typography>
             )}
           </>
         );
       case 'Public Domain Review':
         return (
           <>
-            {image.description && <Box className="artwork-location">{image.description}</Box>}
+            {image.description && <Typography className="artwork-location">{image.description}</Typography>}
             {image.source_link && (
-              <Box className="artwork-source">
+              <Typography className="artwork-source">
                 <Link href={image.source_link} target="_blank" rel="noopener noreferrer">
                   Source
                 </Link>
-              </Box>
+              </Typography>
             )}
             {image.title && image.source_url && (
-              <Box className="artwork-article">
+              <Typography className="artwork-article">
                 Featured in Public Domain Review: <Link href={image.source_url} target="_blank" rel="noopener noreferrer">
                   {image.title}
                 </Link>
-              </Box>
+              </Typography>
             )}
           </>
         );
       case 'Met Museum':
         return (
           <>
-            {image.title && <Box className="artwork-title">{image.title}</Box>}
+            {image.title && <Typography className="artwork-title">{image.title}</Typography>}
             {image.artist_name && (
-              <Box className="artwork-artist">
+              <Typography className="artwork-artist">
                 {image.artist_name}
                 {image.object_date && ` (${image.object_date})`}
-              </Box>
+              </Typography>
             )}
-            {image.culture && <Box className="artwork-culture">{image.culture}</Box>}
-            <Box className="artwork-source">
+            {image.culture && <Typography className="artwork-culture">{image.culture}</Typography>}
+            <Typography className="artwork-source">
               {image.object_url ? (
                 <Link href={image.object_url} target="_blank" rel="noopener noreferrer">
                   Learn more at the Metropolitan Museum of Art
@@ -175,11 +166,11 @@ const ImageGallery = ({
                   Learn more at the Metropolitan Museum of Art
                 </Link>
               )}
-            </Box>
+            </Typography>
           </>
         );
       default:
-        return <Box className="artwork-title">{image.title || 'Untitled'}</Box>;
+        return <Typography className="artwork-title">{image.title || 'Untitled'}</Typography>;
     }
   };
 
@@ -251,103 +242,99 @@ const ImageGallery = ({
 
       {/* Collection Content */}
       <Box className="overlay-section-content">
-          <Box className="card-item">
-            <Box
-              className="artwork-image-container"
-              ref={containerRef}
-              style={{ height: `${maxHeight}px` }}
-            >
-              <img
-                key={`${collection}-${currentIndex}`}
-                ref={imageRef}
-                src={currentImage.filepath.startsWith('http')
+        <Box className="card-item">
+          <Box
+            className="artwork-image-container"
+            ref={containerRef}
+            sx={{ height: `${maxHeight}px` }}
+          >
+            <img
+              key={`${collection}-${currentIndex}`}
+              ref={imageRef}
+              src={currentImage.filepath.startsWith('http')
+                ? currentImage.filepath
+                : `${API_BASE}/${currentImage.filepath}`}
+              alt={currentImage.title || 'Image'}
+              className="artwork-image"
+              loading="lazy"
+              decoding="async"
+              style={{ backgroundColor: '#ddd' }}
+              onLoad={(e) => {
+                const img = e.target;
+                const container = img.parentElement;
+
+                console.log('✅ Image loaded:', {
+                  title: currentImage.title || 'Untitled',
+                  collection: collection,
+                  naturalDimensions: `${img.naturalWidth}x${img.naturalHeight}`,
+                  displayedDimensions: `${img.offsetWidth}x${img.offsetHeight}`,
+                  containerDimensions: `${container.offsetWidth}x${container.offsetHeight}`,
+                  aspectRatio: (img.naturalWidth / img.naturalHeight).toFixed(2),
+                  orientation: img.naturalWidth > img.naturalHeight ? 'landscape' : 'portrait'
+                });
+
+                if (img.naturalWidth > 2000 || img.naturalHeight > 2000) {
+                  console.warn('⚠️ Large image detected:', currentImage.filepath,
+                    `${img.naturalWidth}x${img.naturalHeight}`);
+                }
+              }}
+              onError={(e) => {
+                const attemptedUrl = currentImage.filepath.startsWith('http')
                   ? currentImage.filepath
-                  : `${API_BASE}/${currentImage.filepath}`}
-                alt={currentImage.title || 'Image'}
-                className="artwork-image"
-                loading="lazy"
-                decoding="async"
-                style={{ backgroundColor: '#ddd' }}
-                onLoad={(e) => {
-                  const img = e.target;
-                  const container = img.parentElement;
+                  : `${API_BASE}/${currentImage.filepath}`;
 
-                  // Log successful load with dimensions
-                  const loadedUrl = currentImage.filepath.startsWith('http')
-                    ? currentImage.filepath
-                    : `${API_BASE}/${currentImage.filepath}`;
+                console.error('❌ Image failed to load:', {
+                  title: currentImage.title || 'Untitled',
+                  collection: collection,
+                  filepath: currentImage.filepath,
+                  attemptedUrl: attemptedUrl,
+                  apiBase: API_BASE
+                });
 
-                  console.log('✅ Image loaded:', {
-                    title: currentImage.title || 'Untitled',
-                    collection: collection,
-                    naturalDimensions: `${img.naturalWidth}x${img.naturalHeight}`,
-                    displayedDimensions: `${img.offsetWidth}x${img.offsetHeight}`,
-                    containerDimensions: `${container.offsetWidth}x${container.offsetHeight}`,
-                    aspectRatio: (img.naturalWidth / img.naturalHeight).toFixed(2),
-                    orientation: img.naturalWidth > img.naturalHeight ? 'landscape' : 'portrait'
-                  });
+                // Set placeholder image
+                e.target.src = 'data:image/svg+xml,' + encodeURIComponent(`
+                  <svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200">
+                    <rect fill="#cccccc" width="200" height="200"/>
+                    <text x="50%" y="50%" text-anchor="middle" dominant-baseline="middle"
+                          font-family="Arial, sans-serif" font-size="14" fill="#666666">
+                      Image Not Available
+                    </text>
+                  </svg>
+                `);
+              }}
+            />
 
-                  if (img.naturalWidth > 2000 || img.naturalHeight > 2000) {
-                    console.warn('⚠️ Large image detected:', currentImage.filepath,
-                      `${img.naturalWidth}x${img.naturalHeight}`);
-                  }
-                }}
-                onError={(e) => {
-                  // Log detailed error information for debugging
-                  const attemptedUrl = currentImage.filepath.startsWith('http')
-                    ? currentImage.filepath
-                    : `${API_BASE}/${currentImage.filepath}`;
-
-                  console.error('❌ Image failed to load:', {
-                    title: currentImage.title || 'Untitled',
-                    collection: collection,
-                    filepath: currentImage.filepath,
-                    attemptedUrl: attemptedUrl,
-                    apiBase: API_BASE
-                  });
-
-                  // Set placeholder image
-                  e.target.src = 'data:image/svg+xml,' + encodeURIComponent(`
-                    <svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200">
-                      <rect fill="#cccccc" width="200" height="200"/>
-                      <text x="50%" y="50%" text-anchor="middle" dominant-baseline="middle"
-                            font-family="Arial, sans-serif" font-size="14" fill="#666666">
-                        Image Not Available
-                      </text>
-                    </svg>
-                  `);
-                }}
-              />
-
-              {/* Pagination controls for multiple images */}
-              {hasMultiple && (
-                <Box className="artwork-pagination">
-                  <IconButton
-                    className="pagination-btn"
-                    onClick={onPrev}
-                    title="Previous"
-                  >
-                    <ChevronLeftIcon />
-                  </IconButton>
-                  <Typography component="span" className="pagination-info">
-                    {currentIndex + 1} / {images.length}
-                  </Typography>
-                  <IconButton
-                    className="pagination-btn"
-                    onClick={onNext}
-                    title="Next"
-                  >
-                    <ChevronRightIcon />
-                  </IconButton>
-                </Box>
-              )}
-            </Box>
-
-            {/* Image metadata/caption */}
-            <Box className="overlay-caption">
-              {renderCaption(currentImage, collection)}
-            </Box>
+            {/* Pagination controls for multiple images */}
+            {hasMultiple && (
+              <Box className="artwork-pagination">
+                <IconButton
+                  className="pagination-btn"
+                  onClick={onPrev}
+                  size="small"
+                  title="Previous"
+                >
+                  <ChevronLeftIcon fontSize="small" />
+                </IconButton>
+                <Typography className="pagination-info">
+                  {currentIndex + 1} / {images.length}
+                </Typography>
+                <IconButton
+                  className="pagination-btn"
+                  onClick={onNext}
+                  size="small"
+                  title="Next"
+                >
+                  <ChevronRightIcon fontSize="small" />
+                </IconButton>
+              </Box>
+            )}
           </Box>
+
+          {/* Image metadata/caption */}
+          <Box className="overlay-caption">
+            {renderCaption(currentImage, collection)}
+          </Box>
+        </Box>
       </Box>
     </Box>
   );
