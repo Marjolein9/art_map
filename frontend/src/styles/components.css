@@ -305,6 +305,9 @@ body {
   font-family: 'Roboto Condensed', Helvetica, sans-serif;
   text-transform: uppercase;
   letter-spacing: 1px;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  word-break: break-word;
 }
 
 /* Shared caption/info box (consolidates .info-box and .welcome-caption) */
@@ -316,6 +319,11 @@ body {
   margin-top: 16px;
   line-height: 1.4;
   font-size: 14px;
+  /* Text wrapping */
+  white-space: normal;
+  overflow-wrap: break-word;   /* modern */
+  word-wrap: break-word;       /* legacy */
+  word-break: break-word;      /* fallback for very long strings */
 }
 
 .overlay-caption p {
@@ -618,11 +626,16 @@ a.collection-subtitle:hover {
   margin-bottom: 5px;
   overflow: hidden;
   text-overflow: ellipsis;
-  white-space: nowrap;
   color: var(--text-primary);
   font-family: 'Roboto Condensed', Helvetica, sans-serif;
   font-size: 14px;
+    /* Text wrapping */
+  white-space: normal;
+  overflow-wrap: break-word;   /* modern */
+  word-wrap: break-word;       /* legacy */
+  word-break: break-word;      /* fallback for very long strings */
 }
+
 
 .artwork-title {
   color: var(--text-primary);
