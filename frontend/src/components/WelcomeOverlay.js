@@ -260,7 +260,18 @@ const WelcomeOverlay = ({ onStartQuiz, onExplore, colors }) => {
                             </div>
                           )}
                           {image.title && (
-                            <div className="artwork-artist">{image.title}</div>
+                            image.link ? (
+                              <a
+                                href={image.link}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="artwork-artist link"
+                              >
+                                {image.title}
+                              </a>
+                            ) : (
+                              <div className="artwork-artist">{image.title}</div>
+                            )
                           )}
                           {image.artist && (
                             <div className="artwork-artist">
