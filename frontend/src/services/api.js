@@ -38,40 +38,85 @@
 const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
 
 /**
+ * REFACTORING: Core API Call Utility
+ * 
+ * This consolidates all fetch logic into a single function.
+ * Previously: Each endpoint had duplicate fetch + error handling
+ * Now: DRY principle - all requests go through apiCall()
+ * 
+ * Benefits:
+ * - Single source of truth for error handling
+ * - Easy to add logging, retry logic, interceptors
+ * - Consistent error messages
+ * 
+ * @param {string} endpoint - The API endpoint (e.g., '/countries')
+ * @param {object} options - fetch() options (method, headers, body, etc.)
+ * @param {object} responseMapping - Maps response JSON to desired output
+ * @returns {Promise} - Parsed and mapped response data
+ */
+const apiCall = async (endpoint, options = {}, responseMapping = null) => {
+  try {
+    // Make the HTTP request
+    const response = await fetch(`${API_URL}${endpoint}`, {
+      method: 'GET',  // Default to GET
+      ...options      // Override with any provided options
+    });
+
+    // Check for HTTP errors (4xx, 5xx)
+    if (!response.ok) {
+      throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+    }
+
+    // Parse JSON response
+    const data = await response.json();
+
+    // Apply response mapping if provided (e.g., extract nested field)
+    // Example: responseMapping could be 'country' to extract data.country
+    if (responseMapping && typeof responseMapping === 'string') {
+      return data[responseMapping];
+    }
+
+    // If responseMapping is a function, use it for custom transformation
+    if (responseMapping && typeof responseMapping === 'function') {
+      return responseMapping(data);
+    }
+
+    // Return raw data if no mapping
+    return data;
+  } catch (error) {
+    // Enhanced error logging for debugging
+    console.error(`API Error [${endpoint}]:`, {
+      message: error.message,
+      endpoint,
+      timestamp: new Date().toISOString()
+    });
+
+    // Re-throw error so calling code can handle it
+    throw error;
+  }
+};
+
+/**
  * Fetch a random country that has artwork.
  *
  * Python equivalent:
  *   import requests
  *   response = requests.get('http://localhost:5000/api/game/random-country')
- *   data = response.json()
- *   return data['country']
+ *   return response.json()['country']
  *
  * Returns: Country object with {iso, name, continent, subregion}
  */
 export const fetchRandomCountry = async () => {
-  // fetch() makes HTTP GET request to the URL
-  // Returns a Promise that resolves to a Response object
-  // await pauses execution until Promise resolves
-  const response = await fetch(`${API_URL}/game/random-country`);
-
-  // .json() parses the JSON response body
-  // Also returns a Promise, so we await it
-  // Python equivalent: response.json()
-  const data = await response.json();
-
-  // Return just the country object (not the whole response)
-  // Backend sends: {country: {...}}
-  // We return: {...}
-  return data.country;
+  // Using response mapping to extract just the 'country' field
+  return apiCall('/game/random-country', {}, 'country');
 };
 
 /**
  * Fetch all countries with their regions
  */
 export const fetchCountries = async () => {
-  const response = await fetch(`${API_URL}/countries`);
-  const data = await response.json();
-  return data.countries;
+  // Maps response.countries → returns just the array
+  return apiCall('/countries', {}, 'countries');
 };
 
 /**
@@ -80,9 +125,7 @@ export const fetchCountries = async () => {
  * @returns {object} - Images grouped by collection type
  */
 export const fetchImages = async (iso3) => {
-  const response = await fetch(`${API_URL}/images/${iso3}`);
-  const data = await response.json();
-  return data.images;
+  return apiCall(`/images/${iso3}`, {}, 'images');
 };
 
 /**
@@ -106,35 +149,16 @@ export const fetchImages = async (iso3) => {
  * @returns {object} - {correct: boolean, selectedCountry: string, targetCountry: string}
  */
 export const checkAnswer = async (selectedCountryIso, targetCountryIso) => {
-  // POST request with body (unlike GET which has no body)
-  const response = await fetch(`${API_URL}/game/check-answer`, {
-    method: 'POST',  // HTTP method (GET, POST, PUT, DELETE, etc.)
-
-    // Headers tell server what kind of data we're sending
-    // 'Content-Type': 'application/json' means we're sending JSON
+  return apiCall('/game/check-answer', {
+    method: 'POST',
     headers: {
       'Content-Type': 'application/json',
     },
-
-    // Body contains the data we're sending
-    // JSON.stringify() converts JavaScript object → JSON string
-    // Python equivalent: json.dumps(data)
-    //
-    // Shorthand property names:
-    // {selectedCountryIso, targetCountryIso} is same as
-    // {selectedCountryIso: selectedCountryIso, targetCountryIso: targetCountryIso}
     body: JSON.stringify({
       selectedCountryIso,
       targetCountryIso
     })
   });
-
-  // Parse JSON response
-  const data = await response.json();
-
-  // Return entire response object
-  // Contains: {correct: true/false, selectedCountry: ..., targetCountry: ...}
-  return data;
 };
 
 /**
@@ -142,9 +166,7 @@ export const checkAnswer = async (selectedCountryIso, targetCountryIso) => {
  * @param {string} iso3 - Country ISO3 code
  */
 export const fetchNeighbors = async (iso3) => {
-  const response = await fetch(`${API_URL}/neighbors/${iso3}`);
-  const data = await response.json();
-  return data.neighbors;
+  return apiCall(`/neighbors/${iso3}`, {}, 'neighbors');
 };
 
 /**
@@ -153,9 +175,7 @@ export const fetchNeighbors = async (iso3) => {
  * @returns {object} - {is_island: boolean, islands: array, count: number}
  */
 export const fetchSimilarIslands = async (iso3) => {
-  const response = await fetch(`${API_URL}/similar-islands/${iso3}`);
-  const data = await response.json();
-  return data;
+  return apiCall(`/similar-islands/${iso3}`);
 };
 
 /**
@@ -164,12 +184,7 @@ export const fetchSimilarIslands = async (iso3) => {
  * @returns {object} - {start_year, start_rate, end_year, end_rate, difference, candle_count}
  */
 export const fetchChildMortality = async (iso3) => {
-  const response = await fetch(`${API_URL}/child-mortality/${iso3}`);
-  if (!response.ok) {
-    throw new Error('Child mortality data not available');
-  }
-  const data = await response.json();
-  return data;
+  return apiCall(`/child-mortality/${iso3}`);
 };
 
 /**
@@ -178,10 +193,5 @@ export const fetchChildMortality = async (iso3) => {
  * @returns {object} - {gapminder_url, tasteatlas_url, extra_links}
  */
 export const fetchExternalLinks = async (iso3) => {
-  const response = await fetch(`${API_URL}/external-links/${iso3}`);
-  if (!response.ok) {
-    throw new Error('External links not available');
-  }
-  const data = await response.json();
-  return data;
+  return apiCall(`/external-links/${iso3}`);
 };
