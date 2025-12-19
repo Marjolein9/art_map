@@ -4,6 +4,7 @@ import { getCountryIsoCode, initializeCountryMapping } from '../utils/countryCod
 import { REGION_VIEWS } from '../config/regions';
 import { loadTopoJSON } from '../utils/topoJsonLoader';
 import { fetchCountries, fetchNeighbors, fetchSimilarIslands } from '../services/api';
+import { getPathColor, getPathStrokeColor } from '../utils/pastelColorPalette';
 
 const WorldMap = ({
   onCountryClick,
@@ -271,16 +272,19 @@ const WorldMap = ({
           pathPointLat={p => p[1]}
           pathPointLng={p => p[0]}
           pathColor={d => {
-            if (d.isShowMeOverlay || d.isHintOverlay) return COLORS.correct;
-            const iso3 = getCountryIsoCode(d);
-            if (!iso3) return '#000';
-            if (clickedCountry===iso3) {
-              if (gameStatus==='correct') return COLORS.correct;
-              if (gameStatus==='incorrect') return COLORS.incorrect;
-            }
-            if (d===hoverD) return COLORS.selected;
-            return '#000';
+            return getPathColor(
+              d,
+              gameStatus,
+              d.isHintOverlay,
+              d.isShowMeOverlay,
+              clickedCountry,
+              targetCountry,
+              getCountryIsoCode,
+              COLORS,
+              hoverD
+            );
           }}
+          pathStrokeColor={d => getPathStrokeColor(d, d.isHintOverlay, d.isShowMeOverlay)}
           pathStroke={d => (d.isShowMeOverlay||d.isHintOverlay)?4:2}
           pathDashLength={1} pathDashGap={0} pathDashAnimateTime={0} pathTransitionDuration={0}
           onPathHover={setHoverD} onPathClick={handlePolygonClick}
