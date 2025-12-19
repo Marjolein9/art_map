@@ -144,7 +144,7 @@ const WorldMap = ({
     };
 
     showHints();
-  }, [targetCountry, targetCountryName, mode, countries, hintsEnabled, backendReady]);
+  }, [targetCountry, targetCountryName, mode, countries, hintsEnabled, backendReady, clickedCountry]);
 
   // Clear hints when a new target appears
   const prevTargetCountryRef = useRef(null);
@@ -247,7 +247,11 @@ const WorldMap = ({
     countryPaths.forEach(path => {
       const m49 = path.id || path.properties?.id;
       const paddedM49 = m49 ? String(m49).padStart(3,'0') : null;
-      if (paddedM49 && activeHints.includes(paddedM49)) paths.push({ ...path, isHintOverlay:true, isShowMeOverlay:false });
+      const pathIso = getCountryIsoCode(path);
+      // Don't show hint overlay for clicked country (it should show as red instead)
+      if (paddedM49 && activeHints.includes(paddedM49) && pathIso !== clickedCountry) {
+        paths.push({ ...path, isHintOverlay:true, isShowMeOverlay:false });
+      }
     });
     if (showMeActivated && targetCountry) {
       countryPaths.forEach(path => {
@@ -256,7 +260,7 @@ const WorldMap = ({
       });
     }
     return paths;
-  }, [countryPaths, activeHints, showMeActivated, targetCountry]);
+  }, [countryPaths, activeHints, showMeActivated, targetCountry, clickedCountry]);
 
   return (
     <div className="world-map-wrapper">
