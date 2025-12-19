@@ -73,6 +73,7 @@ from PIL import Image
 # Our custom modules (from other files in backend/)
 from db_utils import get_db_connection  # Database connection helper
 from config import PORT, DEBUG  # Configuration constants
+from error_handler import APIError, ValidationError, NotFoundError, InternalError, handle_api_error  # Standardized error handling
 
 # Create Flask application instance
 # __name__ tells Flask the name of the current module
@@ -86,6 +87,10 @@ app = Flask(__name__)
 from config import ALLOWED_ORIGINS
 
 CORS(app, origins=ALLOWED_ORIGINS)
+
+# REFACTORING: Register error handler for standardized error responses
+# This ensures all APIError exceptions are automatically converted to JSON responses
+app.register_error_handler(APIError, handle_api_error)
 
 # ==============================================================================
 # API ROUTES (Endpoints)
@@ -108,40 +113,54 @@ def get_countries():
       "countries": [{"iso3": "USA", "iso2": "US", "name": "United States", "m49": 840, ...}, ...],
       "count": 84
     }
+    
+    REFACTORING: This route now uses standardized error handling.
+    Errors are automatically caught and converted to structured API responses.
     """
-    # Step 1: Connect to database
-    # get_db_connection() returns a connection object
-    conn = get_db_connection()
+    try:
+        # Step 1: Connect to database
+        # get_db_connection() returns a connection object
+        conn = get_db_connection()
 
-    # Step 2: Create cursor (think of it as a pointer that moves through results)
-    # cursor.execute() runs SQL queries
-    # cursor.fetchall() retrieves all results
-    cursor = conn.cursor()
+        # Step 2: Create cursor (think of it as a pointer that moves through results)
+        # cursor.execute() runs SQL queries
+        # cursor.fetchall() retrieves all results
+        cursor = conn.cursor()
 
-    # Step 3: Execute SQL query
-    # SELECT: Get data from database
-    # FROM countries: From the 'countries' table
-    # ORDER BY common_name: Sort results alphabetically by common country name
-    cursor.execute('SELECT iso3, iso2, name, common_name, m49, continent, subregion, is_country FROM countries ORDER BY common_name')
+        # Step 3: Execute SQL query
+        # SELECT: Get data from database
+        # FROM countries: From the 'countries' table
+        # ORDER BY common_name: Sort results alphabetically by common country name
+        cursor.execute('SELECT iso3, iso2, name, common_name, m49, continent, subregion, is_country FROM countries ORDER BY common_name')
 
-    # Step 4: Fetch results and convert to list of dicts
-    # cursor.fetchall() returns list of Row objects
-    # [dict(row) for row in ...] is a list comprehension that converts each Row to dict
-    # Result: [{'iso3': 'USA', 'name': 'United States', ...}, ...]
-    countries = [dict(row) for row in cursor.fetchall()]
+        # Step 4: Fetch results and convert to list of dicts
+        # cursor.fetchall() returns list of Row objects
+        # [dict(row) for row in ...] is a list comprehension that converts each Row to dict
+        # Result: [{'iso3': 'USA', 'name': 'United States', ...}, ...]
+        countries = [dict(row) for row in cursor.fetchall()]
 
-    # Step 5: Close connection to free resources
-    # Important! Always close database connections when done
-    conn.close()
+        # Step 5: Close connection to free resources
+        # Important! Always close database connections when done
+        conn.close()
 
-    # Step 6: Return JSON response
-    # jsonify() converts Python dict → JSON string
-    # Also sets Content-Type header to 'application/json'
-    # Frontend receives this as JSON and can parse it
-    return jsonify({
-        'countries': countries,  # List of all country objects
-        'count': len(countries)  # Total number of countries (helpful for frontend)
-    })
+        # Step 6: Return JSON response
+        # jsonify() converts Python dict → JSON string
+        # Also sets Content-Type header to 'application/json'
+        # Frontend receives this as JSON and can parse it
+        return jsonify({
+            'countries': countries,  # List of all country objects
+            'count': len(countries)  # Total number of countries (helpful for frontend)
+        })
+    except Exception as e:
+        # Catch any unexpected errors and convert to standardized format
+        # Log error for debugging but return generic message to user
+        import traceback
+        print(f"Error in get_countries: {str(e)}")
+        print(traceback.format_exc())
+        raise InternalError(
+            'Failed to fetch countries',
+            details={'endpoint': '/api/countries', 'error_type': type(e).__name__}
+        )
 
 @app.route('/api/game/random-country', methods=['GET'])
 def random_country():
@@ -159,69 +178,86 @@ def random_country():
     - 200: Success
     - 404: Country not found (shouldn't happen)
     - 500: No countries available in database
+    
+    REFACTORING: Updated to use standardized error handling.
     """
-    conn = get_db_connection()
-    cursor = conn.cursor()
+    try:
+        conn = get_db_connection()
+        cursor = conn.cursor()
 
-    # List of territories to exclude from quiz mode
-    # These are small territories, overseas territories, and uninhabited islands
-    excluded_territories = [
-        'BES',  # Bonaire, Sint Eustatius and Saba
-        'BVT',  # Bouvet Island
-        'CXR',  # Christmas Island
-        'CCK',  # Cocos (Keeling) Islands
-        'GUF',  # French Guiana
-        'GIB',  # Gibraltar
-        'GLP',  # Guadeloupe
-        'MTQ',  # Martinique
-        'MYT',  # Mayotte
-        'REU',  # Réunion
-        'SJM',  # Svalbard and Jan Mayen
-        'TKL',  # Tokelau
-        'TUV',  # Tuvalu
-        'UMI'   # United States Minor Outlying Islands
-    ]
+        # List of territories to exclude from quiz mode
+        # These are small territories, overseas territories, and uninhabited islands
+        excluded_territories = [
+            'BES',  # Bonaire, Sint Eustatius and Saba
+            'BVT',  # Bouvet Island
+            'CXR',  # Christmas Island
+            'CCK',  # Cocos (Keeling) Islands
+            'GUF',  # French Guiana
+            'GIB',  # Gibraltar
+            'GLP',  # Guadeloupe
+            'MTQ',  # Martinique
+            'MYT',  # Mayotte
+            'REU',  # Réunion
+            'SJM',  # Svalbard and Jan Mayen
+            'TKL',  # Tokelau
+            'TUV',  # Tuvalu
+            'UMI'   # United States Minor Outlying Islands
+        ]
 
-    # Get all sovereign countries (is_country = true)
-    # Only sovereign countries are included in the quiz, not territories
-    # Exclude small territories that are difficult for quiz purposes
-    cursor.execute('''
-        SELECT iso3, name, common_name, continent, subregion
-        FROM countries
-        WHERE is_country = TRUE
-        AND iso3 NOT IN (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
-    ''' % tuple(['%s'] * len(excluded_territories)), excluded_territories)
+        # Get all sovereign countries (is_country = true)
+        # Only sovereign countries are included in the quiz, not territories
+        # Exclude small territories that are difficult for quiz purposes
+        cursor.execute('''
+            SELECT iso3, name, common_name, continent, subregion
+            FROM countries
+            WHERE is_country = TRUE
+            AND iso3 NOT IN (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+        ''' % tuple(['%s'] * len(excluded_territories)), excluded_territories)
 
-    # Extract all sovereign countries into a Python list
-    countries = [dict(row) for row in cursor.fetchall()]
+        # Extract all sovereign countries into a Python list
+        countries = [dict(row) for row in cursor.fetchall()]
 
-    # Error handling: What if database is empty?
-    # This shouldn't happen in production, but good to check
-    if not countries:
+        # Error handling: What if database is empty?
+        # This shouldn't happen in production, but good to check
+        if not countries:
+            conn.close()
+            # Use standardized error response
+            raise InternalError(
+                'No countries available in database',
+                details={'endpoint': '/api/game/random-country', 'excluded_count': len(excluded_territories)}
+            )
+
+        # Select one random country from the list
+        # random.choice() picks one random item from a list
+        # Example: random.choice([country1, country2, country3]) → country2
+        selected_country = random.choice(countries)
+
         conn.close()
-        # Return error response with HTTP status code 500 (Internal Server Error)
-        # Format: (json_data, status_code)
-        return jsonify({'error': 'No countries available'}), 500
 
-    # Select one random country from the list
-    # random.choice() picks one random item from a list
-    # Example: random.choice([country1, country2, country3]) → country2
-    selected_country = random.choice(countries)
-
-    conn.close()
-
-    # Return country details in nested structure
-    # We create a nested dict so frontend gets: data.country.name
-    # instead of: data.name (which would be confusing)
-    return jsonify({
-        'country': {
-            'iso': selected_country['iso3'],
-            'name': selected_country['name'],
-            'common_name': selected_country['common_name'],
-            'continent': selected_country['continent'],
-            'subregion': selected_country['subregion']
-        }
-    })
+        # Return country details in nested structure
+        # We create a nested dict so frontend gets: data.country.name
+        # instead of: data.name (which would be confusing)
+        return jsonify({
+            'country': {
+                'iso': selected_country['iso3'],
+                'name': selected_country['name'],
+                'common_name': selected_country['common_name'],
+                'continent': selected_country['continent'],
+                'subregion': selected_country['subregion']
+            }
+        })
+    except APIError:
+        # Re-raise API errors so error handler catches them
+        raise
+    except Exception as e:
+        # Catch any other unexpected errors
+        import traceback
+        print(f"Error in random_country: {str(e)}")
+        print(traceback.format_exc())
+        raise InternalError(
+            'Failed to get random country',
+            details={'endpoint': '/api/game/random-country', 'error_type': type(e).__name__}
+        )
 
 @app.route('/api/images/<iso3>', methods=['GET'])
 def get_images(iso3):
