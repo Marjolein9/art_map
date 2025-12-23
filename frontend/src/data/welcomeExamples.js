@@ -72,20 +72,3 @@ export const welcomeExamples = {
     },
   ],
 };
-
-/**
- * Get a random welcome country example
- */
-export const getRandomWelcomeExample = () => {
-  const countries = welcomeExamples.countries;
-  return countries[Math.floor(Math.random() * countries.length)];
-};
-
-/**
- * Get a specific welcome example by ISO3 code
- */
-export const getWelcomeExampleByIso = (iso3) => {
-  return welcomeExamples.countries.find(
-    (country) => country.iso3 === iso3
-  );
-};

@@ -65,10 +65,6 @@ from flask_cors import CORS
 # Standard Python libraries
 import random  # For selecting random country in quiz
 import os  # For checking if database file exists
-from io import BytesIO  # For serving images from memory
-
-# Image processing
-from PIL import Image
 
 # Our custom modules (from other files in backend/)
 from db_utils import get_db_connection  # Database connection helper
@@ -155,7 +151,7 @@ def get_countries():
         # Catch any unexpected errors and convert to standardized format
         # Log error for debugging but return generic message to user
         import traceback
-        print(f"Error in get_countries: {str(e)}")
+        print(f"Error in get_countries: {str(e)}") ##todo should this be imported here or already exist
         print(traceback.format_exc())
         raise InternalError(
             'Failed to fetch countries',
@@ -212,7 +208,7 @@ def random_country():
             FROM countries
             WHERE is_country = TRUE
             AND iso3 NOT IN (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
-        ''' % tuple(['%s'] * len(excluded_territories)), excluded_territories)
+        ''' % tuple(['%s'] * len(excluded_territories)), excluded_territories) ##todo  what is this doing?
 
         # Extract all sovereign countries into a Python list
         countries = [dict(row) for row in cursor.fetchall()]
@@ -251,7 +247,7 @@ def random_country():
         raise
     except Exception as e:
         # Catch any other unexpected errors
-        import traceback
+        import traceback ## todo why traceback imported here and what is format exc
         print(f"Error in random_country: {str(e)}")
         print(traceback.format_exc())
         raise InternalError(
@@ -351,7 +347,7 @@ def get_images(iso3):
     met_museum = [dict(row) for row in cursor.fetchall()]
 
     # IMPORTANT: Always close database connections
-    # Interview Note: Connection leaks cause "too many connections" errors
+    # Interview Note: Connection leaks cause "too many connections" errors ## todo ?
     # In production, use context managers or try/finally blocks
     conn.close()
 
@@ -438,7 +434,7 @@ def get_neighbors(iso3):
         JOIN countries c ON cb.neighbor_iso3 = c.iso3
         WHERE cb.country_iso3 = %s
         ORDER BY c.common_name
-    ''', (iso3,))
+    ''', (iso3,)) #todo why ,
 
     neighbors = [dict(row) for row in cursor.fetchall()]
     conn.close()
@@ -530,44 +526,6 @@ def get_similar_islands(iso3):
         'target_continent': target['continent']
     })
 
-@app.route('/api/countries/empty', methods=['GET'])
-def get_empty_countries():
-    """
-    Get list of countries with no images.
-
-    HTTP Method: GET
-    URL: http://localhost:5000/api/countries/empty
-    Purpose: Return list of country ISO3 codes that have no images
-
-    Returns: JSON with list of empty country ISO3 codes
-    """
-    conn = get_db_connection()
-    cursor = conn.cursor()
-
-    # Get all countries
-    cursor.execute('SELECT iso3 FROM countries')
-    all_countries = {row['iso3'] for row in cursor.fetchall()}
-
-    # Get countries that have at least one image
-    cursor.execute('''
-        SELECT DISTINCT iso3 FROM albert_kahn_images
-        UNION
-        SELECT DISTINCT artist_iso3 FROM children_artwork_images
-        UNION
-        SELECT DISTINCT iso3 FROM public_domain_images
-    ''')
-    countries_with_images = {row[0] for row in cursor.fetchall()}
-
-    conn.close()
-
-    # Find countries without any images
-    empty_countries = sorted(all_countries - countries_with_images)
-
-    return jsonify({
-        'empty_countries': empty_countries,
-        'count': len(empty_countries)
-    })
-
 
 @app.route('/api/child-mortality/<country_code>', methods=['GET'])
 def get_child_mortality(country_code):
@@ -629,7 +587,7 @@ def get_child_mortality(country_code):
     })
 
 
-@app.route('/api/external-links/<iso3>', methods=['GET'])
+@app.route('/api/external-links/<iso3>', methods=['GET']) # todo combne wit othe pull
 def get_external_links(iso3):
     """
     Get external links for a specific country.
@@ -747,124 +705,6 @@ def serve_image(filename):
     # - directory: Where to look for files
     # - path: Relative path to the file within that directory
     return send_from_directory(images_dir, filename)
-
-@app.route('/images/thumbnail/<path:filename>')
-def serve_thumbnail(filename):
-    """
-    Serve thumbnail version of images (200x200 max).
-
-    HTTP Method: GET
-    URL: http://localhost:5000/images/thumbnail/USA/albert_kahn/file.jpg
-    Purpose: Serve smaller thumbnail versions for faster loading
-
-    Query Parameters:
-    - size: Max dimension in pixels (default 200)
-
-    Example: /images/thumbnail/USA/file.jpg?size=150
-
-    Returns: Resized JPEG image
-    """
-    try:
-        # Get size from query params (default 200)
-        size = int(request.args.get('size', 200))
-        size = min(size, 500)  # Cap at 500px for safety
-
-        # Get the image file
-        images_dir = os.path.join(os.path.dirname(__file__), 'images')
-        image_path = os.path.join(images_dir, filename)
-
-        if not os.path.exists(image_path):
-            return jsonify({'error': 'Image not found'}), 404
-
-        # Open and resize image
-        img = Image.open(image_path)
-
-        # Convert to RGB if needed
-        if img.mode in ('RGBA', 'LA', 'P'):
-            background = Image.new('RGB', img.size, (255, 255, 255))
-            if img.mode == 'P':
-                img = img.convert('RGBA')
-            background.paste(img, mask=img.split()[-1] if img.mode in ('RGBA', 'LA') else None)
-            img = background
-        elif img.mode != 'RGB':
-            img = img.convert('RGB')
-
-        # Thumbnail maintains aspect ratio
-        img.thumbnail((size, size), Image.LANCZOS)
-
-        # Save to bytes
-        img_io = BytesIO()
-        img.save(img_io, 'JPEG', quality=80, optimize=True)
-        img_io.seek(0)
-
-        # Return with proper headers
-        from flask import Response
-        return Response(img_io.getvalue(), mimetype='image/jpeg')
-
-    except Exception as e:
-        return jsonify({'error': str(e)}), 500
-
-@app.route('/images/resize/<path:filename>')
-def serve_resized(filename):
-    """
-    Serve dynamically resized images.
-
-    HTTP Method: GET
-    URL: http://localhost:5000/images/resize/USA/albert_kahn/file.jpg?width=400
-    Purpose: Serve images resized to specific dimensions for responsive design
-
-    Query Parameters:
-    - width: Target width in pixels (required)
-    - quality: JPEG quality 1-100 (default 85)
-
-    Example: /images/resize/USA/file.jpg?width=400&quality=90
-
-    Returns: Resized JPEG image maintaining aspect ratio
-    """
-    try:
-        # Get parameters
-        width = request.args.get('width', type=int)
-        quality = min(int(request.args.get('quality', 85)), 100)
-
-        if not width:
-            return jsonify({'error': 'width parameter required'}), 400
-
-        # Cap width at 1200px for safety
-        width = min(width, 1200)
-
-        # Get the image file
-        images_dir = os.path.join(os.path.dirname(__file__), 'images')
-        image_path = os.path.join(images_dir, filename)
-
-        if not os.path.exists(image_path):
-            return jsonify({'error': 'Image not found'}), 404
-
-        # Open image
-        img = Image.open(image_path)
-
-        # Convert to RGB if needed
-        if img.mode != 'RGB':
-            img = img.convert('RGB')
-
-        # Resize maintaining aspect ratio
-        original_width, original_height = img.size
-
-        if original_width > width:
-            ratio = width / original_width
-            new_height = int(original_height * ratio)
-            img = img.resize((width, new_height), Image.LANCZOS)
-
-        # Save to bytes
-        img_io = BytesIO()
-        img.save(img_io, 'JPEG', quality=quality, optimize=True)
-        img_io.seek(0)
-
-        # Return with proper headers
-        from flask import Response
-        return Response(img_io.getvalue(), mimetype='image/jpeg')
-
-    except Exception as e:
-        return jsonify({'error': str(e)}), 500
 
 
 # ==============================================================================

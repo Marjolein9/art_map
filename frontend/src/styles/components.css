@@ -172,39 +172,6 @@ body {
    WORLDMAP COMPONENT
    ============================================================================== */
 
-/* Quiz overlay - Shows country name to find */
-.quiz-overlay {
-  position: absolute;
-  top: 10px;
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 1000;
-  pointer-events: none;
-  padding: 12px 24px;
-  border-radius: 8px;
-  font-weight: bold;
-}
-
-.quiz-overlay-correct {
-  border: 3px solid;
-  animation: pulse 0.5s ease-in-out;
-}
-
-.quiz-overlay-incorrect {
-  border: 3px solid;
-  animation: shake 0.5s ease-in-out;
-}
-
-/* Quiz controls */
-.quiz-controls {
-  display: flex;
-  gap: 10px;
-  margin-bottom: 15px;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  align-items: center;
-}
-
 .quiz-button {
   padding: 10px 20px;
   border: none;
@@ -221,30 +188,6 @@ body {
 .quiz-button:disabled {
   opacity: 0.5;
   cursor: not-allowed;
-}
-
-/* Settings section */
-.settings-section {
-  display: flex;
-  gap: 10px;
-  align-items: center;
-}
-
-.settings-label {
-  font-weight: 500;
-}
-
-.color-scheme-select {
-  padding: 8px 12px;
-  border-radius: 4px;
-  border: 1px solid;
-  cursor: pointer;
-  transition: border-color 0.3s ease;
-}
-
-.color-scheme-select:focus {
-  outline: none;
-  border-width: 2px;
 }
 
 /* Globe container */
@@ -513,8 +456,6 @@ body {
   box-shadow: 0 0 10px var(--glow-color);
 }
 
-.artwork-loading,
-.artwork-waiting,
 .artwork-no-data {
   text-align: center;
   color: var(--text-color);
@@ -522,22 +463,17 @@ body {
   padding-top: 50px;
 }
 
-.artwork-loading .artwork-close-btn,
 .artwork-no-data .artwork-close-btn {
   position: absolute;
   top: 15px;
   right: 15px;
 }
 
-.artwork-loading-title,
-.artwork-waiting-title,
 .artwork-no-data-title {
   margin: 0 0 10px 0;
   color: var(--glow-color);
 }
 
-.artwork-loading-subtitle,
-.artwork-waiting-subtitle,
 .artwork-no-data-subtitle {
   margin: 0;
   opacity: 0.7;
@@ -928,16 +864,6 @@ input:checked + .toggle-slider-small:before {
   opacity: 0.9;
 }
 
-/* Globe control buttons container */
-.globe-controls {
-  display: flex;
-  justify-content: center;
-  gap: 6px;
-  margin-top: 10px;
-  flex-wrap: wrap;
-  align-items: center;
-}
-
 /* Base button style for globe controls */
 .globe-control-btn {
   padding: 4px 8px;
@@ -973,14 +899,6 @@ input:checked + .toggle-slider-small:before {
 
 .globe-control-btn:hover:not(:disabled) {
   transform: translateY(-2px);
-}
-
-/* Divider between button groups */
-.globe-controls-divider {
-  width: 1px;
-  height: 16px;
-  margin: 0 4px;
-  background-color: var(--border-color);
 }
 
 /* iPhone-style Toggle Switch */
@@ -1065,10 +983,6 @@ input:checked + .toggle-slider:before {
   .artwork-container-inline {
     padding: 0 5px;
   }
-
-  .artwork-info-container {
-    max-height: calc(100vh - 40px);
-  }
 }
 
 @media (max-width: 768px) {
@@ -1100,16 +1014,6 @@ input:checked + .toggle-slider:before {
   .artwork-overlay {
     width: 98%;
     max-height: 70vh;
-  }
-
-  .artwork-info-title {
-    font-size: 14pt;
-  }
-
-  .artwork-info-container {
-    max-height: calc(100vh - 100px);
-    padding: 15px;
-    padding-bottom: 50px;
   }
 
   .map-container {
