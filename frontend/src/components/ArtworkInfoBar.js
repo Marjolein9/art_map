@@ -1,9 +1,9 @@
 import { useState, useEffect, useRef } from 'react';
 import { Card, CardHeader, CardContent, Button, Box, CircularProgress, Typography } from '@mui/material';
 import { fetchImages, fetchChildMortality, fetchExternalLinks } from '../services/api';
-import ImageGallery from './ImageGallery';
-import ChildMortalitySection from './ChildMortalitySection';
-import ExternalLinks from './ExternalLinks';
+import ImageGallery from './ImageGallery.mui';
+import ChildMortalitySection from './ChildMortalitySection.mui';
+import ExternalLinks from './ExternalLinks.mui';
 
 const ArtworkInfoBar = ({
   countryISO,

@@ -317,7 +317,7 @@ const WorldMap = ({
                 size="small" 
                 onClick={rotateLeft}
                 title="Rotate Left"
-                sx={{ minWidth: '32px' }}
+                sx={{}}
               >
                 ←
               </Button>
@@ -326,7 +326,7 @@ const WorldMap = ({
                 size="small" 
                 onClick={rotateRight}
                 title="Rotate Right"
-                sx={{ minWidth: '32px' }}
+                sx={{}}
               >
                 →
               </Button>
@@ -335,7 +335,7 @@ const WorldMap = ({
                 size="small" 
                 onClick={zoomIn}
                 title="Zoom In"
-                sx={{ minWidth: '32px' }}
+                sx={{}}
               >
                 +
               </Button>
@@ -344,7 +344,7 @@ const WorldMap = ({
                 size="small" 
                 onClick={zoomOut}
                 title="Zoom Out"
-                sx={{ minWidth: '32px' }}
+                sx={{}}
               >
                 −
               </Button>
@@ -367,7 +367,7 @@ const WorldMap = ({
                 size="small" 
                 onClick={() => setShowWelcome(true)}
                 title="Open Welcome Menu"
-                sx={{ minWidth: '32px' }}
+                sx={{}}
               >
                 ℹ
               </Button>

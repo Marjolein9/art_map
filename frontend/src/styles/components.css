@@ -208,119 +208,7 @@ body {
 
 @import url('https://fonts.googleapis.com/css2?family=Roboto+Condensed:wght@300;400;700&family=Roboto:wght@100;300;400;700;900&display=swap');
 
-/* Shared overlay container - Used by both welcome and info bar */
-.overlay-container {
-  border-radius: 8px;
-  padding: 15px;
-  padding-bottom: 50px;
-  margin-bottom: 35px;
-  border: 5px solid;
-  backdrop-filter: blur(10px);
-  font-family: 'Roboto', Helvetica, sans-serif;
-  max-height: calc(100vh - 120px);
-  overflow-y: auto;
-  background-color: var(--card-bg);
-  box-shadow: 0 0 20px var(--glow-color), 0 4px 6px var(--shadow-heavy);
-  border-color: var(--border-color);
-}
-
-/* Shared overlay header - Both info bar and welcome use this */
-.overlay-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 15px;
-  gap: 15px;
-  position: sticky;
-  top: 0;
-  background-color: var(--bg-overlay-medium);
-  z-index: 10;
-  padding-top: 8px;
-  padding-bottom: 8px;
-  border-bottom: 1px solid var(--border-color);
-}
-
-/* Shared overlay title */
-.overlay-title {
-  margin: 0;
-  font-family: 'Roboto Condensed', Helvetica, sans-serif;
-  color: var(--text-color);
-  font-size: 18pt;
-  text-align: center;
-  font-weight: 300;
-  letter-spacing: 1.5px;
-  flex: 1;
-}
-
-/* Shared section wrapper (replaces both .welcome-country-card and .artwork-type-section) */
-.overlay-section {
-  border-radius: 8px;
-  background-color: var(--bg-overlay-light);
-  border: 1px solid var(--border-color);
-  margin-bottom: 15px;
-}
-
-/* Shared section header (replaces .welcome-collection-header and .artwork-type-header) */
-.overlay-section-header {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  padding: 12px 15px;
-  background-color: var(--bg-secondary);
-  border-bottom: 1px solid var(--border-color);
-}
-
-/* Shared section title (replaces .welcome-collection-source and .section-header--collection) */
-.overlay-section-title {
-  font-size: 16px;
-  font-weight: 600;
-  color: var(--text-primary);
-  margin: 0;
-  font-family: 'Roboto Condensed', Helvetica, sans-serif;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  word-wrap: break-word;
-  overflow-wrap: break-word;
-  word-break: break-word;
-}
-
-.overlay-section-title.link {
-  color: var(--link-color);
-  text-shadow: 0 0 8px var(--link-shadow);
-}
-
-/* Shared caption/info box (consolidates .info-box and .welcome-caption) */
-.overlay-caption {
-  background-color: var(--bg-secondary);
-  padding: 12px;
-  border-radius: 4px;
-  color: var(--text-primary);
-  margin-top: 16px;
-  line-height: 1.4;
-  font-size: 14px;
-  /* Text wrapping */
-  white-space: normal;
-  overflow-wrap: break-word;   /* modern */
-  word-wrap: break-word;       /* legacy */
-  word-break: break-word;      /* fallback for very long strings */
-}
-
-.overlay-caption p {
-  margin: 0 0 6px 0;
-  font-size: 14px;
-  color: var(--text-primary);
-}
-
-.overlay-caption div {
-  font-size: 14px;
-  color: var(--text-primary);
-}
-
-/* Shared section content area */
-.overlay-section-content {
-  padding: 15px;
-  padding-bottom: 20px;
-}
+/* NOTE: Overlay container, header, section, caption classes removed - now using MUI Card, CardHeader, CardContent, Box components */
 
 /* Welcome Overlay Specific Classes */
 .overlay-content {
@@ -502,53 +390,7 @@ body {
 
 /* NOTE: .action-button removed - now using MUI Button component */
 
-/* External resources title variant - centered, margin */
-.section-header--external {
-  margin: 0 0 15px 0;
-  font-weight: 600;
-  text-align: center;
-  font-size: 14px;
-  font-family: 'Roboto Condensed', Helvetica, sans-serif;
-  color: var(--text-primary);
-  text-transform: uppercase;
-  letter-spacing: 1px;
-}
-
-/* Consolidated card item (replaces .external-link and .artwork-item) */
-.card-item {
-  border-radius: 8px;
-  overflow: hidden;
-  transition: transform 0.25s ease-in-out, box-shadow 0.25s ease-in-out, opacity 0.25s ease-in-out;
-  cursor: pointer;
-  opacity: 0.8;
-  box-sizing: border-box;
-  background-color: var(--bg-overlay-medium);
-  border: 2px solid var(--border-color);
-}
-
-.card-item:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 0 20px var(--glow-color), 0 4px 12px rgba(0, 0, 0, 0.5);
-  opacity: 1;
-}
-
-/* Modifier for cards that need padding */
-.card-item--padded {
-  padding: 12px 16px;
-  display: block;
-  color: var(--text-primary);
-  font-weight: 500;
-  text-align: center;
-  transition: all 0.3s ease;
-}
-
-.card-item--padded:hover {
-  background-color: var(--bg-overlay-heavy);
-  border-color: var(--glow-color);
-  color: var(--text-primary);
-  transform: translateY(-2px);
-  box-shadow: 0 0 15px var(--glow-color);
-}
+/* NOTE: External resources header removed - now using MUI Typography component */
 
 /* Universal link styling for entire infobar - ensures all links use vintage color */
 .overlay-container a {
@@ -641,69 +483,7 @@ a.collection-subtitle:hover {
   transform: translateX(2px);
 }
 
-/* Artwork grid/list */
-.artwork-list {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-}
-
-.artwork-image-container {
-  padding: 0px;
-  position: relative;
-  /* height is set dynamically via inline style based on tallest image in carousel */
-  max-height: 600px;
-  min-height: 150px;
-  max-width: 100%;
-  width: 100%;
-  margin: 0 auto;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background-color: var(--bg-primary);
-  overflow: visible;
-}
-
-/* Pagination controls */
-.artwork-pagination {
-  position: absolute;
-  bottom: 20px;
-  left: 50%;
-  transform: translateX(-50%);
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  background-color: var(--bg-overlay);
-  padding: 8px 15px;
-  border-radius: 20px;
-  backdrop-filter: blur(10px);
-}
-
-.pagination-btn {
-  background-color: var(--button-bg, var(--border-secondary));
-  color: var(--white);
-  border: 1px solid var(--border-color, var(--border-secondary));
-  border-radius: 50%;
-  width: 30px;
-  height: 30px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.pagination-btn:hover {
-  background-color: var(--glow-color, var(--border-secondary));
-  transform: scale(1.1);
-}
-
-.pagination-info {
-  color: var(--white);
-  font-weight: 600;
-  min-width: 50px;
-  text-align: center;
-}
+/* NOTE: Image gallery styles removed - now using MUI Card, Box, IconButton components */
 
 .artwork-image {
   max-width: 100%;
@@ -1082,51 +862,12 @@ input:checked + .toggle-slider:before {
 }
 
 /* ==============================================================================
-   ADDITIONAL COMPONENT STYLES
+   ADDITIONAL COMPONENT STYLES - MUI MIGRATION
    ============================================================================== */
 
-/* Child mortality section */
-.mortality-section {
-  padding: 20px;
-  border-top: 1px solid var(--border-color);
-  margin-top: 10px;
-  background-color: var(--bg-overlay-light);
-  border-radius: 8px;
-}
+/* NOTE: Child mortality section styles removed - now using MUI Card, CardContent, Box, Typography components */
 
-/* Mortality statistics container */
-.mortality-stats {
-  margin-bottom: 12px;
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-
-.mortality-stat-line {
-  line-height: 1.6;
-}
-
-.mortality-credits-item {
-  margin-top: 4px;
-}
-
-/* ==============================================================================
-   EXTERNAL LINKS SECTION
-   ============================================================================== */
-
-.external-links-section {
-  padding: 20px;
-  border-top: 2px solid var(--border-color);
-  margin-top: 20px;
-  background-color: var(--bg-secondary);
-  border-radius: 8px;
-}
-
-.external-links-list {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
+/* NOTE: External links section styles removed - now using MUI List, ListItem, Box, Typography components */
 
 @media (max-width: 768px) {
   .control-overlay {
