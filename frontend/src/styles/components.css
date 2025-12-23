@@ -274,7 +274,7 @@ body {
 .overlay-section-title {
   font-size: 16px;
   font-weight: 600;
-  color: var(--text-primary);
+  color: #000000;
   margin: 0;
   font-family: 'Roboto Condensed', Helvetica, sans-serif;
   text-transform: uppercase;
@@ -416,6 +416,7 @@ body {
   cursor: pointer;
   font-weight: bold;
   transition: all 0.2s ease;
+  color: var(--button-text-color, #000000);
 }
 
 .control-btn-small:hover {
@@ -502,7 +503,7 @@ body {
 /* Consolidated action button (replaces .artwork-next-btn and .artwork-try-again-btn) */
 .action-button {
   background-color: var(--bg-secondary);
-  color: var(--link-color);
+  color: var(--button-text-color, #000000);
   border: 2px solid var(--border-color);
   border-radius: 20px;
   padding: 8px 20px;
@@ -958,7 +959,7 @@ a.collection-subtitle:hover {
   font-weight: bold;
   transition: all 0.2s ease;
   background-color: var(--bg-secondary);
-  color: var(--white);
+  color: var(--button-text-color, #000000);
   border: 1px solid var(--border-secondary);
   box-shadow: 0 0 5px var(--shadow-heavy);
 }
@@ -1623,17 +1624,17 @@ input:checked + .toggle-slider:before {
   padding: 6px 12px;
   font-size: 12px;
   font-weight: 600;
-  border: 1px solid var(--link-color);
-  background: var(--shadow-heavy);
-  color: var(--link-color);
+  border: 1px solid var(--border-secondary);
+  background: var(--bg-secondary);
+  color: var(--button-text-color, #000000);
   border-radius: 4px;
   cursor: pointer;
   transition: all 0.2s ease;
 }
 
 .globe-control-btn-small:hover {
-  background: var(--shadow-light);
-  box-shadow: 0 0 8px var(--link-color);
+  background: var(--hover, #E5E5E5);
+  box-shadow: 0 0 8px var(--shadow-light);
 }
 
 /* Toggle container small version */
@@ -1646,7 +1647,7 @@ input:checked + .toggle-slider:before {
 
 .toggle-label-small {
   font-size: 11px;
-  color: var(--link-color);
+  color: var(--button-text-color, #000000);
   font-weight: 600;
 }
 
