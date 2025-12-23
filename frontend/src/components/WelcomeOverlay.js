@@ -82,8 +82,11 @@
 import React, { useState } from 'react';
 import Candles from './Candles';
 import { welcomeExamples } from '../data/welcomeExamples';
+import COLOR_SCHEME from '../styles/colorSchemes';
 
 const WelcomeOverlay = ({ onStartQuiz, onExplore, colors }) => {
+  // Use COLOR_SCHEME as single source of truth for colors
+  const colorScheme = COLOR_SCHEME;
   /**
    * State: isClosing
    * Controls the closing animation. When true, adds CSS class that triggers
@@ -151,22 +154,33 @@ const WelcomeOverlay = ({ onStartQuiz, onExplore, colors }) => {
 
   return (
     <div
-      className={`artwork-backdrop welcome-backdrop ${isClosing ? 'closing' : ''}`}
+      className={`artwork-backdrop ${isClosing ? 'closing' : ''}`}
       onClick={handleBackdropClick}
+      style={{
+        '--bg-overlay': `rgba(255, 255, 255, 0.95)`, // Semi-transparent white
+      }}
     >
       <div
-        className="artwork-overlay welcome-overlay welcome-full-height"
+        className="artwork-overlay"
         style={{
-          '--card-bg': colors?.cardBg,
-          '--glow-color': colors?.glow,
-          '--border-color': colors?.border,
-          '--text-color': colors?.text,
-          '--background-color': colors?.background,
+          '--card-bg': colorScheme.cardBg,
+          '--glow-color': colorScheme.glow,
+          '--border-color': colorScheme.borderPrimary,
+          '--text-color': colorScheme.textPrimary,
+          '--background-color': colorScheme.bgPrimary,
+          '--bg-overlay': colorScheme.bgOverlay,
+          '--bg-overlay-light': colorScheme.bgSecondary,
+          '--bg-overlay-medium': colorScheme.bgSecondary,
+          '--bg-secondary': colorScheme.bgSecondary,
+          '--link-color': colorScheme.linkColor,
+          '--link-shadow': colorScheme.shadowLight,
+          '--text-primary': colorScheme.textPrimary,
+          '--shadow-heavy': colorScheme.shadowHeavy,
         }}
       >
         {/* Close Button */}
         <button
-          className="welcome-close-button"
+          className="close-button"
           onClick={handleClose}
           aria-label="Close welcome overlay"
         >
@@ -174,7 +188,7 @@ const WelcomeOverlay = ({ onStartQuiz, onExplore, colors }) => {
         </button>
 
         <div
-          className="overlay-container welcome-container welcome-full-container"
+          className="overlay-container"
           style={{
             opacity: isClosing ? 0 : 1,
             transition: 'opacity 0.3s ease',
@@ -182,20 +196,20 @@ const WelcomeOverlay = ({ onStartQuiz, onExplore, colors }) => {
             flexDirection: 'column',
           }}
         >
-          {/* TOP INFO-BAR */}
-          <div className="welcome-top-bar">
-            <h2 className="welcome-bar-title">Learn Geography Through Art</h2>
+          {/* TOP HEADER */}
+          <div className="overlay-header">
+            <h2 className="overlay-title">Learn Geography Through Art</h2>
 
-            <div className="welcome-buttons-stack">
+            <div className="button-group">
               <button
-                className="welcome-control-button explore-button"
+                className="control-button explore-button"
                 onClick={handleClose}
               >
                 Explore
               </button>
 
               <button
-                className="welcome-control-button quiz-button"
+                className="control-button quiz-button"
                 onClick={handleStartQuiz}
               >
                 Start Quiz
@@ -204,9 +218,9 @@ const WelcomeOverlay = ({ onStartQuiz, onExplore, colors }) => {
           </div>
 
           {/* MAIN CONTENT AREA */}
-          <div className="welcome-main-content">
+          <div className="overlay-content">
 
-            <div className="welcome-section-header-text">
+            <div className="section-intro">
               <h3>Click on a country to get the public domain images and info described below</h3>
             </div>
 
@@ -239,7 +253,7 @@ const WelcomeOverlay = ({ onStartQuiz, onExplore, colors }) => {
                         {/* DESCRIPTION */}
                         {image.description && (
                           <div className="overlay-caption">
-                            <div className="welcome-source-description">
+                            <div className="source-description">
                               {image.description}
                             </div>
                           </div>
@@ -249,7 +263,7 @@ const WelcomeOverlay = ({ onStartQuiz, onExplore, colors }) => {
                         <img
                           src={image.image}
                           alt={image.title || collectionName}
-                          className="welcome-example-image"
+                          className="overlay-image"
                         />
 
                         {/* CAPTION */}
@@ -306,7 +320,7 @@ const WelcomeOverlay = ({ onStartQuiz, onExplore, colors }) => {
                   Each candle represents one percentage point decrease in the
                   under-five child mortality of the country between 1989 and 2023.
                 </div>
-                <div className="welcome-candle-display">
+                <div className="candle-display">
                   <center><Candles count={1} /></center>
                 </div>
               </div>
@@ -319,47 +333,47 @@ const WelcomeOverlay = ({ onStartQuiz, onExplore, colors }) => {
               </div>
               <div className="overlay-section-content">
 
-              <div className="welcome-controls-list">
-                <div className="welcome-control-item">
-                  <button className="globe-control-btn-small" title="Rotate Left">
+              <div className="controls-list">
+                <div className="control-item">
+                  <button className="control-btn-small" title="Rotate Left">
                     ←
                   </button>
-                  <span className="control-explanation">
+                  <span className="control-label">
                     Rotate globe left
                   </span>
                 </div>
 
-                <div className="welcome-control-item">
+                <div className="control-item">
                   <button
-                    className="globe-control-btn-small"
+                    className="control-btn-small"
                     title="Rotate Right"
                   >
                     →
                   </button>
-                  <span className="control-explanation">
+                  <span className="control-label">
                     Rotate globe right
                   </span>
                 </div>
 
-                <div className="welcome-control-item">
-                  <button className="globe-control-btn-small" title="Zoom In">
+                <div className="control-item">
+                  <button className="control-btn-small" title="Zoom In">
                     +
                   </button>
-                  <span className="control-explanation">
+                  <span className="control-label">
                     Zoom in to see details
                   </span>
                 </div>
 
-                <div className="welcome-control-item">
-                  <button className="globe-control-btn-small" title="Zoom Out">
+                <div className="control-item">
+                  <button className="control-btn-small" title="Zoom Out">
                     −
                   </button>
-                  <span className="control-explanation">
+                  <span className="control-label">
                     Zoom out to see full globe
                   </span>
                 </div>
 
-                <div className="welcome-control-item">
+                <div className="control-item">
                   <div className="toggle-container-small">
                     <span className="toggle-label-small">Quiz</span>
                     <label className="toggle-switch-small">
@@ -367,33 +381,33 @@ const WelcomeOverlay = ({ onStartQuiz, onExplore, colors }) => {
                       <span className="toggle-slider-small"></span>
                     </label>
                   </div>
-                  <span className="control-explanation">
+                  <span className="control-label">
                     Turn Quiz Mode on/off
                   </span>
                 </div>
 
-                <div className="welcome-control-item">
+                <div className="control-item">
                   <button
-                    className="globe-control-btn-small"
+                    className="control-btn-small"
                     title="Next Country"
                   >
                     Skip
                   </button>
-                  <span className="control-explanation">
+                  <span className="control-label">
                     Get a new country to find
                   </span>
                 </div>
 
-                <div className="welcome-control-item">
-                  <button className="globe-control-btn-small" title="Show Me">
+                <div className="control-item">
+                  <button className="control-btn-small" title="Show Me">
                     Show Me
                   </button>
-                  <span className="control-explanation">
+                  <span className="control-label">
                     Reveal the answer and its location
                   </span>
                 </div>
 
-                <div className="welcome-control-item">
+                <div className="control-item">
                   <div className="toggle-container-small">
                     <span className="toggle-label-small">Hint</span>
                     <label className="toggle-switch-small">
@@ -401,7 +415,7 @@ const WelcomeOverlay = ({ onStartQuiz, onExplore, colors }) => {
                       <span className="toggle-slider-small"></span>
                     </label>
                   </div>
-                  <span className="control-explanation">
+                  <span className="control-label">
                     Show/hide the country and neighboring countries
                   </span>
                 </div>

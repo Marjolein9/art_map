@@ -27,7 +27,7 @@
   /* Background colors */
   --bg-primary: #FFFFFF;
   --bg-secondary: #F5F5F5;
-  --bg-overlay: rgba(0, 0, 0, 0.5);
+  --bg-overlay: #FFFFFF;
 
   /* Borders */
   --border-primary: #000000;
@@ -121,7 +121,7 @@ body {
   right: 5px;
   bottom: 5px;
   z-index: 9999;
-  background-color: var(--bg-overlay);
+  background-color: var(--bg-overlay, rgba(255, 255, 255, 0.95));
   backdrop-filter: blur(3px);
   display: flex;
   align-items: center;
@@ -316,6 +316,179 @@ body {
 .overlay-section-content {
   padding: 15px;
   padding-bottom: 20px;
+}
+
+/* Welcome Overlay Specific Classes */
+.overlay-content {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.section-intro {
+  margin-bottom: 10px;
+}
+
+.section-intro h3 {
+  margin: 0;
+  font-size: 16px;
+  color: var(--text-primary);
+  font-weight: 500;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+.overlay-image {
+  width: 100%;
+  height: auto;
+  border-radius: 4px;
+  margin: 12px 0;
+  display: block;
+}
+
+.source-description {
+  font-size: 14px;
+  color: var(--text-secondary);
+  margin-bottom: 8px;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+.candle-display {
+  margin: 15px 0;
+}
+
+/* Control Button Styles */
+.control-button {
+  padding: 8px 16px;
+  border: 1px solid var(--border-primary);
+  border-radius: 4px;
+  background-color: var(--bg-secondary);
+  color: var(--text-primary);
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  font-size: 14px;
+}
+
+.control-button:hover {
+  background-color: var(--hover);
+  box-shadow: 0 0 8px var(--shadow-light);
+}
+
+.button-group {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.explore-button {
+  background-color: var(--bg-secondary);
+}
+
+.controls-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.control-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px;
+  background-color: var(--bg-overlay-light);
+  border-radius: 4px;
+  border: 1px solid var(--border-secondary);
+}
+
+.control-btn-small {
+  background-color: var(--bg-secondary);
+  border: 1px solid var(--border-primary);
+  border-radius: 4px;
+  padding: 6px 10px;
+  min-width: 40px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: all 0.2s ease;
+}
+
+.control-btn-small:hover {
+  background-color: var(--hover);
+  box-shadow: 0 0 6px var(--shadow-light);
+}
+
+.control-label {
+  font-size: 14px;
+  color: var(--text-primary);
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+.toggle-container-small {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.toggle-label-small {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+.toggle-switch-small {
+  display: inline-flex;
+  align-items: center;
+  cursor: pointer;
+  height: 24px;
+  width: 44px;
+  background-color: var(--bg-secondary);
+  border-radius: 12px;
+  position: relative;
+  border: 1px solid var(--border-secondary);
+  padding: 2px;
+}
+
+.toggle-switch-small input {
+  display: none;
+}
+
+.toggle-slider-small {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  background-color: var(--text-secondary);
+  border-radius: 50%;
+  transition: transform 0.3s ease;
+  position: absolute;
+  left: 2px;
+  top: 2px;
+}
+
+.toggle-switch-small input:checked + .toggle-slider-small {
+  background-color: var(--correct);
+  transform: translateX(20px);
+}
+
+.close-button {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: none;
+  border: none;
+  font-size: 28px;
+  cursor: pointer;
+  color: var(--text-primary);
+  padding: 4px 8px;
+  line-height: 1;
+  z-index: 10001;
+  transition: transform 0.2s ease;
+}
+
+.close-button:hover {
+  transform: scale(1.1);
 }
 
 /* ==============================================================================
@@ -1205,7 +1378,7 @@ input:checked + .toggle-slider:before {
 }
 
 .welcome-main-content::-webkit-scrollbar-track {
-  background: rgba(241, 239, 239, 0.3);
+  background: #FFFFFF;
 }
 
 .welcome-main-content::-webkit-scrollbar-thumb {
@@ -1344,7 +1517,7 @@ input:checked + .toggle-slider:before {
   width: 40px;
   height: 40px;
   border: 2px solid var(--link-color);
-  background: rgba(0, 0, 0, 0.6);
+  background: #FFFFFF;
   color: var(--link-color);
   border-radius: 50%;
   font-size: 24px;
@@ -1357,7 +1530,7 @@ input:checked + .toggle-slider:before {
 }
 
 .welcome-close-button:hover {
-  background: rgba(0, 0, 0, 0.8);
+  background: #FFFFFF;
   box-shadow: 0 0 12px var(--link-color);
   transform: scale(1.1);
 }

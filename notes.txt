@@ -30,3 +30,17 @@ country assignment as temporary overlay
 
 start with overlay with Start Quiz or Explore button, explains info categories, hints, candles
 
+unpkg.com/three-globe/example/img/earth-blue-marble.jpg:1 
+
+4. Performance Considerations:
+   - Database queries in routes (consider caching for production)
+   - Image serving (could use CDN in production)
+   - CORS configuration (security vs accessibility)
+
+check capslock an dif you need all three
+   DEBUG = os.getenv('DEBUG', 'True').lower() in ('true', '1', 'yes')
+
+
+   does InternalError only work in debug mode? if not maybe less detail producitons mode
+
+   should i import

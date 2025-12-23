@@ -16,7 +16,7 @@ export const COLOR_SCHEME = {
   // Backgrounds
   bgPrimary: '#FFFFFF',
   bgSecondary: '#F5F5F5',      // gray-100
-  bgOverlay: 'rgba(0, 0, 0, 0.5)',
+  bgOverlay: '#FFFFFF',        // solid white, no transparency
 
   // Borders
   borderPrimary: '#000000',

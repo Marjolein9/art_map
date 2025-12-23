@@ -89,6 +89,7 @@ PORT = int(os.getenv('PORT', 5000))
 #   - Generic error messages (more secure)
 #   - Better performance
 # IMPORTANT: Always set to False in production!
+
 DEBUG = os.getenv('DEBUG', 'True').lower() in ('true', '1', 'yes')
 
 # ALLOWED_ORIGINS: CORS allowed origins for production
