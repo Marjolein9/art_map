@@ -44,3 +44,14 @@ check capslock an dif you need all three
    does InternalError only work in debug mode? if not maybe less detail producitons mode
 
    should i import
+
+
+   keep subdivs contained in app content. 
+   MuiCardContent-root css-kacebu-MuiCardContent-root is furter down than the outline of app content
+
+   map container shouod contain artwork perfectly. now thereea
+
+   move everything in artwork backdrop up so there not the upper white space. 
+  remove side of 
+
+  welcome has a good div set up with map isble in backgrounfd on margins and and fitting into blackoutline. learn from that and have the same setupp in artworkunfobar

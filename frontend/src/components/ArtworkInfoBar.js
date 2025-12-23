@@ -147,18 +147,34 @@ const ArtworkInfoBar = ({
   const collections = Object.keys(imagesByCollection);
 
   return (
-    <Card
-      ref={containerRef}
+    <Box
       sx={{
+        position: 'absolute',
+        top: '5px',
+        left: '5px',
+        right: '5px',
+        bottom: '5px',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        zIndex: 9999,
         opacity: isVisible ? 1 : 0,
         transition: 'opacity 5s cubic-bezier(0.4, 0.0, 0.2, 1)',
         pointerEvents: isVisible ? 'auto' : 'none',
-        maxHeight: '90vh',
-        overflowY: 'auto',
-        borderRadius: '8px',
-        boxShadow: 3,
       }}
     >
+      <Card
+        ref={containerRef}
+        sx={{
+          width: '90%',
+          maxWidth: '500px',
+          maxHeight: '90vh',
+          overflowY: 'auto',
+          borderRadius: '8px',
+          boxShadow: 3,
+          zIndex: 10000,
+        }}
+      >
       {loading && (
         <Box sx={{ p: 3, textAlign: 'center' }}>
           <CircularProgress size={40} />
@@ -222,7 +238,8 @@ const ArtworkInfoBar = ({
           </CardContent>
         </>
       )}
-    </Card>
+      </Card>
+    </Box>
   );
 };
 
