@@ -176,6 +176,8 @@ const WelcomeOverlay = ({ onStartQuiz, onExplore, colors }) => {
           '--link-shadow': colorScheme.shadowLight,
           '--text-primary': colorScheme.textPrimary,
           '--shadow-heavy': colorScheme.shadowHeavy,
+          '--button-text-color': colorScheme.textPrimary,
+          '--hover': colorScheme.hover,
         }}
       >
         {/* Close Button */}

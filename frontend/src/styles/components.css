@@ -274,15 +274,19 @@ body {
 .overlay-section-title {
   font-size: 16px;
   font-weight: 600;
-  color: var(--link-color);
+  color: var(--text-primary);
   margin: 0;
-  text-shadow: 0 0 8px var(--link-shadow);
   font-family: 'Roboto Condensed', Helvetica, sans-serif;
   text-transform: uppercase;
   letter-spacing: 1px;
   word-wrap: break-word;
   overflow-wrap: break-word;
   word-break: break-word;
+}
+
+.overlay-section-title.link {
+  color: var(--link-color);
+  text-shadow: 0 0 8px var(--link-shadow);
 }
 
 /* Shared caption/info box (consolidates .info-box and .welcome-caption) */
@@ -364,7 +368,7 @@ body {
   border: 1px solid var(--border-primary);
   border-radius: 4px;
   background-color: var(--bg-secondary);
-  color: var(--text-primary);
+  color: var(--button-text-color, var(--text-primary));
   cursor: pointer;
   font-weight: 500;
   transition: all 0.2s ease;
@@ -372,7 +376,7 @@ body {
 }
 
 .control-button:hover {
-  background-color: var(--hover);
+  background-color: var(--hover, #E5E5E5);
   box-shadow: 0 0 8px var(--shadow-light);
 }
 
@@ -398,7 +402,7 @@ body {
   align-items: center;
   gap: 12px;
   padding: 8px;
-  background-color: var(--bg-overlay-light);
+  background-color: rgba(245, 245, 245, 0.5);
   border-radius: 4px;
   border: 1px solid var(--border-secondary);
 }
@@ -421,7 +425,7 @@ body {
 
 .control-label {
   font-size: 14px;
-  color: var(--text-primary);
+  color: #000000;
   word-wrap: break-word;
   overflow-wrap: break-word;
 }
@@ -480,7 +484,7 @@ body {
   border: none;
   font-size: 28px;
   cursor: pointer;
-  color: var(--text-primary);
+  color: var(--button-text-color, var(--text-primary));
   padding: 4px 8px;
   line-height: 1;
   z-index: 10001;
