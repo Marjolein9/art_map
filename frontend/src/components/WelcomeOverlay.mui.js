@@ -53,12 +53,7 @@ const WelcomeOverlay = ({ onStartQuiz, onExplore, colors }) => {
         onClose={handleBackdropClick}
         maxWidth="sm"
         fullWidth
-        PaperProps={{
-          sx: {
-            opacity: isClosing ? 0 : 1,
-            transition: 'opacity 0.3s ease',
-          },
-        }}
+
       >
         {/* Dialog Header */}
         <DialogTitle
@@ -69,9 +64,7 @@ const WelcomeOverlay = ({ onStartQuiz, onExplore, colors }) => {
             gap: 2,
           }}
         >
-          <Typography variant="h2" component="div" sx={{ flex: 1, textAlign: 'center' }}>
-            Learn Geography Through Art
-          </Typography>
+
           <Box sx={{ display: 'flex', gap: 1 }}>
             <Button
               variant="contained"
@@ -88,6 +81,18 @@ const WelcomeOverlay = ({ onStartQuiz, onExplore, colors }) => {
               Start Quiz
             </Button>
           </Box>
+          
+          <Button
+            variant="outlined"
+            onClick={handleClose}
+            size="small"
+            sx={{
+              minWidth: 'auto',
+              padding: '4px 8px'
+            }}
+          >
+            ✕
+          </Button>
         </DialogTitle>
 
         {/* Dialog Content */}

@@ -200,7 +200,6 @@ const WelcomeOverlay = ({ onStartQuiz, onExplore, colors }) => {
         >
           {/* TOP HEADER */}
           <div className="overlay-header">
-            <h2 className="overlay-title">Learn Geography Through Art</h2>
 
             <div className="button-group">
               <button
