@@ -101,3 +101,115 @@ def get_db_connection():
     conn = psycopg2.connect(database_url, cursor_factory=RealDictCursor)
 
     return conn
+
+
+def execute_query(query, params=None, fetch='all'):
+    """
+    Execute a database query with automatic connection management.
+
+    This is a convenience function that handles the entire database operation:
+    - Opens connection
+    - Creates cursor
+    - Executes query
+    - Fetches results
+    - Closes connection
+
+    Eliminates the need for repetitive boilerplate in routes.
+
+    Args:
+        query (str): SQL query to execute
+        params (tuple, optional): Query parameters for safe parameterization
+        fetch (str): How to fetch results:
+            - 'all': fetchall() - returns list of dicts
+            - 'one': fetchone() - returns single dict or None
+            - 'none': Don't fetch (for INSERT/UPDATE/DELETE)
+
+    Returns:
+        list|dict|None: Query results based on fetch parameter
+
+    Example usage:
+        # Fetch all countries
+        countries = execute_query('SELECT * FROM countries')
+
+        # Fetch one country
+        usa = execute_query(
+            'SELECT * FROM countries WHERE iso3 = %s',
+            ('USA',),
+            fetch='one'
+        )
+
+        # Execute INSERT (no fetch)
+        execute_query(
+            'INSERT INTO countries (iso3, name) VALUES (%s, %s)',
+            ('XXX', 'Test Country'),
+            fetch='none'
+        )
+    """
+    conn = get_db_connection()
+    try:
+        cursor = conn.cursor()
+        cursor.execute(query, params or ())
+
+        if fetch == 'all':
+            result = cursor.fetchall()
+        elif fetch == 'one':
+            result = cursor.fetchone()
+        else:  # fetch == 'none'
+            conn.commit()
+            result = None
+
+        return result
+    finally:
+        conn.close()
+
+
+def get_collection_counts():
+    """
+    Get count of images in each collection.
+
+    This function centralizes the collection counting logic that was
+    duplicated in the health() route and startup code.
+
+    Returns:
+        dict: Count of images in each collection
+            {
+                'albert_kahn_count': 95,
+                'children_art_count': 67,
+                'public_domain_count': 17,
+                'met_count': 49,
+                'total_images': 228
+            }
+    """
+    conn = get_db_connection()
+    try:
+        cursor = conn.cursor()
+
+        # Get counts from each collection
+        cursor.execute('SELECT COUNT(*) as count FROM albert_kahn_images')
+        albert_kahn_count = cursor.fetchone()['count']
+
+        cursor.execute('SELECT COUNT(*) as count FROM children_artwork_images')
+        children_art_count = cursor.fetchone()['count']
+
+        cursor.execute('SELECT COUNT(*) as count FROM public_domain_images')
+        public_domain_count = cursor.fetchone()['count']
+
+        cursor.execute('SELECT COUNT(*) as count FROM met_images')
+        met_count = cursor.fetchone()['count']
+
+        total_images = (
+            albert_kahn_count +
+            children_art_count +
+            public_domain_count +
+            met_count
+        )
+
+        return {
+            'albert_kahn_count': albert_kahn_count,
+            'children_art_count': children_art_count,
+            'public_domain_count': public_domain_count,
+            'met_count': met_count,
+            'total_images': total_images
+        }
+    finally:
+        conn.close()

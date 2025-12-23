@@ -67,7 +67,7 @@ import random  # For selecting random country in quiz
 import os  # For checking if database file exists
 
 # Our custom modules (from other files in backend/)
-from db_utils import get_db_connection  # Database connection helper
+from db_utils import execute_query, get_collection_counts  # Database utilities
 from config import PORT, DEBUG  # Configuration constants
 from error_handler import APIError, ValidationError, NotFoundError, InternalError, handle_api_error  # Standardized error handling
 
@@ -114,44 +114,21 @@ def get_countries():
     Errors are automatically caught and converted to structured API responses.
     """
     try:
-        # Step 1: Connect to database
-        # get_db_connection() returns a connection object
-        conn = get_db_connection()
+        # Execute query using utility function (automatically manages connection)
+        # execute_query() handles: connect → execute → fetch → close
+        countries = execute_query(
+            'SELECT iso3, iso2, name, common_name, m49, continent, subregion, is_country FROM countries ORDER BY common_name'
+        )
 
-        # Step 2: Create cursor (think of it as a pointer that moves through results)
-        # cursor.execute() runs SQL queries
-        # cursor.fetchall() retrieves all results
-        cursor = conn.cursor()
-
-        # Step 3: Execute SQL query
-        # SELECT: Get data from database
-        # FROM countries: From the 'countries' table
-        # ORDER BY common_name: Sort results alphabetically by common country name
-        cursor.execute('SELECT iso3, iso2, name, common_name, m49, continent, subregion, is_country FROM countries ORDER BY common_name')
-
-        # Step 4: Fetch results and convert to list of dicts
-        # cursor.fetchall() returns list of Row objects
-        # [dict(row) for row in ...] is a list comprehension that converts each Row to dict
-        # Result: [{'iso3': 'USA', 'name': 'United States', ...}, ...]
-        countries = [dict(row) for row in cursor.fetchall()]
-
-        # Step 5: Close connection to free resources
-        # Important! Always close database connections when done
-        conn.close()
-
-        # Step 6: Return JSON response
-        # jsonify() converts Python dict → JSON string
-        # Also sets Content-Type header to 'application/json'
-        # Frontend receives this as JSON and can parse it
+        # Return JSON response
         return jsonify({
-            'countries': countries,  # List of all country objects
-            'count': len(countries)  # Total number of countries (helpful for frontend)
+            'countries': countries,
+            'count': len(countries)
         })
     except Exception as e:
         # Catch any unexpected errors and convert to standardized format
-        # Log error for debugging but return generic message to user
         import traceback
-        print(f"Error in get_countries: {str(e)}") ##todo should this be imported here or already exist
+        print(f"Error in get_countries: {str(e)}")
         print(traceback.format_exc())
         raise InternalError(
             'Failed to fetch countries',
@@ -178,61 +155,32 @@ def random_country():
     REFACTORING: Updated to use standardized error handling.
     """
     try:
-        conn = get_db_connection()
-        cursor = conn.cursor()
-
         # List of territories to exclude from quiz mode
-        # These are small territories, overseas territories, and uninhabited islands
         excluded_territories = [
-            'BES',  # Bonaire, Sint Eustatius and Saba
-            'BVT',  # Bouvet Island
-            'CXR',  # Christmas Island
-            'CCK',  # Cocos (Keeling) Islands
-            'GUF',  # French Guiana
-            'GIB',  # Gibraltar
-            'GLP',  # Guadeloupe
-            'MTQ',  # Martinique
-            'MYT',  # Mayotte
-            'REU',  # Réunion
-            'SJM',  # Svalbard and Jan Mayen
-            'TKL',  # Tokelau
-            'TUV',  # Tuvalu
-            'UMI'   # United States Minor Outlying Islands
+            'BES', 'BVT', 'CXR', 'CCK', 'GUF', 'GIB', 'GLP',
+            'MTQ', 'MYT', 'REU', 'SJM', 'TKL', 'TUV', 'UMI'
         ]
 
-        # Get all sovereign countries (is_country = true)
-        # Only sovereign countries are included in the quiz, not territories
-        # Exclude small territories that are difficult for quiz purposes
-        cursor.execute('''
+        # Get all sovereign countries excluding small territories
+        # Build dynamic query with correct number of placeholders
+        placeholders = ', '.join(['%s'] * len(excluded_territories))
+        countries = execute_query(f'''
             SELECT iso3, name, common_name, continent, subregion
             FROM countries
             WHERE is_country = TRUE
-            AND iso3 NOT IN (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
-        ''' % tuple(['%s'] * len(excluded_territories)), excluded_territories) ##todo  what is this doing?
+            AND iso3 NOT IN ({placeholders})
+        ''', tuple(excluded_territories))
 
-        # Extract all sovereign countries into a Python list
-        countries = [dict(row) for row in cursor.fetchall()]
-
-        # Error handling: What if database is empty?
-        # This shouldn't happen in production, but good to check
+        # Error handling: ensure countries exist
         if not countries:
-            conn.close()
-            # Use standardized error response
             raise InternalError(
                 'No countries available in database',
                 details={'endpoint': '/api/game/random-country', 'excluded_count': len(excluded_territories)}
             )
 
-        # Select one random country from the list
-        # random.choice() picks one random item from a list
-        # Example: random.choice([country1, country2, country3]) → country2
+        # Select one random country
         selected_country = random.choice(countries)
 
-        conn.close()
-
-        # Return country details in nested structure
-        # We create a nested dict so frontend gets: data.country.name
-        # instead of: data.name (which would be confusing)
         return jsonify({
             'country': {
                 'iso': selected_country['iso3'],
@@ -243,11 +191,9 @@ def random_country():
             }
         })
     except APIError:
-        # Re-raise API errors so error handler catches them
         raise
     except Exception as e:
-        # Catch any other unexpected errors
-        import traceback ## todo why traceback imported here and what is format exc
+        import traceback
         print(f"Error in random_country: {str(e)}")
         print(traceback.format_exc())
         raise InternalError(
@@ -296,64 +242,41 @@ def get_images(iso3):
 
     Returns: JSON with images grouped by collection type
     """
-    # Get database connection from connection helper
-    # Interview Note: Using helper function for DRY principle
-    conn = get_db_connection()
-    cursor = conn.cursor()
-
-    # Query Albert Kahn images
-    # Interview Note: Parameterized query prevents SQL injection
-    # %s is a placeholder, (iso3,) is a tuple of parameters
-    # psycopg2 automatically escapes and sanitizes the parameters
-    cursor.execute('''
+    # Query all collections using execute_query utility
+    albert_kahn = execute_query('''
         SELECT 'Albert Kahn' as collection_type,
                filepath, title_en as title, location, date,
                operator, inventory_number, page_url, mission
         FROM albert_kahn_images
         WHERE iso3 = %s
     ''', (iso3,))
-    # Convert rows to list of dicts for JSON serialization
-    albert_kahn = [dict(row) for row in cursor.fetchall()]
 
-    # Query Children Artwork images
-    cursor.execute('''
+    children_art = execute_query('''
         SELECT 'Children in Art' as collection_type,
                filepath, title, artist_name,
                artist_nationality, author_wikilink, work_url, source
         FROM children_artwork_images
         WHERE artist_iso3 = %s
     ''', (iso3,))
-    children_art = [dict(row) for row in cursor.fetchall()]
     print(f"Children Art: {children_art}")  # Debug logging
 
-    # Query Public Domain images
-    cursor.execute('''
+    public_domain = execute_query('''
         SELECT 'Public Domain Review' as collection_type,
                filepath, title, country, source_link,
                source_url, description
         FROM public_domain_images
         WHERE iso3 = %s
     ''', (iso3,))
-    public_domain = [dict(row) for row in cursor.fetchall()]
 
-    # Query Met Museum images
-    cursor.execute('''
+    met_museum = execute_query('''
         SELECT 'Met Museum' as collection_type,
                filepath, title, artist_name, object_date,
                medium, department, culture, object_url
         FROM met_images
         WHERE iso3 = %s
     ''', (iso3,))
-    met_museum = [dict(row) for row in cursor.fetchall()]
-
-    # IMPORTANT: Always close database connections
-    # Interview Note: Connection leaks cause "too many connections" errors ## todo ?
-    # In production, use context managers or try/finally blocks
-    conn.close()
 
     # Return JSON response
-    # Interview Note: jsonify() sets Content-Type: application/json header
-    # Also handles JSON serialization of Python objects
     return jsonify({
         'images': {
             'Albert Kahn': albert_kahn,
@@ -424,20 +347,14 @@ def get_neighbors(iso3):
     Returns: JSON with list of neighboring countries including M49 codes
     Example: {"neighbors": [{"iso3": "CAN", "m49": 124, "name": "Canada"}, ...], "count": 2}
     """
-    conn = get_db_connection()
-    cursor = conn.cursor()
-
     # Get all neighbors for this country with M49 codes
-    cursor.execute('''
+    neighbors = execute_query('''
         SELECT c.iso3, c.m49, c.name, c.common_name
         FROM country_borders cb
         JOIN countries c ON cb.neighbor_iso3 = c.iso3
         WHERE cb.country_iso3 = %s
         ORDER BY c.common_name
-    ''', (iso3,)) #todo why ,
-
-    neighbors = [dict(row) for row in cursor.fetchall()]
-    conn.close()
+    ''', (iso3,))
 
     return jsonify({
         'country_iso3': iso3,
@@ -458,21 +375,16 @@ def get_similar_islands(iso3):
     Returns: JSON with list of 2 countries from the same subregion (preferring other islands)
     Example: {"islands": [{"iso3": "PHL", "m49": 608, "name": "Philippines"}, ...], "count": 2, "is_island": true}
     """
-    conn = get_db_connection()
-    cursor = conn.cursor()
-
     # Check if the target country is an island (has no neighbors)
-    cursor.execute('''
+    neighbor_result = execute_query('''
         SELECT COUNT(*) as neighbor_count
         FROM country_borders
         WHERE country_iso3 = %s
-    ''', (iso3,))
+    ''', (iso3,), fetch='one')
 
-    neighbor_count = cursor.fetchone()['neighbor_count']
-    is_island = neighbor_count == 0
+    is_island = neighbor_result['neighbor_count'] == 0
 
     if not is_island:
-        conn.close()
         return jsonify({
             'country_iso3': iso3,
             'is_island': False,
@@ -481,20 +393,18 @@ def get_similar_islands(iso3):
         })
 
     # Get the target country's details
-    cursor.execute('''
+    target = execute_query('''
         SELECT iso3, name, common_name, m49, continent, subregion
         FROM countries
         WHERE iso3 = %s
-    ''', (iso3,))
+    ''', (iso3,), fetch='one')
 
-    target = cursor.fetchone()
     if not target:
-        conn.close()
         return jsonify({'error': 'Country not found'}), 404
 
     # Find 2 random countries from the same subregion
     # Priority: other islands in same subregion > any countries in same subregion
-    cursor.execute('''
+    subregion_countries = execute_query('''
         SELECT c.iso3, c.m49, c.name, c.common_name,
                CASE
                    -- Check if it's an island (no neighbors)
@@ -509,18 +419,14 @@ def get_similar_islands(iso3):
         LIMIT 2
     ''', (iso3, target['subregion']))
 
-    subregion_countries = [dict(row) for row in cursor.fetchall()]
-
     # Remove the priority field before returning
     for country in subregion_countries:
         country.pop('priority', None)
 
-    conn.close()
-
     return jsonify({
         'country_iso3': iso3,
         'is_island': True,
-        'islands': subregion_countries,  # Keep the same key name for backward compatibility
+        'islands': subregion_countries,
         'count': len(subregion_countries),
         'target_subregion': target['subregion'],
         'target_continent': target['continent']
@@ -537,19 +443,13 @@ def get_child_mortality(country_code):
 
     Returns: JSON with 1989 and 2023 child mortality rates and the difference
     """
-    conn = get_db_connection()
-    cursor = conn.cursor()
-
     # Get all mortality data for this country
-    cursor.execute('''
+    rows = execute_query('''
         SELECT year, mortality_rate
         FROM child_mortality
         WHERE country_code = %s
         ORDER BY year
     ''', (country_code,))
-
-    rows = cursor.fetchall()
-    conn.close()
 
     if not rows:
         return jsonify({'error': f'No data found for country code: {country_code}'}), 404
@@ -597,17 +497,11 @@ def get_external_links(iso3):
 
     Returns: JSON with Gapminder, TasteAtlas, and extra links
     """
-    conn = get_db_connection()
-    cursor = conn.cursor()
-
-    cursor.execute('''
+    row = execute_query('''
         SELECT gapminder_url, tasteatlas_url, extra_links
         FROM country_external_links
         WHERE iso3 = %s
-    ''', (iso3,))
-
-    row = cursor.fetchone()
-    conn.close()
+    ''', (iso3,), fetch='one')
 
     if not row:
         return jsonify({'error': f'No links found for country: {iso3}'}), 404
@@ -636,38 +530,19 @@ def health():
 
     Returns: Server and database status
     """
-    conn = get_db_connection()
-    cursor = conn.cursor()
-
     # Count total countries in database
-    cursor.execute('SELECT COUNT(*) as count FROM countries')
-    countries_count = cursor.fetchone()['count']
+    countries_result = execute_query('SELECT COUNT(*) as count FROM countries', fetch='one')
+    countries_count = countries_result['count']
 
-    # Count images from all four collections (Albert Kahn, Children in Art, Public Domain Review, Met Museum)
-    cursor.execute('SELECT COUNT(*) as count FROM albert_kahn_images')
-    albert_kahn_count = cursor.fetchone()['count']
-
-    cursor.execute('SELECT COUNT(*) as count FROM children_artwork_images')
-    children_art_count = cursor.fetchone()['count']
-
-    cursor.execute('SELECT COUNT(*) as count FROM public_domain_images')
-    public_domain_count = cursor.fetchone()['count']
-
-    cursor.execute('SELECT COUNT(*) as count FROM met_images')
-    met_count = cursor.fetchone()['count']
-
-    conn.close()
+    # Get collection counts using utility function
+    counts = get_collection_counts()
 
     # Return health information with breakdown by collection
     return jsonify({
         'status': 'healthy',
         'database': 'connected',
         'countries_count': countries_count,
-        'albert_kahn_count': albert_kahn_count,
-        'children_art_count': children_art_count,
-        'public_domain_count': public_domain_count,
-        'met_count': met_count,
-        'total_images': albert_kahn_count + children_art_count + public_domain_count + met_count
+        **counts  # Unpack all collection counts
     })
 
 
@@ -716,28 +591,14 @@ def serve_image(filename):
 if __name__ == '__main__':
     # Display startup information: Show how much data is loaded
     # This helps verify database was initialized correctly
-    conn = get_db_connection()
-    cursor = conn.cursor()
+    countries_result = execute_query('SELECT COUNT(*) as count FROM countries', fetch='one')
+    countries_count = countries_result['count']
 
-    # Get total counts from all image collections
-    cursor.execute('SELECT COUNT(*) as count FROM countries')
-    countries_count = cursor.fetchone()['count']
-
-    cursor.execute('SELECT COUNT(*) as count FROM albert_kahn_images')
-    albert_kahn_count = cursor.fetchone()['count']
-
-    cursor.execute('SELECT COUNT(*) as count FROM children_artwork_images')
-    children_art_count = cursor.fetchone()['count']
-
-    cursor.execute('SELECT COUNT(*) as count FROM public_domain_images')
-    public_domain_count = cursor.fetchone()['count']
-
-    total_images = albert_kahn_count + children_art_count + public_domain_count
-
-    conn.close()
+    # Get collection counts using utility function
+    counts = get_collection_counts()
 
     # Print startup message to console
-    print(f"🖼️  Loaded {total_images} images ({albert_kahn_count} Albert Kahn, {children_art_count} Children Art, {public_domain_count} Public Domain)")
+    print(f"🖼️  Loaded {counts['total_images']} images ({counts['albert_kahn_count']} Albert Kahn, {counts['children_art_count']} Children Art, {counts['public_domain_count']} Public Domain)")
     print(f"🌍 {countries_count} countries in database")
     print(f"🚀 Starting server on http://localhost:{PORT}")
 

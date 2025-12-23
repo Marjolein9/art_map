@@ -31,11 +31,8 @@
  * Why async? Network requests take time. We don't want to block the UI while waiting.
  */
 
-// Backend API base URL
-// Uses environment variable for production deployment (Vercel/Netlify)
-// Falls back to localhost for local development
-// Set REACT_APP_API_URL in .env.production for production
-const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
+// Import centralized API configuration
+import { API_URL_FULL as API_URL } from '../utils/apiConfig';
 
 /**
  * REFACTORING: Core API Call Utility

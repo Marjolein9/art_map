@@ -4,9 +4,6 @@ import ImageGallery from './ImageGallery';
 import ChildMortalitySection from './ChildMortalitySection';
 import ExternalLinks from './ExternalLinks';
 
-// Get API base URL from environment variable
-const API_BASE = (process.env.REACT_APP_API_URL || 'http://localhost:5000/api').replace('/api', '');
-
 const ArtworkInfoBar = ({
   countryISO,
   countryName,

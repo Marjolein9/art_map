@@ -800,11 +800,18 @@ a.collection-subtitle:hover {
   margin: 0 2px;
 }
 
-/* Small toggle containers for overlay */
+/* Consolidated Toggle Switches - uses CSS variables for sizing */
 .toggle-container-small {
+  --toggle-width: 32px;
+  --toggle-height: 16px;
+  --toggle-border-radius: 16px;
+  --toggle-knob-size: 10px;
+  --toggle-translate: 16px;
+  --toggle-gap: 4px;
+
   display: flex;
   align-items: center;
-  gap: 4px;
+  gap: var(--toggle-gap);
 }
 
 .toggle-label-small {
@@ -816,8 +823,8 @@ a.collection-subtitle:hover {
 .toggle-switch-small {
   position: relative;
   display: inline-block;
-  width: 32px;
-  height: 16px;
+  width: var(--toggle-width);
+  height: var(--toggle-height);
 }
 
 .toggle-switch-small input {
@@ -835,15 +842,15 @@ a.collection-subtitle:hover {
   bottom: 0;
   background-color: var(--bg-secondary);
   transition: 0.3s;
-  border-radius: 16px;
+  border-radius: var(--toggle-border-radius);
   border: 1px solid var(--border-secondary);
 }
 
 .toggle-slider-small:before {
   position: absolute;
   content: "";
-  height: 10px;
-  width: 10px;
+  height: var(--toggle-knob-size);
+  width: var(--toggle-knob-size);
   left: 3px;
   bottom: 2px;
   background-color: var(--white);
@@ -857,7 +864,7 @@ input:checked + .toggle-slider-small {
 }
 
 input:checked + .toggle-slider-small:before {
-  transform: translateX(16px);
+  transform: translateX(var(--toggle-translate));
 }
 
 .toggle-slider-small:hover {
@@ -901,15 +908,21 @@ input:checked + .toggle-slider-small:before {
   transform: translateY(-2px);
 }
 
-/* iPhone-style Toggle Switch */
+/* iPhone-style Toggle Switch - Regular size */
 .toggle-container {
+  --toggle-width: 40px;
+  --toggle-height: 20px;
+  --toggle-border-radius: 20px;
+  --toggle-knob-size: 14px;
+  --toggle-translate: 20px;
+  --toggle-gap: 6px;
+
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: var(--toggle-gap);
 }
 
 .toggle-label {
-  
   font-weight: bold;
   color: var(--text-color);
   opacity: 0.8;
@@ -918,8 +931,8 @@ input:checked + .toggle-slider-small:before {
 .toggle-switch {
   position: relative;
   display: inline-block;
-  width: 40px;
-  height: 20px;
+  width: var(--toggle-width);
+  height: var(--toggle-height);
 }
 
 .toggle-switch input {
@@ -937,15 +950,15 @@ input:checked + .toggle-slider-small:before {
   bottom: 0;
   background-color: var(--toggle-bg);
   transition: 0.3s;
-  border-radius: 20px;
+  border-radius: var(--toggle-border-radius);
   border: 1px solid var(--border-secondary);
 }
 
 .toggle-slider:before {
   position: absolute;
   content: "";
-  height: 14px;
-  width: 14px;
+  height: var(--toggle-knob-size);
+  width: var(--toggle-knob-size);
   left: 3px;
   bottom: 2px;
   background-color: var(--toggle-knob);
@@ -959,7 +972,7 @@ input:checked + .toggle-slider {
 }
 
 input:checked + .toggle-slider:before {
-  transform: translateX(20px);
+  transform: translateX(var(--toggle-translate));
 }
 
 .toggle-slider:hover {
