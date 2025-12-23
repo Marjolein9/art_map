@@ -1,66 +1,14 @@
 /**
  * Pastel Color Palette Generator
- * 
+ *
  * Generates a consistent pastel color for each country based on its M49 code.
  * Each country gets a unique, pleasant pastel color that's easy on the eyes.
  */
 
-// Beautiful pastel palette - soft, muted colors (50+ unique colors to avoid collisions)
-const PASTEL_COLORS = [
-  '#FFB3BA', // Pastel Pink
-  '#FFCCCB', // Light Pink
-  '#FFE5B4', // Peach
-  '#FFDAB9', // Peach Puff
-  '#FFE4B5', // Moccasin
-  '#FFEFD5', // Papaya Whip
-  '#FFFACD', // Lemon Chiffon
-  '#F0FFF0', // Honeydew
-  '#E0FFFF', // Light Cyan
-  '#B0E0E6', // Powder Blue
-  '#ADD8E6', // Light Blue
-  '#87CEEB', // Sky Blue
-  '#DDA0DD', // Plum
-  '#EE82EE', // Violet
-  '#FFB6C1', // Light Pink Rose
-  '#FFC0CB', // Pink
-  '#F5DEB3', // Wheat
-  '#DEB887', // Burlywood
-  '#D2B48C', // Tan
-  '#F0E68C', // Khaki
-  '#FFFACD', // Lemon Chiffon
-  '#FAFAD2', // Light Goldenrod Yellow
-  '#F5F5DC', // Beige
-  '#FFF8DC', // Cornsilk
-  '#FFFAF0', // Floral White
-  '#FAF0E6', // Linen
-  '#FFE4E1', // Misty Rose
-  '#F0FFFF', // Azure
-  '#E6F2FF', // Alice Blue variant
-  '#F0F8FF', // Ghost White
-  '#F5FFFA', // Mint Cream
-  '#FFFAF0', // Floral White
-  '#F0FFF0', // Honeydew
-  '#FFFACD', // Lemon Chiffon
-  '#FFE4B5', // Moccasin
-  '#FFD7BE', // Peach variant
-  '#FFE4C4', // Bisque
-  '#FFDEAD', // Navajo White
-  '#F5DEB3', // Wheat
-  '#DEB887', // Burlywood
-  '#D2B48C', // Tan
-  '#BC8F8F', // Rosy Brown
-  '#DDA0DD', // Plum
-  '#EE82EE', // Violet
-  '#DA70D6', // Orchid
-  '#BA55D3', // Medium Orchid
-  '#9370DB', // Medium Purple
-  '#D8BFD8', // Thistle
-  '#FFE4E1', // Misty Rose
-  '#F08080', // Light Coral
-  '#CD5C5C', // Indian Red
-  '#F4A460', // Sandy Brown
-  '#DAA520', // Goldenrod (muted)
-];
+import COLOR_SCHEME from '../styles/colorSchemes';
+
+// Import pastel palette from centralized color scheme
+const PASTEL_COLORS = COLOR_SCHEME.pastelColors;
 
 /**
  * Generates a deterministic pastel color based on M49 code
@@ -70,7 +18,7 @@ const PASTEL_COLORS = [
  * @returns {string} - Hex color code in pastel palette
  */
 export const getPastelColorForCountry = (m49) => {
-  if (!m49) return '#D3D3D3'; // Default light gray for unknown
+  if (!m49) return COLOR_SCHEME.borderSecondary; // Default light gray for unknown
   
   // Convert to number and use a better distribution algorithm
   const m49Num = typeof m49 === 'string' ? parseInt(m49, 10) : m49;
@@ -123,7 +71,7 @@ export const getPathColor = (
     clickedCountry !== targetCountry  // NOT the target, so it was a wrong guess
   ) {
     console.log(`🔴 SHOWING RED for ${pathIso} (clicked but wrong, target is ${targetCountry})`);
-    return '#FF6B6B'; // Bright red for wrong answer
+    return COLOR_SCHEME.incorrect; // Red for wrong answer
   }
   
   // Correct answer shows in correct color from theme
@@ -149,7 +97,7 @@ export const getPathColor = (
   }
   
   // Default (no path visible)
-  return '#000';
+  return COLOR_SCHEME.black;
 };
 
 /**
@@ -163,7 +111,7 @@ export const getPathColor = (
 export const getPathStrokeColor = (path, isHintOverlay, isShowMeOverlay) => {
   // Show Me overlay gets darker outline
   if (isShowMeOverlay) {
-    return '#8B4513'; // Dark brown from vintage theme
+    return COLOR_SCHEME.borderPrimary; // Black border
   }
   
   // Hints get pastel colored outlines
@@ -173,7 +121,7 @@ export const getPathStrokeColor = (path, isHintOverlay, isShowMeOverlay) => {
   }
   
   // Default (no outline visible)
-  return '#000';
+  return COLOR_SCHEME.black;
 };
 
 export default {

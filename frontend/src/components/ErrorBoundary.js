@@ -49,6 +49,7 @@
  */
 
 import React from 'react';
+import COLOR_SCHEME from '../styles/colorSchemes';
 
 class ErrorBoundary extends React.Component {
   /**
@@ -151,7 +152,7 @@ class ErrorBoundary extends React.Component {
             alignItems: 'center',
             justifyContent: 'center',
             minHeight: '100vh',
-            backgroundColor: '#fff3cd',  // Light warning color
+            backgroundColor: COLOR_SCHEME.warning,  // Light warning color
             padding: '20px',
             fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto'
           }}
@@ -160,12 +161,12 @@ class ErrorBoundary extends React.Component {
           <div style={{ fontSize: '64px', marginBottom: '20px' }}>⚠️</div>
 
           {/* Error Title */}
-          <h1 style={{ color: '#856404', margin: '0 0 10px 0', fontSize: '24px' }}>
+          <h1 style={{ color: COLOR_SCHEME.textPrimary, margin: '0 0 10px 0', fontSize: '24px' }}>
             Oops! Something went wrong
           </h1>
 
           {/* Error Message */}
-          <p style={{ color: '#856404', fontSize: '16px', maxWidth: '500px', textAlign: 'center', lineHeight: '1.6' }}>
+          <p style={{ color: COLOR_SCHEME.textPrimary, fontSize: '16px', maxWidth: '500px', textAlign: 'center', lineHeight: '1.6' }}>
             We encountered an unexpected error. Our team has been notified.
             {this.state.error && (
               <>
@@ -181,22 +182,22 @@ class ErrorBoundary extends React.Component {
               style={{
                 marginTop: '20px',
                 padding: '15px',
-                backgroundColor: '#fff8dc',
+                backgroundColor: COLOR_SCHEME.bgSecondary,
                 borderRadius: '5px',
                 maxWidth: '700px',
                 maxHeight: '300px',
                 overflow: 'auto',
-                border: '1px solid #ddd'
+                border: `1px solid ${COLOR_SCHEME.borderSecondary}`
               }}
             >
-              <summary style={{ cursor: 'pointer', color: '#856404', fontWeight: 'bold' }}>
+              <summary style={{ cursor: 'pointer', color: COLOR_SCHEME.textPrimary, fontWeight: 'bold' }}>
                 Technical Details (for developers)
               </summary>
               <pre
                 style={{
                   margin: '10px 0 0 0',
                   fontSize: '12px',
-                  color: '#333',
+                  color: COLOR_SCHEME.textPrimary,
                   whiteSpace: 'pre-wrap',
                   wordBreak: 'break-word'
                 }}
@@ -208,7 +209,7 @@ class ErrorBoundary extends React.Component {
 
           {/* Error Count */}
           {this.state.errorCount > 1 && (
-            <p style={{ color: '#856404', fontSize: '12px', marginTop: '15px' }}>
+            <p style={{ color: COLOR_SCHEME.textPrimary, fontSize: '12px', marginTop: '15px' }}>
               Errors encountered: {this.state.errorCount}
             </p>
           )}
@@ -219,7 +220,7 @@ class ErrorBoundary extends React.Component {
               onClick={this.handleReset}
               style={{
                 padding: '10px 20px',
-                backgroundColor: '#856404',
+                backgroundColor: COLOR_SCHEME.textPrimary,
                 color: 'white',
                 border: 'none',
                 borderRadius: '5px',
@@ -234,7 +235,7 @@ class ErrorBoundary extends React.Component {
               onClick={() => window.location.href = '/'}
               style={{
                 padding: '10px 20px',
-                backgroundColor: '#6c757d',
+                backgroundColor: COLOR_SCHEME.textSecondary,
                 color: 'white',
                 border: 'none',
                 borderRadius: '5px',

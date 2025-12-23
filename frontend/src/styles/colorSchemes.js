@@ -1,54 +1,76 @@
 // Centralized Color Scheme for the App
-// Vintage 1900s theme - inspired by early photographic prints and sepia tones
+// Single source of truth for ALL colors in the application
 
 export const COLOR_SCHEME = {
-  name: 'Vintage 1900s',
+  name: 'Simple Black & White',
 
-  // Globe/Map colors
-  ocean: '#3d3226',
-  land: '#e8dcc4',
-  hover: '#8b7355',
-  selected: '#d4a574',
-  correct: '#7e215fff',
-  incorrect: '#8b4513',
+  // Base colors
+  white: '#FFFFFF',
+  black: '#000000',
 
-  // Border and glow
-  border: '#8fb3c9',
-  glow: 'rgba(139, 115, 85, 0.4)',
+  // Text
+  textPrimary: '#000000',
+  textSecondary: '#525252',    // gray-600
+  textTertiary: '#737373',     // gray-500
 
-  // Text colors with opacity levels
-  text: '#2f2519',
-  textPrimary: 'rgba(229, 229, 229, 0.7)',
-  textSecondary: 'rgba(229, 229, 229, 0.6)',
-  textTertiary: 'rgba(229, 229, 229, 0.5)',
+  // Backgrounds
+  bgPrimary: '#FFFFFF',
+  bgSecondary: '#F5F5F5',      // gray-100
+  bgOverlay: 'rgba(0, 0, 0, 0.5)',
 
-  // Background colors
-  bgBrownDark: 'rgb(87, 80, 72)',
-  bgOverlayLight: 'rgba(0, 0, 0, 0.2)',
-  bgOverlayMedium: 'rgba(0, 0, 0, 0.35)',
-  bgOverlayHeavy: 'rgba(0, 0, 0, 0.5)',
+  // Borders
+  borderPrimary: '#000000',
+  borderSecondary: '#E5E5E5',   // gray-200
 
-  // Card and container
-  cardBg: 'rgba(232, 220, 196, 0.85)',
+  // Interactive states
+  hover: '#E5E5E5',            // gray-200
+  selected: '#D4D4D4',         // gray-300
 
-  // Link colors
-  linkColor: '#8fb3c9',
-  linkHover: '#b0d4e8',
-  linkUnderline: 'rgba(143, 179, 201, 0.4)',
-  linkShadow: 'rgba(143, 179, 201, 0.3)',
-  linkHoverShadow: 'rgba(176, 212, 232, 0.5)',
+  // Semantic colors
+  correct: '#22C55E',          // green-500
+  incorrect: '#EF4444',        // red-500
+  warning: '#F5F5F5',          // light gray for errors
 
-  // Tooltip
-  tooltipBg: '#f5ead6',
-  tooltipText: '#2f2519',
+  // Links
+  linkColor: '#3B82F6',        // blue-500
+  linkHover: '#2563EB',        // blue-600
 
-  // Buttons
-  buttonBg: '#8b7355',
-  buttonPrimary: '#8b7355',
-  buttonSecondary: '#d4a574',
+  // Globe/Map specific
+  oceanColor: '#FFFFFF',       // white ocean
+  landColor: '#FFFFFF',        // white land
+  atmosphereColor: '#E5E5E5', // light gray atmosphere
 
-  // Background gradient
-  backgroundGradient: 'linear-gradient(to bottom, #f5ead6 0%, #e8dcc4 25%, #d4a574 50%, #8b7355 100%)'
+  // Shadows and effects
+  shadowLight: 'rgba(0, 0, 0, 0.1)',
+  shadowMedium: 'rgba(0, 0, 0, 0.2)',
+  shadowHeavy: 'rgba(0, 0, 0, 0.3)',
+
+  // Pastel palette for hints (moved from pastelColorPalette.js)
+  pastelColors: [
+    '#FFB3BA', '#FFCCCB', '#FFE5B4', '#FFDAB9', '#FFE4B5', '#FFEFD5',
+    '#FFFACD', '#F0FFF0', '#E0FFFF', '#B0E0E6', '#ADD8E6', '#87CEEB',
+    '#DDA0DD', '#EE82EE', '#FFB6C1', '#FFC0CB', '#F5DEB3', '#DEB887',
+    '#D2B48C', '#F0E68C', '#FAFAD2', '#F5F5DC', '#FFF8DC', '#FFFAF0',
+    '#FAF0E6', '#FFE4E1', '#F0FFFF', '#E6F2FF', '#F0F8FF', '#F5FFFA',
+    '#FFE4C4', '#FFDEAD', '#BC8F8F', '#DA70D6', '#BA55D3', '#9370DB',
+    '#D8BFD8', '#F08080', '#CD5C5C', '#F4A460', '#DAA520'
+  ],
+
+  // Candle colors (moved from Candles.css)
+  candleOrange: '#ff6a00',
+  candleOrangeYellow: '#ff9224',
+  candleDark: '#2c2b39',
+  candleBlueDark: '#30537d',
+  candleBlueLight: '#76daff',
+  candleYellow: '#fbf348',
+  candleYellowGrey: '#58523a',
+
+  // Deprecated (keeping for backward compatibility during migration)
+  glow: 'rgba(0, 0, 0, 0.2)',
+  border: '#000000',
+  text: '#000000',
+  cardBg: '#FFFFFF',
+  backgroundGradient: 'none'
 };
 
 export default COLOR_SCHEME;

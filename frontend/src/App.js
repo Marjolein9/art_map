@@ -379,7 +379,15 @@ function App() {
   // ===========================================================================
   return (
     <div className="App">
-      <div className="app-background" style={{ '--bg-gradient': COLORS.backgroundGradient }}>
+      <div className="app-background" style={{
+        '--bg-gradient': COLORS.backgroundGradient,
+        '--bg-primary': COLORS.bgPrimary,
+        '--bg-secondary': COLORS.bgSecondary,
+        '--text-primary': COLORS.textPrimary,
+        '--text-secondary': COLORS.textSecondary,
+        '--link-color': COLORS.linkColor,
+        '--link-hover': COLORS.linkHover
+      }}>
         <div className="app-container">
           <div className="app-content">
             <div
@@ -388,6 +396,7 @@ function App() {
                 '--card-bg': COLORS.cardBg,
                 '--glow-color': COLORS.glow,
                 '--border-color': COLORS.border,
+                '--text-color': COLORS.text,
               }}
             >
               {/* Welcome Overlay - Shows on initial load */}

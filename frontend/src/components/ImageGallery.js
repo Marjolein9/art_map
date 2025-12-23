@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
+import COLOR_SCHEME from '../styles/colorSchemes';
 
 // Get API base URL from environment variable
 // Remove /api suffix to get the base server URL for images
@@ -264,7 +265,7 @@ const ImageGallery = ({
                 className="artwork-image"
                 loading="lazy"
                 decoding="async"
-                style={{ backgroundColor: '#ddd' }}
+                style={{ backgroundColor: COLOR_SCHEME.bgSecondary }}
                 onLoad={(e) => {
                   const img = e.target;
                   const container = img.parentElement;
@@ -306,9 +307,9 @@ const ImageGallery = ({
                   // Set placeholder image
                   e.target.src = 'data:image/svg+xml,' + encodeURIComponent(`
                     <svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200">
-                      <rect fill="#cccccc" width="200" height="200"/>
+                      <rect fill={COLOR_SCHEME.borderSecondary} width="200" height="200"/>
                       <text x="50%" y="50%" text-anchor="middle" dominant-baseline="middle"
-                            font-family="Arial, sans-serif" font-size="14" fill="#666666">
+                            font-family="Arial, sans-serif" font-size="14" fill={COLOR_SCHEME.textSecondary}>
                         Image Not Available
                       </text>
                     </svg>

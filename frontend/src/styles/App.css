@@ -22,7 +22,7 @@ button {
 
 button:hover:not(:disabled) {
   transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 4px 8px var(--shadow-medium);
 }
 
 button:active:not(:disabled) {
@@ -62,7 +62,7 @@ button:disabled {
   padding: 30px 40px;
   border-radius: 12px;
   border: 2px solid var(--border-color, #bdc3c7);
-  box-shadow: 0 0 20px var(--glow-color, rgba(231, 181, 110, 0.5));
+  box-shadow: 0 0 20px var(--glow-color, var(--shadow-light));
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -129,7 +129,7 @@ button:disabled {
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0, 0, 0, 0.7);
+  background: var(--bg-overlay);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -145,7 +145,7 @@ button:disabled {
   max-width: 600px;
   max-height: 80vh;
   overflow-y: auto;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 4px 20px var(--shadow-heavy);
 }
 
 .disclaimer-modal h3 {
