@@ -1,9 +1,19 @@
 import { useState, useEffect, useRef } from 'react';
-import { Card, CardHeader, CardContent, Button, Box, CircularProgress, Typography } from '@mui/material';
+import {
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  Button,
+  Box,
+  CircularProgress,
+  Typography
+} from '@mui/material';
+import { ThemeProvider } from '@mui/material/styles';
 import { fetchImages, fetchChildMortality, fetchExternalLinks } from '../services/api';
 import ImageGallery from './ImageGallery.mui';
 import ChildMortalitySection from './ChildMortalitySection.mui';
 import ExternalLinks from './ExternalLinks.mui';
+import muiTheme from '../theme/muiTheme';
 
 const ArtworkInfoBar = ({
   countryISO,
@@ -146,100 +156,106 @@ const ArtworkInfoBar = ({
 
   const collections = Object.keys(imagesByCollection);
 
+  const handleBackdropClick = (event, reason) => {
+    if (reason === 'backdropClick' && onClose) {
+      onClose();
+    }
+  };
+
   return (
-    <Box
-      sx={{
-        position: 'absolute',
-        top: '5px',
-        left: '5px',
-        right: '5px',
-        bottom: '5px',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        zIndex: 9999,
-        opacity: isVisible ? 1 : 0,
-        transition: 'opacity 5s cubic-bezier(0.4, 0.0, 0.2, 1)',
-        pointerEvents: isVisible ? 'auto' : 'none',
-      }}
-    >
-      <Card
-        ref={containerRef}
+    <ThemeProvider theme={muiTheme}>
+      <Dialog
+        open={true}
+        onClose={handleBackdropClick}
+        maxWidth="sm"
+        fullWidth
         sx={{
-          width: '90%',
-          maxWidth: '500px',
-          maxHeight: '90vh',
-          overflowY: 'auto',
-          borderRadius: '8px',
-          boxShadow: 3,
-          zIndex: 10000,
+          '& .MuiDialog-paper': {
+            opacity: isVisible ? 1 : 0,
+            transition: 'opacity 5s cubic-bezier(0.4, 0.0, 0.2, 1)',
+            pointerEvents: isVisible ? 'auto' : 'none',
+          }
         }}
       >
-      {loading && (
-        <Box sx={{ p: 3, textAlign: 'center' }}>
-          <CircularProgress size={40} />
-          <Typography variant="body2" sx={{ mt: 2 }}>
-            Loading images…
+        {/* Dialog Header */}
+        <DialogTitle
+          sx={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            gap: 2,
+          }}
+        >
+          <Typography variant="h6" sx={{ fontWeight: 600 }}>
+            {mode === 'quiz' && answerSubmitted
+              ? isCorrectAnswer
+                ? `Correct: ${countryName || countryISO}`
+                : `Incorrect: ${countryName || countryISO}`
+              : countryName || countryISO}
           </Typography>
-        </Box>
-      )}
 
-      {!loading && (
-        <>
-          <CardHeader
-            title={
-              mode === 'quiz' && answerSubmitted
-                ? isCorrectAnswer
-                  ? `Correct: ${countryName || countryISO}`
-                  : `Incorrect: ${countryName || countryISO}`
-                : countryName || countryISO
-            }
-            action={
-              mode === 'quiz' && answerSubmitted && isCorrectAnswer && onNext ? (
-                <Button 
-                  variant="contained" 
-                  onClick={onNext}
-                  size="small"
-                >
-                  Next →
-                </Button>
-              ) : onClose ? (
-                <Button 
-                  variant="outlined" 
-                  onClick={onClose}
-                  size="small"
-                >
-                  ✕
-                </Button>
-              ) : null
-            }
-          />
+          <Box sx={{ display: 'flex', gap: 1 }}>
+            {mode === 'quiz' && answerSubmitted && isCorrectAnswer && onNext ? (
+              <Button
+                variant="contained"
+                onClick={onNext}
+                size="small"
+              >
+                Next →
+              </Button>
+            ) : onClose ? (
+              <Button
+                variant="outlined"
+                onClick={onClose}
+                size="small"
+                sx={{
+                  minWidth: 'auto',
+                  padding: '4px 8px'
+                }}
+              >
+                ✕
+              </Button>
+            ) : null}
+          </Box>
+        </DialogTitle>
 
-          <CardContent>
-            {collections.length > 0 && (
-              <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
-                {collections.map(collection => (
-                  <ImageGallery
-                    key={collection}
-                    collection={collection}
-                    images={imagesByCollection[collection]}
-                    countryName={countryName}
-                    currentIndex={currentImageIndex[collection] || 0}
-                    onPrev={() => prevImage(collection)}
-                    onNext={() => nextImage(collection)}
-                    imageRef={el => (imageRefs.current[collection] = el)}
-                  />
-                ))}
-              </Box>
-            )}
+        {/* Dialog Content */}
+        <DialogContent>
+          {loading && (
+            <Box sx={{ p: 3, textAlign: 'center' }}>
+              <CircularProgress size={40} />
+              <Typography variant="body2" sx={{ mt: 2 }}>
+                Loading images…
+              </Typography>
+            </Box>
+          )}
 
-            <ExternalLinks externalLinks={externalLinks} countryName={countryName} />
-            <ChildMortalitySection mortalityData={mortalityData} />
-          </CardContent>
-        </>
-      )}
-      </Card>
-    </Box>
+          {!loading && (
+            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
+              {collections.length > 0 && (
+                <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
+                  {collections.map(collection => (
+                    <ImageGallery
+                      key={collection}
+                      collection={collection}
+                      images={imagesByCollection[collection]}
+                      countryName={countryName}
+                      currentIndex={currentImageIndex[collection] || 0}
+                      onPrev={() => prevImage(collection)}
+                      onNext={() => nextImage(collection)}
+                      imageRef={el => (imageRefs.current[collection] = el)}
+                    />
+                  ))}
+                </Box>
+              )}
+
+              <ExternalLinks externalLinks={externalLinks} countryName={countryName} />
+              <ChildMortalitySection mortalityData={mortalityData} />
+            </Box>
+          )}
+        </DialogContent>
+      </Dialog>
+    </ThemeProvider>
   );
 };
 
