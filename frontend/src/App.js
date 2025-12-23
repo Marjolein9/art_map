@@ -7,11 +7,13 @@
  * - useRef: Persists values across renders without triggering re-renders
  */
 import { useState, useEffect, useRef } from 'react';
+import { ThemeProvider } from '@mui/material/styles';
+import muiTheme from './theme/muiTheme';
 import './styles/App.css';
 import './styles/components.css';
 import WorldMap from './components/WorldMap';
 import ArtworkInfoBar from './components/ArtworkInfoBar';
-import WelcomeOverlay from './components/WelcomeOverlay';
+import WelcomeOverlay from './components/WelcomeOverlay.mui';
 import COLOR_SCHEME from './styles/colorSchemes';
 import { useQuiz } from './hooks/useQuiz';
 import { fetchCountries } from './services/api';
@@ -378,134 +380,136 @@ function App() {
   // RENDER
   // ===========================================================================
   return (
-    <div className="App">
-      <div className="app-background" style={{
-        '--bg-gradient': COLORS.backgroundGradient,
-        '--bg-primary': COLORS.bgPrimary,
-        '--bg-secondary': COLORS.bgSecondary,
-        '--text-primary': COLORS.textPrimary,
-        '--text-secondary': COLORS.textSecondary,
-        '--link-color': COLORS.linkColor,
-        '--link-hover': COLORS.linkHover
-      }}>
-        <div className="app-container">
-          <div className="app-content">
-            <div
-              className="map-container map-container-full"
-              style={{
-                '--card-bg': COLORS.cardBg,
-                '--glow-color': COLORS.glow,
-                '--border-color': COLORS.border,
-                '--text-color': COLORS.text,
-              }}
-            >
-              {/* Welcome Overlay - Shows on initial load */}
-              {showWelcome && (
-                <WelcomeOverlay
-                  onStartQuiz={() => {
-                    setShowWelcome(false);
-                    setMode('quiz');
-                    fetchNewCountry();
-                  }}
-                  onExplore={() => {
-                    setShowWelcome(false);
-                    setMode('explore');
-                  }}
-                  colors={COLORS}
-                />
-              )}
-
-              <WorldMap
-                backendReady={backendReady}
-                onCountryClick={handleExploreClick}
-                targetCountry={mode === 'quiz' ? targetCountry?.iso : null}
-                targetCountryName={mode === 'quiz' ? targetCountry?.name : null}
-                region={mode === 'quiz' && !loading ? (targetCountry?.subregion || targetCountry?.continent) : null}
-                gameStatus={gameStatus}
-                colors={COLORS}
-                onNewGame={fetchNewCountry}
-                onStartOver={fetchNewCountry}
-                mode={mode}
-                onModeToggle={handleModeToggle}
-                loading={(loading && mode === 'quiz') || (exploreLoading && mode === 'explore')}
-                onManualCountrySelect={setManualTargetCountry}
-                countryLookup={countryLookup}
-                 setShowWelcome={setShowWelcome}
-              />
-
-              {((loading && mode === 'quiz') || (exploreLoading && mode === 'explore')) && (
-                <div className="loading-overlay">
-                  <div
-                    className="loading-content"
-                    style={{
-                      '--card-bg': COLORS.cardBg,
-                      '--text-color': COLORS.text,
-                      '--glow-color': COLORS.glow,
-                      '--border-color': COLORS.border,
+    <ThemeProvider theme={muiTheme}>
+      <div className="App">
+        <div className="app-background" style={{
+          '--bg-gradient': COLORS.backgroundGradient,
+          '--bg-primary': COLORS.bgPrimary,
+          '--bg-secondary': COLORS.bgSecondary,
+          '--text-primary': COLORS.textPrimary,
+          '--text-secondary': COLORS.textSecondary,
+          '--link-color': COLORS.linkColor,
+          '--link-hover': COLORS.linkHover
+        }}>
+          <div className="app-container">
+            <div className="app-content">
+              <div
+                className="map-container map-container-full"
+                style={{
+                  '--card-bg': COLORS.cardBg,
+                  '--glow-color': COLORS.glow,
+                  '--border-color': COLORS.border,
+                  '--text-color': COLORS.text,
+                }}
+              >
+                {/* Welcome Overlay - Shows on initial load */}
+                {showWelcome && (
+                  <WelcomeOverlay
+                    onStartQuiz={() => {
+                      setShowWelcome(false);
+                      setMode('quiz');
+                      fetchNewCountry();
                     }}
-                  >
-                    <div className="loading-spinner"></div>
-                    <p className="loading-text">
-                      {mode === 'quiz' ? 'Loading quiz data...' : 'Loading explore mode...'}
-                    </p>
-                  </div>
-                </div>
-              )}
+                    onExplore={() => {
+                      setShowWelcome(false);
+                      setMode('explore');
+                    }}
+                    colors={COLORS}
+                  />
+                )}
 
-              {infoBarOpen && currentCountry.iso && (
-                <div className="artwork-backdrop" onClick={handleBackdropClick}>
-                  <div className="artwork-overlay">
-                    <ArtworkInfoBar
-                      countryISO={currentCountry.iso}
-                      countryName={currentCountry.name}
-                      colors={COLORS}
-                      mode={mode}
-                      answerSubmitted={answerSubmitted}
-                      isCorrectAnswer={clickedCountry === targetCountry?.iso}
-                      onClose={handleCloseInfoBar}
-                      onNext={handleNextCountry}
-                    />
+                <WorldMap
+                  backendReady={backendReady}
+                  onCountryClick={handleExploreClick}
+                  targetCountry={mode === 'quiz' ? targetCountry?.iso : null}
+                  targetCountryName={mode === 'quiz' ? targetCountry?.name : null}
+                  region={mode === 'quiz' && !loading ? (targetCountry?.subregion || targetCountry?.continent) : null}
+                  gameStatus={gameStatus}
+                  colors={COLORS}
+                  onNewGame={fetchNewCountry}
+                  onStartOver={fetchNewCountry}
+                  mode={mode}
+                  onModeToggle={handleModeToggle}
+                  loading={(loading && mode === 'quiz') || (exploreLoading && mode === 'explore')}
+                  onManualCountrySelect={setManualTargetCountry}
+                  countryLookup={countryLookup}
+                   setShowWelcome={setShowWelcome}
+                />
+
+                {((loading && mode === 'quiz') || (exploreLoading && mode === 'explore')) && (
+                  <div className="loading-overlay">
+                    <div
+                      className="loading-content"
+                      style={{
+                        '--card-bg': COLORS.cardBg,
+                        '--text-color': COLORS.text,
+                        '--glow-color': COLORS.glow,
+                        '--border-color': COLORS.border,
+                      }}
+                    >
+                      <div className="loading-spinner"></div>
+                      <p className="loading-text">
+                        {mode === 'quiz' ? 'Loading quiz data...' : 'Loading explore mode...'}
+                      </p>
+                    </div>
                   </div>
-                </div>
-              )}
+                )}
+
+                {infoBarOpen && currentCountry.iso && (
+                  <div className="artwork-backdrop" onClick={handleBackdropClick}>
+                    <div className="artwork-overlay">
+                      <ArtworkInfoBar
+                        countryISO={currentCountry.iso}
+                        countryName={currentCountry.name}
+                        colors={COLORS}
+                        mode={mode}
+                        answerSubmitted={answerSubmitted}
+                        isCorrectAnswer={clickedCountry === targetCountry?.iso}
+                        onClose={handleCloseInfoBar}
+                        onNext={handleNextCountry}
+                      />
+                    </div>
+                  </div>
+                )}
+              </div>
             </div>
           </div>
-        </div>
 
-        {/* Disclaimer Modal */}
-        {disclaimerOpen && (
-          <div className="disclaimer-backdrop" onClick={() => setDisclaimerOpen(false)}>
-            <div className="disclaimer-modal" onClick={(e) => e.stopPropagation()}>
-              <h3>Disclaimer</h3>
-              <p>
-                The information presented on this website is provided for educational and informational purposes only.
-                While I strive for accuracy, I make no representations or warranties of any kind, express or implied,
-                about the completeness, accuracy, reliability, or suitability of the information, images, or materials
-                displayed.
-              </p>
-              <p>
-                The information may contain errors or omissions.
-                Users are encouraged to conduct their own research and verify information from authoritative sources
-                before relying on it for any purpose.
-              </p>
-              <p>
-                By using this website, you acknowledge that any reliance on the information provided is at your own risk.
-              </p>
-              <button className="disclaimer-close-btn" onClick={() => setDisclaimerOpen(false)}>
-                Close
-              </button>
+          {/* Disclaimer Modal */}
+          {disclaimerOpen && (
+            <div className="disclaimer-backdrop" onClick={() => setDisclaimerOpen(false)}>
+              <div className="disclaimer-modal" onClick={(e) => e.stopPropagation()}>
+                <h3>Disclaimer</h3>
+                <p>
+                  The information presented on this website is provided for educational and informational purposes only.
+                  While I strive for accuracy, I make no representations or warranties of any kind, express or implied,
+                  about the completeness, accuracy, reliability, or suitability of the information, images, or materials
+                  displayed.
+                </p>
+                <p>
+                  The information may contain errors or omissions.
+                  Users are encouraged to conduct their own research and verify information from authoritative sources
+                  before relying on it for any purpose.
+                </p>
+                <p>
+                  By using this website, you acknowledge that any reliance on the information provided is at your own risk.
+                </p>
+                <button className="disclaimer-close-btn" onClick={() => setDisclaimerOpen(false)}>
+                  Close
+                </button>
+              </div>
             </div>
-          </div>
-        )}
+          )}
 
-        {/* Footer with Disclaimer Link */}
-        <div className="app-footer">
-          <button className="disclaimer-link" onClick={() => setDisclaimerOpen(true)}>
-            Disclaimer
-          </button>
+          {/* Footer with Disclaimer Link */}
+          <div className="app-footer">
+            <button className="disclaimer-link" onClick={() => setDisclaimerOpen(true)}>
+              Disclaimer
+            </button>
+          </div>
         </div>
       </div>
-    </div>
+    </ThemeProvider>
   );
 }
 
