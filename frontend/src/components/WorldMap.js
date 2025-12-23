@@ -1,5 +1,6 @@
 import React, { memo, useState, useEffect, useRef, useMemo } from 'react';
 import Globe from 'react-globe.gl';
+import { Button, Box, Typography, FormControlLabel, Switch, Select, MenuItem } from '@mui/material';
 import { getCountryIsoCode, initializeCountryMapping } from '../utils/countryCodeMapping';
 import { REGION_VIEWS } from '../config/regions';
 import { loadTopoJSON } from '../utils/topoJsonLoader';
@@ -309,96 +310,136 @@ const WorldMap = ({
           </div>
 
           <div className="overlay-controls">
-            <button onClick={rotateLeft} className="globe-control-btn-small" title="Rotate Left">←</button>
-            <button onClick={rotateRight} className="globe-control-btn-small" title="Rotate Right">→</button>
-            <button onClick={zoomIn} className="globe-control-btn-small" title="Zoom In">+</button>
-            <button onClick={zoomOut} className="globe-control-btn-small" title="Zoom Out">−</button>
-            <span className="controls-divider" />
-            <div className="toggle-container-small">
-              <span className="toggle-label-small">Quiz</span>
-              <label className="toggle-switch-small">
-                <input type="checkbox" checked={mode==='quiz'} onChange={onModeToggle} />
-                <span className="toggle-slider-small"></span>
-              </label>
-                {/* Welcome Overlay Icon */}
-<button
-  className="welcome-control-button welcome-icon-button"
-  onClick={() => setShowWelcome(true)}
-  title="Open Welcome Menu"
-  aria-label="Open Welcome Menu"
->
-  ℹ
-</button>
-            </div>
+            {/* Rotation and Zoom Controls */}
+            <Box sx={{ display: 'flex', gap: 0.5, mb: 1 }}>
+              <Button 
+                variant="outlined" 
+                size="small" 
+                onClick={rotateLeft}
+                title="Rotate Left"
+                sx={{ minWidth: '32px' }}
+              >
+                ←
+              </Button>
+              <Button 
+                variant="outlined" 
+                size="small" 
+                onClick={rotateRight}
+                title="Rotate Right"
+                sx={{ minWidth: '32px' }}
+              >
+                →
+              </Button>
+              <Button 
+                variant="outlined" 
+                size="small" 
+                onClick={zoomIn}
+                title="Zoom In"
+                sx={{ minWidth: '32px' }}
+              >
+                +
+              </Button>
+              <Button 
+                variant="outlined" 
+                size="small" 
+                onClick={zoomOut}
+                title="Zoom Out"
+                sx={{ minWidth: '32px' }}
+              >
+                −
+              </Button>
+            </Box>
 
-{mode === 'quiz' && (
-  <div className="overlay-line-break">
-    <button
-      onClick={onStartOver}
-      className="globe-control-btn-small"
-      title="Next Country"
-    >
-      Skip
-    </button>
+            {/* Quiz Mode Toggle */}
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 1 }}>
+              <FormControlLabel
+                control={
+                  <Switch 
+                    checked={mode==='quiz'} 
+                    onChange={onModeToggle}
+                    size="small"
+                  />
+                }
+                label="Quiz Mode"
+              />
+              <Button 
+                variant="outlined" 
+                size="small" 
+                onClick={() => setShowWelcome(true)}
+                title="Open Welcome Menu"
+                sx={{ minWidth: '32px' }}
+              >
+                ℹ
+              </Button>
+            </Box>
 
-    <button
-      onClick={handleShowMe}
-      className="globe-control-btn-small"
-      title="Show Me"
-      disabled={showMeActivated}
-      style={{
-        opacity: showMeActivated ? 0.5 : 1,
-        cursor: showMeActivated ? 'not-allowed' : 'pointer'
-      }}
-    >
-      {showMeActivated ? 'Shown!' : 'Show Me'}
-    </button>
+            {/* Quiz-Specific Controls */}
+            {mode === 'quiz' && (
+              <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1.5 }}>
+                <Box sx={{ display: 'flex', gap: 0.5 }}>
+                  <Button
+                    variant="outlined"
+                    size="small"
+                    onClick={onStartOver}
+                    title="Next Country"
+                  >
+                    Skip
+                  </Button>
 
-    <div className="toggle-container-small">
-      <span className="toggle-label-small">Hint</span>
-      <label className="toggle-switch-small">
-        <input
-          type="checkbox"
-          checked={hintsEnabled}
-          onChange={() => setHintsEnabled(prev => !prev)}
-        />
-        <span className="toggle-slider-small" />
-      </label>
-    </div>
+                  <Button
+                    variant="outlined"
+                    size="small"
+                    onClick={handleShowMe}
+                    title="Show Me"
+                    disabled={showMeActivated}
+                    sx={{ 
+                      opacity: showMeActivated ? 0.5 : 1,
+                    }}
+                  >
+                    {showMeActivated ? 'Shown!' : 'Show Me'}
+                  </Button>
+                </Box>
 
-    <span className="controls-divider" />
+                {/* Hint Toggle */}
+                <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                  <FormControlLabel
+                    control={
+                      <Switch 
+                        checked={hintsEnabled}
+                        onChange={() => setHintsEnabled(prev => !prev)}
+                        size="small"
+                      />
+                    }
+                    label="Show Hints"
+                  />
+                </Box>
 
-    <select
-      onChange={handleCountryDropdownChange}
-      value={targetCountry || ''}
-      className="country-dropdown"
-      title="Select country to test"
-      style={{
-        padding: '4px 8px',
-        fontSize: '13px',
-        borderRadius: '4px',
-        border: '1px solid var(--border-color)',
-        background: 'var(--card-bg)',
-        color: 'var(--text-color)',
-        cursor: 'pointer',
-        maxWidth: '150px'
-      }}
-    >
-      <option value="">Test country...</option>
-      {allCountries
-        .sort((a, b) =>
-          (a.common_name || a.name).localeCompare(
-            b.common_name || b.name
-          )
-        )
-        .map(c => (
-          <option key={c.iso3} value={c.iso3}>
-            {c.common_name || c.name}
-          </option>
-        ))}
-    </select>
-  </div>
-)}
+                {/* Country Dropdown */}
+                <Select
+                  value={targetCountry || ''}
+                  onChange={handleCountryDropdownChange}
+                  size="small"
+                  displayEmpty
+                  sx={{
+                    maxWidth: '150px',
+                    minWidth: '140px',
+                  }}
+                >
+                  <MenuItem value="">Test country...</MenuItem>
+                  {allCountries
+                    .sort((a, b) =>
+                      (a.common_name || a.name).localeCompare(
+                        b.common_name || b.name
+                      )
+                    )
+                    .map(c => (
+                      <MenuItem key={c.iso3} value={c.iso3}>
+                        {c.common_name || c.name}
+                      </MenuItem>
+                    ))}
+                </Select>
+              </Box>
+            )}
 
           </div>
         </div>

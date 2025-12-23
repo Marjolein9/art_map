@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
+import { Card, CardHeader, CardContent, Button, Box, CircularProgress, Typography } from '@mui/material';
 import { fetchImages, fetchChildMortality, fetchExternalLinks } from '../services/api';
 import ImageGallery from './ImageGallery';
 import ChildMortalitySection from './ChildMortalitySection';
@@ -146,72 +147,82 @@ const ArtworkInfoBar = ({
   const collections = Object.keys(imagesByCollection);
 
   return (
-    <div
+    <Card
       ref={containerRef}
-      className="overlay-container"
-      style={{
-        '--card-bg': colors.cardBg,
-        '--glow-color': colors.glow,
-        '--border-color': colors.border,
-        '--text-color': colors.text,
-        '--background-color': colors.background,
-
+      sx={{
         opacity: isVisible ? 1 : 0,
-     transition: 'opacity 5s cubic-bezier(0.4, 0.0, 0.2, 1)',
-
-        pointerEvents: isVisible ? 'auto' : 'none'
+        transition: 'opacity 5s cubic-bezier(0.4, 0.0, 0.2, 1)',
+        pointerEvents: isVisible ? 'auto' : 'none',
+        maxHeight: '90vh',
+        overflowY: 'auto',
+        borderRadius: '8px',
+        boxShadow: 3,
       }}
     >
       {loading && (
-        <div className="artwork-info-loading">
-          <p>Loading images…</p>
-        </div>
+        <Box sx={{ p: 3, textAlign: 'center' }}>
+          <CircularProgress size={40} />
+          <Typography variant="body2" sx={{ mt: 2 }}>
+            Loading images…
+          </Typography>
+        </Box>
       )}
 
       {!loading && (
         <>
-          <div className="overlay-header">
-            <h3 className="overlay-title">
-              {mode === 'quiz' && answerSubmitted
+          <CardHeader
+            title={
+              mode === 'quiz' && answerSubmitted
                 ? isCorrectAnswer
                   ? `Correct: ${countryName || countryISO}`
                   : `Incorrect: ${countryName || countryISO}`
-                : countryName || countryISO}
-            </h3>
+                : countryName || countryISO
+            }
+            action={
+              mode === 'quiz' && answerSubmitted && isCorrectAnswer && onNext ? (
+                <Button 
+                  variant="contained" 
+                  onClick={onNext}
+                  size="small"
+                >
+                  Next →
+                </Button>
+              ) : onClose ? (
+                <Button 
+                  variant="outlined" 
+                  onClick={onClose}
+                  size="small"
+                >
+                  ✕
+                </Button>
+              ) : null
+            }
+          />
 
-            {mode === 'quiz' && answerSubmitted && isCorrectAnswer && onNext ? (
-              <button className="action-button" onClick={onNext}>
-                Next →
-              </button>
-            ) : onClose ? (
-              <button className="artwork-close-btn" onClick={onClose}>
-                ✕
-              </button>
-            ) : null}
-          </div>
+          <CardContent>
+            {collections.length > 0 && (
+              <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
+                {collections.map(collection => (
+                  <ImageGallery
+                    key={collection}
+                    collection={collection}
+                    images={imagesByCollection[collection]}
+                    countryName={countryName}
+                    currentIndex={currentImageIndex[collection] || 0}
+                    onPrev={() => prevImage(collection)}
+                    onNext={() => nextImage(collection)}
+                    imageRef={el => (imageRefs.current[collection] = el)}
+                  />
+                ))}
+              </Box>
+            )}
 
-          {collections.length > 0 && (
-            <div className="artwork-types-list">
-              {collections.map(collection => (
-                <ImageGallery
-                  key={collection}
-                  collection={collection}
-                  images={imagesByCollection[collection]}
-                  countryName={countryName}
-                  currentIndex={currentImageIndex[collection] || 0}
-                  onPrev={() => prevImage(collection)}
-                  onNext={() => nextImage(collection)}
-                  imageRef={el => (imageRefs.current[collection] = el)}
-                />
-              ))}
-            </div>
-          )}
-
-          <ExternalLinks externalLinks={externalLinks} countryName={countryName} />
-          <ChildMortalitySection mortalityData={mortalityData} />
+            <ExternalLinks externalLinks={externalLinks} countryName={countryName} />
+            <ChildMortalitySection mortalityData={mortalityData} />
+          </CardContent>
         </>
       )}
-    </div>
+    </Card>
   );
 };
 
