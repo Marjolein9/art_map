@@ -39,7 +39,6 @@ const WorldMap = ({
   const [hintsEnabled, setHintsEnabled] = useState(true);
   const [allCountries, setAllCountries] = useState([]);
   const [showMeActivated, setShowMeActivated] = useState(false);
-  const [hintsGuessed, setHintsGuessed] = useState(false); // Track if user has made a guess
 
   // Handle window resize for responsive globe
   useEffect(() => {
@@ -156,7 +155,6 @@ const WorldMap = ({
     if (prevTargetCountryRef.current && prevTargetCountryRef.current !== targetCountry) {
       setClickedCountry(null);
       setShowMeActivated(false);
-      setHintsGuessed(false);
     }
     prevTargetCountryRef.current = targetCountry;
   }, [targetCountry]);
@@ -183,7 +181,6 @@ const WorldMap = ({
     if (!polygon || !polygon.properties) return;
     const iso3 = getCountryIsoCode(polygon);
     setClickedCountry(iso3 || null);
-    setHintsGuessed(true);
     onCountryClick(iso3);
   };
 
@@ -240,32 +237,27 @@ const WorldMap = ({
 
   const layeredPaths = useMemo(() => {
     const paths = [];
-    const timestamp = Date.now(); // Force Globe to see paths as different
+    const timestamp = Date.now();
 
     countryPaths.forEach(path => paths.push({
       ...path,
       isHintOverlay:false,
       isShowMeOverlay:false,
-      hintsGuessed: false,
       _updateKey: timestamp
     }));
 
-    const hintPaths = [];
     countryPaths.forEach(path => {
       const m49 = path.id || path.properties?.id;
       const paddedM49 = m49 ? String(m49).padStart(3,'0') : null;
       const pathIso = getCountryIsoCode(path);
-      // Don't show hint overlay for clicked country (it should show as red instead)
       if (paddedM49 && activeHints.includes(paddedM49) && pathIso !== clickedCountry) {
         const hintPath = {
           ...path,
           isHintOverlay:true,
           isShowMeOverlay:false,
-          hintsGuessed,
           _updateKey: timestamp
         };
         paths.push(hintPath);
-        hintPaths.push({ m49: paddedM49, iso: pathIso, hintsGuessed });
       }
     });
 
@@ -276,14 +268,13 @@ const WorldMap = ({
           ...path,
           isHintOverlay:false,
           isShowMeOverlay:true,
-          hintsGuessed: false,
           _updateKey: timestamp
         });
       });
     }
 
     return paths;
-  }, [countryPaths, activeHints, showMeActivated, targetCountry, clickedCountry, hintsGuessed]);
+  }, [countryPaths, activeHints, showMeActivated, targetCountry, clickedCountry]);
 
   return (
     <div className="world-map-wrapper">
@@ -311,11 +302,10 @@ const WorldMap = ({
               d.isHintOverlay,
               d.isShowMeOverlay,
               COLORS,
-              hoverD,
-              d.hintsGuessed
+              hoverD
             );
           }}
-          pathStrokeColor={d => getPathStrokeColor(d, d.isHintOverlay, d.isShowMeOverlay, d.hintsGuessed)}
+          pathStrokeColor={d => getPathStrokeColor(d, d.isHintOverlay, d.isShowMeOverlay)}
           pathStroke={d => (d.isShowMeOverlay||d.isHintOverlay)?4:2}
           pathDashLength={1} pathDashGap={0} pathDashAnimateTime={0} pathTransitionDuration={0}
           onPathHover={setHoverD} onPathClick={handlePolygonClick}

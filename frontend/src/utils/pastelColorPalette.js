@@ -38,7 +38,6 @@ export const getPastelColorForCountry = (m49) => {
  * @param {boolean} isShowMeOverlay - Whether this path is shown by "Show Me" button
  * @param {Object} colors - Color scheme object
  * @param {string} hoveredCountry - Currently hovered country path
- * @param {boolean} hintsGuessed - Whether user has made a guess (hints should be black)
  * @returns {string} - Hex color code
  */
 export const getPathColor = (
@@ -46,22 +45,16 @@ export const getPathColor = (
   isHintOverlay,
   isShowMeOverlay,
   colors,
-  hoveredCountry = null,
-  hintsGuessed = false
+  hoveredCountry = null
 ) => {
   // Show Me overlay gets the correct color
   if (isShowMeOverlay) {
     return colors.correct;
   }
 
-  // Hints: BLACK if user guessed, PASTEL if not
+  // Hints: Always BLACK fill
   if (isHintOverlay) {
-    if (hintsGuessed) {
-      return COLOR_SCHEME.black;
-    } else {
-      const m49 = path.id || path.properties?.id;
-      return getPastelColorForCountry(m49);
-    }
+    return COLOR_SCHEME.black;
   }
 
   // Hover state
@@ -79,23 +72,18 @@ export const getPathColor = (
  * @param {Object} path - The path data object
  * @param {boolean} isHintOverlay - Whether this path is a hint
  * @param {boolean} isShowMeOverlay - Whether this path is shown by "Show Me" button
- * @param {boolean} hintsGuessed - Whether user has made a guess (hints should be black)
  * @returns {string} - Hex color code for outline
  */
-export const getPathStrokeColor = (path, isHintOverlay, isShowMeOverlay, hintsGuessed = false) => {
+export const getPathStrokeColor = (path, isHintOverlay, isShowMeOverlay) => {
   // Show Me overlay gets darker outline
   if (isShowMeOverlay) {
     return COLOR_SCHEME.borderPrimary;
   }
 
-  // Hints: black if user guessed, pastel if not
+  // Hints: Always PASTEL stroke outline
   if (isHintOverlay) {
-    if (hintsGuessed) {
-      return COLOR_SCHEME.black;
-    } else {
-      const m49 = path.id || path.properties?.id;
-      return getPastelColorForCountry(m49);
-    }
+    const m49 = path.id || path.properties?.id;
+    return getPastelColorForCountry(m49);
   }
 
   // Default (no outline visible)
