@@ -336,7 +336,8 @@ const WorldMap = ({
               targetCountry,
               getCountryIsoCode,
               COLORS,
-              hoverD
+              hoverD,
+              d.hintsGuessed
             );
           }}
           pathStrokeColor={d => getPathStrokeColor(d, d.isHintOverlay, d.isShowMeOverlay, d.hintsGuessed)}

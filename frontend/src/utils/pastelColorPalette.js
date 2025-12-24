@@ -33,7 +33,7 @@ export const getPastelColorForCountry = (m49) => {
 /**
  * Gets the color for a path based on its type
  * Keeps incorrect answers red until a NEW country is assigned
- * 
+ *
  * @param {Object} path - The path data object
  * @param {string} gameStatus - Current game status ('correct', 'incorrect', 'playing')
  * @param {boolean} isHintOverlay - Whether this path is a hint
@@ -43,6 +43,7 @@ export const getPastelColorForCountry = (m49) => {
  * @param {Function} getCountryIsoCode - Function to get ISO code from path
  * @param {Object} colors - Color scheme object
  * @param {string} hoveredCountry - Currently hovered country path
+ * @param {boolean} hintsGuessed - Whether user has made a guess (hints should be black)
  * @returns {string} - Hex color code
  */
 export const getPathColor = (
@@ -54,48 +55,56 @@ export const getPathColor = (
   targetCountry,
   getCountryIsoCode,
   colors,
-  hoveredCountry = null
+  hoveredCountry = null,
+  hintsGuessed = false
 ) => {
   const pathIso = getCountryIsoCode(path);
-  
+  const m49 = path.id || path.properties?.id;
+
   // DEBUG: Log color decision for clicked countries
   if (pathIso === clickedCountry) {
     console.log(`🎨 PATH COLOR: iso=${pathIso}, gameStatus=${gameStatus}, clickedCountry=${clickedCountry}, targetCountry=${targetCountry}, isHint=${isHintOverlay}, isShowMe=${isShowMeOverlay}`);
   }
-  
+
+  // Show Me overlay gets the correct color (check first)
+  if (isShowMeOverlay) {
+    return colors.correct;
+  }
+
+  // Hints: BLACK if user guessed, PASTEL if not (check before clicked country logic)
+  if (isHintOverlay) {
+    if (hintsGuessed) {
+      console.log(`⬛ HINT ${m49} - User guessed - FILL COLOR = BLACK`);
+      return COLOR_SCHEME.black;
+    } else {
+      const pastelColor = getPastelColorForCountry(m49);
+      console.log(`🎨 HINT ${m49} - No guess yet - FILL COLOR = PASTEL ${pastelColor}`);
+      return pastelColor;
+    }
+  }
+
   // Incorrect answer stays red until a NEW country is assigned
   // Only show red if: clicked this country, it was wrong, AND we're still on the same target
   if (
-    clickedCountry === pathIso && 
-    gameStatus === 'incorrect' && 
+    clickedCountry === pathIso &&
+    gameStatus === 'incorrect' &&
     clickedCountry !== targetCountry  // NOT the target, so it was a wrong guess
   ) {
     console.log(`🔴 SHOWING RED for ${pathIso} (clicked but wrong, target is ${targetCountry})`);
     return COLOR_SCHEME.incorrect; // Red for wrong answer
   }
-  
+
   // Correct answer shows in correct color from theme
   if (clickedCountry === pathIso && gameStatus === 'correct') {
     console.log(`✅ SHOWING CORRECT COLOR for ${pathIso}`);
     return colors.correct;
   }
-  
-  // Show Me overlay gets the correct color
-  if (isShowMeOverlay) {
-    return colors.correct;
-  }
-  
-  // Hints get pastel colors
-  if (isHintOverlay) {
-    const m49 = path.id || path.properties?.id;
-    return getPastelColorForCountry(m49);
-  }
-  
+
   // Hover state
   if (path === hoveredCountry) {
     return colors.selected;
   }
-  
+
   // Default (no path visible)
   return COLOR_SCHEME.black;
 };
