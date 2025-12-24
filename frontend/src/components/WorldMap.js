@@ -275,6 +275,27 @@ const WorldMap = ({
     return paths;
   }, [countryPaths, activeHints, showMeActivated, targetCountry, clickedCountry]);
 
+  // Create label for incorrect country
+  const countryLabels = useMemo(() => {
+    if (mode !== 'quiz' || gameStatus !== 'incorrect' || !clickedCountry) return [];
+
+    const clickedFeature = countries.features.find(f => getCountryIsoCode(f) === clickedCountry);
+    if (!clickedFeature) return [];
+
+    const countryData = allCountries.find(c => c.iso3 === clickedCountry);
+    const countryName = countryData?.common_name || countryData?.name || clickedCountry;
+
+    // Calculate centroid for label position
+    const centroid = calculateCentroid(clickedFeature.geometry.coordinates);
+    if (!centroid) return [];
+
+    return [{
+      lat: centroid.lat,
+      lng: centroid.lng,
+      text: countryName
+    }];
+  }, [mode, gameStatus, clickedCountry, countries, allCountries]);
+
   return (
     <div className="world-map-wrapper">
       <div className="globe-position-container">
@@ -309,17 +330,20 @@ const WorldMap = ({
           pathDashLength={1} pathDashGap={0} pathDashAnimateTime={0} pathTransitionDuration={0}
           onPathHover={setHoverD} onPathClick={handlePolygonClick}
           enablePointerInteraction
+          labelsData={countryLabels}
+          labelLat={d => d.lat}
+          labelLng={d => d.lng}
+          labelText={d => d.text}
+          labelSize={1.5}
+          labelDotRadius={0.4}
+          labelColor={() => '#ff4444'}
+          labelResolution={2}
           width={globeDimensions.width} height={globeDimensions.height}
         />
 
         <div className="control-overlay" style={{ '--card-bg': COLORS.cardBg, '--text-color': COLORS.text, '--glow-color': COLORS.glow, '--border-color': COLORS.border }}>
           <div className="overlay-title">
             {mode==='quiz' && targetCountryName ? `Find: ${targetCountryName}` : ''}
-            {mode==='quiz' && gameStatus==='incorrect' && clickedCountry && (
-              <div style={{ color: '#ff4444', fontSize: '0.9em', marginTop: '4px' }}>
-                You clicked: {allCountries.find(c => c.iso3 === clickedCountry)?.common_name || allCountries.find(c => c.iso3 === clickedCountry)?.name || clickedCountry}
-              </div>
-            )}
           </div>
 
           <div className="overlay-controls">
