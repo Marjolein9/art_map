@@ -396,7 +396,11 @@ const WorldMap = ({
 
                 {/* Country Dropdown */}
                 <Select
-                  value={targetCountry || ''}
+                  value={
+                    targetCountry && allCountries.some(c => c.iso3 === targetCountry)
+                      ? targetCountry
+                      : ''
+                  }
                   onChange={handleCountryDropdownChange}
                   size="small"
                   displayEmpty
