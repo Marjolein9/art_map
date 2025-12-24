@@ -154,25 +154,12 @@ const WorldMap = ({
   const prevTargetCountryRef = useRef(null);
   useEffect(() => {
     if (prevTargetCountryRef.current && prevTargetCountryRef.current !== targetCountry) {
-      console.log(`🔄 NEW TARGET: ${prevTargetCountryRef.current} → ${targetCountry}`);
-      console.log(`  Resetting: clickedCountry, hintsGuessed, showMe`);
-      console.log(`  NOT clearing hints array - will re-fetch for new target`);
       setClickedCountry(null);
       setShowMeActivated(false);
-      setHintsGuessed(false); // Reset hints to colored for new target
-      // Note: We don't clear hintNeighborsM49 here - it will be updated by the effect above
+      setHintsGuessed(false);
     }
     prevTargetCountryRef.current = targetCountry;
   }, [targetCountry]);
-
-  // Debug: Log state changes
-  useEffect(() => {
-    console.log(`📊 GAME STATE: gameStatus=${gameStatus}, clickedCountry=${clickedCountry}, targetCountry=${targetCountry}, hintsGuessed=${hintsGuessed}`);
-  }, [gameStatus, clickedCountry, targetCountry, hintsGuessed]);
-
-  useEffect(() => {
-    console.log(`💡 HINTS STATE: hintsGuessed=${hintsGuessed}, hintNeighborsM49=`, hintNeighborsM49);
-  }, [hintsGuessed, hintNeighborsM49]);
 
   const activeHints = showMeActivated ? [] : hintNeighborsM49;
 
@@ -195,10 +182,8 @@ const WorldMap = ({
   const handlePolygonClick = (polygon) => {
     if (!polygon || !polygon.properties) return;
     const iso3 = getCountryIsoCode(polygon);
-    console.log(`🖱️ COUNTRY CLICKED: ${iso3}`);
-    console.log(`  Setting hintsGuessed = true (hints will turn black)`);
     setClickedCountry(iso3 || null);
-    setHintsGuessed(true); // Turn hints black after any guess
+    setHintsGuessed(true);
     onCountryClick(iso3);
   };
 
@@ -297,12 +282,6 @@ const WorldMap = ({
       });
     }
 
-    console.log(`🗺️ LAYERED PATHS RECALCULATED`);
-    console.log(`  Total paths: ${paths.length}`);
-    console.log(`  Hint paths created:`, hintPaths);
-    console.log(`  hintsGuessed=${hintsGuessed}, activeHints=`, activeHints);
-    console.log(`  Update key: ${timestamp}`);
-
     return paths;
   }, [countryPaths, activeHints, showMeActivated, targetCountry, clickedCountry, hintsGuessed]);
 
@@ -329,12 +308,8 @@ const WorldMap = ({
           pathColor={d => {
             return getPathColor(
               d,
-              gameStatus,
               d.isHintOverlay,
               d.isShowMeOverlay,
-              clickedCountry,
-              targetCountry,
-              getCountryIsoCode,
               COLORS,
               hoverD,
               d.hintsGuessed
