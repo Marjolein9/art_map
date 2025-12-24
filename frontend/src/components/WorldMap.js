@@ -305,7 +305,10 @@ const WorldMap = ({
               hoverD
             );
           }}
-          pathStrokeColor={d => getPathStrokeColor(d, d.isHintOverlay, d.isShowMeOverlay)}
+          pathStrokeColor={d => {
+            console.log(`🔵 WorldMap pathStrokeColor CALLED for path with isHint=${d.isHintOverlay}, isShowMe=${d.isShowMeOverlay}`);
+            return getPathStrokeColor(d, d.isHintOverlay, d.isShowMeOverlay);
+          }}
           pathStroke={d => (d.isShowMeOverlay || d.isHintOverlay) ? 4 : 2}
           pathDashLength={1} pathDashGap={0} pathDashAnimateTime={0} pathTransitionDuration={0}
           onPathHover={setHoverD} onPathClick={handlePolygonClick}
