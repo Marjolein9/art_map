@@ -249,8 +249,7 @@ const WorldMap = ({
     countryPaths.forEach(path => {
       const m49 = path.id || path.properties?.id;
       const paddedM49 = m49 ? String(m49).padStart(3,'0') : null;
-      const pathIso = getCountryIsoCode(path);
-      if (paddedM49 && activeHints.includes(paddedM49) && pathIso !== clickedCountry) {
+      if (paddedM49 && activeHints.includes(paddedM49)) {
         const hintPath = {
           ...path,
           isHintOverlay:true,
