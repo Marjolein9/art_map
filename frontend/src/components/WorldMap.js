@@ -315,6 +315,11 @@ const WorldMap = ({
         <div className="control-overlay" style={{ '--card-bg': COLORS.cardBg, '--text-color': COLORS.text, '--glow-color': COLORS.glow, '--border-color': COLORS.border }}>
           <div className="overlay-title">
             {mode==='quiz' && targetCountryName ? `Find: ${targetCountryName}` : ''}
+            {mode==='quiz' && gameStatus==='incorrect' && clickedCountry && (
+              <div style={{ color: '#ff4444', fontSize: '0.9em', marginTop: '4px' }}>
+                You clicked: {allCountries.find(c => c.iso3 === clickedCountry)?.common_name || allCountries.find(c => c.iso3 === clickedCountry)?.name || clickedCountry}
+              </div>
+            )}
           </div>
 
           <div className="overlay-controls">
