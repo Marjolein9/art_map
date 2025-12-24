@@ -51,14 +51,12 @@ export const getPathColor = (
 
   // Show Me overlay gets the correct color
   if (isShowMeOverlay) {
-    console.log(`🎨 PATH COLOR - ShowMe: m49=${m49}, color=${colors.correct}`);
     return colors.correct;
   }
 
-  // Hints: Always BLACK fill
+  // Hints: PASTEL fill
   if (isHintOverlay) {
-    console.log(`🎨 PATH COLOR - Hint: m49=${m49}, color=BLACK (invisible)`);
-    return COLOR_SCHEME.black;
+    return getPastelColorForCountry(m49);
   }
 
   // Hover state
@@ -79,25 +77,12 @@ export const getPathColor = (
  * @returns {string} - Hex color code for outline
  */
 export const getPathStrokeColor = (path, isHintOverlay, isShowMeOverlay) => {
-  const m49 = path.id || path.properties?.id;
-
-  console.log(`🖍️ PATH STROKE - m49=${m49}, isHint=${isHintOverlay}, isShowMe=${isShowMeOverlay}`);
-
   // Show Me overlay gets darker outline
   if (isShowMeOverlay) {
-    console.log(`  → ShowMe stroke: BLACK`);
     return COLOR_SCHEME.borderPrimary;
   }
 
-  // Hints: Always PASTEL stroke outline
-  if (isHintOverlay) {
-    const pastelColor = getPastelColorForCountry(m49);
-    console.log(`  → Hint stroke: PASTEL ${pastelColor}`);
-    return pastelColor;
-  }
-
-  // Default (no outline visible)
-  console.log(`  → Default stroke: BLACK`);
+  // Hints and default: BLACK stroke
   return COLOR_SCHEME.black;
 };
 
