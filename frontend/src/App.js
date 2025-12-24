@@ -391,7 +391,6 @@ function App() {
           '--link-color': COLORS.linkColor,
           '--link-hover': COLORS.linkHover
         }}>
-          <div className="app-container">
             <div className="app-content">
               <div
                 className="map-container map-container-full"
@@ -456,8 +455,8 @@ function App() {
                 )}
 
                 {infoBarOpen && currentCountry.iso && (
-                  <div className="artwork-backdrop" onClick={handleBackdropClick}>
-                    <div className="artwork-overlay">
+                  <div  onClick={handleBackdropClick}>
+                    <div >
                       <ArtworkInfoBar
                         countryISO={currentCountry.iso}
                         countryName={currentCountry.name}
@@ -508,7 +507,6 @@ function App() {
             </button>
           </div>
         </div>
-      </div>
     </ThemeProvider>
   );
 }

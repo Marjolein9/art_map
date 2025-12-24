@@ -65,23 +65,39 @@ const WelcomeOverlay = ({ onStartQuiz, onExplore, colors }) => {
           }}
         >
 
-          <Box sx={{ display: 'flex', gap: 1 }}>
+          <Box sx={{ display: 'flex', gap: 2, flex: 1, justifyContent: 'center' }}>
             <Button
               variant="contained"
               onClick={handleClose}
-              size="small"
+              size="large"
+              sx={{
+                fontSize: '18px',
+                padding: '12px 32px',
+                boxShadow: '0 4px 12px rgba(0, 0, 0, 0.3), 0 8px 24px rgba(0, 0, 0, 0.2)',
+                '&:hover': {
+                  boxShadow: '0 6px 16px rgba(0, 0, 0, 0.35), 0 10px 28px rgba(0, 0, 0, 0.25)',
+                }
+              }}
             >
               Explore
             </Button>
             <Button
               variant="contained"
               onClick={handleStartQuiz}
-              size="small"
+              size="large"
+              sx={{
+                fontSize: '18px',
+                padding: '12px 32px',
+                boxShadow: '0 4px 12px rgba(0, 0, 0, 0.3), 0 8px 24px rgba(0, 0, 0, 0.2)',
+                '&:hover': {
+                  boxShadow: '0 6px 16px rgba(0, 0, 0, 0.35), 0 10px 28px rgba(0, 0, 0, 0.25)',
+                }
+              }}
             >
               Start Quiz
             </Button>
           </Box>
-          
+
           <Button
             variant="outlined"
             onClick={handleClose}

@@ -50,7 +50,11 @@ check capslock an dif you need all three
    MuiCardContent-root css-kacebu-MuiCardContent-root is furter down than the outline of app content
 
    map container shouod contain artwork perfectly. now thereea
-
+also move appjs to mui where possible.
+remove unused css classes.
+less white space for buttons. 
+more rotate and zoom buttom to buottom of the page. 
+move other controls to same line except country dropdown
    move everything in artwork backdrop up so there not the upper white space. 
   remove side of 
 look at the containers and div organization of frontend/src/components/WelcomeOverlay.mui.js. copy that idea so that the frontend/src/components/ArtworkInfoBar.js has the same. update frontend/src/components/ArtworkInfoBar.js with mui as well to get this. 

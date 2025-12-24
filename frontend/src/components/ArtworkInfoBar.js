@@ -169,11 +169,26 @@ const ArtworkInfoBar = ({
         onClose={handleBackdropClick}
         maxWidth="sm"
         fullWidth
+        slotProps={{
+          backdrop: {
+            sx: {
+              backgroundColor: 'rgba(255, 255, 255, 0.3)',
+              backdropFilter: 'blur(3px)',
+            }
+          }
+        }}
         sx={{
+          '& .MuiBackdrop-root': {
+            top: '5px',
+            left: '5px',
+            right: '5px',
+            bottom: '5px',
+          },
           '& .MuiDialog-paper': {
             opacity: isVisible ? 1 : 0,
             transition: 'opacity 5s cubic-bezier(0.4, 0.0, 0.2, 1)',
             pointerEvents: isVisible ? 'auto' : 'none',
+      
           }
         }}
       >
@@ -186,7 +201,7 @@ const ArtworkInfoBar = ({
             gap: 2,
           }}
         >
-          <Typography variant="h6" sx={{ fontWeight: 600 }}>
+          <Typography variant="h6" component="div" sx={{ fontWeight: 600 }}>
             {mode === 'quiz' && answerSubmitted
               ? isCorrectAnswer
                 ? `Correct: ${countryName || countryISO}`
@@ -201,7 +216,7 @@ const ArtworkInfoBar = ({
                 onClick={onNext}
                 size="small"
               >
-                Next →
+                Next
               </Button>
             ) : onClose ? (
               <Button

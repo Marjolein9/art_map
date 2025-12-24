@@ -113,21 +113,6 @@ body {
   width: 100%;
 }
 
-/* Backdrop - Full screen overlay for clicking outside to close info bar */
-.artwork-backdrop {
-  position: absolute;
-  top: 5px;
-  left: 5px;
-  right: 5px;
-  bottom: 5px;
-  z-index: 9999;
-  background-color: var(--bg-overlay, rgba(255, 255, 255, 100));
-  backdrop-filter: blur(3px);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  animation: fadeIn 0.2s ease-in-out;
-}
 
 @keyframes fadeIn {
   from {
@@ -667,6 +652,37 @@ a.collection-subtitle:hover {
   align-items: center;
 }
 
+/* Wider control overlay on larger screens */
+@media (min-width: 769px) {
+  .control-overlay {
+    min-width: 600px;
+  }
+}
+
+/* Bottom control overlay for zoom and rotation */
+.control-overlay-bottom {
+  position: absolute;
+  bottom: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 8px 12px;
+  border-radius: 8px;
+  z-index: 1000;
+  background-color: var(--bg-primary, #FFFFFF);
+  box-shadow: 0 0 20px var(--glow-color), 0 4px 6px rgba(0,0,0,0.3);
+  border: 2px solid var(--border-color);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+.control-overlay-bottom button {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
 .overlay-title {
   font-size: 16pt;
   font-weight: bold;
@@ -879,6 +895,13 @@ input:checked + .toggle-slider:before {
     max-width: none;
 
     padding: 12px 14px;
+  }
+
+  .control-overlay-bottom {
+    left: 8px;
+    right: 8px;
+    transform: none;
+    padding: 8px 12px;
   }
 }
 

@@ -102,25 +102,37 @@ export const getPathColor = (
 
 /**
  * Gets the stroke color for a path outline
- * 
+ *
  * @param {Object} path - The path data object
  * @param {boolean} isHintOverlay - Whether this path is a hint
  * @param {boolean} isShowMeOverlay - Whether this path is shown by "Show Me" button
+ * @param {boolean} hintsGuessed - Whether user has made a guess (hints should be black)
  * @returns {string} - Hex color code for outline
  */
-export const getPathStrokeColor = (path, isHintOverlay, isShowMeOverlay) => {
+export const getPathStrokeColor = (path, isHintOverlay, isShowMeOverlay, hintsGuessed = false) => {
+  const m49 = path.id || path.properties?.id;
+  console.log(`🎨 getPathStrokeColor CALLED: m49=${m49}, isHint=${isHintOverlay}, isShowMe=${isShowMeOverlay}, hintsGuessed=${hintsGuessed}`);
+
   // Show Me overlay gets darker outline
   if (isShowMeOverlay) {
+    console.log(`  → ShowMe overlay - returning BLACK`);
     return COLOR_SCHEME.borderPrimary; // Black border
   }
-  
-  // Hints get pastel colored outlines
+
+  // Hints: black if user guessed, pastel if not
   if (isHintOverlay) {
-    const m49 = path.id || path.properties?.id;
-    return getPastelColorForCountry(m49);
+    if (hintsGuessed) {
+      console.log(`  → Hint ${m49} - User guessed - returning BLACK`);
+      return COLOR_SCHEME.black; // Black after guess
+    } else {
+      const pastelColor = getPastelColorForCountry(m49);
+      console.log(`  → Hint ${m49} - No guess yet - returning PASTEL ${pastelColor}`);
+      return pastelColor; // Pastel before guess
+    }
   }
-  
+
   // Default (no outline visible)
+  console.log(`  → Default - returning BLACK`);
   return COLOR_SCHEME.black;
 };
 

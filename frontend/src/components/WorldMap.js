@@ -39,6 +39,7 @@ const WorldMap = ({
   const [hintsEnabled, setHintsEnabled] = useState(true);
   const [allCountries, setAllCountries] = useState([]);
   const [showMeActivated, setShowMeActivated] = useState(false);
+  const [hintsGuessed, setHintsGuessed] = useState(false); // Track if user has made a guess
 
   // Handle window resize for responsive globe
   useEffect(() => {
@@ -132,6 +133,7 @@ const WorldMap = ({
             }
           }
 
+          console.log(`✅ HINTS FETCHED for ${targetCountry}:`, highlightM49s);
           setHintNeighborsM49(highlightM49s);
           hintCountryRef.current = targetCountry;
 
@@ -139,6 +141,7 @@ const WorldMap = ({
           console.error('❌ Error fetching hints:', err);
         }
       } else {
+        console.log(`🚫 HINTS DISABLED or not in quiz mode`);
         setHintNeighborsM49([]);
         hintCountryRef.current = null;
       }
@@ -147,24 +150,29 @@ const WorldMap = ({
     showHints();
   }, [targetCountry, targetCountryName, mode, countries, hintsEnabled, backendReady, clickedCountry]);
 
-  // Clear hints when a new target appears
+  // Reset hint state when a new target appears
   const prevTargetCountryRef = useRef(null);
   useEffect(() => {
     if (prevTargetCountryRef.current && prevTargetCountryRef.current !== targetCountry) {
       console.log(`🔄 NEW TARGET: ${prevTargetCountryRef.current} → ${targetCountry}`);
-      console.log(`  Clearing: clickedCountry, hints, showMe`);
-      setHintNeighborsM49([]);
-      hintCountryRef.current = null;
+      console.log(`  Resetting: clickedCountry, hintsGuessed, showMe`);
+      console.log(`  NOT clearing hints array - will re-fetch for new target`);
       setClickedCountry(null);
       setShowMeActivated(false);
+      setHintsGuessed(false); // Reset hints to colored for new target
+      // Note: We don't clear hintNeighborsM49 here - it will be updated by the effect above
     }
     prevTargetCountryRef.current = targetCountry;
   }, [targetCountry]);
 
   // Debug: Log state changes
   useEffect(() => {
-    console.log(`📊 GAME STATE: gameStatus=${gameStatus}, clickedCountry=${clickedCountry}, targetCountry=${targetCountry}`);
-  }, [gameStatus, clickedCountry, targetCountry]);
+    console.log(`📊 GAME STATE: gameStatus=${gameStatus}, clickedCountry=${clickedCountry}, targetCountry=${targetCountry}, hintsGuessed=${hintsGuessed}`);
+  }, [gameStatus, clickedCountry, targetCountry, hintsGuessed]);
+
+  useEffect(() => {
+    console.log(`💡 HINTS STATE: hintsGuessed=${hintsGuessed}, hintNeighborsM49=`, hintNeighborsM49);
+  }, [hintsGuessed, hintNeighborsM49]);
 
   const activeHints = showMeActivated ? [] : hintNeighborsM49;
 
@@ -187,7 +195,10 @@ const WorldMap = ({
   const handlePolygonClick = (polygon) => {
     if (!polygon || !polygon.properties) return;
     const iso3 = getCountryIsoCode(polygon);
+    console.log(`🖱️ COUNTRY CLICKED: ${iso3}`);
+    console.log(`  Setting hintsGuessed = true (hints will turn black)`);
     setClickedCountry(iso3 || null);
+    setHintsGuessed(true); // Turn hints black after any guess
     onCountryClick(iso3);
   };
 
@@ -244,24 +255,56 @@ const WorldMap = ({
 
   const layeredPaths = useMemo(() => {
     const paths = [];
-    countryPaths.forEach(path => paths.push({ ...path, isHintOverlay:false, isShowMeOverlay:false }));
+    const timestamp = Date.now(); // Force Globe to see paths as different
+
+    countryPaths.forEach(path => paths.push({
+      ...path,
+      isHintOverlay:false,
+      isShowMeOverlay:false,
+      hintsGuessed: false,
+      _updateKey: timestamp
+    }));
+
+    const hintPaths = [];
     countryPaths.forEach(path => {
       const m49 = path.id || path.properties?.id;
       const paddedM49 = m49 ? String(m49).padStart(3,'0') : null;
       const pathIso = getCountryIsoCode(path);
       // Don't show hint overlay for clicked country (it should show as red instead)
       if (paddedM49 && activeHints.includes(paddedM49) && pathIso !== clickedCountry) {
-        paths.push({ ...path, isHintOverlay:true, isShowMeOverlay:false });
+        const hintPath = {
+          ...path,
+          isHintOverlay:true,
+          isShowMeOverlay:false,
+          hintsGuessed,
+          _updateKey: timestamp
+        };
+        paths.push(hintPath);
+        hintPaths.push({ m49: paddedM49, iso: pathIso, hintsGuessed });
       }
     });
+
     if (showMeActivated && targetCountry) {
       countryPaths.forEach(path => {
         const iso3 = getCountryIsoCode(path);
-        if (iso3 === targetCountry) paths.push({ ...path, isHintOverlay:false, isShowMeOverlay:true });
+        if (iso3 === targetCountry) paths.push({
+          ...path,
+          isHintOverlay:false,
+          isShowMeOverlay:true,
+          hintsGuessed: false,
+          _updateKey: timestamp
+        });
       });
     }
+
+    console.log(`🗺️ LAYERED PATHS RECALCULATED`);
+    console.log(`  Total paths: ${paths.length}`);
+    console.log(`  Hint paths created:`, hintPaths);
+    console.log(`  hintsGuessed=${hintsGuessed}, activeHints=`, activeHints);
+    console.log(`  Update key: ${timestamp}`);
+
     return paths;
-  }, [countryPaths, activeHints, showMeActivated, targetCountry, clickedCountry]);
+  }, [countryPaths, activeHints, showMeActivated, targetCountry, clickedCountry, hintsGuessed]);
 
   return (
     <div className="world-map-wrapper">
@@ -296,7 +339,7 @@ const WorldMap = ({
               hoverD
             );
           }}
-          pathStrokeColor={d => getPathStrokeColor(d, d.isHintOverlay, d.isShowMeOverlay)}
+          pathStrokeColor={d => getPathStrokeColor(d, d.isHintOverlay, d.isShowMeOverlay, d.hintsGuessed)}
           pathStroke={d => (d.isShowMeOverlay||d.isHintOverlay)?4:2}
           pathDashLength={1} pathDashGap={0} pathDashAnimateTime={0} pathTransitionDuration={0}
           onPathHover={setHoverD} onPathClick={handlePolygonClick}
@@ -310,109 +353,70 @@ const WorldMap = ({
           </div>
 
           <div className="overlay-controls">
-            {/* Rotation and Zoom Controls */}
-            <Box sx={{ display: 'flex', gap: 0.5, mb: 1 }}>
-              <Button 
-                variant="outlined" 
-                size="small" 
-                onClick={rotateLeft}
-                title="Rotate Left"
-                sx={{}}
-              >
-                ←
-              </Button>
-              <Button 
-                variant="outlined" 
-                size="small" 
-                onClick={rotateRight}
-                title="Rotate Right"
-                sx={{}}
-              >
-                →
-              </Button>
-              <Button 
-                variant="outlined" 
-                size="small" 
-                onClick={zoomIn}
-                title="Zoom In"
-                sx={{}}
-              >
-                +
-              </Button>
-              <Button 
-                variant="outlined" 
-                size="small" 
-                onClick={zoomOut}
-                title="Zoom Out"
-                sx={{}}
-              >
-                −
-              </Button>
-            </Box>
-
-            {/* Quiz Mode Toggle */}
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 1 }}>
+            {/* Quiz Mode Toggle and Controls */}
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1, flexWrap: 'wrap' }}>
               <FormControlLabel
                 control={
-                  <Switch 
-                    checked={mode==='quiz'} 
+                  <Switch
+                    checked={mode==='quiz'}
                     onChange={onModeToggle}
                     size="small"
                   />
                 }
-                label="Quiz Mode"
+                label="Quiz"
               />
-              <Button 
-                variant="outlined" 
-                size="small" 
+              <Button
+                variant="outlined"
+                size="small"
                 onClick={() => setShowWelcome(true)}
                 title="Open Welcome Menu"
-                sx={{}}
+                sx={{ minWidth: 'auto', padding: '2px 8px', fontSize: '16px' }}
               >
                 ℹ
               </Button>
-            </Box>
-
-            {/* Quiz-Specific Controls */}
-            {mode === 'quiz' && (
-              <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1.5 }}>
-                <Box sx={{ display: 'flex', gap: 0.5 }}>
+              {mode === 'quiz' && (
+                <>
                   <Button
                     variant="outlined"
                     size="small"
                     onClick={onStartOver}
                     title="Next Country"
+                    sx={{ minWidth: 'auto', padding: '2px 8px', fontSize: '14px' }}
                   >
                     Skip
                   </Button>
-
                   <Button
                     variant="outlined"
                     size="small"
                     onClick={handleShowMe}
                     title="Show Me"
                     disabled={showMeActivated}
-                    sx={{ 
+                    sx={{
                       opacity: showMeActivated ? 0.5 : 1,
+                      minWidth: 'auto',
+                      padding: '2px 8px',
+                      fontSize: '14px'
                     }}
                   >
-                    {showMeActivated ? 'Shown!' : 'Show Me'}
+                    {showMeActivated ? 'Shown' : 'Show'}
                   </Button>
-                </Box>
-
-                {/* Hint Toggle */}
-                <Box sx={{ display: 'flex', alignItems: 'center' }}>
                   <FormControlLabel
                     control={
-                      <Switch 
+                      <Switch
                         checked={hintsEnabled}
                         onChange={() => setHintsEnabled(prev => !prev)}
                         size="small"
                       />
                     }
-                    label="Show Hints"
+                    label="Hint"
                   />
-                </Box>
+                </>
+              )}
+            </Box>
+
+            {/* Quiz-Specific Controls */}
+            {mode === 'quiz' && (
+              <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1.5 }}>
 
                 {/* Country Dropdown */}
                 <Select
@@ -442,6 +446,48 @@ const WorldMap = ({
             )}
 
           </div>
+        </div>
+
+        {/* Bottom Control Overlay - Zoom and Rotation */}
+        <div className="control-overlay-bottom" style={{ '--card-bg': COLORS.cardBg, '--text-color': COLORS.text, '--glow-color': COLORS.glow, '--border-color': COLORS.border }}>
+          <Box sx={{ display: 'flex', gap: 0.5 }}>
+            <Button
+              variant="outlined"
+              size="small"
+              onClick={rotateLeft}
+              title="Rotate Left"
+              sx={{ minWidth: 'auto', padding: '2px 8px', fontSize: '16px' }}
+            >
+              ←
+            </Button>
+            <Button
+              variant="outlined"
+              size="small"
+              onClick={rotateRight}
+              title="Rotate Right"
+              sx={{ minWidth: 'auto', padding: '2px 8px', fontSize: '16px' }}
+            >
+              →
+            </Button>
+            <Button
+              variant="outlined"
+              size="small"
+              onClick={zoomIn}
+              title="Zoom In"
+              sx={{ minWidth: 'auto', padding: '2px 8px', fontSize: '16px' }}
+            >
+              +
+            </Button>
+            <Button
+              variant="outlined"
+              size="small"
+              onClick={zoomOut}
+              title="Zoom Out"
+              sx={{ minWidth: 'auto', padding: '2px 8px', fontSize: '16px' }}
+            >
+              −
+            </Button>
+          </Box>
         </div>
       </div>
     </div>

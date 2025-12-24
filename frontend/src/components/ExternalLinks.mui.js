@@ -114,21 +114,15 @@ const ExternalLinks = ({ externalLinks, countryName }) => {
                 }
               }}
             >
-              <Link
-                href={item.url}
-                target="_blank"
-                rel="noopener noreferrer"
+              <Typography
                 sx={{
                   color: COLOR_SCHEME.linkColor,
                   textDecoration: 'underline',
-                  fontWeight: 500,
-                  '&:hover': {
-                    color: COLOR_SCHEME.linkColor
-                  }
+                  fontWeight: 500
                 }}
               >
                 {item.label}
-              </Link>
+              </Typography>
               <Typography
                 variant="body2"
                 sx={{
