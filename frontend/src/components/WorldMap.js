@@ -306,7 +306,7 @@ const WorldMap = ({
             );
           }}
           pathStrokeColor={d => getPathStrokeColor(d, d.isHintOverlay, d.isShowMeOverlay)}
-          pathStroke={d => d.isShowMeOverlay ? 4 : 2}
+          pathStroke={d => (d.isShowMeOverlay || d.isHintOverlay) ? 4 : 2}
           pathDashLength={1} pathDashGap={0} pathDashAnimateTime={0} pathTransitionDuration={0}
           onPathHover={setHoverD} onPathClick={handlePolygonClick}
           enablePointerInteraction
