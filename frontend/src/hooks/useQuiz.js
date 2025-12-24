@@ -1,9 +1,9 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useRef } from 'react';
 import { fetchRandomCountry, checkAnswer } from '../services/api';
 
 export const useQuiz = (backendReady) => {
   const [targetCountry, setTargetCountry] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [gameStatus, setGameStatus] = useState('playing'); // 'playing', 'correct', 'incorrect'
   const isInitialLoad = useRef(true);
 
@@ -33,12 +33,6 @@ export const useQuiz = (backendReady) => {
       if (isInitialLoad.current) setLoading(false);
     }
   };
-
-  // Only fetch random country when backend is ready
-  useEffect(() => {
-    if (!backendReady) return;
-    fetchNewCountry();
-  }, [backendReady]);
 
   const handleCountryClick = async (countryIso) => {
     if (gameStatus !== 'playing' || !targetCountry) return;

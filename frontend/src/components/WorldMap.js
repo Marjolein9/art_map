@@ -39,6 +39,7 @@ const WorldMap = ({
   const [hintsEnabled, setHintsEnabled] = useState(true);
   const [allCountries, setAllCountries] = useState([]);
   const [showMeActivated, setShowMeActivated] = useState(false);
+  const [persistedIncorrectLabel, setPersistedIncorrectLabel] = useState(null);
 
   // Handle window resize for responsive globe
   useEffect(() => {
@@ -275,26 +276,38 @@ const WorldMap = ({
     return paths;
   }, [countryPaths, activeHints, showMeActivated, targetCountry, clickedCountry]);
 
-  // Create label for incorrect country
-  const countryLabels = useMemo(() => {
-    if (mode !== 'quiz' || gameStatus !== 'incorrect' || !clickedCountry) return [];
+  // Persist incorrect country label when user clicks wrong country
+  useEffect(() => {
+    if (mode === 'quiz' && gameStatus === 'incorrect' && clickedCountry) {
+      const clickedFeature = countries.features.find(f => getCountryIsoCode(f) === clickedCountry);
+      if (!clickedFeature) return;
 
-    const clickedFeature = countries.features.find(f => getCountryIsoCode(f) === clickedCountry);
-    if (!clickedFeature) return [];
+      const countryData = allCountries.find(c => c.iso3 === clickedCountry);
+      const countryName = countryData?.common_name || countryData?.name || clickedCountry;
 
-    const countryData = allCountries.find(c => c.iso3 === clickedCountry);
-    const countryName = countryData?.common_name || countryData?.name || clickedCountry;
+      const centroid = calculateCentroid(clickedFeature.geometry.coordinates);
+      if (!centroid) return;
 
-    // Calculate centroid for label position
-    const centroid = calculateCentroid(clickedFeature.geometry.coordinates);
-    if (!centroid) return [];
-
-    return [{
-      lat: centroid.lat,
-      lng: centroid.lng,
-      text: countryName
-    }];
+      setPersistedIncorrectLabel({
+        lat: centroid.lat,
+        lng: centroid.lng,
+        text: countryName
+      });
+    }
   }, [mode, gameStatus, clickedCountry, countries, allCountries]);
+
+  // Clear persisted label when new target country appears
+  useEffect(() => {
+    if (targetCountry) {
+      setPersistedIncorrectLabel(null);
+    }
+  }, [targetCountry]);
+
+  // Create label for incorrect country (use persisted label to survive state transitions)
+  const countryLabels = useMemo(() => {
+    if (mode !== 'quiz' || !persistedIncorrectLabel) return [];
+    return [persistedIncorrectLabel];
+  }, [mode, persistedIncorrectLabel]);
 
   return (
     <div className="world-map-wrapper">
@@ -333,10 +346,21 @@ const WorldMap = ({
           labelsData={countryLabels}
           labelLat={d => d.lat}
           labelLng={d => d.lng}
-          labelText={d => d.text}
+          labelLabel={d => `
+            <div style="
+              background-color: rgba(255, 255, 255, 0.85);
+              color: #000000;
+              padding: 4px 8px;
+              border-radius: 4px;
+              font-size: 14px;
+              font-weight: 600;
+              white-space: nowrap;
+              border: 1px solid rgba(0, 0, 0, 0.2);
+              box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+            ">${d.text}</div>
+          `}
           labelSize={1.5}
           labelDotRadius={0.4}
-          labelColor={() => '#ff4444'}
           labelResolution={2}
           width={globeDimensions.width} height={globeDimensions.height}
         />
