@@ -2,60 +2,26 @@ During my maternity leave, I made a geography-learning website that is as Nerdfi
 
   are still in there  (although I did learn a lot from this project) and articles from Public Domain Review. It also includes Our World in Data (two guesses on which familiar name is on their donor page.) Since I am in baby-mode, I started with the hope of finding paintings of babies from every country in the public domain. Anyone with a better grasp of art history or plain history than me can understand why I didn't succeed, but you can see my attempt. Maybe I'll just link the cool copy-right art in the future. I hope you all like it, and feedback would be welcome. I'd love ideas on additional public domiain or cc images to include, especially dipictions of children in art and open ~/.claude/plans/melodic-doodling-honey.md
 
-  refer in label infobar and quiz (everywhere) to the common name of the country using pycountry to get it if necessary, not the official name. use scrip to cacluate it and add it to the tables so it doesn't need to be calcuated each time. add the th m39 list as well. also what does lld and sids stand for in the m29 file? 
+✅ HINTS FETCHED for SSD: (2) ['140', '800'] on initial quuiz not hinting south sudan itself
 
-1. add met info
-2. check links
-3. check all countries
-4. study code
-5. try to do without claude: 
-add general info after loaded
+try again instead of close out for incorredc tin quiz mode
+formating center captions and titles in infobar and welcome
 
-get rid of 5 second wait
-
-figure out how to wait until images loaded
-
-don't wait if no images
-
-images random first than others
- 
-
-paths different colors per country
-
-remove wrong hints
-
-move candles below next
-
-country assignment as temporary overlay
-
-start with overlay with Start Quiz or Explore button, explains info categories, hints, candles
-
-unpkg.com/three-globe/example/img/earth-blue-marble.jpg:1 
-
-4. Performance Considerations:
-   - Database queries in routes (consider caching for production)
-   - Image serving (could use CDN in production)
-   - CORS configuration (security vs accessibility)
-
-check capslock an dif you need all three
-   DEBUG = os.getenv('DEBUG', 'True').lower() in ('true', '1', 'yes')
+same lines for extrnal links not break at :
 
 
-   does InternalError only work in debug mode? if not maybe less detail producitons mode
+quiz no quiz hint no hint botton instead of toggle. (no quiz an dno hint visible when quiz hint on)
 
-   should i import
+move i for open welcone to end of line
+
+move skip show to zoom contols overlay
+
+hint quiz next to each other
+
+slight see through  all overlays
+
+dont grey out skip when in quiz mode
 
 
-   keep subdivs contained in app content. 
-   MuiCardContent-root css-kacebu-MuiCardContent-root is furter down than the outline of app content
+turn black country path see through and white when hints is on, revert back in explore mode or when hints are on
 
-   map container shouod contain artwork perfectly. now thereea
-also move appjs to mui where possible.
-remove unused css classes.
-less white space for buttons. 
-more rotate and zoom buttom to buottom of the page. 
-move other controls to same line except country dropdown
-   move everything in artwork backdrop up so there not the upper white space. 
-  remove side of 
-look at the containers and div organization of frontend/src/components/WelcomeOverlay.mui.js. copy that idea so that the frontend/src/components/ArtworkInfoBar.js has the same. update frontend/src/components/ArtworkInfoBar.js with mui as well to get this. 
-  welcome has a good div set up with map isble in backgrounfd on margins and and fitting into blackoutline. learn from that and have the same setupp in artworkunfobar
