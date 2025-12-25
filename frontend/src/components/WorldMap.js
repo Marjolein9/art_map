@@ -1,6 +1,6 @@
 import React, { memo, useState, useEffect, useRef, useMemo } from 'react';
 import Globe from 'react-globe.gl';
-import { Button, Box, Typography, FormControlLabel, Switch, Select, MenuItem } from '@mui/material';
+import { Button, Box, Typography, Select, MenuItem, FormControlLabel, Switch } from '@mui/material';
 import { getCountryIsoCode, initializeCountryMapping } from '../utils/countryCodeMapping';
 import { REGION_VIEWS } from '../config/regions';
 import { loadTopoJSON } from '../utils/topoJsonLoader';
@@ -117,6 +117,7 @@ const WorldMap = ({
           const targetM49 = targetCountryData?.id;
           const highlightM49s = [];
 
+          // Include target country in hints
           if (targetM49) highlightM49s.push(String(targetM49).padStart(3,'0'));
 
           const islandData = await fetchSimilarIslands(targetCountry);
@@ -335,7 +336,9 @@ const WorldMap = ({
               d.isHintOverlay,
               d.isShowMeOverlay,
               COLORS,
-              hoverD
+              hoverD,
+              hintsEnabled,
+              mode
             );
           }}
           pathStrokeColor={d => getPathStrokeColor(d, d.isHintOverlay, d.isShowMeOverlay)}
@@ -383,6 +386,18 @@ const WorldMap = ({
                 }
                 label="Quiz"
               />
+              {mode === 'quiz' && (
+                <FormControlLabel
+                  control={
+                    <Switch
+                      checked={hintsEnabled}
+                      onChange={() => setHintsEnabled(prev => !prev)}
+                      size="small"
+                    />
+                  }
+                  label="Hints"
+                />
+              )}
               <Button
                 variant="outlined"
                 size="small"
@@ -392,44 +407,6 @@ const WorldMap = ({
               >
                 ℹ
               </Button>
-              {mode === 'quiz' && (
-                <>
-                  <Button
-                    variant="outlined"
-                    size="small"
-                    onClick={onStartOver}
-                    title="Next Country"
-                    sx={{ minWidth: 'auto', padding: '2px 8px', fontSize: '14px' }}
-                  >
-                    Skip
-                  </Button>
-                  <Button
-                    variant="outlined"
-                    size="small"
-                    onClick={handleShowMe}
-                    title="Show Me"
-                    disabled={showMeActivated}
-                    sx={{
-                      opacity: showMeActivated ? 0.5 : 1,
-                      minWidth: 'auto',
-                      padding: '2px 8px',
-                      fontSize: '14px'
-                    }}
-                  >
-                    {showMeActivated ? 'Shown' : 'Show'}
-                  </Button>
-                  <FormControlLabel
-                    control={
-                      <Switch
-                        checked={hintsEnabled}
-                        onChange={() => setHintsEnabled(prev => !prev)}
-                        size="small"
-                      />
-                    }
-                    label="Hint"
-                  />
-                </>
-              )}
             </Box>
 
             {/* Quiz-Specific Controls */}
@@ -473,6 +450,34 @@ const WorldMap = ({
         {/* Bottom Control Overlay - Zoom and Rotation */}
         <div className="control-overlay-bottom" style={{ '--card-bg': COLORS.cardBg, '--text-color': COLORS.text, '--glow-color': COLORS.glow, '--border-color': COLORS.border }}>
           <Box sx={{ display: 'flex', gap: 0.5 }}>
+            {mode === 'quiz' && (
+              <>
+                <Button
+                  variant="outlined"
+                  size="small"
+                  onClick={onStartOver}
+                  title="Next Country"
+                  sx={{ minWidth: 'auto', padding: '2px 8px', fontSize: '14px' }}
+                >
+                  Skip
+                </Button>
+                <Button
+                  variant="outlined"
+                  size="small"
+                  onClick={handleShowMe}
+                  title="Show Me"
+                  disabled={showMeActivated}
+                  sx={{
+                    opacity: showMeActivated ? 0.5 : 1,
+                    minWidth: 'auto',
+                    padding: '2px 8px',
+                    fontSize: '14px'
+                  }}
+                >
+                  {showMeActivated ? 'Shown' : 'Show'}
+                </Button>
+              </>
+            )}
             <Button
               variant="outlined"
               size="small"

@@ -42,7 +42,8 @@ const ChildMortalitySection = ({ mortalityData }) => {
             sx={{
               fontWeight: 600,
               color: COLOR_SCHEME.textPrimary,
-              marginBottom: 1
+              marginBottom: 1,
+              textAlign: 'center'
             }}
           >
             Child Mortality

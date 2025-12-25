@@ -201,7 +201,7 @@ const ArtworkInfoBar = ({
             gap: 2,
           }}
         >
-          <Typography variant="h6" component="div" sx={{ fontWeight: 600 }}>
+          <Typography variant="h6" component="div" sx={{ fontWeight: 600, flex: 1, textAlign: 'center' }}>
             {mode === 'quiz' && answerSubmitted
               ? isCorrectAnswer
                 ? `Correct: ${countryName || countryISO}`
@@ -228,7 +228,7 @@ const ArtworkInfoBar = ({
                   padding: '4px 8px'
                 }}
               >
-                ✕
+                {mode === 'quiz' && answerSubmitted && !isCorrectAnswer ? 'Try Again' : '✕'}
               </Button>
             ) : null}
           </Box>

@@ -38,6 +38,8 @@ export const getPastelColorForCountry = (m49) => {
  * @param {boolean} isShowMeOverlay - Whether this path is shown by "Show Me" button
  * @param {Object} colors - Color scheme object
  * @param {string} hoveredCountry - Currently hovered country path
+ * @param {boolean} hintsEnabled - Whether hints are enabled
+ * @param {string} mode - Current mode ('quiz' or 'explore')
  * @returns {string} - Hex color code
  */
 export const getPathColor = (
@@ -45,7 +47,9 @@ export const getPathColor = (
   isHintOverlay,
   isShowMeOverlay,
   colors,
-  hoveredCountry = null
+  hoveredCountry = null,
+  hintsEnabled = false,
+  mode = 'explore'
 ) => {
   const m49 = path.id || path.properties?.id;
 
@@ -64,7 +68,11 @@ export const getPathColor = (
     return colors.selected;
   }
 
-  // Default (no path visible)
+  // Default: semi-transparent white when hints enabled in quiz mode, black otherwise
+  if (mode === 'quiz' && hintsEnabled) {
+    return 'rgba(255, 255, 255, 0.3)';
+  }
+
   return COLOR_SCHEME.black;
 };
 

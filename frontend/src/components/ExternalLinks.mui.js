@@ -115,21 +115,23 @@ const ExternalLinks = ({ externalLinks, countryName }) => {
               }}
             >
               <Typography
-                sx={{
-                  color: COLOR_SCHEME.linkColor,
-                  textDecoration: 'underline',
-                  fontWeight: 500
-                }}
-              >
-                {item.label}
-              </Typography>
-              <Typography
                 variant="body2"
                 sx={{
                   color: COLOR_SCHEME.textPrimary,
                   fontSize: '13px'
                 }}
               >
+                <Box
+                  component="span"
+                  sx={{
+                    color: COLOR_SCHEME.linkColor,
+                    textDecoration: 'underline',
+                    fontWeight: 500,
+                    fontSize: '14px'
+                  }}
+                >
+                  {item.label}
+                </Box>
                 : {item.description}
               </Typography>
             </ListItemButton>

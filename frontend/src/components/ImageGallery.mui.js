@@ -317,7 +317,8 @@ const ImageGallery = ({
         sx={{
           backgroundColor: COLOR_SCHEME.bgSecondary,
           borderBottom: `1px solid ${COLOR_SCHEME.borderSecondary}`,
-          padding: 2
+          padding: 2,
+          textAlign: 'center'
         }}
       />
 
@@ -465,7 +466,7 @@ const ImageGallery = ({
         </Box>
 
         {/* Image caption */}
-        <Box sx={{ padding: 1, backgroundColor: COLOR_SCHEME.bgSecondary, borderRadius: 1 }}>
+        <Box sx={{ padding: 1, backgroundColor: COLOR_SCHEME.bgSecondary, borderRadius: 1, textAlign: 'center' }}>
           {renderCaption(currentImage, collection)}
         </Box>
       </CardContent>
