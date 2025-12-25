@@ -1,19 +1,67 @@
 /**
- * Component Styles
+ * Component Styles - Educational Guide
  *
- * This file contains all styles for the application components.
- * Moved from inline styles to centralized CSS for better maintainability.
+ * CSS (Cascading Style Sheets) controls how HTML elements look on the page.
+ *
+ * KEY CSS CONCEPTS COVERED IN THIS FILE:
+ * ======================================
+ *
+ * 1. SELECTORS - How to target HTML elements
+ *    - Class selector: .class-name { }
+ *    - Element selector: body { }
+ *    - Pseudo-classes: :hover, :checked
+ *    - Pseudo-elements: :before, ::after
+ *
+ * 2. BOX MODEL - How elements take up space
+ *    - content: The actual content (text, image)
+ *    - padding: Space inside the border
+ *    - border: Line around the element
+ *    - margin: Space outside the border
+ *
+ * 3. LAYOUT SYSTEMS
+ *    - Flexbox: One-dimensional layout (row or column)
+ *    - Position: absolute, relative, fixed, sticky
+ *
+ * 4. UNITS
+ *    - px: Pixels (fixed size)
+ *    - %: Percentage of parent
+ *    - vh/vw: Viewport height/width (100vh = full screen height)
+ *    - rem/em: Relative to font size
+ *
+ * 5. ANIMATIONS & TRANSITIONS
+ *    - transition: Smooth change between states
+ *    - @keyframes: Define custom animations
+ *    - transform: Move, rotate, scale elements
+ *
+ * 6. RESPONSIVE DESIGN
+ *    - @media queries: Different styles for different screen sizes
  *
  * Benefits of CSS files over inline styles:
- * 1. Reusability - Define once, use many times
- * 2. Maintainability - Easy to find and update styles
- * 3. Performance - Browser can cache CSS files
- * 4. Separation of concerns - Structure (HTML/JSX) separate from styling
+ * - Reusability: Define once, use many times
+ * - Maintainability: Easy to find and update styles
+ * - Performance: Browser can cache CSS files
+ * - Separation of concerns: Structure (HTML) separate from styling
  */
 
 /* ==============================================================================
-   CSS VARIABLES
+   CSS CUSTOM PROPERTIES (CSS Variables)
    ============================================================================== */
+
+/**
+ * :root SELECTOR
+ * Targets the root element of the document (the <html> element)
+ * Variables defined here are globally accessible throughout the CSS
+ *
+ * CSS VARIABLES:
+ * --variable-name: value;    Define a variable
+ * var(--variable-name)       Use a variable
+ *
+ * WHY USE VARIABLES?
+ * - Change colors/values in one place
+ * - Maintain consistency across the app
+ * - Easy theme switching
+ * - JavaScript can modify them dynamically
+ */
 :root {
   /* Base colors */
   --white: #FFFFFF;
@@ -69,25 +117,97 @@
 /* ==============================================================================
    APP LAYOUT
    ============================================================================== */
+
+/**
+ * ELEMENT SELECTOR: Targets all <body> elements (there's only one)
+ * Applies baseline font size for the entire page
+ */
 body {
-  font-size: 16px;
+  font-size: 16px;  /* pixels: fixed unit, doesn't change with zoom */
 }
+
+/**
+ * CLASS SELECTOR: Targets elements with class="app-background"
+ * In HTML/JSX: <div className="app-background">
+ */
 .app-background {
+  /**
+   * MIN-HEIGHT: Minimum height of the element
+   * vh (viewport height): 100vh = 100% of browser window height
+   * This ensures content is at least full screen height
+   */
   min-height: 100vh;
+
+  /**
+   * PADDING: Space INSIDE the border, around the content
+   * Creates 5px of space between border and content on all sides
+   */
   padding: 5px;
+
+  /**
+   * POSITION: relative
+   * - Elements positioned relative to their normal position
+   * - Creates positioning context for absolutely positioned children
+   * - Children with position: absolute will be positioned relative to this element
+   */
   position: relative;
+
+  /**
+   * OVERFLOW: hidden
+   * - Hides any content that extends beyond the element's box
+   * - Prevents scrollbars from appearing
+   */
   overflow: hidden;
+
+  /**
+   * BACKGROUND: Uses CSS variable for gradient
+   * var(--variable-name) accesses a CSS variable
+   */
   background: var(--bg-gradient);
 }
 
 .app-container {
-  width: 100%;
+  width: 100%;  /* 100% of parent element's width */
+
+  /**
+   * MARGIN: Space OUTSIDE the border
+   * 0 auto: 0 top/bottom, auto left/right
+   * auto left/right centers the element horizontally
+   */
   margin: 0 auto;
 }
 
+/**
+ * FLEXBOX LAYOUT
+ *
+ * Flexbox is a one-dimensional layout system for arranging items in rows or columns.
+ * Think of it like organizing books on a shelf - they line up in one direction.
+ *
+ * Key Flexbox Concepts:
+ * - flex container: The parent element with display: flex
+ * - flex items: Direct children of the flex container
+ * - main axis: Primary direction (row = horizontal, column = vertical)
+ * - cross axis: Perpendicular to main axis
+ */
 .app-content {
+  /**
+   * DISPLAY: flex
+   * Turns this element into a flex container
+   * Children become flex items that can be arranged flexibly
+   */
   display: flex;
+
+  /**
+   * GAP: Space between flex items (modern CSS property)
+   * Easier than using margins on individual items
+   */
   gap: 20px;
+
+  /**
+   * ALIGN-ITEMS: Alignment on the cross axis
+   * flex-start: Align to the start of the cross axis (top for rows)
+   * Other values: center, flex-end, stretch, baseline
+   */
   align-items: flex-start;
 }
 
@@ -114,12 +234,36 @@ body {
 }
 
 
+/**
+ * @KEYFRAMES - Custom Animations
+ *
+ * Defines a named animation that can be applied to elements.
+ * Animations describe how properties change over time.
+ *
+ * SYNTAX:
+ * @keyframes animation-name {
+ *   from { properties at start }
+ *   to { properties at end }
+ * }
+ *
+ * Or with percentages for multi-step animations:
+ * @keyframes animation-name {
+ *   0% { initial state }
+ *   50% { middle state }
+ *   100% { final state }
+ * }
+ *
+ * OPACITY:
+ * - 0 = fully transparent (invisible)
+ * - 1 = fully opaque (visible)
+ * - 0.5 = 50% transparent
+ */
 @keyframes fadeIn {
   from {
-    opacity: 0;
+    opacity: 0;  /* Start invisible */
   }
   to {
-    opacity: 1;
+    opacity: 1;  /* End visible */
   }
 }
 
@@ -157,22 +301,82 @@ body {
    WORLDMAP COMPONENT
    ============================================================================== */
 
+/**
+ * BUTTON STYLING WITH TRANSITIONS
+ *
+ * This demonstrates transitions and pseudo-classes for interactive elements.
+ */
 .quiz-button {
+  /**
+   * BOX MODEL PROPERTIES:
+   * padding: Space inside the border (10px top/bottom, 20px left/right)
+   * border: none - No border line
+   * border-radius: Rounds the corners (6px curve)
+   */
   padding: 10px 20px;
   border: none;
   border-radius: 6px;
+
+  /**
+   * CURSOR: Changes mouse cursor when hovering
+   * pointer: The "hand" cursor that indicates clickable element
+   */
   cursor: pointer;
+
+  /**
+   * TRANSITION: Smooth animation between property changes
+   *
+   * SYNTAX: transition: property duration timing-function;
+   * - all: Apply transition to all changing properties
+   * - 0.3s: Duration of 0.3 seconds
+   * - ease: Timing function (starts slow, speeds up, then slows down)
+   *
+   * Other timing functions:
+   * - linear: Constant speed
+   * - ease-in: Starts slow
+   * - ease-out: Ends slow
+   * - ease-in-out: Starts and ends slow
+   *
+   * When properties change (like on :hover), this makes the change smooth
+   */
   transition: all 0.3s ease;
-  font-weight: 500;
+
+  font-weight: 500;  /* Medium font weight (400=normal, 700=bold) */
 }
 
+/**
+ * PSEUDO-CLASSES
+ *
+ * Pseudo-classes select elements in specific states.
+ * Syntax: selector:pseudo-class { }
+ *
+ * :hover - Element is being hovered by mouse
+ * :not() - Elements that don't match the selector
+ * :disabled - Form elements that are disabled
+ * :checked - Checkboxes/radios that are checked
+ * :first-child - First child of parent
+ */
 .quiz-button:hover:not(:disabled) {
+  /**
+   * This selector means:
+   * "Apply these styles to .quiz-button when hovered,
+   *  but NOT if it has the disabled attribute"
+   *
+   * TRANSFORM: Moves, rotates, scales, or skews elements
+   * translateY(-2px): Move up by 2 pixels (negative = up, positive = down)
+   *
+   * The transition property above makes this movement smooth
+   */
   transform: translateY(-2px);
 }
 
+/**
+ * DISABLED STATE
+ * Styles for buttons that are disabled (can't be clicked)
+ */
 .quiz-button:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
+  opacity: 0.5;  /* 50% transparent (faded appearance) */
+  cursor: not-allowed;  /* Shows "not allowed" cursor (circle with line through it) */
 }
 
 /* Globe container */
