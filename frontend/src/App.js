@@ -49,7 +49,7 @@ function App() {
    */
 
   // Application mode: 'explore' (free browsing) or 'quiz' (game mode)
-  const [mode, setMode] = useState('explore');
+  const [mode, setMode] = useState('quiz');
 
   // Currently selected country in explore mode
   const [exploreCountry, setExploreCountry] = useState(null);
@@ -76,7 +76,18 @@ function App() {
   const [disclaimerOpen, setDisclaimerOpen] = useState(false);
 
   // Controls welcome overlay visibility on initial load
-  const [showWelcome, setShowWelcome] = useState(true);
+  const [showWelcome, setShowWelcome] = useState(false);
+
+  // Selected image collections to display (all selected by default)
+  const [selectedCollections, setSelectedCollections] = useState([
+    'Albert Kahn',
+    'Children in Art',
+    'Public Domain Review',
+    'Met Museum'
+  ]);
+
+  // Selected region for quiz filtering (null = all regions)
+  const [selectedQuizRegion, setSelectedQuizRegion] = useState(null);
 
   // Color scheme constants (not state because they never change)
   const COLORS = COLOR_SCHEME;
@@ -212,7 +223,14 @@ function App() {
     fetchNewCountry,         // Function to get next quiz question
     resetGameStatus,         // Function to reset game state
     setManualTargetCountry   // Function to set target country manually
-  } = useQuiz(backendReady); // Pass backendReady to prevent premature API calls
+  } = useQuiz(backendReady, selectedQuizRegion); // Pass backendReady and selected region
+
+  // Fetch initial target country when starting in quiz mode
+  useEffect(() => {
+    if (backendReady && mode === 'quiz' && !targetCountry) {
+      fetchNewCountry();
+    }
+  }, [backendReady, mode, targetCountry, fetchNewCountry]);
 
   // ===========================================================================
   // EVENT HANDLERS
@@ -408,7 +426,9 @@ function App() {
                   loading={(loading && mode === 'quiz') || (exploreLoading && mode === 'explore')}
                   onManualCountrySelect={setManualTargetCountry}
                   countryLookup={countryLookup}
-                   setShowWelcome={setShowWelcome}
+                  setShowWelcome={setShowWelcome}
+                  selectedQuizRegion={selectedQuizRegion}
+                  onQuizRegionChange={setSelectedQuizRegion}
                 />
 
                 {((loading && mode === 'quiz') || (exploreLoading && mode === 'explore')) && (
@@ -442,6 +462,8 @@ function App() {
                         isCorrectAnswer={clickedCountry === targetCountry?.iso}
                         onClose={handleCloseInfoBar}
                         onNext={handleNextCountry}
+                        selectedCollections={selectedCollections}
+                        onCollectionsChange={setSelectedCollections}
                       />
                     </div>
                   </div>

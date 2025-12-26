@@ -25,3 +25,13 @@ dont grey out skip when in quiz mode
 
 turn black country path see through and white when hints is on, revert back in explore mode or when hints are on
 
+
+
+clearer Click on a country to get the public domain images and info described below
+
+Child Mortality Progress instead of Child MOrtality
+
+bigger images click on image for more info, hover for expand, bigger image
+
+don't cut off image in welcome
+

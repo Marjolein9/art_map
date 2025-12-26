@@ -69,6 +69,8 @@ const WorldMap = ({
   countryLookup = {},     // Object mapping country codes to country data
   backendReady = false,   // Whether the backend server is ready to accept requests
   setShowWelcome,         // Function to show/hide the welcome overlay
+  selectedQuizRegion = null, // Selected region for filtering quiz questions
+  onQuizRegionChange = null, // Function to change quiz region filter
 }) => {
   // Store colors in a constant for easy access throughout the component
   const COLORS = colors;
@@ -126,6 +128,9 @@ const WorldMap = ({
 
   // persistedIncorrectLabel: Label data for showing the name of an incorrectly clicked country
   const [persistedIncorrectLabel, setPersistedIncorrectLabel] = useState(null);
+
+  // showTargetOverlay: Controls visibility of "Find: [Country]" overlay in quiz mode
+  const [showTargetOverlay, setShowTargetOverlay] = useState(false);
 
   /**
    * SIDE EFFECTS
@@ -362,6 +367,25 @@ const WorldMap = ({
     // Update our record of the previous target
     prevTargetCountryRef.current = targetCountry;
   }, [targetCountry]);
+
+  // Show "Find: [Country]" overlay when target country changes in quiz mode
+  useEffect(() => {
+    if (mode === 'quiz' && targetCountryName && targetCountry) {
+      // Show the overlay
+      setShowTargetOverlay(true);
+
+      // Hide after 5 seconds
+      const timer = setTimeout(() => {
+        setShowTargetOverlay(false);
+      }, 5000);
+
+      // Cleanup: clear timeout if component unmounts or targetCountry changes
+      return () => clearTimeout(timer);
+    } else {
+      // Hide overlay if not in quiz mode
+      setShowTargetOverlay(false);
+    }
+  }, [targetCountry, targetCountryName, mode]);
 
   // Determine which hints to show (empty if "Show Me" was clicked)
   const activeHints = showMeActivated ? [] : hintNeighborsM49;
@@ -647,21 +671,15 @@ const WorldMap = ({
         */}
         <Globe
           ref={globeEl}  // Attach our ref so we can control the globe programmatically
-
-          {/* Visual assets */}
+          // Visual assets
           globeImageUrl="//unpkg.com/three-globe/example/img/earth-blue-marble.jpg"  // Earth texture
           backgroundImageUrl="//unpkg.com/three-globe/example/img/night-sky.png"      // Space background
-
-          {/* atmosphereColor: The glow color around the Earth (uses our theme's hover color) */}
+          // atmosphereColor: The glow color around the Earth (uses our theme's hover color)
           atmosphereColor={COLORS.hover}
-
-          {/* atmosphereAltitude: How far the glow extends from the surface (0.15 = 15% of Earth radius) */}
+          // atmosphereAltitude: How far the glow extends from the surface (0.15 = 15% of Earth radius)
           atmosphereAltitude={0.15}
-
-          {/*
-            Polygon layer: Base country shapes
-            These are invisible (transparent) because we use the path layer instead for coloring
-          */}
+          // Polygon layer: Base country shapes
+          // These are invisible (transparent) because we use the path layer instead for coloring
           polygonsData={countries.features}  // Array of country geometries
           polygonCapColor={() => 'rgba(0,0,0,0)'}    // Top face: transparent
           polygonSideColor={() => 'rgba(0,0,0,0)'}   // Side faces: transparent
@@ -669,22 +687,15 @@ const WorldMap = ({
           polygonAltitude={0.001}  // Slight height (prevents z-fighting rendering issues)
           onPolygonHover={setHoverD}       // Update hover state when hovering
           onPolygonClick={handlePolygonClick}  // Handle clicks on countries
-
-          {/*
-            Path layer: Colored country borders/fills
-            We use paths instead of polygons so we can layer multiple versions for hints
-          */}
+          // Path layer: Colored country borders/fills
+          // We use paths instead of polygons so we can layer multiple versions for hints
           pathsData={layeredPaths}  // Our computed array of country paths with hint overlays
-
-          {/* Path coordinate accessors - tell Globe how to read our coordinate format */}
+          // Path coordinate accessors - tell Globe how to read our coordinate format
           pathPoints={d => Array.isArray(d.coords[0]) ? d.coords[0] : d.coords}
           pathPointLat={p => p[1]}  // Latitude is 2nd element in coordinate pair
           pathPointLng={p => p[0]}  // Longitude is 1st element in coordinate pair
-
-          {/*
-            pathColor: Function that returns the color for each path
-            Arrow function with implicit return: d => expression
-          */}
+          // pathColor: Function that returns the color for each path
+          // Arrow function with implicit return: d => expression
           pathColor={d => {
             return getPathColor(
               d,                  // The path data
@@ -696,37 +707,26 @@ const WorldMap = ({
               mode                // Current mode (quiz/explore)
             );
           }}
-
-          {/* pathStrokeColor: Color of the path outline/border */}
+          // pathStrokeColor: Color of the path outline/border
           pathStrokeColor={d => getPathStrokeColor(d, d.isHintOverlay, d.isShowMeOverlay)}
-
-          {/* pathStroke: Border thickness (thicker for hints and "Show Me") */}
+          // pathStroke: Border thickness (thicker for hints and "Show Me")
           pathStroke={d => (d.isShowMeOverlay || d.isHintOverlay) ? 4 : 2}
-
-          {/* Path animation settings (all disabled for performance) */}
+          // Path animation settings (all disabled for performance)
           pathDashLength={1}           // No dashed lines
           pathDashGap={0}              // No gaps in dashes
           pathDashAnimateTime={0}      // No dash animation
           pathTransitionDuration={0}   // Instant updates (no fade transitions)
-
-          {/* Path interaction handlers */}
+          // Path interaction handlers
           onPathHover={setHoverD}
           onPathClick={handlePolygonClick}
-
           enablePointerInteraction  // Allow mouse/touch interaction
-
-          {/*
-            Labels: Text labels that appear on the globe
-            Used to show the name of incorrectly clicked countries
-          */}
+          // Labels: Text labels that appear on the globe
+          // Used to show the name of incorrectly clicked countries
           labelsData={countryLabels}  // Array of label objects
           labelLat={d => d.lat}       // Accessor for label latitude
           labelLng={d => d.lng}       // Accessor for label longitude
-
-          {/*
-            labelLabel: HTML content of the label
-            Template literal with inline CSS styling
-          */}
+          // labelLabel: HTML content of the label
+          // Template literal with inline CSS styling
           labelLabel={d => `
             <div style="
               background-color: rgba(255, 255, 255, 0.85);
@@ -743,11 +743,36 @@ const WorldMap = ({
           labelSize={1.5}         // Label size multiplier
           labelDotRadius={0.4}    // Size of dot at label position
           labelResolution={2}     // Label rendering quality
-
-          {/* Globe dimensions (responsive to window size) */}
+          // Globe dimensions (responsive to window size)
           width={globeDimensions.width}
           height={globeDimensions.height}
         />
+
+        {/* Target Country Overlay - Shows "Find: [Country]" for 5 seconds */}
+        {showTargetOverlay && mode === 'quiz' && targetCountryName && (
+          <Box
+            sx={{
+              position: 'fixed',
+              top: '50%',
+              left: '50%',
+              transform: 'translate(-50%, -50%)',
+              zIndex: 9999,
+              backgroundColor: 'rgba(0, 0, 0, 0.85)',
+              color: '#ffffff',
+              padding: '24px 48px',
+              borderRadius: '12px',
+              fontSize: '32px',
+              fontWeight: 700,
+              boxShadow: '0 8px 32px rgba(0, 0, 0, 0.5)',
+              border: '2px solid rgba(255, 255, 255, 0.2)',
+              backdropFilter: 'blur(10px)',
+              animation: 'fadeIn 0.3s ease-in-out',
+              pointerEvents: 'none', // Allow clicking through the overlay
+            }}
+          >
+            Find: {targetCountryName}
+          </Box>
+        )}
 
         {/*
           Control Overlay (Top)
@@ -841,13 +866,35 @@ const WorldMap = ({
                 gap: 1.5                  // 12px gap between items
               }}>
 
+                {/* Region Filter Dropdown - Only visible in test mode */}
+                {process.env.REACT_APP_TEST && onQuizRegionChange && (
+                  <Select
+                    value={selectedQuizRegion || ''}
+                    onChange={(e) => onQuizRegionChange(e.target.value || null)}
+                    size="small"
+                    displayEmpty
+                    sx={{
+                      maxWidth: '150px',
+                      minWidth: '140px',
+                    }}
+                  >
+                    <MenuItem value="">All Regions</MenuItem>
+                    <MenuItem value="Africa">Africa</MenuItem>
+                    <MenuItem value="Americas">Americas</MenuItem>
+                    <MenuItem value="Asia">Asia</MenuItem>
+                    <MenuItem value="Europe">Europe</MenuItem>
+                    <MenuItem value="Oceania">Oceania</MenuItem>
+                  </Select>
+                )}
+
                 {/*
                   Country Dropdown - lets user manually select a country for testing
+                  Only visible when TEST environment variable is set
 
                   Select is MUI's dropdown component
                   MenuItem represents each option in the dropdown
                 */}
-                <Select
+                {process.env.REACT_APP_TEST && <Select
                   value={
                     // Show target country if it's in our list, otherwise show empty
                     targetCountry && allCountries.some(c => c.iso3 === targetCountry)
@@ -885,7 +932,7 @@ const WorldMap = ({
                         {c.common_name || c.name}
                       </MenuItem>
                     ))}
-                </Select>
+                </Select>}
               </Box>
             )}
 

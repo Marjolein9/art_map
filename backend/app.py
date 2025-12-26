@@ -141,8 +141,11 @@ def random_country():
     Return a random sovereign country (is_country = true).
 
     HTTP Method: GET
-    URL: http://localhost:5000/api/game/random-country
+    URL: http://localhost:5000/api/game/random-country?region=Africa (optional)
     Purpose: Used by quiz game to select which country to show
+
+    Query Parameters:
+    - region (optional): Filter countries by continent (Africa, Americas, Asia, Europe, Oceania)
 
     Returns: JSON with one random country's details
     Example: {"country": {"iso": "JPN", "name": "Japan", ...}}
@@ -151,10 +154,13 @@ def random_country():
     - 200: Success
     - 404: Country not found (shouldn't happen)
     - 500: No countries available in database
-    
-    REFACTORING: Updated to use standardized error handling.
+
+    REFACTORING: Updated to use standardized error handling and support region filtering.
     """
     try:
+        # Get optional region query parameter
+        region = request.args.get('region')
+
         # List of territories to exclude from quiz mode
         excluded_territories = [
             'BES', 'BVT', 'CXR', 'CCK', 'GUF', 'GIB', 'GLP',
@@ -164,12 +170,23 @@ def random_country():
         # Get all sovereign countries excluding small territories
         # Build dynamic query with correct number of placeholders
         placeholders = ', '.join(['%s'] * len(excluded_territories))
+
+        # Build query parameters tuple
+        query_params = list(excluded_territories)
+
+        # Add optional region filter
+        region_filter = ''
+        if region:
+            region_filter = 'AND continent = %s'
+            query_params.append(region)
+
         countries = execute_query(f'''
             SELECT iso3, name, common_name, continent, subregion
             FROM countries
             WHERE is_country = TRUE
             AND iso3 NOT IN ({placeholders})
-        ''', tuple(excluded_territories))
+            {region_filter}
+        ''', tuple(query_params))
 
         # Error handling: ensure countries exist
         if not countries:

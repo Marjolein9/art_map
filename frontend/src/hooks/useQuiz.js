@@ -25,10 +25,11 @@ import { fetchRandomCountry, checkAnswer } from '../services/api';
 /**
  * useQuiz Hook
  *
- * @param {boolean} backendReady - Whether the backend server is ready (currently not used in logic)
+ * @param {boolean} backendReady - Whether the backend server is ready
+ * @param {string|null} selectedRegion - Selected region to filter countries (null = all regions)
  * @returns {Object} - Object containing state and functions for quiz management
  */
-export const useQuiz = (backendReady) => {
+export const useQuiz = (backendReady, selectedRegion = null) => {
   /**
    * STATE VARIABLES
    *
@@ -91,7 +92,8 @@ export const useQuiz = (backendReady) => {
 
       // await: Pause here until fetchRandomCountry() completes
       // fetchRandomCountry() returns a Promise that resolves to country data
-      const country = await fetchRandomCountry();
+      // Pass selectedRegion to filter by continent/region
+      const country = await fetchRandomCountry(selectedRegion);
 
       // Create new country object with preferred display name
       const countryWithDisplayName = {
@@ -104,13 +106,8 @@ export const useQuiz = (backendReady) => {
       // Update target country state
       setTargetCountry(countryWithDisplayName);
 
-      // On initial load, show loading screen for 5 seconds minimum
+      // On initial load, hide loading screen
       if (isInitialLoad.current) {
-        // Create a Promise that resolves after 5000ms (5 seconds)
-        // setTimeout: Browser function that runs code after a delay
-        // new Promise + setTimeout: Creates a delay we can await
-        await new Promise(resolve => setTimeout(resolve, 5000));
-
         // Mark that initial load is complete
         isInitialLoad.current = false;
 

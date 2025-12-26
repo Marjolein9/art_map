@@ -199,22 +199,28 @@ const apiCall = async (endpoint, options = {}, responseMapping = null) => {
 /**
  * Fetch a random country that has artwork
  *
- * ENDPOINT: GET /game/random-country
+ * ENDPOINT: GET /game/random-country?region=Africa (optional)
  * RETURNS: Country object with {iso, name, continent, subregion}
+ *
+ * @param {string|null} region - Optional region filter (Africa, Americas, Asia, Europe, Oceania)
  *
  * Python equivalent using requests library:
  *   import requests
- *   response = requests.get('http://localhost:5000/api/game/random-country')
+ *   response = requests.get('http://localhost:5000/api/game/random-country?region=Africa')
  *   return response.json()['country']
  */
-export const fetchRandomCountry = async () => {
-  // Arrow function: () => expression
-  // Compact syntax for simple functions
+export const fetchRandomCountry = async (region = null) => {
+  // Arrow function with optional parameter
   // async makes it return a Promise
+
+  // Build endpoint with optional region query parameter
+  const endpoint = region
+    ? `/game/random-country?region=${encodeURIComponent(region)}`
+    : '/game/random-country';
 
   // Using response mapping to extract just the 'country' field from response
   // If backend returns {country: {...}, other: ...}, we get just the country object
-  return apiCall('/game/random-country', {}, 'country');
+  return apiCall(endpoint, {}, 'country');
 };
 
 /**

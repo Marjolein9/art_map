@@ -23,7 +23,13 @@ import {
   Button,          // Clickable button
   Box,             // Flexible container for layout
   CircularProgress,// Loading spinner
-  Typography       // Styled text component
+  Typography,      // Styled text component
+  Select,          // Dropdown select component
+  MenuItem,        // Menu item for select
+  FormControl,     // Form control wrapper
+  InputLabel,      // Label for form inputs
+  Checkbox,        // Checkbox component
+  ListItemText     // Text for list items
 } from '@mui/material';
 
 import { ThemeProvider } from '@mui/material/styles';
@@ -57,7 +63,9 @@ const ArtworkInfoBar = ({
   answerSubmitted, // Whether user submitted an answer in quiz mode
   isCorrectAnswer, // Whether the submitted answer was correct
   onClose,         // Function to call when closing the dialog
-  onNext           // Function to call when clicking "Next" button
+  onNext,          // Function to call when clicking "Next" button
+  selectedCollections = ['Albert Kahn', 'Children in Art', 'Public Domain Review', 'Met Museum'], // Selected collections to display
+  onCollectionsChange  // Function to update selected collections
 }) => {
   /**
    * STATE VARIABLES
@@ -282,8 +290,10 @@ const ArtworkInfoBar = ({
    */
   if (!countryISO) return null;
 
-  // Extract collection names (e.g., ["albert_kahn", "children_artwork"])
-  const collections = Object.keys(imagesByCollection);
+  // Extract collection names and filter by selected collections
+  const collections = Object.keys(imagesByCollection).filter(collection =>
+    selectedCollections.includes(collection)
+  );
 
   /**
    * EVENT HANDLERS
@@ -425,6 +435,29 @@ const ArtworkInfoBar = ({
 
         {/* DIALOG CONTENT */}
         <DialogContent>
+          {/* Collection Filter - Only visible in test mode */}
+          {process.env.REACT_APP_TEST && onCollectionsChange && (
+            <Box sx={{ mb: 2 }}>
+              <FormControl fullWidth size="small">
+                <InputLabel>Image Collections</InputLabel>
+                <Select
+                  multiple
+                  value={selectedCollections}
+                  onChange={(e) => onCollectionsChange(e.target.value)}
+                  renderValue={(selected) => selected.join(', ')}
+                  label="Image Collections"
+                >
+                  {['Albert Kahn', 'Children in Art', 'Public Domain Review', 'Met Museum'].map((name) => (
+                    <MenuItem key={name} value={name}>
+                      <Checkbox checked={selectedCollections.includes(name)} />
+                      <ListItemText primary={name} />
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            </Box>
+          )}
+
           {/*
             CONDITIONAL RENDERING WITH &&
 
