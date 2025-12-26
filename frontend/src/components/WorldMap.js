@@ -969,6 +969,40 @@ const WorldMap = ({
               >
                 ℹ
               </Button>
+
+              {/* Show and Next buttons (only in quiz mode) */}
+              {mode === 'quiz' && (
+                <>
+                  <Button
+                    variant="outlined"
+                    size="small"
+                    onClick={onStartOver}
+                    title="Next Country"
+                    sx={{
+                      minWidth: 'auto',
+                      padding: '2px 8px',
+                      fontSize: '1rem'
+                    }}
+                  >
+                    Next
+                  </Button>
+                  <Button
+                    variant="outlined"
+                    size="small"
+                    onClick={handleShowMe}
+                    title="Show Me"
+                    disabled={showMeActivated}
+                    sx={{
+                      opacity: showMeActivated ? 0.5 : 1,
+                      minWidth: 'auto',
+                      padding: '2px 8px',
+                      fontSize: '1rem'
+                    }}
+                  >
+                    {showMeActivated ? 'Shown' : 'Show'}
+                  </Button>
+                </>
+              )}
             </Box>
 
             {/* Quiz-Specific Controls (only visible in quiz mode) */}
@@ -1003,94 +1037,6 @@ const WorldMap = ({
             )}
 
           </div>
-        </div>
-
-        {/* Bottom Control Overlay - Zoom and Rotation Controls */}
-        <div className="control-overlay-bottom" style={{
-          '--card-bg': COLORS.cardBg,
-          '--text-color': COLORS.text,
-          '--glow-color': COLORS.glow,
-          '--border-color': COLORS.border
-        }}>
-          <Box sx={{ display: 'flex', gap: 0.5 }}>
-            {/* Skip and Show buttons (only in quiz mode) */}
-            {mode === 'quiz' && (
-              <>
-                {/*
-                  React Fragment (<>...</>):
-                  Groups multiple elements without adding extra DOM nodes
-                  Equivalent to <React.Fragment>...</React.Fragment>
-                */}
-                <Button
-                  variant="outlined"
-                  size="small"
-                  onClick={onStartOver}
-                  title="Next Country"
-                  sx={{
-                    minWidth: 'auto',
-                    padding: '2px 8px',
-                    fontSize: '1rem'
-                  }}
-                >
-                  Next
-                </Button>
-                <Button
-                  variant="outlined"
-                  size="small"
-                  onClick={handleShowMe}
-                  title="Show Me"
-                  disabled={showMeActivated}  // Disable button after it's clicked
-                  sx={{
-                    opacity: showMeActivated ? 0.5 : 1,  // Fade out when disabled
-                    minWidth: 'auto',
-                    padding: '2px 8px',
-                    fontSize: '1rem'
-                  }}
-                >
-                  {/* Conditional text: change label after activation */}
-                  {showMeActivated ? 'Shown' : 'Show'}
-                </Button>
-              </>
-            )}
-
-            {/* Globe rotation and zoom controls (always visible) */}
-            <Button
-              variant="outlined"
-              size="small"
-              onClick={rotateLeft}
-              title="Rotate Left"
-              sx={{ minWidth: 'auto', padding: '2px 8px', fontSize: '16px' }}
-            >
-              ←
-            </Button>
-            <Button
-              variant="outlined"
-              size="small"
-              onClick={rotateRight}
-              title="Rotate Right"
-              sx={{ minWidth: 'auto', padding: '2px 8px', fontSize: '16px' }}
-            >
-              →
-            </Button>
-            <Button
-              variant="outlined"
-              size="small"
-              onClick={zoomIn}
-              title="Zoom In"
-              sx={{ minWidth: 'auto', padding: '2px 8px', fontSize: '16px' }}
-            >
-              +
-            </Button>
-            <Button
-              variant="outlined"
-              size="small"
-              onClick={zoomOut}
-              title="Zoom Out"
-              sx={{ minWidth: 'auto', padding: '2px 8px', fontSize: '16px' }}
-            >
-              −
-            </Button>
-          </Box>
         </div>
       </div>
     </div>

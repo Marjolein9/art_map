@@ -263,38 +263,6 @@ const WelcomeOverlay = ({ onStartQuiz, onExplore, colors }) => {
             />
             <CardContent>
               <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1.5 }}>
-                {/* Rotate Left */}
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                  <Button variant="outlined" size="small" sx={{ minWidth: '40px' }}>
-                    ←
-                  </Button>
-                  <Typography variant="body2">Rotate globe left</Typography>
-                </Box>
-
-                {/* Rotate Right */}
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                  <Button variant="outlined" size="small" sx={{ minWidth: '40px' }}>
-                    →
-                  </Button>
-                  <Typography variant="body2">Rotate globe right</Typography>
-                </Box>
-
-                {/* Zoom In */}
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                  <Button variant="outlined" size="small" sx={{ minWidth: '40px' }}>
-                    +
-                  </Button>
-                  <Typography variant="body2">Zoom in to see details</Typography>
-                </Box>
-
-                {/* Zoom Out */}
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                  <Button variant="outlined" size="small" sx={{ minWidth: '40px' }}>
-                    −
-                  </Button>
-                  <Typography variant="body2">Zoom out to see full globe</Typography>
-                </Box>
-
                 {/* Quiz Toggle */}
                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
                   <FormControlLabel
