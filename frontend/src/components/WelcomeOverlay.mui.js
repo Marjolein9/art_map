@@ -59,11 +59,38 @@ const WelcomeOverlay = ({ onStartQuiz, onExplore, colors }) => {
         <DialogTitle
           sx={{
             display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
+            flexDirection: 'column',
             gap: 2,
+            paddingBottom: 2,
           }}
         >
+          {/* Close button in top right */}
+          <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
+            <Button
+              variant="outlined"
+              onClick={handleClose}
+              size="small"
+              sx={{
+                minWidth: 'auto',
+                padding: '4px 8px'
+              }}
+            >
+              ✕
+            </Button>
+          </Box>
+
+          {/* Main Title */}
+          <Typography
+            component="div"
+            variant="h5"
+            sx={{
+              fontWeight: 600,
+              textAlign: 'center',
+              mb: 2
+            }}
+          >
+            Click on a country to get the public domain images and info described below
+          </Typography>
 
           <Box sx={{ display: 'flex', gap: 2, flex: 1, justifyContent: 'center' }}>
             <Button
@@ -97,30 +124,10 @@ const WelcomeOverlay = ({ onStartQuiz, onExplore, colors }) => {
               Start Quiz
             </Button>
           </Box>
-
-          <Button
-            variant="outlined"
-            onClick={handleClose}
-            size="small"
-            sx={{
-              minWidth: 'auto',
-              padding: '4px 8px'
-            }}
-          >
-            ✕
-          </Button>
         </DialogTitle>
 
         {/* Dialog Content */}
         <DialogContent>
-          {/* Intro Text */}
-          <Typography
-            variant="body2"
-            sx={{ mb: 3, fontWeight: 500 }}
-          >
-            Click on a country to get the public domain images and info described below
-          </Typography>
-
           {/* Country Examples */}
           {welcomeExamples.countries.map((country) => (
             <Box key={country.iso3} sx={{ mb: 2 }}>
@@ -180,8 +187,7 @@ const WelcomeOverlay = ({ onStartQuiz, onExplore, colors }) => {
                         sx={{
                           my: 2,
                           borderRadius: '4px',
-                          maxHeight: '300px',
-                          objectFit: 'cover',
+                          objectFit: 'contain',
                         }}
                       />
 

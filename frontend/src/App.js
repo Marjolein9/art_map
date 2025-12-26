@@ -4,9 +4,8 @@
  * Interview Note: React hooks are functions that let you "hook into" React features
  * - useState: Manages component state (data that changes over time)
  * - useEffect: Handles side effects (data fetching, subscriptions, DOM manipulation)
- * - useRef: Persists values across renders without triggering re-renders
  */
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import { ThemeProvider } from '@mui/material/styles';
 import muiTheme from './theme/muiTheme';
 import './styles/App.css';
@@ -79,20 +78,6 @@ function App() {
   // Controls welcome overlay visibility on initial load
   const [showWelcome, setShowWelcome] = useState(true);
 
-  /**
-   * Interview Note: useRef Hook
-   *
-   * useRef creates a mutable object that persists for the component's lifetime
-   * Key differences from useState:
-   * - Changing .current does NOT trigger re-renders (performance optimization)
-   * - Useful for: tracking values without re-rendering, DOM references, previous values
-   * - The object returned by useRef is stable across renders
-   *
-   * Common interview question: "When would you use useRef vs useState?"
-   * Answer: Use useRef when you need to persist data without triggering re-renders
-   */
-  const isExploreInitialLoad = useRef(true);
-
   // Color scheme constants (not state because they never change)
   const COLORS = COLOR_SCHEME;
 
@@ -159,18 +144,6 @@ function App() {
           lookup[country.iso3] = country.common_name || country.name;
         });
         setCountryLookup(lookup);
-
-        /**
-         * Interview Note: Why use useRef for isExploreInitialLoad?
-         * - We need to track first load without causing re-renders
-         * - Changing state here would cause unnecessary re-render
-         * - useRef persists value without triggering render cycle
-         */
-        if (isExploreInitialLoad.current) {
-          // Artificial delay for smooth UX on first load
-          await new Promise(resolve => setTimeout(resolve, 5000));
-          isExploreInitialLoad.current = false;
-        }
 
         setExploreLoading(false);
         setBackendReady(true);
@@ -270,8 +243,11 @@ function App() {
   const handleModeToggle = () => {
     const newMode = mode === 'quiz' ? 'explore' : 'quiz';
     setMode(newMode);
-    // Clear explore selection when switching to quiz mode
-    if (newMode === 'quiz') setExploreCountry(null);
+    // Clear explore selection and fetch new target country when switching to quiz mode
+    if (newMode === 'quiz') {
+      setExploreCountry(null);
+      fetchNewCountry();
+    }
   };
 
   /**

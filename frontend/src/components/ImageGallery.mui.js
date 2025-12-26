@@ -340,71 +340,87 @@ const ImageGallery = ({
             overflow: 'visible'
           }}
         >
-          <img
-            key={`${collection}-${currentIndex}`}
-            ref={imageRef}
-            src={currentImage.filepath.startsWith('http')
+          <a
+            href={currentImage.filepath.startsWith('http')
               ? currentImage.filepath
               : `${API_BASE}/${currentImage.filepath}`}
-            alt={currentImage.title || 'Image'}
+            target="_blank"
+            rel="noopener noreferrer"
             style={{
-              maxWidth: '100%',
-              maxHeight: '100%',
-              width: 'auto',
-              height: 'auto',
-              display: 'block',
-              borderRadius: '4px',
-              objectFit: 'contain',
-              backgroundColor: COLOR_SCHEME.bgSecondary
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              width: '100%',
+              height: '100%'
             }}
-            loading="lazy"
-            decoding="async"
-            onLoad={(e) => {
-              const img = e.target;
-              const container = img.parentElement;
-              const loadedUrl = currentImage.filepath.startsWith('http')
+          >
+            <img
+              key={`${collection}-${currentIndex}`}
+              ref={imageRef}
+              src={currentImage.filepath.startsWith('http')
                 ? currentImage.filepath
-                : `${API_BASE}/${currentImage.filepath}`;
+                : `${API_BASE}/${currentImage.filepath}`}
+              alt={currentImage.title || 'Image'}
+              style={{
+                maxWidth: '100%',
+                maxHeight: '100%',
+                width: 'auto',
+                height: 'auto',
+                display: 'block',
+                borderRadius: '4px',
+                objectFit: 'contain',
+                backgroundColor: COLOR_SCHEME.bgSecondary
+              }}
+              loading="lazy"
+              decoding="async"
+              onLoad={(e) => {
+                const img = e.target;
+                const container = img.parentElement.parentElement;
+                const loadedUrl = currentImage.filepath.startsWith('http')
+                  ? currentImage.filepath
+                  : `${API_BASE}/${currentImage.filepath}`;
 
-              console.log('✅ Image loaded:', {
-                title: currentImage.title || 'Untitled',
-                collection: collection,
-                naturalDimensions: `${img.naturalWidth}x${img.naturalHeight}`,
-                displayedDimensions: `${img.offsetWidth}x${img.offsetHeight}`,
-                containerDimensions: `${container.offsetWidth}x${container.offsetHeight}`,
-                aspectRatio: (img.naturalWidth / img.naturalHeight).toFixed(2),
-                orientation: img.naturalWidth > img.naturalHeight ? 'landscape' : 'portrait'
-              });
+                console.log('✅ Image loaded:', {
+                  title: currentImage.title || 'Untitled',
+                  collection: collection,
+                  naturalDimensions: `${img.naturalWidth}x${img.naturalHeight}`,
+                  displayedDimensions: `${img.offsetWidth}x${img.offsetHeight}`,
+                  containerDimensions: `${container.offsetWidth}x${container.offsetHeight}`,
+                  aspectRatio: (img.naturalWidth / img.naturalHeight).toFixed(2),
+                  orientation: img.naturalWidth > img.naturalHeight ? 'landscape' : 'portrait'
+                });
 
-              if (img.naturalWidth > 2000 || img.naturalHeight > 2000) {
-                console.warn('⚠️ Large image detected:', currentImage.filepath,
-                  `${img.naturalWidth}x${img.naturalHeight}`);
-              }
-            }}
-            onError={(e) => {
-              const attemptedUrl = currentImage.filepath.startsWith('http')
-                ? currentImage.filepath
-                : `${API_BASE}/${currentImage.filepath}`;
+                if (img.naturalWidth > 2000 || img.naturalHeight > 2000) {
+                  console.warn('⚠️ Large image detected:', currentImage.filepath,
+                    `${img.naturalWidth}x${img.naturalHeight}`);
+                }
+              }}
+              onError={(e) => {
+                const attemptedUrl = currentImage.filepath.startsWith('http')
+                  ? currentImage.filepath
+                  : `${API_BASE}/${currentImage.filepath}`;
 
-              console.error('❌ Image failed to load:', {
-                title: currentImage.title || 'Untitled',
-                collection: collection,
-                filepath: currentImage.filepath,
-                attemptedUrl: attemptedUrl,
-                apiBase: API_BASE
-              });
+                console.error('❌ Image failed to load:', {
+                  title: currentImage.title || 'Untitled',
+                  collection: collection,
+                  filepath: currentImage.filepath,
+                  attemptedUrl: attemptedUrl,
+                  apiBase: API_BASE
+                });
 
-              e.target.src = 'data:image/svg+xml,' + encodeURIComponent(`
-                <svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200">
-                  <rect fill="${COLOR_SCHEME.borderSecondary}" width="200" height="200"/>
-                  <text x="50%" y="50%" text-anchor="middle" dominant-baseline="middle"
-                        font-family="Arial, sans-serif" font-size="14" fill="${COLOR_SCHEME.textSecondary}">
-                    Image Not Available
-                  </text>
-                </svg>
-              `);
-            }}
-          />
+                e.target.src = 'data:image/svg+xml,' + encodeURIComponent(`
+                  <svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200">
+                    <rect fill="${COLOR_SCHEME.borderSecondary}" width="200" height="200"/>
+                    <text x="50%" y="50%" text-anchor="middle" dominant-baseline="middle"
+                          font-family="Arial, sans-serif" font-size="14" fill="${COLOR_SCHEME.textSecondary}">
+                      Image Not Available
+                    </text>
+                  </svg>
+                `);
+              }}
+            />
+          </a>
 
           {/* Pagination controls */}
           {hasMultiple && (

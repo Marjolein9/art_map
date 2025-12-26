@@ -46,7 +46,7 @@ const ChildMortalitySection = ({ mortalityData }) => {
               textAlign: 'center'
             }}
           >
-            Child Mortality
+            Child Mortality Progress since 1989
           </Typography>
           <Typography
             variant="body2"
