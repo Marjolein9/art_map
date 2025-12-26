@@ -386,11 +386,11 @@ def get_similar_islands(iso3):
 
     HTTP Method: GET
     URL: http://localhost:5000/api/similar-islands/JPN
-    Purpose: Used for quiz hints when target is an island - show 2 random countries from same subregion
+    Purpose: Used for quiz hints when target is an island - show up to 4 random countries from same subregion
     Priority: Other islands in same subregion > Any countries in same subregion
 
-    Returns: JSON with list of 2 countries from the same subregion (preferring other islands)
-    Example: {"islands": [{"iso3": "PHL", "m49": 608, "name": "Philippines"}, ...], "count": 2, "is_island": true}
+    Returns: JSON with list of up to 4 countries from the same subregion (preferring other islands)
+    Example: {"islands": [{"iso3": "PHL", "m49": 608, "name": "Philippines"}, ...], "count": 4, "is_island": true}
     """
     # Check if the target country is an island (has no neighbors)
     neighbor_result = execute_query('''
@@ -419,7 +419,7 @@ def get_similar_islands(iso3):
     if not target:
         return jsonify({'error': 'Country not found'}), 404
 
-    # Find 2 random countries from the same subregion
+    # Find up to 4 random countries from the same subregion
     # Priority: other islands in same subregion > any countries in same subregion
     subregion_countries = execute_query('''
         SELECT c.iso3, c.m49, c.name, c.common_name,
@@ -433,7 +433,7 @@ def get_similar_islands(iso3):
         AND c.subregion = %s
         AND c.iso3 NOT IN ('ATA')  -- Exclude Antarctica
         ORDER BY priority, RANDOM()
-        LIMIT 2
+        LIMIT 4
     ''', (iso3, target['subregion']))
 
     # Remove the priority field before returning

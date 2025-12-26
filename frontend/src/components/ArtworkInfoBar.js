@@ -374,29 +374,43 @@ const ArtworkInfoBar = ({
             gap: 2,                    // 16px gap (2 * 8px theme spacing)
           }}
         >
-          {/* Country name title */}
-          <Typography
-            variant="h6"     // MUI variant for heading level 6
-            component="div"  // Render as <div> instead of default <h6>
-            sx={{
-              fontWeight: 600,   // Semi-bold font
-              flex: 1,           // Take up all available space
-              textAlign: 'center'
-            }}
-          >
-            {/*
-              NESTED TERNARY OPERATORS
+          {/* Country name title and subtitle container */}
+          <Box sx={{ flex: 1, textAlign: 'center' }}>
+            {/* Country name title */}
+            <Typography
+              variant="h6"     // MUI variant for heading level 6
+              component="div"  // Render as <div> instead of default <h6>
+              sx={{
+                fontWeight: 600,   // Semi-bold font
+              }}
+            >
+              {/*
+                NESTED TERNARY OPERATORS
 
-              This creates dynamic text based on quiz mode and answer correctness.
-              Format: condition1 ? value1 : (condition2 ? value2 : value3)
-            */}
-            {mode === 'quiz' && answerSubmitted
-              ? isCorrectAnswer
-                ? `Correct: ${countryName || countryISO}`    // Template literal: embeds variables in strings
-                : `Incorrect: ${countryName || countryISO}`
-              : countryName || countryISO}
-            {/* Logical OR (||): Returns first truthy value (fallback pattern) */}
-          </Typography>
+                This creates dynamic text based on quiz mode and answer correctness.
+                Format: condition1 ? value1 : (condition2 ? value2 : value3)
+              */}
+              {mode === 'quiz' && answerSubmitted
+                ? isCorrectAnswer
+                  ? `Correct: ${countryName || countryISO}`    // Template literal: embeds variables in strings
+                  : `Incorrect: ${countryName || countryISO}`
+                : countryName || countryISO}
+              {/* Logical OR (||): Returns first truthy value (fallback pattern) */}
+            </Typography>
+
+            {/* Subtitle */}
+            <Typography
+              variant="body2"
+              sx={{
+                color: 'text.secondary',
+                fontStyle: 'italic',
+                fontSize: '0.875rem',
+                mt: 0.5
+              }}
+            >
+              Learn more about {countryName || countryISO}
+            </Typography>
+          </Box>
 
           {/* Button container */}
           <Box sx={{ display: 'flex', gap: 1 }}>

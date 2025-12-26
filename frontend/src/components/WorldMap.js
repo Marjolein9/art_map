@@ -307,14 +307,22 @@ const WorldMap = ({
             highlightM49s.push(String(targetM49).padStart(3,'0'));
           }
 
+          // Get target country details for subregion/region fallback
+          const targetCountryInfo = allCountries.find(c => c.iso3 === targetCountry);
+          const targetSubregion = targetCountryInfo?.subregion;
+          const targetContinent = targetCountryInfo?.continent;
+
           // Check if target is an island nation and get similar islands
           const islandData = await fetchSimilarIslands(targetCountry);
 
           if (islandData.is_island && islandData.islands?.length > 0) {
-            // For island nations, highlight similar island countries
+            // For island nations, highlight similar island countries (up to 4)
             // Array.map transforms each element: array.map(item => newItem)
             // Array.filter keeps only elements that pass the test (removes falsy values)
-            const islandM49s = islandData.islands.map(i => String(i.m49).padStart(3,'0')).filter(Boolean);
+            const islandM49s = islandData.islands
+              .slice(0, 4)  // Take up to 4 islands
+              .map(i => String(i.m49).padStart(3,'0'))
+              .filter(Boolean);
 
             // Spread operator (...) expands array elements: push(...[1,2,3]) = push(1,2,3)
             highlightM49s.push(...islandM49s);
@@ -322,20 +330,55 @@ const WorldMap = ({
             // For non-island countries, highlight neighboring countries
             const neighbors = await fetchNeighbors(targetCountry);
 
-            // Optional chaining (?.) with length check
+            let hintCountries = [];
+
+            // Add neighbors (up to 4 if available)
             if (neighbors?.length) {
-              // Shuffle neighbors randomly and take first 2
-              // [...array] creates a shallow copy
-              // sort(() => Math.random() - 0.5) randomly reorders elements
-              // slice(0, 2) takes first 2 elements
-              const shuffled = [...neighbors].sort(() => Math.random() - 0.5).slice(0,2);
-              const neighborM49s = shuffled.map(n => String(n.m49).padStart(3,'0')).filter(Boolean);
-              highlightM49s.push(...neighborM49s);
+              // Shuffle neighbors randomly
+              const shuffledNeighbors = [...neighbors].sort(() => Math.random() - 0.5);
+              hintCountries.push(...shuffledNeighbors);
             }
+
+            // If we have fewer than 4 neighbors, fill with countries from same subregion/region
+            if (hintCountries.length < 4) {
+              const needed = 4 - hintCountries.length;
+              const existingIso3s = new Set([targetCountry, ...hintCountries.map(n => n.iso3)]);
+
+              // Try to find countries from same subregion first
+              let additionalCountries = allCountries.filter(c =>
+                c.subregion === targetSubregion &&
+                !existingIso3s.has(c.iso3)
+              );
+
+              // If not enough from subregion, add countries from same continent
+              if (additionalCountries.length < needed && targetContinent) {
+                const continentCountries = allCountries.filter(c =>
+                  c.continent === targetContinent &&
+                  !existingIso3s.has(c.iso3) &&
+                  !additionalCountries.some(ac => ac.iso3 === c.iso3)
+                );
+                additionalCountries = [...additionalCountries, ...continentCountries];
+              }
+
+              // Shuffle and take what we need
+              const shuffledAdditional = additionalCountries
+                .sort(() => Math.random() - 0.5)
+                .slice(0, needed);
+
+              hintCountries.push(...shuffledAdditional);
+            }
+
+            // Take up to 4 total hints and convert to M49 codes
+            const hintM49s = hintCountries
+              .slice(0, 4)
+              .map(n => String(n.m49).padStart(3,'0'))
+              .filter(Boolean);
+
+            highlightM49s.push(...hintM49s);
           }
 
           // Template literal (`string ${variable}`) embeds variables in strings
-          console.log(`✅ HINTS FETCHED for ${targetCountry}:`, highlightM49s);
+          console.log(`✅ HINTS FETCHED for ${targetCountry}: ${highlightM49s.length} countries (including target)`, highlightM49s);
           setHintNeighborsM49(highlightM49s);
 
           // Remember which country we fetched hints for
@@ -757,7 +800,7 @@ const WorldMap = ({
               left: '50%',
               transform: 'translate(-50%, -50%)',
               zIndex: 9999,
-              backgroundColor: 'rgba(0, 0, 0, 0.85)',
+              backgroundColor: 'rgba(0, 0, 0, 0.95)',
               color: '#ffffff',
               padding: '24px 48px',
               borderRadius: '12px',
@@ -786,10 +829,49 @@ const WorldMap = ({
           '--glow-color': COLORS.glow,
           '--border-color': COLORS.border
         }}>
-          {/* Title showing current target country */}
+          {/* Title area - shows dropdown in quiz mode, "Click to Explore" in explore mode */}
           <div className="overlay-title">
-            {/* Conditional rendering: show text only in quiz mode with a target */}
-            {mode === 'quiz' && targetCountryName ? `Find: ${targetCountryName}` : ''}
+            {mode === 'quiz' ? (
+              <Select
+                value={
+                  // Show target country if it's in our list, otherwise show empty
+                  targetCountry && allCountries.some(c => c.iso3 === targetCountry)
+                    ? targetCountry
+                    : ''
+                }
+                onChange={handleCountryDropdownChange}
+                size="small"
+                displayEmpty
+                sx={{
+                  minWidth: '180px',
+                  backgroundColor: 'var(--card-bg)',
+                  '& .MuiOutlinedInput-notchedOutline': {
+                    borderColor: 'var(--border-color)',
+                  },
+                  '&:hover .MuiOutlinedInput-notchedOutline': {
+                    borderColor: 'var(--glow-color)',
+                  },
+                }}
+              >
+                {/* Placeholder option */}
+                <MenuItem value="">Select country...</MenuItem>
+
+                {/* Map over sorted countries to create menu items */}
+                {allCountries
+                  .sort((a, b) =>
+                    (a.common_name || a.name).localeCompare(
+                      b.common_name || b.name
+                    )
+                  )
+                  .map(c => (
+                    <MenuItem key={c.iso3} value={c.iso3}>
+                      {c.common_name || c.name}
+                    </MenuItem>
+                  ))}
+              </Select>
+            ) : (
+              'Click to Explore'
+            )}
           </div>
 
           <div className="overlay-controls">
@@ -886,53 +968,6 @@ const WorldMap = ({
                     <MenuItem value="Oceania">Oceania</MenuItem>
                   </Select>
                 )}
-
-                {/*
-                  Country Dropdown - lets user manually select a country for testing
-                  Only visible when TEST environment variable is set
-
-                  Select is MUI's dropdown component
-                  MenuItem represents each option in the dropdown
-                */}
-                {process.env.REACT_APP_TEST && <Select
-                  value={
-                    // Show target country if it's in our list, otherwise show empty
-                    targetCountry && allCountries.some(c => c.iso3 === targetCountry)
-                      ? targetCountry
-                      : ''
-                  }
-                  onChange={handleCountryDropdownChange}
-                  size="small"
-                  displayEmpty  // Show placeholder even when value is empty
-                  sx={{
-                    maxWidth: '150px',
-                    minWidth: '140px',
-                  }}
-                >
-                  {/* Placeholder option */}
-                  <MenuItem value="">Test country...</MenuItem>
-
-                  {/*
-                    Map over sorted countries to create menu items
-
-                    Array chaining:
-                    1. sort() - alphabetically sort countries
-                    2. map() - transform each country into a MenuItem component
-                  */}
-                  {allCountries
-                    .sort((a, b) =>
-                      // localeCompare compares strings alphabetically
-                      (a.common_name || a.name).localeCompare(
-                        b.common_name || b.name
-                      )
-                    )
-                    .map(c => (
-                      // key prop: unique identifier required for list items in React
-                      <MenuItem key={c.iso3} value={c.iso3}>
-                        {c.common_name || c.name}
-                      </MenuItem>
-                    ))}
-                </Select>}
               </Box>
             )}
 
@@ -966,7 +1001,7 @@ const WorldMap = ({
                     fontSize: '1rem'
                   }}
                 >
-                  Skip
+                  Next
                 </Button>
                 <Button
                   variant="outlined"
