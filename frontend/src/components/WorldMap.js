@@ -831,7 +831,7 @@ const WorldMap = ({
               left: '50%',
               transform: 'translate(-50%, -50%)',
               zIndex: 9999,
-              backgroundColor: 'rgba(0, 0, 0, 0.95)',
+              backgroundColor: 'rgb(0, 0, 0)',
               color: '#ffffff',
               padding: '24px 48px',
               borderRadius: '12px',
