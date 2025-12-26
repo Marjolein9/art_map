@@ -20,7 +20,7 @@ import React, { memo, useState, useEffect, useRef, useMemo } from 'react';
 import Globe from 'react-globe.gl';
 // Globe: A 3D globe visualization library that renders an interactive Earth
 
-import { Button, Box, Typography, Select, MenuItem, FormControlLabel, Switch } from '@mui/material';
+import { Button, Box, Select, MenuItem, FormControlLabel, Switch } from '@mui/material';
 // Material-UI (MUI): A popular React component library that provides pre-built, styled components
 // Button: Clickable button component
 // Box: A flexible container component for layout
@@ -485,58 +485,6 @@ const WorldMap = ({
     onCountryClick(iso3);
   };
 
-  // Rotate the globe left (west)
-  const rotateLeft = () => {
-    if (!globeEl.current) return;
-
-    // Get current camera position
-    const currentView = globeEl.current.pointOfView();
-
-    // Move camera 30 degrees west over 500ms
-    globeEl.current.pointOfView({
-      lng: currentView.lng - 30,  // Subtract from longitude to go west
-      lat: currentView.lat,
-      altitude: currentView.altitude
-    }, 500);
-  };
-
-  // Rotate the globe right (east)
-  const rotateRight = () => {
-    if (!globeEl.current) return;
-    const currentView = globeEl.current.pointOfView();
-    globeEl.current.pointOfView({
-      lng: currentView.lng + 30,  // Add to longitude to go east
-      lat: currentView.lat,
-      altitude: currentView.altitude
-    }, 500);
-  };
-
-  // Zoom in (decrease altitude)
-  const zoomIn = () => {
-    if (!globeEl.current) return;
-    const currentView = globeEl.current.pointOfView();
-
-    // Math.max returns the larger of two values (prevents zooming too close)
-    globeEl.current.pointOfView({
-      lng: currentView.lng,
-      lat: currentView.lat,
-      altitude: Math.max(currentView.altitude - 0.3, 0.5)  // Minimum altitude: 0.5
-    }, 500);
-  };
-
-  // Zoom out (increase altitude)
-  const zoomOut = () => {
-    if (!globeEl.current) return;
-    const currentView = globeEl.current.pointOfView();
-
-    // Math.min returns the smaller of two values (prevents zooming too far)
-    globeEl.current.pointOfView({
-      lng: currentView.lng,
-      lat: currentView.lat,
-      altitude: Math.min(currentView.altitude + 0.3, 3)  // Maximum altitude: 3
-    }, 500);
-  };
-
   /**
    * UTILITY FUNCTIONS
    */
@@ -676,12 +624,17 @@ const WorldMap = ({
       const centroid = calculateCentroid(clickedFeature.geometry.coordinates);
       if (!centroid) return;
 
-      // Add label to array (accumulate multiple incorrect clicks)
-      setPersistedIncorrectLabels(prev => [...prev, {
-        lat: centroid.lat,
-        lng: centroid.lng,
-        text: countryName
-      }]);
+      // Delay label appearance by 2 seconds (matching overlay delay)
+      const timer = setTimeout(() => {
+        // Add label to array (accumulate multiple incorrect clicks)
+        setPersistedIncorrectLabels(prev => [...prev, {
+          lat: centroid.lat,
+          lng: centroid.lng,
+          text: countryName
+        }]);
+      }, 2000);
+
+      return () => clearTimeout(timer);
     }
   }, [mode, gameStatus, clickedCountry, countries, allCountries]);
 
@@ -701,12 +654,17 @@ const WorldMap = ({
       const centroid = calculateCentroid(targetFeature.geometry.coordinates);
       if (!centroid) return;
 
-      // Add label to array (can have multiple correct clicks shown together with incorrect)
-      setPersistedCorrectLabels(prev => [...prev, {
-        lat: centroid.lat,
-        lng: centroid.lng,
-        text: countryName
-      }]);
+      // Delay label appearance by 2 seconds (matching overlay delay)
+      const timer = setTimeout(() => {
+        // Add label to array (can have multiple correct clicks shown together with incorrect)
+        setPersistedCorrectLabels(prev => [...prev, {
+          lat: centroid.lat,
+          lng: centroid.lng,
+          text: countryName
+        }]);
+      }, 2000);
+
+      return () => clearTimeout(timer);
     }
   }, [mode, gameStatus, targetCountry, countries, allCountries]);
 
@@ -819,6 +777,7 @@ const WorldMap = ({
           labelSize={1.5}         // Label size multiplier
           labelDotRadius={0.4}    // Size of dot at label position
           labelResolution={2}     // Label rendering quality
+          labelRotation={0}       // Keep labels horizontal (don't rotate with globe)
           // Globe dimensions (responsive to window size)
           width={globeDimensions.width}
           height={globeDimensions.height}

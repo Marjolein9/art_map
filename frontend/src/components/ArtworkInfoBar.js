@@ -102,9 +102,6 @@ const ArtworkInfoBar = ({
   // imageRefs: Stores references to image DOM elements for cleanup
   const imageRefs = useRef({});
 
-  // containerRef: Reference to the container DOM element (currently unused)
-  const containerRef = useRef(null);
-
   /**
    * FADE-IN ANIMATION EFFECT
    *
