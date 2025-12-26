@@ -71,7 +71,13 @@ const QuizImageDisplay = ({ imagesByCollection, countryName, onShowAll }) => {
   };
 
   const getCollectionDisplayName = (collection) => {
+    // Map backend collection names to display names for switch cases
     const displayNames = {
+      'Albert Kahn': 'Albert Kahn',
+      'Met Museum': 'Metropolitan Museum of Art',
+      'Children in Art': 'Children in Art',
+      'Public Domain Review': 'Public Domain Review',
+      // Legacy table name mappings (in case they're used elsewhere)
       albert_kahn_images: 'Albert Kahn',
       met_images: 'Metropolitan Museum of Art',
       children_artwork_images: 'Children in Art',
