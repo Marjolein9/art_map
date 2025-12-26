@@ -250,6 +250,22 @@ export const fetchImages = async (iso3) => {
 };
 
 /**
+ * Fetch one random image for a specific country
+ *
+ * ENDPOINT: GET /images/{iso3}/random
+ *
+ * This is optimized for quiz mode - only fetches one image instead of all images.
+ * Significantly improves performance for countries with many images (like Italy).
+ *
+ * @param {string} iso3 - Country ISO3 code (e.g., "USA", "DEU", "JPN")
+ * @returns {Promise<object>} - Single random image with its collection
+ *                              Example: {image: {...}, collection: 'Albert Kahn'}
+ */
+export const fetchRandomImage = async (iso3) => {
+  return apiCall(`/images/${iso3}/random`);
+};
+
+/**
  * Check if the selected country matches the target
  *
  * This demonstrates a POST request (sending data to server).

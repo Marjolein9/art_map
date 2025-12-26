@@ -305,6 +305,99 @@ def get_images(iso3):
         'iso3': iso3
     })
 
+@app.route('/api/images/<iso3>/random', methods=['GET'])
+def get_random_image(iso3):
+    """
+    Get one random image for a country from all collections.
+
+    This endpoint is optimized for quiz mode - instead of fetching all images,
+    it fetches just one random image across all collections.
+
+    Performance: O(1) instead of O(n) where n = total images for country
+
+    HTTP Method: GET
+    URL: http://localhost:5000/api/images/USA/random
+    URL Parameter: iso3 (required) - three-letter country code
+
+    Returns: JSON with one random image and its collection
+    """
+    # Use UNION ALL to combine all collections, then ORDER BY RANDOM() LIMIT 1
+    # This is more efficient than fetching all images then picking one in Python
+    random_image = execute_query('''
+        (SELECT 'Albert Kahn' as collection_type,
+               filepath, title_en as title, location, date,
+               operator, inventory_number, page_url, mission,
+               NULL as artist_name, NULL as artist_nationality,
+               NULL as author_wikilink, NULL as work_url, NULL as source,
+               NULL as country, NULL as source_link, NULL as source_url,
+               NULL as description, NULL as object_date, NULL as medium,
+               NULL as department, NULL as culture, NULL as object_url
+        FROM albert_kahn_images
+        WHERE iso3 = %s)
+
+        UNION ALL
+
+        (SELECT 'Children in Art' as collection_type,
+               filepath, title, NULL as location, NULL as date,
+               NULL as operator, NULL as inventory_number, NULL as page_url, NULL as mission,
+               artist_name, artist_nationality,
+               author_wikilink, work_url, source,
+               NULL as country, NULL as source_link, NULL as source_url,
+               NULL as description, NULL as object_date, NULL as medium,
+               NULL as department, NULL as culture, NULL as object_url
+        FROM children_artwork_images
+        WHERE artist_iso3 = %s)
+
+        UNION ALL
+
+        (SELECT 'Public Domain Review' as collection_type,
+               filepath, title, NULL as location, NULL as date,
+               NULL as operator, NULL as inventory_number, NULL as page_url, NULL as mission,
+               NULL as artist_name, NULL as artist_nationality,
+               NULL as author_wikilink, NULL as work_url, NULL as source,
+               country, source_link, source_url,
+               description, NULL as object_date, NULL as medium,
+               NULL as department, NULL as culture, NULL as object_url
+        FROM public_domain_images
+        WHERE iso3 = %s)
+
+        UNION ALL
+
+        (SELECT 'Met Museum' as collection_type,
+               filepath, title, NULL as location, NULL as date,
+               NULL as operator, NULL as inventory_number, NULL as page_url, NULL as mission,
+               artist_name, NULL as artist_nationality,
+               NULL as author_wikilink, NULL as work_url, NULL as source,
+               NULL as country, NULL as source_link, NULL as source_url,
+               NULL as description, object_date, medium,
+               department, culture, object_url
+        FROM met_images
+        WHERE iso3 = %s)
+
+        ORDER BY RANDOM()
+        LIMIT 1
+    ''', (iso3, iso3, iso3, iso3))
+
+    if not random_image or len(random_image) == 0:
+        return jsonify({
+            'image': None,
+            'collection': None,
+            'iso3': iso3
+        })
+
+    # Extract the image and collection name
+    image = random_image[0]
+    collection_name = image['collection_type']
+
+    # Remove collection_type from image dict and remove NULL fields
+    image_data = {k: v for k, v in image.items() if v is not None and k != 'collection_type'}
+
+    return jsonify({
+        'image': image_data,
+        'collection': collection_name,
+        'iso3': iso3
+    })
+
 @app.route('/api/game/check-answer', methods=['POST'])
 def check_answer():
     """

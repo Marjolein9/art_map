@@ -35,7 +35,7 @@ import {
 import { ThemeProvider } from '@mui/material/styles';
 // ThemeProvider: Wraps components to apply a consistent theme (colors, fonts, etc.)
 
-import { fetchImages } from '../services/api';
+import { fetchImages, fetchRandomImage } from '../services/api';
 // API functions to fetch data from the backend server
 // fetchImages: Gets artwork images for a country
 
@@ -140,6 +140,8 @@ const ArtworkInfoBar = ({
    * FETCH IMAGES EFFECT
    *
    * This effect fetches artwork images when the country changes.
+   * Optimized to fetch only one random image in quiz mode initially,
+   * then fetch all images when user clicks "Show all images".
    *
    * PROMISES AND ASYNC OPERATIONS:
    * - fetchImages() returns a Promise (represents a future value)
@@ -157,44 +159,67 @@ const ArtworkInfoBar = ({
     // Show loading spinner
     setLoading(true);
 
-    // Fetch images from the backend
-    fetchImages(countryISO)
-      .then(data => {
-        // Filter out empty collections
-        const filtered = {};
-
-        // Object.entries(obj): Converts object to array of [key, value] pairs
-        // Example: {a: 1, b: 2} becomes [["a", 1], ["b", 2]]
-        Object.entries(data || {}).forEach(([collection, images]) => {
-          // Destructuring in parameters: [collection, images] extracts key and value
-
-          // Only keep collections that have images
-          if (images && images.length > 0) {
-            filtered[collection] = images;
+    // In quiz mode (when not showing all), fetch only one random image for performance
+    if (mode === 'quiz' && !showAllImagesInQuiz) {
+      fetchRandomImage(countryISO)
+        .then(data => {
+          // data = {image: {...}, collection: 'Albert Kahn', iso3: 'ITA'}
+          if (data.image && data.collection) {
+            // Format as imagesByCollection structure with single image
+            const imageData = {
+              [data.collection]: [data.image]
+            };
+            setImagesByCollection(imageData);
+          } else {
+            setImagesByCollection({});
           }
+        })
+        .catch(() => {
+          setImagesByCollection({});
+        })
+        .finally(() => {
+          setLoading(false);
         });
+    } else {
+      // In explore mode or when showing all images, fetch all images
+      fetchImages(countryISO)
+        .then(data => {
+          // Filter out empty collections
+          const filtered = {};
 
-        setImagesByCollection(filtered);
+          // Object.entries(obj): Converts object to array of [key, value] pairs
+          // Example: {a: 1, b: 2} becomes [["a", 1], ["b", 2]]
+          Object.entries(data || {}).forEach(([collection, images]) => {
+            // Destructuring in parameters: [collection, images] extracts key and value
 
-        // Initialize image index to 0 for each collection
-        const initialIndex = {};
+            // Only keep collections that have images
+            if (images && images.length > 0) {
+              filtered[collection] = images;
+            }
+          });
 
-        // Object.keys(obj): Returns array of object's keys
-        // Example: {a: 1, b: 2} becomes ["a", "b"]
-        Object.keys(filtered).forEach(c => {
-          initialIndex[c] = 0;  // Start at first image (index 0)
+          setImagesByCollection(filtered);
+
+          // Initialize image index to 0 for each collection
+          const initialIndex = {};
+
+          // Object.keys(obj): Returns array of object's keys
+          // Example: {a: 1, b: 2} becomes ["a", "b"]
+          Object.keys(filtered).forEach(c => {
+            initialIndex[c] = 0;  // Start at first image (index 0)
+          });
+          setCurrentImageIndex(initialIndex);
+        })
+        .catch(() => {
+          // If fetching fails, reset to empty
+          setImagesByCollection({});
+        })
+        .finally(() => {
+          // Always hide loading spinner when done (success or failure)
+          setLoading(false);
         });
-        setCurrentImageIndex(initialIndex);
-      })
-      .catch(() => {
-        // If fetching fails, reset to empty
-        setImagesByCollection({});
-      })
-      .finally(() => {
-        // Always hide loading spinner when done (success or failure)
-        setLoading(false);
-      });
-  }, [countryISO]); // Re-run when country changes
+    }
+  }, [countryISO, mode, showAllImagesInQuiz]); // Re-run when country, mode, or showAll changes
 
   /**
    * IMAGE NAVIGATION FUNCTIONS
