@@ -129,6 +129,9 @@ const WorldMap = ({
   // persistedIncorrectLabel: Label data for showing the name of an incorrectly clicked country
   const [persistedIncorrectLabel, setPersistedIncorrectLabel] = useState(null);
 
+  // persistedCorrectLabel: Label data for showing the name of the correctly clicked country
+  const [persistedCorrectLabel, setPersistedCorrectLabel] = useState(null);
+
   // showTargetOverlay: Controls visibility of "Find: [Country]" overlay in quiz mode
   const [showTargetOverlay, setShowTargetOverlay] = useState(false);
 
@@ -682,19 +685,50 @@ const WorldMap = ({
     }
   }, [mode, gameStatus, clickedCountry, countries, allCountries]);
 
-  // Clear persisted label when new target country appears
+  // Persist correct country label when user clicks right country
+  useEffect(() => {
+    // Only in quiz mode when answer is correct
+    if (mode === 'quiz' && gameStatus === 'correct' && targetCountry) {
+      // Find the target country's geographic data
+      const targetFeature = countries.features.find(f => getCountryIsoCode(f) === targetCountry);
+      if (!targetFeature) return;
+
+      // Get the human-readable country name
+      const countryData = allCountries.find(c => c.iso3 === targetCountry);
+      const countryName = countryData?.common_name || countryData?.name || targetCountry;
+
+      // Calculate where to place the label
+      const centroid = calculateCentroid(targetFeature.geometry.coordinates);
+      if (!centroid) return;
+
+      // Store label data
+      setPersistedCorrectLabel({
+        lat: centroid.lat,
+        lng: centroid.lng,
+        text: countryName
+      });
+    }
+  }, [mode, gameStatus, targetCountry, countries, allCountries]);
+
+  // Clear persisted labels when new target country appears (new quiz question)
   useEffect(() => {
     if (targetCountry) {
       setPersistedIncorrectLabel(null);
+      setPersistedCorrectLabel(null);
     }
   }, [targetCountry]);
 
-  // Create label for incorrect country (use persisted label to survive state transitions)
+  // Create labels for both incorrect and correct countries (use persisted labels to survive state transitions)
   const countryLabels = useMemo(() => {
-    // Only show label in quiz mode when we have persisted label data
-    if (mode !== 'quiz' || !persistedIncorrectLabel) return [];
-    return [persistedIncorrectLabel];
-  }, [mode, persistedIncorrectLabel]);
+    // Only show labels in quiz mode
+    if (mode !== 'quiz') return [];
+
+    const labels = [];
+    if (persistedIncorrectLabel) labels.push(persistedIncorrectLabel);
+    if (persistedCorrectLabel) labels.push(persistedCorrectLabel);
+
+    return labels;
+  }, [mode, persistedIncorrectLabel, persistedCorrectLabel]);
 
   /**
    * JSX RENDERING
