@@ -355,7 +355,7 @@ const QuizImageDisplay = ({ imagesByCollection, countryName, onShowAll }) => {
     };
 
     return (
-      <Box sx={{ display: 'flex', flexDirection: 'column' }}>
+      <Box sx={{ display: 'flex', flexDirection: 'column', textAlign: 'center' }}>
         {renderCollectionHeader()}
         {renderImageCaption()}
       </Box>
