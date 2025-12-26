@@ -348,45 +348,15 @@ export const fetchSimilarIslands = async (iso3) => {
 };
 
 /**
- * Fetch child mortality data for a specific country
- *
- * ENDPOINT: GET /child-mortality/{iso3}
- *
- * Returns start year, end year, mortality rates, and change over time.
- *
- * @param {string} iso3 - Country ISO3 code
- * @returns {Promise<object>} - {start_year, start_rate, end_year, end_rate, difference, candle_count}
- */
-export const fetchChildMortality = async (iso3) => {
-  return apiCall(`/child-mortality/${iso3}`);
-};
-
-/**
- * Fetch external links for a specific country
- *
- * ENDPOINT: GET /external-links/{iso3}
- *
- * Returns URLs to external resources like Gapminder Dollar Street and TasteAtlas.
- *
- * @param {string} iso3 - Country ISO3 code
- * @returns {Promise<object>} - {gapminder_url: string, tasteatlas_url: string, extra_links: string}
- */
-export const fetchExternalLinks = async (iso3) => {
-  return apiCall(`/external-links/${iso3}`);
-};
-
-/**
  * MODULE SUMMARY:
  *
- * This file exports 7 functions that make HTTP requests to the backend:
+ * This file exports 6 functions that make HTTP requests to the backend:
  * 1. fetchRandomCountry() - Get random country for quiz
  * 2. fetchCountries() - Get all countries
  * 3. fetchImages() - Get artwork images for a country
  * 4. checkAnswer() - Verify quiz answer
  * 5. fetchNeighbors() - Get neighboring countries for hints
  * 6. fetchSimilarIslands() - Get similar islands for hints
- * 7. fetchChildMortality() - Get child mortality statistics
- * 8. fetchExternalLinks() - Get external resource URLs
  *
  * All use the centralized apiCall() function for consistent error handling.
  */

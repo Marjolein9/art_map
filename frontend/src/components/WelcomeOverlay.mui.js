@@ -21,7 +21,6 @@ import {
   FormControlLabel,
 } from '@mui/material';
 import { ThemeProvider } from '@mui/material/styles';
-import Candles from './Candles';
 import { welcomeExamples } from '../data/welcomeExamples';
 import muiTheme from '../theme/muiTheme';
 
@@ -91,7 +90,7 @@ const WelcomeOverlay = ({ onStartQuiz, onExplore, colors }) => {
               mb: 2
             }}
           >
-            Click on a country to get the public domain images and info described below
+            Click on a country for info
           </Typography>
 
           <Box sx={{ display: 'flex', gap: 2, flex: 1, justifyContent: 'center' }}>
@@ -251,26 +250,6 @@ const WelcomeOverlay = ({ onStartQuiz, onExplore, colors }) => {
             </Box>
           ))}
 
-          {/* Child Mortality Section */}
-          <Card sx={{ mb: 2 }}>
-            <CardHeader
-              title="Child Mortality Progress"
-              sx={{
-                bgcolor: 'background.paper',
-                borderBottom: '1px solid',
-                borderColor: 'divider',
-                textAlign: 'center',
-              }}
-            />
-            <CardContent sx={{ textAlign: 'center' }}>
-              <Typography variant="body2" sx={{ mb: 2 }}>
-                Each candle represents one percentage point decrease in the
-                under-five child mortality of the country between 1989 and 2023.
-              </Typography>
-              <Candles count={1} />
-            </CardContent>
-          </Card>
-
           {/* Quiz Mode Controls Section */}
           <Card>
             <CardHeader
@@ -329,7 +308,7 @@ const WelcomeOverlay = ({ onStartQuiz, onExplore, colors }) => {
                 {/* Skip */}
                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
                   <Button variant="outlined" size="small" sx={{ minWidth: '40px' }}>
-                    Skip
+                    Next
                   </Button>
                   <Typography variant="body2">Get a new country to find</Typography>
                 </Box>

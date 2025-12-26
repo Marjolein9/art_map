@@ -42,7 +42,6 @@ from config import (
     CHILDREN_ARTWORK_CSV_PATH,
     PUBLIC_DOMAIN_CSV_PATH,
     MET_METADATA_CSV_PATH,
-    COUNTRY_EXTERNAL_LINKS_CSV_PATH,
     MAX_IMAGE_DIMENSION,
     JPEG_QUALITY
 )
@@ -567,13 +566,11 @@ def init_database():
 
     # Drop existing tables (CASCADE to handle foreign keys)
     print("🗑️  Dropping existing tables if they exist...")
-    cursor.execute('DROP TABLE IF EXISTS child_mortality CASCADE')
     cursor.execute('DROP TABLE IF EXISTS country_borders CASCADE')
     cursor.execute('DROP TABLE IF EXISTS met_images CASCADE')
     cursor.execute('DROP TABLE IF EXISTS public_domain_images CASCADE')
     cursor.execute('DROP TABLE IF EXISTS children_artwork_images CASCADE')
     cursor.execute('DROP TABLE IF EXISTS albert_kahn_images CASCADE')
-    cursor.execute('DROP TABLE IF EXISTS country_external_links CASCADE')
     cursor.execute('DROP TABLE IF EXISTS countries CASCADE')
     conn.commit()
 
@@ -721,23 +718,6 @@ def init_database():
     cursor.execute('CREATE INDEX idx_borders_country_iso3 ON country_borders(country_iso3)')
     cursor.execute('CREATE INDEX idx_borders_country_m49 ON country_borders(country_m49)')
 
-    # Create child_mortality table
-    print("👶 Creating child_mortality table...")
-    cursor.execute('''
-        CREATE TABLE child_mortality (
-            id SERIAL PRIMARY KEY,
-            country_code TEXT NOT NULL,
-            country_name TEXT NOT NULL,
-            year INTEGER NOT NULL,
-            mortality_rate REAL NOT NULL,
-            UNIQUE(country_code, year)
-        )
-    ''')
-
-    # Create index for faster lookups
-    cursor.execute('CREATE INDEX idx_mortality_country_code ON child_mortality(country_code)')
-    cursor.execute('CREATE INDEX idx_mortality_year ON child_mortality(year)')
-
     # Insert countries from M49 data
     print(f"🌍 Inserting {len(m49_countries)} countries...")
     for country in m49_countries:
@@ -756,54 +736,6 @@ def init_database():
         ))
 
     print(f"✅ Inserted {len(m49_countries)} countries")
-
-    # Create country_external_links table
-    print("🔗 Creating country_external_links table...")
-    cursor.execute('''
-        CREATE TABLE country_external_links (
-            id SERIAL PRIMARY KEY,
-            iso3 TEXT NOT NULL,
-            iso2 TEXT,
-            name TEXT,
-            m49code INTEGER,
-            gapminder_url TEXT,
-            tasteatlas_url TEXT,
-            extra_links TEXT,
-            created_at TIMESTAMP DEFAULT NOW(),
-            FOREIGN KEY (iso3) REFERENCES countries(iso3)
-        )
-    ''')
-    cursor.execute('CREATE INDEX idx_country_external_links_iso3 ON country_external_links(iso3)')
-
-    # Load country external links from CSV
-    if os.path.exists(COUNTRY_EXTERNAL_LINKS_CSV_PATH):
-        print(f"🔗 Loading country external links from: {COUNTRY_EXTERNAL_LINKS_CSV_PATH}")
-        links_count = 0
-
-        with open(COUNTRY_EXTERNAL_LINKS_CSV_PATH, 'r', encoding='utf-8') as f:
-            reader = csv.DictReader(f)
-            for row in reader:
-                iso3 = row.get('iso3', '').strip()
-                if not iso3:
-                    continue
-
-                cursor.execute('''
-                    INSERT INTO country_external_links (iso3, iso2, name, m49code, gapminder_url, tasteatlas_url, extra_links)
-                    VALUES (%s, %s, %s, %s, %s, %s, %s)
-                ''', (
-                    iso3,
-                    row.get('iso2', ''),
-                    row.get('name', ''),
-                    int(row.get('m49code')) if row.get('m49code', '').strip() else None,
-                    row.get('gapminder_url', ''),
-                    row.get('tasteatlas_url', ''),
-                    row.get('extra_links', '')
-                ))
-                links_count += 1
-
-        print(f"✅ Inserted {links_count} country external links")
-    else:
-        print(f"⚠️  Country external links CSV not found, skipping external links import")
 
     # Load Albert Kahn images - use image_url column
     print(f"🖼️  Loading Albert Kahn images from: {ALBERT_KAHN_CSV_PATH}")
@@ -1157,45 +1089,6 @@ def init_database():
 
     print(f"✅ Inserted {len(borders_data)} border relationships")
 
-    # Insert child mortality data
-    child_mortality_csv = os.path.join('data', 'child-mortality.csv')
-    if os.path.exists(child_mortality_csv):
-        print(f"👶 Reading child mortality data from {child_mortality_csv}...")
-        mortality_count = 0
-        skipped_count = 0
-        with open(child_mortality_csv, 'r', encoding='utf-8') as f:
-            reader = csv.DictReader(f)
-            for row in reader:
-                # Filter: Only include data from 1989 onwards
-                year = int(row['Year'])
-                if year < 1989:
-                    skipped_count += 1
-                    continue
-
-                # Filter: Only include countries with alpha codes (ISO codes)
-                country_code = row['Code'].strip()
-                if not country_code or len(country_code) != 3 or not country_code.isalpha():
-                    skipped_count += 1
-                    continue
-
-                cursor.execute('''
-                    INSERT INTO child_mortality (country_code, country_name, year, mortality_rate)
-                    VALUES (%s, %s, %s, %s)
-                    ON CONFLICT (country_code, year) DO UPDATE
-                    SET mortality_rate = EXCLUDED.mortality_rate,
-                        country_name = EXCLUDED.country_name
-                ''', (
-                    country_code,
-                    row['Entity'],
-                    year,
-                    float(row['Child mortality rate'])
-                ))
-                mortality_count += 1
-
-        print(f"✅ Inserted {mortality_count} child mortality records (skipped {skipped_count} records before 1989 or without valid ISO codes)")
-    else:
-        print(f"⚠️  Child mortality CSV not found, skipping child mortality import")
-
     conn.commit()
 
     # Export tables to CSV
@@ -1203,13 +1096,11 @@ def init_database():
     os.makedirs(EXPORTS_DIR, exist_ok=True)
 
     export_table_to_csv(conn, 'countries', EXPORTS_DIR)
-    export_table_to_csv(conn, 'country_external_links', EXPORTS_DIR)
     export_table_to_csv(conn, 'albert_kahn_images', EXPORTS_DIR)
     export_table_to_csv(conn, 'children_artwork_images', EXPORTS_DIR)
     export_table_to_csv(conn, 'public_domain_images', EXPORTS_DIR)
     export_table_to_csv(conn, 'met_images', EXPORTS_DIR)
     export_table_to_csv(conn, 'country_borders', EXPORTS_DIR)
-    export_table_to_csv(conn, 'child_mortality', EXPORTS_DIR)
 
     conn.close()
 

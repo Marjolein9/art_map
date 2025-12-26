@@ -5,6 +5,7 @@ import {
   Box,
   Typography,
   Link,
+  Button,
 } from '@mui/material';
 import COLOR_SCHEME from '../styles/colorSchemes';
 import { API_BASE } from '../utils/apiConfig';
@@ -17,8 +18,9 @@ import { API_BASE } from '../utils/apiConfig';
  *
  * @param {Object} imagesByCollection - Object with collection names as keys and image arrays as values
  * @param {string} countryName - Name of the country
+ * @param {Function} onShowAll - Callback to show all images in collections
  */
-const QuizImageDisplay = ({ imagesByCollection, countryName }) => {
+const QuizImageDisplay = ({ imagesByCollection, countryName, onShowAll }) => {
   const [randomImage, setRandomImage] = useState(null);
   const [collectionName, setCollectionName] = useState(null);
 
@@ -183,20 +185,41 @@ const QuizImageDisplay = ({ imagesByCollection, countryName }) => {
                   target="_blank"
                   rel="noopener noreferrer"
                   variant="body2"
-                  sx={{
-                    color: COLOR_SCHEME.linkColor,
-                    textDecoration: 'none',
-                    '&:hover': { textDecoration: 'underline' },
-                    fontStyle: 'italic'
-                  }}
+                  sx={{ color: COLOR_SCHEME.linkColor, textDecoration: 'underline' }}
                 >
                   {randomImage.title}
                 </Link>
               )}
-              {randomImage.description && (
-                <Typography variant="body2" sx={{ fontSize: '0.875rem' }}>
-                  {randomImage.description}
+              {randomImage.mission && (
+                <Typography variant="body2">
+                  {randomImage.mission}
                 </Typography>
+              )}
+              {randomImage.date && (
+                <Typography variant="body2">
+                  {randomImage.date}
+                </Typography>
+              )}
+              {randomImage.page_url ? (
+                <Link
+                  href={randomImage.page_url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  variant="body2"
+                  sx={{ color: COLOR_SCHEME.linkColor, textDecoration: 'underline' }}
+                >
+                  Musée départemental Albert-Kahn
+                </Link>
+              ) : (
+                <Link
+                  href="https://albert-kahn.hauts-de-seine.fr/en/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  variant="body2"
+                  sx={{ color: COLOR_SCHEME.linkColor, textDecoration: 'underline' }}
+                >
+                  Musée départemental Albert-Kahn
+                </Link>
               )}
             </Box>
           );
@@ -214,17 +237,25 @@ const QuizImageDisplay = ({ imagesByCollection, countryName }) => {
                 >
                   {randomImage.title}
                 </Link>
-              ) : randomImage.title && (
-                <Typography variant="body2">{randomImage.title}</Typography>
+              ) : (
+                <Link
+                  href="https://www.metmuseum.org/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  variant="body2"
+                  sx={{ color: COLOR_SCHEME.linkColor, textDecoration: 'underline' }}
+                >
+                  {randomImage.title}
+                </Link>
               )}
               {randomImage.artist_name && (
-                <Typography variant="body2" sx={{ fontSize: '0.875rem' }}>
+                <Typography variant="body2">
                   {randomImage.artist_name}
                   {randomImage.object_date && ` (${randomImage.object_date})`}
                 </Typography>
               )}
               {randomImage.culture && (
-                <Typography variant="body2" sx={{ fontSize: '0.875rem' }}>
+                <Typography variant="body2">
                   {randomImage.culture}
                 </Typography>
               )}
@@ -368,6 +399,26 @@ const QuizImageDisplay = ({ imagesByCollection, countryName }) => {
 
         {/* Caption */}
         {renderCaption()}
+
+        {/* Show all images button */}
+        {onShowAll && (
+          <Box sx={{ mt: 3, display: 'flex', justifyContent: 'center' }}>
+            <Button
+              variant="outlined"
+              onClick={onShowAll}
+              sx={{
+                color: COLOR_SCHEME.linkColor,
+                borderColor: COLOR_SCHEME.border,
+                '&:hover': {
+                  borderColor: COLOR_SCHEME.linkColor,
+                  backgroundColor: 'rgba(0, 0, 0, 0.04)',
+                },
+              }}
+            >
+              Show all images
+            </Button>
+          </Box>
+        )}
       </CardContent>
     </Card>
   );

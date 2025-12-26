@@ -2,7 +2,7 @@
  * ArtworkInfoBar Component
  *
  * This component displays detailed information about a country in a modal dialog (popup).
- * It shows images, external links, and child mortality statistics.
+ * It shows artwork images from various collections.
  *
  * REACT COMPONENT BASICS:
  * - Components are reusable UI pieces that can manage their own state
@@ -35,17 +35,13 @@ import {
 import { ThemeProvider } from '@mui/material/styles';
 // ThemeProvider: Wraps components to apply a consistent theme (colors, fonts, etc.)
 
-import { fetchImages, fetchChildMortality, fetchExternalLinks } from '../services/api';
+import { fetchImages } from '../services/api';
 // API functions to fetch data from the backend server
 // fetchImages: Gets artwork images for a country
-// fetchChildMortality: Gets child mortality statistics
-// fetchExternalLinks: Gets external resource URLs
 
 // Import child components
 import ImageGallery from './ImageGallery.mui';
 import QuizImageDisplay from './QuizImageDisplay.mui';
-import ChildMortalitySection from './ChildMortalitySection.mui';
-import ExternalLinks from './ExternalLinks.mui';
 
 import muiTheme from '../theme/muiTheme';
 // muiTheme: Custom theme configuration for MUI components
@@ -86,14 +82,11 @@ const ArtworkInfoBar = ({
   // Example: { "albert_kahn": 2, "children_artwork": 0 } means showing 3rd and 1st images
   const [currentImageIndex, setCurrentImageIndex] = useState({});
 
-  // mortalityData: Child mortality statistics for the country (null if not loaded)
-  const [mortalityData, setMortalityData] = useState(null);
-
-  // externalLinks: External resource URLs for the country (null if not loaded)
-  const [externalLinks, setExternalLinks] = useState(null);
-
   // isVisible: Controls fade-in animation (starts false, becomes true for transition)
   const [isVisible, setIsVisible] = useState(false);
+
+  // showAllImagesInQuiz: In quiz mode, controls whether to show all images or just random one
+  const [showAllImagesInQuiz, setShowAllImagesInQuiz] = useState(false);
 
   /**
    * REFS (Persistent References)
@@ -119,8 +112,9 @@ const ArtworkInfoBar = ({
     // Guard clause: only run if we have a country
     if (!countryISO) return;
 
-    // Start with dialog invisible
+    // Start with dialog invisible and reset "show all" state
     setIsVisible(false);
+    setShowAllImagesInQuiz(false);
 
     // requestAnimationFrame: Waits for the next browser paint cycle
     // This ensures the opacity:0 is rendered before we set opacity:1
@@ -189,39 +183,6 @@ const ArtworkInfoBar = ({
         setLoading(false);
       });
   }, [countryISO]); // Re-run when country changes
-
-  /**
-   * FETCH CHILD MORTALITY EFFECT
-   *
-   * Fetches child mortality statistics for the selected country.
-   */
-  useEffect(() => {
-    if (!countryISO) {
-      setMortalityData(null);
-      return;
-    }
-
-    fetchChildMortality(countryISO)
-      // Shorthand: .then(setMortalityData) is equivalent to .then(data => setMortalityData(data))
-      .then(setMortalityData)
-      .catch(() => setMortalityData(null));
-  }, [countryISO]);
-
-  /**
-   * FETCH EXTERNAL LINKS EFFECT
-   *
-   * Fetches external resource URLs for the selected country.
-   */
-  useEffect(() => {
-    if (!countryISO) {
-      setExternalLinks(null);
-      return;
-    }
-
-    fetchExternalLinks(countryISO)
-      .then(setExternalLinks)
-      .catch(() => setExternalLinks(null));
-  }, [countryISO]);
 
   /**
    * IMAGE NAVIGATION FUNCTIONS
@@ -409,7 +370,7 @@ const ArtworkInfoBar = ({
                 mt: 0.5
               }}
             >
-              Learn more about {countryName || countryISO}
+              An image from {countryName || countryISO}
             </Typography>
           </Box>
 
@@ -508,14 +469,15 @@ const ArtworkInfoBar = ({
               */}
               {collections.length > 0 && (
                 <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
-                  {mode === 'quiz' ? (
-                    // Quiz mode: Single random image with caption only
+                  {mode === 'quiz' && !showAllImagesInQuiz ? (
+                    // Quiz mode: Single random image with caption and "Show all" button
                     <QuizImageDisplay
                       imagesByCollection={imagesByCollection}
                       countryName={countryName}
+                      onShowAll={() => setShowAllImagesInQuiz(true)}
                     />
                   ) : (
-                    // Explore mode: Full image galleries for each collection
+                    // Show all galleries (in explore mode or when "Show all" is clicked in quiz mode)
                     collections.map(collection => (
                       <ImageGallery
                         key={collection}
@@ -530,20 +492,6 @@ const ArtworkInfoBar = ({
                     ))
                   )}
                 </Box>
-              )}
-
-              {/* External resource links and child mortality - only show in explore mode */}
-              {mode !== 'quiz' && (
-                <>
-                  {/* External resource links section */}
-                  <ExternalLinks
-                    externalLinks={externalLinks}
-                    countryName={countryName}
-                  />
-
-                  {/* Child mortality statistics section */}
-                  <ChildMortalitySection mortalityData={mortalityData} />
-                </>
               )}
             </Box>
           )}

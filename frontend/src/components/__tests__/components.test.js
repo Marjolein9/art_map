@@ -39,7 +39,6 @@ import '@testing-library/jest-dom';
 import userEvent from '@testing-library/user-event';
 import WorldMap from '../WorldMap';
 import ArtworkInfoBar from '../ArtworkInfoBar';
-import ExternalLinks from '../ExternalLinks';
 
 
 // ========================
@@ -295,74 +294,6 @@ describe('ArtworkInfoBar Component', () => {
   });
 });
 
-
-// ========================
-// ExternalLinks Component Tests
-// ========================
-
-describe('ExternalLinks Component', () => {
-  const mockLinks = {
-    gapminder_url: 'https://www.gapminder.org/countries/fra',
-    tasteatlas_url: 'https://www.tasteatlas.com/france',
-  };
-
-  const mockProps = {
-    iso3: 'FRA',
-    externalLinks: mockLinks,
-    loading: false,
-  };
-
-  test('should render external links when data provided', () => {
-    render(<ExternalLinks {...mockProps} />);
-    
-    // Should have links to external resources
-    const links = screen.getAllByRole('link');
-    expect(links.length).toBeGreaterThan(0);
-  });
-
-  test('should open links in new tab with security attributes', () => {
-    render(<ExternalLinks {...mockProps} />);
-    
-    // Find external links
-    const links = screen.getAllByRole('link');
-    
-    // All external links should open in new tab
-    links.forEach(link => {
-      expect(link).toHaveAttribute('target', '_blank');
-      // Security: should have rel attribute with noopener and noreferrer
-      expect(link).toHaveAttribute('rel', expect.stringContaining('noopener'));
-      expect(link).toHaveAttribute('rel', expect.stringContaining('noreferrer'));
-    });
-  });
-
-  test('should show loading state', () => {
-    render(<ExternalLinks {...mockProps} loading={true} />);
-    
-    // Should show loading indicator
-    expect(screen.getByText(/loading/i) || screen.getByTestId('loading')).toBeTruthy();
-  });
-
-  test('should handle missing links gracefully', () => {
-    const incompleteProps = {
-      ...mockProps,
-      externalLinks: { gapminder_url: mockLinks.gapminder_url },
-    };
-    
-    // Should not crash with missing data
-    expect(() => render(<ExternalLinks {...incompleteProps} />)).not.toThrow();
-  });
-
-  test('should use nullish coalescing for optional fields', () => {
-    const sparseProps = {
-      iso3: 'FRA',
-      externalLinks: {},
-      loading: false,
-    };
-    
-    // Component should gracefully handle empty links object
-    expect(() => render(<ExternalLinks {...sparseProps} />)).not.toThrow();
-  });
-});
 
 
 // ========================

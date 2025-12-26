@@ -1087,10 +1087,6 @@ input:checked + .toggle-slider:before {
    ADDITIONAL COMPONENT STYLES - MUI MIGRATION
    ============================================================================== */
 
-/* NOTE: Child mortality section styles removed - now using MUI Card, CardContent, Box, Typography components */
-
-/* NOTE: External links section styles removed - now using MUI List, ListItem, Box, Typography components */
-
 @media (max-width: 768px) {
   .control-overlay {
     left: 8px;

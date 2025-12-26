@@ -184,44 +184,6 @@ describe('API Service - Country Endpoints', () => {
     expect(Array.isArray(result)).toBe(true);
     expect(result.length).toBe(2);
   });
-
-  test('fetchChildMortality should handle data correctly', async () => {
-    const mockData = {
-      start_year: 1990,
-      start_rate: 45.2,
-      end_year: 2020,
-      end_rate: 12.3,
-      difference: -32.9,
-      candle_count: 3,
-    };
-
-    fetch.mockResolvedValueOnce({
-      ok: true,
-      json: async () => mockData,
-    });
-
-    const result = await api.fetchChildMortality('USA');
-    
-    expect(result.start_rate).toBe(45.2);
-    expect(result.difference).toBe(-32.9);
-  });
-
-  test('fetchExternalLinks should return link object', async () => {
-    const mockLinks = {
-      gapminder_url: 'https://www.gapminder.org/countries/usa',
-      tasteatlas_url: 'https://www.tasteatlas.com/usa',
-    };
-
-    fetch.mockResolvedValueOnce({
-      ok: true,
-      json: async () => mockLinks,
-    });
-
-    const result = await api.fetchExternalLinks('USA');
-    
-    expect(result.gapminder_url).toBeTruthy();
-    expect(result.gapminder_url).toMatch(/^https?:\/\//);
-  });
 });
 
 

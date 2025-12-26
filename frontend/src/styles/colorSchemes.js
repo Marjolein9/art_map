@@ -56,15 +56,6 @@ export const COLOR_SCHEME = {
     '#D8BFD8', '#F08080', '#CD5C5C', '#F4A460', '#DAA520'
   ],
 
-  // Candle colors (moved from Candles.css)
-  candleOrange: '#ff6a00',
-  candleOrangeYellow: '#ff9224',
-  candleDark: '#2c2b39',
-  candleBlueDark: '#30537d',
-  candleBlueLight: '#76daff',
-  candleYellow: '#fbf348',
-  candleYellowGrey: '#58523a',
-
   // Deprecated (keeping for backward compatibility during migration)
   glow: 'rgba(0, 0, 0, 0.2)',
   border: '#000000',
