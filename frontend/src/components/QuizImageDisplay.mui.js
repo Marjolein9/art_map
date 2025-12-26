@@ -23,12 +23,14 @@ import { API_BASE } from '../utils/apiConfig';
 const QuizImageDisplay = ({ imagesByCollection, countryName, onShowAll }) => {
   const [randomImage, setRandomImage] = useState(null);
   const [collectionName, setCollectionName] = useState(null);
+  const [isVisible, setIsVisible] = useState(false);
 
   // Select a random image when imagesByCollection changes
   useEffect(() => {
     if (!imagesByCollection || Object.keys(imagesByCollection).length === 0) {
       setRandomImage(null);
       setCollectionName(null);
+      setIsVisible(false);
       return;
     }
 
@@ -45,6 +47,7 @@ const QuizImageDisplay = ({ imagesByCollection, countryName, onShowAll }) => {
     if (allImagesWithCollection.length === 0) {
       setRandomImage(null);
       setCollectionName(null);
+      setIsVisible(false);
       return;
     }
 
@@ -53,6 +56,14 @@ const QuizImageDisplay = ({ imagesByCollection, countryName, onShowAll }) => {
     const selected = allImagesWithCollection[randomIndex];
     setRandomImage(selected.image);
     setCollectionName(selected.collection);
+
+    // Reset visibility and fade in after 2 seconds
+    setIsVisible(false);
+    const timer = setTimeout(() => {
+      setIsVisible(true);
+    }, 2000);
+
+    return () => clearTimeout(timer);
   }, [imagesByCollection]);
 
   if (!randomImage || !collectionName) return null;
@@ -374,6 +385,8 @@ const QuizImageDisplay = ({ imagesByCollection, countryName, onShowAll }) => {
         border: `1px solid ${COLOR_SCHEME.border}`,
         boxShadow: 'none',
         borderRadius: 2,
+        opacity: isVisible ? 1 : 0,
+        transition: 'opacity 1s ease-in-out',
       }}
     >
       <CardContent sx={{ p: 2, '&:last-child': { pb: 2 } }}>
