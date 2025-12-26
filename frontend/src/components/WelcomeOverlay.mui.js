@@ -17,6 +17,8 @@ import {
   CardContent,
   CardMedia,
   Link as MuiLink,
+  Switch,
+  FormControlLabel,
 } from '@mui/material';
 import { ThemeProvider } from '@mui/material/styles';
 import Candles from './Candles';
@@ -149,7 +151,7 @@ const WelcomeOverlay = ({ onStartQuiz, onExplore, colors }) => {
                             href={image.link}
                             target="_blank"
                             rel="noopener noreferrer"
-                            underline="hover"
+                            sx={{ color: colors.linkColor, textDecoration: 'underline', fontWeight: 600 }}
                           >
                             {image.source || collectionName}
                           </MuiLink>
@@ -163,39 +165,40 @@ const WelcomeOverlay = ({ onStartQuiz, onExplore, colors }) => {
                         bgcolor: 'background.paper',
                         borderBottom: '1px solid',
                         borderColor: 'divider',
+                        textAlign: 'center',
                       }}
                     />
 
                     {/* Card Content */}
                     <CardContent>
-                      {/* Description */}
-                      {image.description && (
-                        <Typography
-                          variant="body2"
-                          color="textSecondary"
-                          sx={{ mb: 2 }}
-                        >
-                          {image.description}
-                        </Typography>
-                      )}
-
                       {/* Image */}
                       <CardMedia
                         component="img"
                         image={image.image}
                         alt={image.title || collectionName}
                         sx={{
-                          my: 2,
+                          mb: 2,
                           borderRadius: '4px',
                           objectFit: 'contain',
                         }}
                       />
 
                       {/* Caption */}
-                      <Box sx={{ textAlign: 'center' }}>
+                      <Box sx={{ textAlign: 'center', mb: 2 }}>
                         {image.subtitle && (
                           <Typography variant="subtitle2" sx={{ mb: 0.5 }}>
-                            {image.subtitle}
+                            {image.subtitle_link ? (
+                              <MuiLink
+                                href={image.subtitle_link}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                sx={{ color: colors.linkColor, textDecoration: 'underline' }}
+                              >
+                                {image.subtitle}
+                              </MuiLink>
+                            ) : (
+                              image.subtitle
+                            )}
                           </Typography>
                         )}
                         {image.title && (
@@ -205,7 +208,8 @@ const WelcomeOverlay = ({ onStartQuiz, onExplore, colors }) => {
                                 href={image.link}
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                underline="hover"
+                                variant="body2"
+                                sx={{ color: colors.linkColor, textDecoration: 'underline' }}
                               >
                                 {image.title}
                               </MuiLink>
@@ -215,21 +219,31 @@ const WelcomeOverlay = ({ onStartQuiz, onExplore, colors }) => {
                           </Typography>
                         )}
                         {image.artist && (
-                          <Typography variant="caption" color="textSecondary">
+                          <Typography variant="caption" color="textSecondary" sx={{ display: 'block' }}>
                             {image.artist}
                           </Typography>
                         )}
                         {image.nationality && (
-                          <Typography variant="caption" color="textSecondary">
-                            <br /> {image.nationality}
+                          <Typography variant="caption" color="textSecondary" sx={{ display: 'block' }}>
+                            {image.nationality}
                           </Typography>
                         )}
                         {image.date && (
-                          <Typography variant="caption" color="textSecondary">
-                            <br /> {image.date}
+                          <Typography variant="caption" color="textSecondary" sx={{ display: 'block' }}>
+                            {image.date}
                           </Typography>
                         )}
                       </Box>
+
+                      {/* Description */}
+                      {image.description && (
+                        <Typography
+                          variant="body2"
+                          color="textSecondary"
+                        >
+                          {image.description}
+                        </Typography>
+                      )}
                     </CardContent>
                   </Card>
                 )
@@ -245,6 +259,7 @@ const WelcomeOverlay = ({ onStartQuiz, onExplore, colors }) => {
                 bgcolor: 'background.paper',
                 borderBottom: '1px solid',
                 borderColor: 'divider',
+                textAlign: 'center',
               }}
             />
             <CardContent sx={{ textAlign: 'center' }}>
@@ -264,6 +279,7 @@ const WelcomeOverlay = ({ onStartQuiz, onExplore, colors }) => {
                 bgcolor: 'background.paper',
                 borderBottom: '1px solid',
                 borderColor: 'divider',
+                textAlign: 'center',
               }}
             />
             <CardContent>
@@ -302,7 +318,11 @@ const WelcomeOverlay = ({ onStartQuiz, onExplore, colors }) => {
 
                 {/* Quiz Toggle */}
                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                  <Typography variant="body2" sx={{ minWidth: '40px' }}>Quiz</Typography>
+                  <FormControlLabel
+                    control={<Switch disabled />}
+                    label="Quiz"
+                    sx={{ minWidth: '100px' }}
+                  />
                   <Typography variant="body2">Turn Quiz Mode on/off</Typography>
                 </Box>
 
@@ -324,7 +344,11 @@ const WelcomeOverlay = ({ onStartQuiz, onExplore, colors }) => {
 
                 {/* Hint Toggle */}
                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                  <Typography variant="body2" sx={{ minWidth: '40px' }}>Hint</Typography>
+                  <FormControlLabel
+                    control={<Switch disabled />}
+                    label="Hint"
+                    sx={{ minWidth: '100px' }}
+                  />
                   <Typography variant="body2">Show/hide the country and neighboring countries</Typography>
                 </Box>
               </Box>

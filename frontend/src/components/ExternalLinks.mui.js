@@ -71,7 +71,7 @@ const ExternalLinks = ({ externalLinks, countryName }) => {
           marginBottom: 2,
           fontWeight: 600,
           textAlign: 'center',
-          fontSize: '14px',
+          fontSize: '1rem',
           textTransform: 'uppercase',
           letterSpacing: '1px',
           color: COLOR_SCHEME.textPrimary,
@@ -118,7 +118,7 @@ const ExternalLinks = ({ externalLinks, countryName }) => {
                 variant="body2"
                 sx={{
                   color: COLOR_SCHEME.textPrimary,
-                  fontSize: '13px'
+                  fontSize: '1rem'
                 }}
               >
                 <Box
@@ -127,7 +127,7 @@ const ExternalLinks = ({ externalLinks, countryName }) => {
                     color: COLOR_SCHEME.linkColor,
                     textDecoration: 'underline',
                     fontWeight: 500,
-                    fontSize: '14px'
+                    fontSize: '1rem'
                   }}
                 >
                   {item.label}

@@ -36,14 +36,13 @@ const ChildMortalitySection = ({ mortalityData }) => {
     >
       <CardContent sx={{ padding: 2 }}>
         {/* Statistics Section */}
-        <Box sx={{ marginBottom: 2 }}>
+        <Box sx={{ marginBottom: 2, textAlign: 'center' }}>
           <Typography
             variant="h6"
             sx={{
               fontWeight: 600,
               color: COLOR_SCHEME.textPrimary,
-              marginBottom: 1,
-              textAlign: 'center'
+              marginBottom: 1
             }}
           >
             Child Mortality Progress since 1989
@@ -56,8 +55,17 @@ const ChildMortalitySection = ({ mortalityData }) => {
               lineHeight: 1.6
             }}
           >
-            {mortalityData.start_year}: {mortalityData.start_rate.toFixed(1)}%{' '}
-            {mortalityData.end_year}: {mortalityData.end_rate.toFixed(1)}%
+            <strong>{mortalityData.start_year}:</strong> {mortalityData.start_rate.toFixed(1)}%
+          </Typography>
+          <Typography
+            variant="body2"
+            sx={{
+              color: COLOR_SCHEME.textPrimary,
+              marginBottom: 0.5,
+              lineHeight: 1.6
+            }}
+          >
+            <strong>{mortalityData.end_year}:</strong> {mortalityData.end_rate.toFixed(1)}%
           </Typography>
           <Typography
             variant="body2"

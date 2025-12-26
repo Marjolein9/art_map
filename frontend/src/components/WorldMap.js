@@ -733,7 +733,7 @@ const WorldMap = ({
               color: #000000;
               padding: 4px 8px;
               border-radius: 4px;
-              font-size: 14px;
+              font-size: 1rem;
               font-weight: 600;
               white-space: nowrap;
               border: 1px solid rgba(0, 0, 0, 0.2);
@@ -963,7 +963,7 @@ const WorldMap = ({
                   sx={{
                     minWidth: 'auto',
                     padding: '2px 8px',
-                    fontSize: '14px'
+                    fontSize: '1rem'
                   }}
                 >
                   Skip
@@ -978,7 +978,7 @@ const WorldMap = ({
                     opacity: showMeActivated ? 0.5 : 1,  // Fade out when disabled
                     minWidth: 'auto',
                     padding: '2px 8px',
-                    fontSize: '14px'
+                    fontSize: '1rem'
                   }}
                 >
                   {/* Conditional text: change label after activation */}

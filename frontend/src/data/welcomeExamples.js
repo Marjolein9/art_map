@@ -18,7 +18,7 @@ export const welcomeExamples = {
           description:
             'Photographs from Albert Kahn’s project to document everyday life with color photography in the early 20th century organized by the location the photograph was taken.',
           link:
-            'https://albert-kahn.hauts-de-seine.fr/',
+            'https://collections.albert-kahn.hauts-de-seine.fr/document/une-femme-et-son-enfant-posent-pour-l-operateur/617a7a44cf8b8968b3384d52?filtrerParThme%5B0%5D=Etres%20humains&wm=1&filtrerParSousthme%5B0%5D=Femme&filtrerParMission%5B0%5D=1914%20-%20Egypte%20-%20Auguste%20L%C3%A9on%20%20-%20%28janvier-f%C3%A9vrier%29&pos=35&pgn=2',
           image: '/welcome-examples/egy-woman-child.jpg',
         },
       },
@@ -61,11 +61,12 @@ export const welcomeExamples = {
         'Public Domain Review': {
           title: 'Call of Death',
           subtitle: 'Our Mortal Waltz: The Dance of Death Across Centuries',
+          subtitle_link: 'https://publicdomainreview.org/essay/our-mortal-waltz-the-dance-of-death-across-centuries/',
           artist: 'Käthe Kollwitz',
           source: 'Public Domain Review',
           description:
             'Images from Public Domain Review essays that relate to selected country. The Public Domain Review is a free online journal that reviews works in the public domain.',
-          link: 'https://publicdomainreview.org/essay/our-mortal-waltz-the-dance-of-death-across-centuries/',
+          link: 'https://www.kollwitz.de/en/sheet-8-call-of-death',
           image: '/welcome-examples/deu-waltz.jpg',
         },
       },

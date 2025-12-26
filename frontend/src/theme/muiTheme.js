@@ -40,13 +40,14 @@ const muiTheme = createTheme({
   },
   typography: {
     fontFamily: "'Roboto', 'Helvetica', 'Arial', sans-serif",
+    fontSize: 16, // Base font size (1rem = 16px)
     h2: {
       fontSize: '18pt',
       fontWeight: 300,
       letterSpacing: '1.5px',
     },
     h3: {
-      fontSize: '16px',
+      fontSize: '1rem',
       fontWeight: 600,
       textTransform: 'uppercase',
       letterSpacing: '1px',

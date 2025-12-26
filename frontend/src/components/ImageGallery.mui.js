@@ -92,10 +92,16 @@ const ImageGallery = ({
       case 'Albert Kahn':
         return (
           <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
-            {image.title && (
-              <Typography variant="body2" sx={{ fontWeight: 600, color: COLOR_SCHEME.textPrimary }}>
-                {image.title}
-              </Typography>
+            {image.title && image.page_url && (
+             <Link
+                href={image.page_url}
+                target="_blank"
+                rel="noopener noreferrer"
+                variant="body2"
+                sx={{ color: COLOR_SCHEME.linkColor, textDecoration: 'underline' }}
+              >
+               {image.title }
+              </Link>
             )}
             {image.mission && (
               <Typography variant="body2" sx={{ color: COLOR_SCHEME.textPrimary }}>
@@ -125,7 +131,7 @@ const ImageGallery = ({
                 variant="body2"
                 sx={{ color: COLOR_SCHEME.linkColor, textDecoration: 'underline' }}
               >
-                musée départemental Albert-Kahn
+                 Musée départemental Albert-Kahn
               </Link>
             )}
           </Box>
@@ -135,9 +141,15 @@ const ImageGallery = ({
         return (
           <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
             {image.title && (
-              <Typography variant="body2" sx={{ fontWeight: 600, color: COLOR_SCHEME.textPrimary }}>
+          <Link
+                href={image.work_url || sourceInfo.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                variant="body2"
+                sx={{ color: COLOR_SCHEME.linkColor, textDecoration: 'underline' }}
+              >
                 {image.title}
-              </Typography>
+              </Link>
             )}
             {image.artist_name && (
               <Typography variant="body2" sx={{ color: COLOR_SCHEME.textPrimary }}>
@@ -146,6 +158,7 @@ const ImageGallery = ({
                     href={image.author_wikilink}
                     target="_blank"
                     rel="noopener noreferrer"
+                    variant="body2"
                     sx={{ color: COLOR_SCHEME.linkColor, textDecoration: 'underline' }}
                   >
                     {image.artist_name}
@@ -157,27 +170,26 @@ const ImageGallery = ({
               </Typography>
             )}
             {sourceInfo && (
-              <Link
-                href={image.work_url || sourceInfo.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                variant="body2"
-                sx={{ color: COLOR_SCHEME.linkColor, textDecoration: 'underline' }}
-              >
-                {sourceInfo.name}
-              </Link>
+              <Typography variant="body2" sx={{ color: COLOR_SCHEME.textPrimary }}>
+                via{' '}
+                <Link
+                  href={image.work_url || sourceInfo.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  variant="body2"
+                  sx={{ color: COLOR_SCHEME.linkColor, textDecoration: 'underline' }}
+                >
+                  {sourceInfo.name}
+                </Link>
+              </Typography>
             )}
           </Box>
         );
       case 'Public Domain Review':
         return (
           <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
-            {image.description && (
-              <Typography variant="body2" sx={{ color: COLOR_SCHEME.textPrimary }}>
-                {image.description}
-              </Typography>
-            )}
-            {image.source_link && (
+
+            {image.source_link && image.description &&(
               <Link
                 href={image.source_link}
                 target="_blank"
@@ -185,20 +197,21 @@ const ImageGallery = ({
                 variant="body2"
                 sx={{ color: COLOR_SCHEME.linkColor, textDecoration: 'underline' }}
               >
-                Source
+                {image.description}
               </Link>
             )}
-            {image.title && image.source_url && (
+            {image.title && image.image_url && (
               <Typography variant="body2" sx={{ color: COLOR_SCHEME.textPrimary }}>
-                Featured in Public Domain Review:{' '}
                 <Link
-                  href={image.source_url}
+                  href={image.image_url}
                   target="_blank"
                   rel="noopener noreferrer"
+                  variant="body2"
                   sx={{ color: COLOR_SCHEME.linkColor, textDecoration: 'underline' }}
                 >
                   {image.title}
                 </Link>
+                {' '}Public Domain Review
               </Typography>
             )}
           </Box>
@@ -206,10 +219,27 @@ const ImageGallery = ({
       case 'Met Museum':
         return (
           <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
-            {image.title && (
-              <Typography variant="body2" sx={{ fontWeight: 600, color: COLOR_SCHEME.textPrimary }}>
+
+            {image.object_url && image.title ? (
+              <Link
+                href={image.object_url}
+                target="_blank"
+                rel="noopener noreferrer"
+                variant="body2"
+                sx={{ color: COLOR_SCHEME.linkColor, textDecoration: 'underline' }}
+              >
                 {image.title}
-              </Typography>
+              </Link>
+            ) : (
+              <Link
+                href="https://www.metmuseum.org/"
+                target="_blank"
+                rel="noopener noreferrer"
+                variant="body2"
+                sx={{ color: COLOR_SCHEME.linkColor, textDecoration: 'underline' }}
+              >
+                {image.title}
+              </Link>
             )}
             {image.artist_name && (
               <Typography variant="body2" sx={{ color: COLOR_SCHEME.textPrimary }}>
@@ -222,27 +252,7 @@ const ImageGallery = ({
                 {image.culture}
               </Typography>
             )}
-            {image.object_url ? (
-              <Link
-                href={image.object_url}
-                target="_blank"
-                rel="noopener noreferrer"
-                variant="body2"
-                sx={{ color: COLOR_SCHEME.linkColor, textDecoration: 'underline' }}
-              >
-                Learn more at the Metropolitan Museum of Art
-              </Link>
-            ) : (
-              <Link
-                href="https://www.metmuseum.org/"
-                target="_blank"
-                rel="noopener noreferrer"
-                variant="body2"
-                sx={{ color: COLOR_SCHEME.linkColor, textDecoration: 'underline' }}
-              >
-                Learn more at the Metropolitan Museum of Art
-              </Link>
-            )}
+
           </Box>
         );
       default:
@@ -257,13 +267,40 @@ const ImageGallery = ({
   const getCollectionTitle = (collectionType) => {
     switch(collectionType) {
       case 'Albert Kahn':
-        return "Albert Kahn's Archives of the Planet";
+        return (
+          <Link
+            href="https://albert-kahn.hauts-de-seine.fr/en/"
+            target="_blank"
+            rel="noopener noreferrer"
+            sx={{ color: COLOR_SCHEME.linkColor, textDecoration: 'underline', fontWeight: 600 }}
+          >
+            Albert Kahn's Archives of the Planet
+          </Link>
+        );
       case 'Children in Art':
         return "Children in Art";
       case 'Public Domain Review':
-        return "Public Domain Review";
+        return (
+          <Link
+            href="https://publicdomainreview.org/"
+            target="_blank"
+            rel="noopener noreferrer"
+            sx={{ color: COLOR_SCHEME.linkColor, textDecoration: 'underline', fontWeight: 600 }}
+          >
+            Public Domain Review
+          </Link>
+        );
       case 'Met Museum':
-        return "Met Museum";
+        return (
+          <Link
+            href="https://www.metmuseum.org/"
+            target="_blank"
+            rel="noopener noreferrer"
+            sx={{ color: COLOR_SCHEME.linkColor, textDecoration: 'underline', fontWeight: 600 }}
+          >
+            Metropolitan Museum of Art collection
+          </Link>
+        );
       default:
         return collectionType;
     }
@@ -292,19 +329,28 @@ const ImageGallery = ({
       case 'Public Domain Review':
         return null;
       case 'Met Museum':
-        return (
-          <Link
-            href="https://www.metmuseum.org/"
-            target="_blank"
-            rel="noopener noreferrer"
-            variant="body2"
-            sx={{ color: COLOR_SCHEME.linkColor, textDecoration: 'underline' }}
-          >
-            Metropolitan Museum of Art collection
-          </Link>
-        );
+        return null
       default:
         return null;
+    }
+  };
+
+  // Get the appropriate link URL for the image based on collection type
+  const getImageLinkUrl = (image, collectionType) => {
+    switch(collectionType) {
+      case 'Albert Kahn':
+        return image.page_url || `${API_BASE}/${image.filepath}`;
+      case 'Children in Art':
+        const sourceInfo = getSourceInfo(image.source);
+        return image.work_url || sourceInfo?.url || `${API_BASE}/${image.filepath}`;
+      case 'Public Domain Review':
+        return image.image_url || `${API_BASE}/${image.filepath}`;
+      case 'Met Museum':
+        return image.object_url || `${API_BASE}/${image.filepath}`;
+      default:
+        return image.filepath.startsWith('http')
+          ? image.filepath
+          : `${API_BASE}/${image.filepath}`;
     }
   };
 
@@ -341,9 +387,7 @@ const ImageGallery = ({
           }}
         >
           <a
-            href={currentImage.filepath.startsWith('http')
-              ? currentImage.filepath
-              : `${API_BASE}/${currentImage.filepath}`}
+            href={getImageLinkUrl(currentImage, collection)}
             target="_blank"
             rel="noopener noreferrer"
             style={{

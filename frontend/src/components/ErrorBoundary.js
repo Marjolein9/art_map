@@ -196,7 +196,7 @@ class ErrorBoundary extends React.Component {
               <pre
                 style={{
                   margin: '10px 0 0 0',
-                  fontSize: '12px',
+                  fontSize: '1rem',
                   color: COLOR_SCHEME.textPrimary,
                   whiteSpace: 'pre-wrap',
                   wordBreak: 'break-word'
@@ -209,7 +209,7 @@ class ErrorBoundary extends React.Component {
 
           {/* Error Count */}
           {this.state.errorCount > 1 && (
-            <p style={{ color: COLOR_SCHEME.textPrimary, fontSize: '12px', marginTop: '15px' }}>
+            <p style={{ color: COLOR_SCHEME.textPrimary, fontSize: '1rem', marginTop: '15px' }}>
               Errors encountered: {this.state.errorCount}
             </p>
           )}
@@ -225,7 +225,7 @@ class ErrorBoundary extends React.Component {
                 border: 'none',
                 borderRadius: '5px',
                 cursor: 'pointer',
-                fontSize: '14px',
+                fontSize: '1rem',
                 fontWeight: 'bold'
               }}
             >
@@ -240,7 +240,7 @@ class ErrorBoundary extends React.Component {
                 border: 'none',
                 borderRadius: '5px',
                 cursor: 'pointer',
-                fontSize: '14px',
+                fontSize: '1rem',
                 fontWeight: 'bold'
               }}
             >

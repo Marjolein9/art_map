@@ -428,7 +428,7 @@ body {
 }
 
 .source-description {
-  font-size: 14px;
+  font-size: 1rem;
   color: var(--text-secondary);
   margin-bottom: 8px;
   word-wrap: break-word;
@@ -449,7 +449,7 @@ body {
   cursor: pointer;
   font-weight: 500;
   transition: all 0.2s ease;
-  font-size: 14px;
+  font-size: 1rem;
 }
 
 .control-button:hover {
@@ -502,7 +502,7 @@ body {
 }
 
 .control-label {
-  font-size: 14px;
+  font-size: 1rem;
   color: var(--text-primary);
   word-wrap: break-word;
   overflow-wrap: break-word;
@@ -515,7 +515,7 @@ body {
 }
 
 .toggle-label-small {
-  font-size: 13px;
+  font-size: 1rem;
   font-weight: 500;
   color: var(--text-primary);
 }
@@ -660,7 +660,7 @@ body {
   font-weight: 400;
   letter-spacing: 0.5px;
   color: var(--text-primary);
-  font-size: 14px;
+  font-size: 1rem;
 }
 
 a.collection-subtitle {
@@ -697,7 +697,7 @@ a.collection-subtitle:hover {
   text-overflow: ellipsis;
   color: var(--text-primary);
   font-family: 'Roboto Condensed', Helvetica, sans-serif;
-  font-size: 14px;
+  font-size: 1rem;
     /* Text wrapping */
   white-space: normal;
   overflow-wrap: break-word;   /* modern */
@@ -711,7 +711,7 @@ a.collection-subtitle:hover {
   word-wrap: break-word;
   white-space: normal;
   margin-bottom: 4px;
-  font-size: 14px;
+  font-size: 1rem;
 }
 
 .artwork-location {
@@ -719,25 +719,25 @@ a.collection-subtitle:hover {
   margin-top: 2px;
   word-wrap: break-word;
   white-space: normal;
-  font-size: 14px;
+  font-size: 1rem;
 }
 
 .artwork-date {
   color: var(--text-primary);
   margin-top: 2px;
-  font-size: 14px;
+  font-size: 1rem;
 }
 
 .artwork-dates {
   color: var(--text-primary);
   margin-top: 2px;
-  font-size: 14px;
+  font-size: 1rem;
 }
 
 .artwork-source {
   color: var(--text-primary);
   margin-top: 4px;
-  font-size: 14px;
+  font-size: 1rem;
 }
 
 .artwork-article {
@@ -745,13 +745,13 @@ a.collection-subtitle:hover {
   margin-top: 8px;
   word-wrap: break-word;
   white-space: normal;
-  font-size: 14px;
+  font-size: 1rem;
 }
 
 .artwork-culture {
   color: var(--text-primary);
   margin-top: 5px;
-  font-size: 14px;
+  font-size: 1rem;
 }
 
 .artwork-local-badge {
@@ -1229,7 +1229,7 @@ input:checked + .toggle-slider:before {
 .welcome-intro-text p {
   margin: 0;
   line-height: 1.6;
-  font-size: 12px;
+  font-size: 1rem;
 }
 
 /* Section Headers with Blurbs - Educational Context */
@@ -1248,7 +1248,7 @@ input:checked + .toggle-slider:before {
 }
 
 .welcome-section-blurb {
-  font-size: 14px;
+  font-size: 1rem;
   line-height: 1.5;
   color: var(--text-primary);
   margin: 0;
@@ -1268,14 +1268,14 @@ input:checked + .toggle-slider:before {
 }
 
 .welcome-country-label {
-  font-size: 14px;
+  font-size: 1rem;
   color: var(--text-secondary);
   font-weight: 500;
 }
 
 .artwork-subtitle {
   font-style: italic;
-  font-size: 14px;
+  font-size: 1rem;
   color: var(--text-primary);
   margin-bottom: 4px;
   font-weight: 500;
@@ -1285,23 +1285,23 @@ input:checked + .toggle-slider:before {
   font-weight: 600;
   color: var(--text-primary);
   margin-bottom: 4px;
-  font-size: 14px;
+  font-size: 1rem;
 }
 
 .artwork-artist {
-  font-size: 14px;
+  font-size: 1rem;
   color: var(--text-primary);
   margin-bottom: 2px;
 }
 
 .artwork-date {
-  font-size: 14px;
+  font-size: 1rem;
   color: var(--text-primary);
   margin-bottom: 4px;
 }
 
 .artwork-source {
-  font-size: 14px;
+  font-size: 1rem;
   margin-top: 6px;
   padding-top: 6px;
   border-top: 1px solid var(--link-underline);
@@ -1319,7 +1319,7 @@ input:checked + .toggle-slider:before {
 }
 
 .welcome-description {
-  font-size: 14px;
+  font-size: 1rem;
   line-height: 1.4;
   color: var(--text-primary);
   font-style: italic;
@@ -1364,7 +1364,7 @@ input:checked + .toggle-slider:before {
 /* Top Control Buttons - Top Bar (BIGGER) */
 .welcome-control-button {
   padding: 14px 28px;
-  font-size: 14px;
+  font-size: 1rem;
   font-weight: 600;
   border: 2px solid var(--text-primary);
   background: var(--bg-secondary);
@@ -1435,7 +1435,7 @@ input:checked + .toggle-slider:before {
 }
 
 .control-explanation {
-  font-size: 12px;
+  font-size: 1rem;
   color: var(--text-secondary);
   line-height: 1.3;
 }
@@ -1443,7 +1443,7 @@ input:checked + .toggle-slider:before {
 /* Global control button small version */
 .globe-control-btn-small {
   padding: 6px 12px;
-  font-size: 12px;
+  font-size: 1rem;
   font-weight: 600;
   border: 1px solid var(--border-secondary);
   background: var(--bg-secondary);
@@ -1467,7 +1467,7 @@ input:checked + .toggle-slider:before {
 }
 
 .toggle-label-small {
-  font-size: 11px;
+  font-size: 1rem;
   color: var(--button-text-color, var(--text-primary));
   font-weight: 600;
 }
@@ -1541,7 +1541,7 @@ input:checked + .toggle-slider-small:before {
  
   .welcome-control-button {
     padding: 8px 12px;
-    font-size: 11px;
+    font-size: 1rem;
   }
 }
 
@@ -1552,7 +1552,7 @@ input:checked + .toggle-slider-small:before {
   }
 
   .welcome-bar-title {
-    font-size: 14px;
+    font-size: 1rem;
   }
 
   .welcome-buttons-inline {
@@ -1568,21 +1568,21 @@ input:checked + .toggle-slider-small:before {
 
 
   .welcome-card-country-name {
-    font-size: 14px;
+    font-size: 1rem;
   }
 
   .welcome-control-button {
     padding: 6px 10px;
-    font-size: 10px;
+    font-size: 1rem;
     letter-spacing: 0.3px;
   }
 
   .welcome-section-title {
-    font-size: 14px;
+    font-size: 1rem;
   }
 
   .welcome-section-blurb {
-    font-size: 11px;
+    font-size: 1rem;
   }
 }
 /* Horizontal button row */
@@ -1598,7 +1598,7 @@ input:checked + .toggle-slider-small:before {
   padding: 8px 16px;
   border: none;
   border-radius: 6px;
-  font-size: 14px;
+  font-size: 1rem;
   cursor: pointer;
   transition: all 0.2s ease-in-out;
 }
