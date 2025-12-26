@@ -1005,40 +1005,6 @@ const WorldMap = ({
                   label="Hints"
                 />
               )}
-
-              {/* Show and Next buttons (only in quiz mode) */}
-              {mode === 'quiz' && (
-                <>
-                  <Button
-                    variant="outlined"
-                    size="small"
-                    onClick={onStartOver}
-                    title="Next Country"
-                    sx={{
-                      minWidth: 'auto',
-                      padding: '2px 8px',
-                      fontSize: '1rem'
-                    }}
-                  >
-                    Next
-                  </Button>
-                  <Button
-                    variant="outlined"
-                    size="small"
-                    onClick={handleShowMe}
-                    title="Show Me"
-                    disabled={showMeActivated}
-                    sx={{
-                      opacity: showMeActivated ? 0.5 : 1,
-                      minWidth: 'auto',
-                      padding: '2px 8px',
-                      fontSize: '1rem'
-                    }}
-                  >
-                    {showMeActivated ? 'Shown' : 'Show'}
-                  </Button>
-                </>
-              )}
             </Box>
 
             {/* Quiz-Specific Controls (only visible in quiz mode) */}
