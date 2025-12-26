@@ -257,6 +257,11 @@ const ArtworkInfoBar = ({
     selectedCollections.includes(collection)
   );
 
+  // Calculate total number of images across all collections
+  const totalImages = Object.values(imagesByCollection).reduce((total, images) => {
+    return total + (images?.length || 0);
+  }, 0);
+
   /**
    * EVENT HANDLERS
    */
@@ -470,14 +475,28 @@ const ArtworkInfoBar = ({
               {collections.length > 0 && (
                 <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
                   {mode === 'quiz' && !showAllImagesInQuiz ? (
-                    // Quiz mode: Single random image with caption and "Show all" button
+                    // Quiz mode: Single random image with caption and "Show all" button (only if more than 1 image)
                     <QuizImageDisplay
                       imagesByCollection={imagesByCollection}
                       countryName={countryName}
-                      onShowAll={() => setShowAllImagesInQuiz(true)}
+                      onShowAll={totalImages > 1 ? () => setShowAllImagesInQuiz(true) : null}
                     />
+                  ) : mode === 'quiz' && showAllImagesInQuiz ? (
+                    // Quiz mode with "Show all" clicked: Display all images with same format as single image
+                    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
+                      {Object.entries(imagesByCollection).map(([collection, images]) =>
+                        images?.map((image, index) => (
+                          <QuizImageDisplay
+                            key={`${collection}-${index}`}
+                            imagesByCollection={{ [collection]: [image] }}
+                            countryName={countryName}
+                            onShowAll={null}
+                          />
+                        ))
+                      )}
+                    </Box>
                   ) : (
-                    // Show all galleries (in explore mode or when "Show all" is clicked in quiz mode)
+                    // Explore mode: Show all galleries with navigation
                     collections.map(collection => (
                       <ImageGallery
                         key={collection}
