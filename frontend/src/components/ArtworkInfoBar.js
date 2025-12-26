@@ -43,6 +43,7 @@ import { fetchImages, fetchChildMortality, fetchExternalLinks } from '../service
 
 // Import child components
 import ImageGallery from './ImageGallery.mui';
+import QuizImageDisplay from './QuizImageDisplay.mui';
 import ChildMortalitySection from './ChildMortalitySection.mui';
 import ExternalLinks from './ExternalLinks.mui';
 
@@ -501,50 +502,49 @@ const ArtworkInfoBar = ({
               gap: 3                    // 24px gap between sections
             }}>
               {/*
-                Nested conditional rendering
-                Only show image galleries if we have collections
+                Conditional image display based on mode:
+                - Quiz mode: Show single random image without collection headers
+                - Explore mode: Show all collections with full galleries
               */}
               {collections.length > 0 && (
                 <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
-                  {/*
-                    ARRAY MAPPING
-
-                    .map() transforms each array element into JSX
-                    Creates one ImageGallery component per collection
-
-                    ImageGallery Props:
-                    - key: Required for list items in React (helps React identify which items changed)
-                    - collection: Collection name (e.g., "albert_kahn")
-                    - images: Array of images for this collection
-                    - countryName: Name of the country
-                    - currentIndex: Which image to display (defaults to 0 if undefined)
-                    - onPrev/onNext: Arrow functions that wrap prevImage/nextImage with collection parameter
-                      (Without the wrapper, it would call immediately instead of on click)
-                    - imageRef: Ref callback function that receives the DOM element and stores it for cleanup
-                  */}
-                  {collections.map(collection => (
-                    <ImageGallery
-                      key={collection}
-                      collection={collection}
-                      images={imagesByCollection[collection]}
+                  {mode === 'quiz' ? (
+                    // Quiz mode: Single random image with caption only
+                    <QuizImageDisplay
+                      imagesByCollection={imagesByCollection}
                       countryName={countryName}
-                      currentIndex={currentImageIndex[collection] || 0}
-                      onPrev={() => prevImage(collection)}
-                      onNext={() => nextImage(collection)}
-                      imageRef={el => (imageRefs.current[collection] = el)}
                     />
-                  ))}
+                  ) : (
+                    // Explore mode: Full image galleries for each collection
+                    collections.map(collection => (
+                      <ImageGallery
+                        key={collection}
+                        collection={collection}
+                        images={imagesByCollection[collection]}
+                        countryName={countryName}
+                        currentIndex={currentImageIndex[collection] || 0}
+                        onPrev={() => prevImage(collection)}
+                        onNext={() => nextImage(collection)}
+                        imageRef={el => (imageRefs.current[collection] = el)}
+                      />
+                    ))
+                  )}
                 </Box>
               )}
 
-              {/* External resource links section */}
-              <ExternalLinks
-                externalLinks={externalLinks}
-                countryName={countryName}
-              />
+              {/* External resource links and child mortality - only show in explore mode */}
+              {mode !== 'quiz' && (
+                <>
+                  {/* External resource links section */}
+                  <ExternalLinks
+                    externalLinks={externalLinks}
+                    countryName={countryName}
+                  />
 
-              {/* Child mortality statistics section */}
-              <ChildMortalitySection mortalityData={mortalityData} />
+                  {/* Child mortality statistics section */}
+                  <ChildMortalitySection mortalityData={mortalityData} />
+                </>
+              )}
             </Box>
           )}
         </DialogContent>
