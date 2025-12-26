@@ -862,7 +862,7 @@ const WorldMap = ({
         }}>
           {/* Title area - shows dropdown in quiz mode, "Click to Explore" in explore mode */}
           <div className="overlay-title">
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, flexWrap: 'wrap' }}>
               {mode === 'quiz' ? (
                 <Select
                   value={
@@ -919,6 +919,40 @@ const WorldMap = ({
               >
                 ℹ
               </Button>
+
+              {/* Show and Next buttons (only in quiz mode) */}
+              {mode === 'quiz' && (
+                <>
+                  <Button
+                    variant="outlined"
+                    size="small"
+                    onClick={onStartOver}
+                    title="Next Country"
+                    sx={{
+                      minWidth: 'auto',
+                      padding: '2px 8px',
+                      fontSize: '1rem'
+                    }}
+                  >
+                    Next
+                  </Button>
+                  <Button
+                    variant="outlined"
+                    size="small"
+                    onClick={handleShowMe}
+                    title="Show Me"
+                    disabled={showMeActivated}
+                    sx={{
+                      opacity: showMeActivated ? 0.5 : 1,
+                      minWidth: 'auto',
+                      padding: '2px 8px',
+                      fontSize: '1rem'
+                    }}
+                  >
+                    {showMeActivated ? 'Shown' : 'Show'}
+                  </Button>
+                </>
+              )}
             </Box>
           </div>
 
