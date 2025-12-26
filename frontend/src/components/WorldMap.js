@@ -126,11 +126,11 @@ const WorldMap = ({
   // showMeActivated: Whether user clicked "Show Me" button to reveal the answer
   const [showMeActivated, setShowMeActivated] = useState(false);
 
-  // persistedIncorrectLabel: Label data for showing the name of an incorrectly clicked country
-  const [persistedIncorrectLabel, setPersistedIncorrectLabel] = useState(null);
+  // persistedIncorrectLabels: Array of labels for showing names of incorrectly clicked countries
+  const [persistedIncorrectLabels, setPersistedIncorrectLabels] = useState([]);
 
-  // persistedCorrectLabel: Label data for showing the name of the correctly clicked country
-  const [persistedCorrectLabel, setPersistedCorrectLabel] = useState(null);
+  // persistedCorrectLabels: Array of labels for showing names of correctly clicked countries
+  const [persistedCorrectLabels, setPersistedCorrectLabels] = useState([]);
 
   // showTargetOverlay: Controls visibility of "Find: [Country]" overlay in quiz mode
   const [showTargetOverlay, setShowTargetOverlay] = useState(false);
@@ -676,12 +676,12 @@ const WorldMap = ({
       const centroid = calculateCentroid(clickedFeature.geometry.coordinates);
       if (!centroid) return;
 
-      // Store label data
-      setPersistedIncorrectLabel({
+      // Add label to array (accumulate multiple incorrect clicks)
+      setPersistedIncorrectLabels(prev => [...prev, {
         lat: centroid.lat,
         lng: centroid.lng,
         text: countryName
-      });
+      }]);
     }
   }, [mode, gameStatus, clickedCountry, countries, allCountries]);
 
@@ -701,20 +701,20 @@ const WorldMap = ({
       const centroid = calculateCentroid(targetFeature.geometry.coordinates);
       if (!centroid) return;
 
-      // Store label data
-      setPersistedCorrectLabel({
+      // Add label to array (can have multiple correct clicks shown together with incorrect)
+      setPersistedCorrectLabels(prev => [...prev, {
         lat: centroid.lat,
         lng: centroid.lng,
         text: countryName
-      });
+      }]);
     }
   }, [mode, gameStatus, targetCountry, countries, allCountries]);
 
   // Clear persisted labels when new target country appears (new quiz question)
   useEffect(() => {
     if (targetCountry) {
-      setPersistedIncorrectLabel(null);
-      setPersistedCorrectLabel(null);
+      setPersistedIncorrectLabels([]);
+      setPersistedCorrectLabels([]);
     }
   }, [targetCountry]);
 
@@ -723,12 +723,9 @@ const WorldMap = ({
     // Only show labels in quiz mode
     if (mode !== 'quiz') return [];
 
-    const labels = [];
-    if (persistedIncorrectLabel) labels.push(persistedIncorrectLabel);
-    if (persistedCorrectLabel) labels.push(persistedCorrectLabel);
-
-    return labels;
-  }, [mode, persistedIncorrectLabel, persistedCorrectLabel]);
+    // Combine all incorrect and correct labels
+    return [...persistedIncorrectLabels, ...persistedCorrectLabels];
+  }, [mode, persistedIncorrectLabels, persistedCorrectLabels]);
 
   /**
    * JSX RENDERING

@@ -307,7 +307,7 @@ const ArtworkInfoBar = ({
         - sx: MUI's styling system (CSS-in-JS) - lets you write CSS in JavaScript
       */}
       <Dialog
-        open={true}
+        open={overlayVisible}
         onClose={handleBackdropClick}
         maxWidth="sm"
         fullWidth
@@ -328,12 +328,12 @@ const ArtworkInfoBar = ({
             right: '5px',
             bottom: '5px',
             // Fade-in animation for backdrop
-            opacity: overlayVisible ? (isVisible ? 0.3 : 0) : 0,
+            opacity: isVisible ? 0.3 : 0,
             transition: 'opacity 1s ease-in-out',
           },
           '& .MuiDialog-paper': {
-            // Fade-in animation controlled by overlayVisible and isVisible state
-            opacity: overlayVisible ? (isVisible ? 1 : 0) : 0,  // Ternary operator: condition ? ifTrue : ifFalse
+            // Fade-in animation controlled by isVisible state
+            opacity: isVisible ? 1 : 0,  // Ternary operator: condition ? ifTrue : ifFalse
             transition: 'opacity 1s ease-in-out',
             // CSS transition: Smoothly animates opacity change over 1 second
 
