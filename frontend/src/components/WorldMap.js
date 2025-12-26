@@ -759,6 +759,7 @@ const WorldMap = ({
           polygonSideColor={() => 'rgba(0,0,0,0)'}   // Side faces: transparent
           polygonStrokeColor={() => 'rgba(0,0,0,0)'} // Outline: transparent
           polygonAltitude={0.001}  // Slight height (prevents z-fighting rendering issues)
+          polygonLabel={() => ''}  // Disable hover tooltip
           onPolygonHover={setHoverD}       // Update hover state when hovering
           onPolygonClick={handlePolygonClick}  // Handle clicks on countries
           // Path layer: Colored country borders/fills
@@ -790,6 +791,7 @@ const WorldMap = ({
           pathDashGap={0}              // No gaps in dashes
           pathDashAnimateTime={0}      // No dash animation
           pathTransitionDuration={0}   // Instant updates (no fade transitions)
+          pathLabel={() => ''}         // Disable hover tooltip
           // Path interaction handlers
           onPathHover={setHoverD}
           onPathClick={handlePolygonClick}
