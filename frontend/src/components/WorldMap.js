@@ -862,47 +862,64 @@ const WorldMap = ({
         }}>
           {/* Title area - shows dropdown in quiz mode, "Click to Explore" in explore mode */}
           <div className="overlay-title">
-            {mode === 'quiz' ? (
-              <Select
-                value={
-                  // Show target country if it's in our list, otherwise show empty
-                  targetCountry && allCountries.some(c => c.iso3 === targetCountry)
-                    ? targetCountry
-                    : ''
-                }
-                onChange={handleCountryDropdownChange}
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+              {mode === 'quiz' ? (
+                <Select
+                  value={
+                    // Show target country if it's in our list, otherwise show empty
+                    targetCountry && allCountries.some(c => c.iso3 === targetCountry)
+                      ? targetCountry
+                      : ''
+                  }
+                  onChange={handleCountryDropdownChange}
+                  size="small"
+                  displayEmpty
+                  sx={{
+                    minWidth: '180px',
+                    backgroundColor: 'var(--card-bg)',
+                    '& .MuiOutlinedInput-notchedOutline': {
+                      borderColor: 'var(--border-color)',
+                    },
+                    '&:hover .MuiOutlinedInput-notchedOutline': {
+                      borderColor: 'var(--glow-color)',
+                    },
+                  }}
+                >
+                  {/* Placeholder option */}
+                  <MenuItem value="">Select country...</MenuItem>
+
+                  {/* Map over sorted countries to create menu items */}
+                  {allCountries
+                    .sort((a, b) =>
+                      (a.common_name || a.name).localeCompare(
+                        b.common_name || b.name
+                      )
+                    )
+                    .map(c => (
+                      <MenuItem key={c.iso3} value={c.iso3}>
+                        {c.common_name || c.name}
+                      </MenuItem>
+                    ))}
+                </Select>
+              ) : (
+                'Click to Explore'
+              )}
+
+              {/* Info Button - opens welcome overlay */}
+              <Button
+                variant="outlined"
                 size="small"
-                displayEmpty
+                onClick={() => setShowWelcome(true)}
+                title="Open Welcome Menu"
                 sx={{
-                  minWidth: '180px',
-                  backgroundColor: 'var(--card-bg)',
-                  '& .MuiOutlinedInput-notchedOutline': {
-                    borderColor: 'var(--border-color)',
-                  },
-                  '&:hover .MuiOutlinedInput-notchedOutline': {
-                    borderColor: 'var(--glow-color)',
-                  },
+                  minWidth: 'auto',
+                  padding: '2px 8px',
+                  fontSize: '16px'
                 }}
               >
-                {/* Placeholder option */}
-                <MenuItem value="">Select country...</MenuItem>
-
-                {/* Map over sorted countries to create menu items */}
-                {allCountries
-                  .sort((a, b) =>
-                    (a.common_name || a.name).localeCompare(
-                      b.common_name || b.name
-                    )
-                  )
-                  .map(c => (
-                    <MenuItem key={c.iso3} value={c.iso3}>
-                      {c.common_name || c.name}
-                    </MenuItem>
-                  ))}
-              </Select>
-            ) : (
-              'Click to Explore'
-            )}
+                ℹ
+              </Button>
+            </Box>
           </div>
 
           <div className="overlay-controls">
@@ -954,21 +971,6 @@ const WorldMap = ({
                   label="Hints"
                 />
               )}
-
-              {/* Info Button - opens welcome overlay */}
-              <Button
-                variant="outlined"  // MUI button style
-                size="small"
-                onClick={() => setShowWelcome(true)}
-                title="Open Welcome Menu"  // Tooltip text on hover
-                sx={{
-                  minWidth: 'auto',       // Don't enforce minimum width
-                  padding: '2px 8px',     // Custom padding
-                  fontSize: '16px'        // Icon size
-                }}
-              >
-                ℹ
-              </Button>
 
               {/* Show and Next buttons (only in quiz mode) */}
               {mode === 'quiz' && (
