@@ -775,9 +775,10 @@ const WorldMap = ({
             ">${d.text}</div>
           `}
           labelSize={1.5}         // Label size multiplier
-          labelDotRadius={0.4}    // Size of dot at label position
-          labelResolution={2}     // Label rendering quality
+          labelDotRadius={0}      // No dot at label position
+          labelResolution={3}     // Label rendering quality (higher = better)
           labelRotation={0}       // Keep labels horizontal (don't rotate with globe)
+          labelAltitude={0.01}    // Slight altitude to prevent z-fighting
           // Globe dimensions (responsive to window size)
           width={globeDimensions.width}
           height={globeDimensions.height}
@@ -798,6 +799,7 @@ const WorldMap = ({
               borderRadius: '12px',
               fontSize: '32px',
               fontWeight: 700,
+              opacity: .5,
               boxShadow: '0 8px 32px rgba(0, 0, 0, 0.5)',
               border: '2px solid rgba(255, 255, 255, 0.2)',
               backdropFilter: 'blur(10px)',

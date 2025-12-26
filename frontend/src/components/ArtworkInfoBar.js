@@ -505,49 +505,50 @@ const ArtworkInfoBar = ({
             }}>
               {/*
                 Conditional image display based on mode:
-                - Quiz mode: Show single random image without collection headers
+                - Quiz mode: Always show QuizImageDisplay (handles no-image case)
                 - Explore mode: Show all collections with full galleries
               */}
-              {collections.length > 0 && (
+              {mode === 'quiz' && !showAllImagesInQuiz ? (
+                // Quiz mode: Single random image with caption and "Show all" button (only if more than 1 image)
+                // Always render even if no images - QuizImageDisplay shows map and "No images available" message
+                <QuizImageDisplay
+                  imagesByCollection={imagesByCollection}
+                  countryName={countryName}
+                  countryISO={countryISO}
+                  onShowAll={totalImages > 1 ? () => setShowAllImagesInQuiz(true) : null}
+                />
+              ) : mode === 'quiz' && showAllImagesInQuiz ? (
+                // Quiz mode with "Show all" clicked: Display all images with same format as single image
                 <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
-                  {mode === 'quiz' && !showAllImagesInQuiz ? (
-                    // Quiz mode: Single random image with caption and "Show all" button (only if more than 1 image)
-                    <QuizImageDisplay
-                      imagesByCollection={imagesByCollection}
-                      countryName={countryName}
-                      onShowAll={totalImages > 1 ? () => setShowAllImagesInQuiz(true) : null}
-                    />
-                  ) : mode === 'quiz' && showAllImagesInQuiz ? (
-                    // Quiz mode with "Show all" clicked: Display all images with same format as single image
-                    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
-                      {Object.entries(imagesByCollection).map(([collection, images]) =>
-                        images?.map((image, index) => (
-                          <QuizImageDisplay
-                            key={`${collection}-${index}`}
-                            imagesByCollection={{ [collection]: [image] }}
-                            countryName={countryName}
-                            onShowAll={null}
-                          />
-                        ))
-                      )}
-                    </Box>
-                  ) : (
-                    // Explore mode: Show all galleries with navigation
-                    collections.map(collection => (
-                      <ImageGallery
-                        key={collection}
-                        collection={collection}
-                        images={imagesByCollection[collection]}
+                  {Object.entries(imagesByCollection).map(([collection, images]) =>
+                    images?.map((image, index) => (
+                      <QuizImageDisplay
+                        key={`${collection}-${index}`}
+                        imagesByCollection={{ [collection]: [image] }}
                         countryName={countryName}
-                        currentIndex={currentImageIndex[collection] || 0}
-                        onPrev={() => prevImage(collection)}
-                        onNext={() => nextImage(collection)}
-                        imageRef={el => (imageRefs.current[collection] = el)}
+                        countryISO={countryISO}
+                        onShowAll={null}
                       />
                     ))
                   )}
                 </Box>
-              )}
+              ) : collections.length > 0 ? (
+                // Explore mode: Show all galleries with navigation (only if images exist)
+                <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
+                  {collections.map(collection => (
+                    <ImageGallery
+                      key={collection}
+                      collection={collection}
+                      images={imagesByCollection[collection]}
+                      countryName={countryName}
+                      currentIndex={currentImageIndex[collection] || 0}
+                      onPrev={() => prevImage(collection)}
+                      onNext={() => nextImage(collection)}
+                      imageRef={el => (imageRefs.current[collection] = el)}
+                    />
+                  ))}
+                </Box>
+              ) : null}
             </Box>
           )}
         </DialogContent>

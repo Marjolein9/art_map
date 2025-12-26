@@ -6,23 +6,35 @@ import {
   Typography,
   Link,
   Button,
+  CircularProgress,
+  Paper,
 } from '@mui/material';
 import COLOR_SCHEME from '../styles/colorSchemes';
 import { API_BASE } from '../utils/apiConfig';
+import { fetchNeighbors, fetchCountries } from '../services/api';
+import { loadTopoJSON } from '../utils/topoJsonLoader';
+import { getCountryIsoCode } from '../utils/countryCodeMapping';
 
 /**
  * QuizImageDisplay Component
  *
  * Displays a single random image from all available collections during quiz mode.
  * Shows only the image and caption, without collection headers.
+ * Also displays a map section with neighboring countries.
  *
  * @param {Object} imagesByCollection - Object with collection names as keys and image arrays as values
  * @param {string} countryName - Name of the country
+ * @param {string} countryISO - ISO3 code of the country
  * @param {Function} onShowAll - Callback to show all images in collections
  */
-const QuizImageDisplay = ({ imagesByCollection, countryName, onShowAll }) => {
+const QuizImageDisplay = ({ imagesByCollection, countryName, countryISO, onShowAll }) => {
   const [randomImage, setRandomImage] = useState(null);
   const [collectionName, setCollectionName] = useState(null);
+  const [neighbors, setNeighbors] = useState([]);
+  const [loadingNeighbors, setLoadingNeighbors] = useState(false);
+  const [geoData, setGeoData] = useState(null);
+  const [targetCountryFeature, setTargetCountryFeature] = useState(null);
+  const [neighborFeatures, setNeighborFeatures] = useState([]);
 
   // Select a random image when imagesByCollection changes
   useEffect(() => {
@@ -55,7 +67,68 @@ const QuizImageDisplay = ({ imagesByCollection, countryName, onShowAll }) => {
     setCollectionName(selected.collection);
   }, [imagesByCollection]);
 
-  if (!randomImage || !collectionName) return null;
+  // Load GeoJSON data with full country list
+  useEffect(() => {
+    const loadGeoData = async () => {
+      try {
+        // Fetch countries list first to ensure all countries are loaded
+        const countries = await fetchCountries();
+        const data = await loadTopoJSON(countries);
+        setGeoData(data);
+      } catch (error) {
+        console.error('Error loading GeoJSON:', error);
+        // Fallback to simple topology if countries fetch fails
+        try {
+          const data = await loadTopoJSON([]);
+          setGeoData(data);
+        } catch (fallbackError) {
+          console.error('Fallback GeoJSON loading failed:', fallbackError);
+        }
+      }
+    };
+    loadGeoData();
+  }, []);
+
+  // Fetch neighbors and extract country features when country changes
+  useEffect(() => {
+    if (!countryISO || !geoData) {
+      setNeighbors([]);
+      setTargetCountryFeature(null);
+      setNeighborFeatures([]);
+      return;
+    }
+
+    const loadNeighbors = async () => {
+      setLoadingNeighbors(true);
+      try {
+        // Fetch neighbor data
+        const neighborData = await fetchNeighbors(countryISO);
+        setNeighbors(neighborData || []);
+
+        // Find target country feature
+        const targetFeature = geoData.features.find(f => getCountryIsoCode(f) === countryISO);
+        setTargetCountryFeature(targetFeature);
+
+        // Find neighbor features
+        const neighborISO3s = (neighborData || []).map(n => n.iso3);
+        const neighborGeoFeatures = geoData.features.filter(f =>
+          neighborISO3s.includes(getCountryIsoCode(f))
+        );
+        setNeighborFeatures(neighborGeoFeatures);
+      } catch (error) {
+        console.error('Error fetching neighbors:', error);
+        setNeighbors([]);
+        setTargetCountryFeature(null);
+        setNeighborFeatures([]);
+      } finally {
+        setLoadingNeighbors(false);
+      }
+    };
+
+    loadNeighbors();
+  }, [countryISO, geoData]);
+
+  const hasImages = randomImage && collectionName;
 
   const getSourceInfo = (source) => {
     switch(source?.toLowerCase()) {
@@ -362,71 +435,361 @@ const QuizImageDisplay = ({ imagesByCollection, countryName, onShowAll }) => {
     );
   };
 
-  const imageUrl = randomImage.filepath.startsWith('http')
-    ? randomImage.filepath
-    : `${API_BASE}/${randomImage.filepath}`;
+  const imageUrl = hasImages
+    ? (randomImage.filepath.startsWith('http')
+        ? randomImage.filepath
+        : `${API_BASE}/${randomImage.filepath}`)
+    : null;
+
+  // Helper function to calculate bounding box for a set of features
+  const calculateBounds = (features) => {
+    if (!features || features.length === 0) return null;
+
+    let minLng = Infinity, maxLng = -Infinity;
+    let minLat = Infinity, maxLat = -Infinity;
+
+    const processCoords = (coords) => {
+      if (!Array.isArray(coords)) return;
+
+      if (typeof coords[0] === 'number' && typeof coords[1] === 'number') {
+        const [lng, lat] = coords;
+        minLng = Math.min(minLng, lng);
+        maxLng = Math.max(maxLng, lng);
+        minLat = Math.min(minLat, lat);
+        maxLat = Math.max(maxLat, lat);
+      } else {
+        coords.forEach(c => processCoords(c));
+      }
+    };
+
+    features.forEach(feature => {
+      if (feature?.geometry?.coordinates) {
+        processCoords(feature.geometry.coordinates);
+      }
+    });
+
+    if (minLng === Infinity) return null;
+
+    // Add 20% padding
+    const lngPadding = (maxLng - minLng) * 0.3;
+    const latPadding = (maxLat - minLat) * 0.3;
+
+    return {
+      minLng: minLng - lngPadding,
+      maxLng: maxLng + lngPadding,
+      minLat: minLat - latPadding,
+      maxLat: maxLat + latPadding
+    };
+  };
+
+  // Helper function to convert GeoJSON to SVG path
+  const geometryToSVGPath = (geometry, bounds, width = 500, height = 500) => {
+    if (!geometry || !bounds) return '';
+
+    const lngRange = bounds.maxLng - bounds.minLng;
+    const latRange = bounds.maxLat - bounds.minLat;
+    const scale = Math.min(width / lngRange, height / latRange);
+
+    // Center the map
+    const offsetX = (width - lngRange * scale) / 2;
+    const offsetY = (height - latRange * scale) / 2;
+
+    const projectPoint = ([lng, lat]) => {
+      const x = (lng - bounds.minLng) * scale + offsetX;
+      const y = height - ((lat - bounds.minLat) * scale + offsetY);
+      return [x, y];
+    };
+
+    const coordsToPath = (coords, isFirst = true) => {
+      if (!Array.isArray(coords) || coords.length === 0) return '';
+
+      if (typeof coords[0] === 'number') {
+        const [x, y] = projectPoint(coords);
+        return `${x},${y}`;
+      }
+
+      if (Array.isArray(coords[0]) && typeof coords[0][0] === 'number') {
+        // Filter out invalid coordinates
+        const validCoords = coords.filter(coord => {
+          if (!coord || coord.length < 2) return false;
+          const [lng, lat] = coord;
+          return Math.abs(lng) <= 180 && Math.abs(lat) <= 90;
+        });
+
+        if (validCoords.length === 0) return '';
+
+        // Build path, breaking it when there's a large longitude jump (antimeridian crossing)
+        let pathSegments = [];
+        let currentSegment = [];
+
+        validCoords.forEach((coord, i) => {
+          if (i === 0) {
+            currentSegment.push(coord);
+          } else {
+            const [prevLng] = validCoords[i - 1];
+            const [currLng] = coord;
+            const lngDiff = Math.abs(currLng - prevLng);
+
+            // If longitude jumps more than 180 degrees, it's crossing the antimeridian
+            // Start a new segment to avoid drawing a line across the map
+            if (lngDiff > 180) {
+              if (currentSegment.length > 0) {
+                pathSegments.push(currentSegment);
+              }
+              currentSegment = [coord];
+            } else {
+              currentSegment.push(coord);
+            }
+          }
+        });
+
+        // Add the last segment
+        if (currentSegment.length > 0) {
+          pathSegments.push(currentSegment);
+        }
+
+        // Convert each segment to SVG path
+        return pathSegments.map(segment => {
+          if (segment.length < 2) return '';
+          return segment.map((coord, i) => {
+            const [x, y] = projectPoint(coord);
+            return i === 0 ? `M ${x},${y}` : `L ${x},${y}`;
+          }).join(' ') + ' Z';
+        }).filter(Boolean).join(' ');
+      }
+
+      return coords.map(ring => coordsToPath(ring, false)).join(' ');
+    };
+
+    if (geometry.type === 'Polygon') {
+      return coordsToPath(geometry.coordinates);
+    } else if (geometry.type === 'MultiPolygon') {
+      // Render each polygon separately to avoid weird connectors
+      return geometry.coordinates.map(polygon => coordsToPath(polygon)).filter(Boolean).join(' ');
+    }
+
+    return '';
+  };
+
+  // Calculate bounds including target country and neighbors
+  const allFeatures = targetCountryFeature
+    ? [targetCountryFeature, ...neighborFeatures]
+    : [];
+  const bounds = calculateBounds(allFeatures);
+
+  // Calculate SVG dimensions based on aspect ratio
+  // Use a base width for calculation, will be responsive in CSS
+  const baseMapWidth = 300;
+  let baseMapHeight = 300;
+
+  if (bounds) {
+    const lngRange = bounds.maxLng - bounds.minLng;
+    const latRange = bounds.maxLat - bounds.minLat;
+    const aspectRatio = latRange / lngRange;
+
+    // Calculate height to maintain aspect ratio
+    baseMapHeight = Math.round(baseMapWidth * aspectRatio);
+
+    // Clamp height between 150 and 450 for reasonable sizes
+    baseMapHeight = Math.max(150, Math.min(450, baseMapHeight));
+  }
+
+  // Generate SVG paths with dynamic dimensions
+  const targetPath = targetCountryFeature && bounds
+    ? geometryToSVGPath(targetCountryFeature.geometry, bounds, baseMapWidth, baseMapHeight)
+    : '';
+
+  const neighborPaths = neighborFeatures.map(feature => ({
+    path: bounds ? geometryToSVGPath(feature.geometry, bounds, baseMapWidth, baseMapHeight) : '',
+    name: neighbors.find(n => n.iso3 === getCountryIsoCode(feature))?.common_name ||
+          neighbors.find(n => n.iso3 === getCountryIsoCode(feature))?.name || ''
+  }));
 
   return (
-    <Card
-      sx={{
-        backgroundColor: COLOR_SCHEME.cardBg,
-        color: COLOR_SCHEME.text,
-        border: `1px solid ${COLOR_SCHEME.border}`,
-        boxShadow: 'none',
-        borderRadius: 2,
-      }}
-    >
-      <CardContent sx={{ p: 2, '&:last-child': { pb: 2 } }}>
-        {/* Image */}
-        <Box
+    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+      {/* Map View Section - 500x500 box */}
+      <Paper
+        elevation={0}
+        sx={{
+          backgroundColor: COLOR_SCHEME.cardBg,
+          border: `1px solid ${COLOR_SCHEME.border}`,
+          borderRadius: 2,
+          p: 2,
+        }}
+      >
+        <Box sx={{
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          gap: 2
+        }}>
+          {/* Map Box with SVG - Dynamic height based on aspect ratio */}
+          {loadingNeighbors || !geoData ? (
+            <Box sx={{
+              width: { xs: '100%', sm: 300 },
+              maxWidth: 300,
+              height: { xs: 'auto', sm: 300 },
+              aspectRatio: '1',
+              backgroundColor: '#e8f4f8',
+              border: `2px solid ${COLOR_SCHEME.border}`,
+              borderRadius: 1,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center'
+            }}>
+              <CircularProgress size={40} />
+            </Box>
+          ) : (
+            <Box sx={{
+              position: 'relative',
+              width: { xs: '100%', sm: baseMapWidth },
+              maxWidth: baseMapWidth,
+              height: 'auto',
+              overflow: 'hidden',
+              borderRadius: 1
+            }}>
+              <svg
+                viewBox={`0 0 ${baseMapWidth} ${baseMapHeight}`}
+                preserveAspectRatio="xMidYMid meet"
+                style={{
+                  width: '100%',
+                  height: 'auto',
+                  border: `2px solid ${COLOR_SCHEME.border}`,
+                  borderRadius: '4px',
+                  backgroundColor: '#e8f4f8',
+                  display: 'block'
+                }}
+              >
+                {/* Render neighbor countries */}
+                {neighborPaths.map((neighbor, idx) => (
+                  <path
+                    key={idx}
+                    d={neighbor.path}
+                    fill="#d0e8f0"
+                    stroke="#5a8fa8"
+                    strokeWidth="1"
+                    opacity="0.6"
+                  />
+                ))}
+
+                {/* Render target country (highlighted) */}
+                {targetPath && (
+                  <path
+                    d={targetPath}
+                    fill="#ff6b6b"
+                    stroke="#d63031"
+                    strokeWidth="2"
+                    opacity="0.8"
+                  />
+                )}
+              </svg>
+
+              {/* Country name overlay */}
+              <Box sx={{
+                position: 'absolute',
+                top: 8,
+                left: '50%',
+                transform: 'translateX(-50%)',
+                backgroundColor: 'rgba(255, 255, 255, 0.95)',
+                px: 2,
+                py: 0.5,
+                borderRadius: 1,
+                border: '1px solid #cbd5e0',
+                boxShadow: '0 2px 8px rgba(0,0,0,0.1)'
+              }}>
+                <Typography variant="body1" sx={{
+                  fontWeight: 700,
+                  color: '#2c5282',
+                  textAlign: 'center',
+                  fontSize: '0.9rem'
+                }}>
+                  {countryName}
+                </Typography>
+              </Box>
+            </Box>
+          )}
+        </Box>
+      </Paper>
+
+      {/* Image Section - Only show if images exist */}
+      {hasImages ? (
+        <Card
           sx={{
-            display: 'flex',
-            justifyContent: 'center',
-            mb: 2,
-            maxHeight: '400px',
-            overflow: 'hidden',
+            backgroundColor: COLOR_SCHEME.cardBg,
+            color: COLOR_SCHEME.text,
+            border: `1px solid ${COLOR_SCHEME.border}`,
+            boxShadow: 'none',
+            borderRadius: 2,
           }}
         >
-          <img
-            src={imageUrl}
-            alt={randomImage.title || randomImage.description || 'Artwork'}
-            style={{
-              maxWidth: '100%',
-              height: 'auto',
-              maxHeight: '400px',
-              objectFit: 'contain',
-              borderRadius: '4px',
-            }}
-            onError={(e) => {
-              e.target.style.display = 'none';
-            }}
-          />
-        </Box>
-
-        {/* Caption */}
-        {renderCaption()}
-
-        {/* Show all images button */}
-        {onShowAll && (
-          <Box sx={{ mt: 3, display: 'flex', justifyContent: 'center' }}>
-            <Button
-              variant="outlined"
-              onClick={onShowAll}
+          <CardContent sx={{ p: 2, '&:last-child': { pb: 2 } }}>
+            {/* Image */}
+            <Box
               sx={{
-                color: COLOR_SCHEME.linkColor,
-                borderColor: COLOR_SCHEME.border,
-                '&:hover': {
-                  borderColor: COLOR_SCHEME.linkColor,
-                  backgroundColor: 'rgba(0, 0, 0, 0.04)',
-                },
+                display: 'flex',
+                justifyContent: 'center',
+                mb: 2,
+                maxHeight: '400px',
+                overflow: 'hidden',
               }}
             >
-              Show all images
-            </Button>
-          </Box>
-        )}
-      </CardContent>
-    </Card>
+              <img
+                src={imageUrl}
+                alt={randomImage.title || randomImage.description || 'Artwork'}
+                style={{
+                  maxWidth: '100%',
+                  height: 'auto',
+                  maxHeight: '400px',
+                  objectFit: 'contain',
+                  borderRadius: '4px',
+                }}
+                onError={(e) => {
+                  e.target.style.display = 'none';
+                }}
+              />
+            </Box>
+
+            {/* Caption */}
+            {renderCaption()}
+
+            {/* Show all images button */}
+            {onShowAll && (
+              <Box sx={{ mt: 3, display: 'flex', justifyContent: 'center' }}>
+                <Button
+                  variant="outlined"
+                  onClick={onShowAll}
+                  sx={{
+                    color: COLOR_SCHEME.linkColor,
+                    borderColor: COLOR_SCHEME.border,
+                    '&:hover': {
+                      borderColor: COLOR_SCHEME.linkColor,
+                      backgroundColor: 'rgba(0, 0, 0, 0.04)',
+                    },
+                  }}
+                >
+                  Show all images
+                </Button>
+              </Box>
+            )}
+          </CardContent>
+        </Card>
+      ) : (
+        <Paper
+          elevation={0}
+          sx={{
+            backgroundColor: COLOR_SCHEME.cardBg,
+            border: `1px solid ${COLOR_SCHEME.border}`,
+            borderRadius: 2,
+            p: 3,
+            textAlign: 'center'
+          }}
+        >
+          <Typography variant="body1" sx={{ color: 'text.secondary', fontStyle: 'italic' }}>
+            No images available for this country
+          </Typography>
+        </Paper>
+      )}
+    </Box>
   );
 };
 
