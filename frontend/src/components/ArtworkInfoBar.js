@@ -88,6 +88,9 @@ const ArtworkInfoBar = ({
   // showAllImagesInQuiz: In quiz mode, controls whether to show all images or just random one
   const [showAllImagesInQuiz, setShowAllImagesInQuiz] = useState(false);
 
+  // overlayVisible: Controls the entire overlay fade-in after 2 second delay
+  const [overlayVisible, setOverlayVisible] = useState(false);
+
   /**
    * REFS (Persistent References)
    *
@@ -106,22 +109,31 @@ const ArtworkInfoBar = ({
    * FADE-IN ANIMATION EFFECT
    *
    * This effect triggers a smooth fade-in animation when a new country is loaded.
-   * It uses requestAnimationFrame to ensure the initial opacity:0 is painted before fading in.
+   * Waits 2 seconds before showing the overlay, then fades in over 1 second.
    */
   useEffect(() => {
     // Guard clause: only run if we have a country
-    if (!countryISO) return;
+    if (!countryISO) {
+      setOverlayVisible(false);
+      return;
+    }
 
-    // Start with dialog invisible and reset "show all" state
+    // Start with overlay invisible and reset "show all" state
     setIsVisible(false);
     setShowAllImagesInQuiz(false);
+    setOverlayVisible(false);
 
-    // requestAnimationFrame: Waits for the next browser paint cycle
-    // This ensures the opacity:0 is rendered before we set opacity:1
-    // Without this, the browser might batch both updates and skip the transition
-    requestAnimationFrame(() => {
-      setIsVisible(true);  // Trigger fade-in via CSS transition
-    });
+    // Wait 2 seconds before starting to show the overlay
+    const timer = setTimeout(() => {
+      setOverlayVisible(true);
+      // requestAnimationFrame: Waits for the next browser paint cycle
+      // This ensures the opacity:0 is rendered before we set opacity:1
+      requestAnimationFrame(() => {
+        setIsVisible(true);  // Trigger fade-in via CSS transition
+      });
+    }, 2000);
+
+    return () => clearTimeout(timer);
   }, [countryISO]); // Re-run when country changes
 
   /**
@@ -315,13 +327,15 @@ const ArtworkInfoBar = ({
             left: '5px',
             right: '5px',
             bottom: '5px',
+            // Fade-in animation for backdrop
+            opacity: overlayVisible ? (isVisible ? 0.3 : 0) : 0,
+            transition: 'opacity 1s ease-in-out',
           },
           '& .MuiDialog-paper': {
-            // Fade-in animation controlled by isVisible state
-            opacity: isVisible ? 1 : 0,  // Ternary operator: condition ? ifTrue : ifFalse
-            transition: 'opacity 5s cubic-bezier(0.4, 0.0, 0.2, 1)',
-            // CSS transition: Smoothly animates opacity change over 5 seconds
-            // cubic-bezier: Custom easing function for smooth acceleration/deceleration
+            // Fade-in animation controlled by overlayVisible and isVisible state
+            opacity: overlayVisible ? (isVisible ? 1 : 0) : 0,  // Ternary operator: condition ? ifTrue : ifFalse
+            transition: 'opacity 1s ease-in-out',
+            // CSS transition: Smoothly animates opacity change over 1 second
 
             pointerEvents: isVisible ? 'auto' : 'none',
             // Disable mouse interactions while invisible
