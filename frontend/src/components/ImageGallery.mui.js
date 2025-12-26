@@ -140,9 +140,9 @@ const ImageGallery = ({
         const sourceInfo = getSourceInfo(image.source);
         return (
           <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
-            {image.title && (
+            {image.title && (image.work_url || (sourceInfo && sourceInfo.url)) && (
           <Link
-                href={image.work_url || sourceInfo.url}
+                href={image.work_url || (sourceInfo && sourceInfo.url)}
                 target="_blank"
                 rel="noopener noreferrer"
                 variant="body2"

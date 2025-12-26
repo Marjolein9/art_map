@@ -26,8 +26,9 @@ import { getCountryIsoCode } from '../utils/countryCodeMapping';
  * @param {string} countryName - Name of the country
  * @param {string} countryISO - ISO3 code of the country
  * @param {Function} onShowAll - Callback to show all images in collections
+ * @param {boolean} showMap - Whether to show the map (default: true)
  */
-const QuizImageDisplay = ({ imagesByCollection, countryName, countryISO, onShowAll }) => {
+const QuizImageDisplay = ({ imagesByCollection, countryName, countryISO, onShowAll, showMap = true }) => {
   const [randomImage, setRandomImage] = useState(null);
   const [collectionName, setCollectionName] = useState(null);
   const [neighbors, setNeighbors] = useState([]);
@@ -607,24 +608,25 @@ const QuizImageDisplay = ({ imagesByCollection, countryName, countryISO, onShowA
 
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-      {/* Map View Section - 500x500 box */}
-      <Paper
-        elevation={0}
-        sx={{
-          backgroundColor: COLOR_SCHEME.cardBg,
-          border: `1px solid ${COLOR_SCHEME.border}`,
-          borderRadius: 2,
-          p: 2,
-        }}
-      >
-        <Box sx={{
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          gap: 2
-        }}>
-          {/* Map Box with SVG - Dynamic height based on aspect ratio */}
-          {loadingNeighbors || !geoData ? (
+      {/* Map View Section - Only show if showMap prop is true */}
+      {showMap && (
+        <Paper
+          elevation={0}
+          sx={{
+            backgroundColor: COLOR_SCHEME.cardBg,
+            border: `1px solid ${COLOR_SCHEME.border}`,
+            borderRadius: 2,
+            p: 2,
+          }}
+        >
+          <Box sx={{
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            gap: 2
+          }}>
+            {/* Map Box with SVG - Dynamic height based on aspect ratio */}
+            {loadingNeighbors || !geoData ? (
             <Box sx={{
               width: { xs: '100%', sm: 300 },
               maxWidth: 300,
@@ -683,33 +685,11 @@ const QuizImageDisplay = ({ imagesByCollection, countryName, countryISO, onShowA
                   />
                 )}
               </svg>
-
-              {/* Country name overlay */}
-              <Box sx={{
-                position: 'absolute',
-                top: 8,
-                left: '50%',
-                transform: 'translateX(-50%)',
-                backgroundColor: 'rgba(255, 255, 255, 0.95)',
-                px: 2,
-                py: 0.5,
-                borderRadius: 1,
-                border: '1px solid #cbd5e0',
-                boxShadow: '0 2px 8px rgba(0,0,0,0.1)'
-              }}>
-                <Typography variant="body1" sx={{
-                  fontWeight: 700,
-                  color: '#2c5282',
-                  textAlign: 'center',
-                  fontSize: '0.9rem'
-                }}>
-                  {countryName}
-                </Typography>
-              </Box>
             </Box>
           )}
         </Box>
       </Paper>
+      )}
 
       {/* Image Section - Only show if images exist */}
       {hasImages ? (

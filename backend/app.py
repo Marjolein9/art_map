@@ -379,11 +379,27 @@ def get_random_image(iso3):
         LIMIT 1
     ''', (iso3, iso3, iso3, iso3))
 
+    # Get total count of images for this country
+    total_count_query = '''
+        SELECT COUNT(*) as total FROM (
+            (SELECT 1 FROM albert_kahn_images WHERE iso3 = %s)
+            UNION ALL
+            (SELECT 1 FROM children_artwork_images WHERE artist_iso3 = %s)
+            UNION ALL
+            (SELECT 1 FROM public_domain_images WHERE iso3 = %s)
+            UNION ALL
+            (SELECT 1 FROM met_images WHERE iso3 = %s)
+        ) AS all_images
+    '''
+    count_result = execute_query(total_count_query, (iso3, iso3, iso3, iso3))
+    total_images = count_result[0]['total'] if count_result and len(count_result) > 0 else 0
+
     if not random_image or len(random_image) == 0:
         return jsonify({
             'image': None,
             'collection': None,
-            'iso3': iso3
+            'iso3': iso3,
+            'total_images': total_images
         })
 
     # Extract the image and collection name
@@ -396,7 +412,8 @@ def get_random_image(iso3):
     return jsonify({
         'image': image_data,
         'collection': collection_name,
-        'iso3': iso3
+        'iso3': iso3,
+        'total_images': total_images
     })
 
 @app.route('/api/game/check-answer', methods=['POST'])

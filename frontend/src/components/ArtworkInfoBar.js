@@ -91,6 +91,9 @@ const ArtworkInfoBar = ({
   // overlayVisible: Controls the entire overlay fade-in after 2 second delay
   const [overlayVisible, setOverlayVisible] = useState(false);
 
+  // totalImagesAvailable: Total number of images available for current country (from backend)
+  const [totalImagesAvailable, setTotalImagesAvailable] = useState(0);
+
   /**
    * REFS (Persistent References)
    *
@@ -160,7 +163,10 @@ const ArtworkInfoBar = ({
     if (mode === 'quiz' && !showAllImagesInQuiz) {
       fetchRandomImage(countryISO)
         .then(data => {
-          // data = {image: {...}, collection: 'Albert Kahn', iso3: 'ITA'}
+          // data = {image: {...}, collection: 'Albert Kahn', iso3: 'ITA', total_images: 5}
+          // Store total_images count to determine if "Show all" button should appear
+          setTotalImagesAvailable(data.total_images || 0);
+
           if (data.image && data.collection) {
             // Format as imagesByCollection structure with single image
             const imageData = {
@@ -173,6 +179,7 @@ const ArtworkInfoBar = ({
         })
         .catch(() => {
           setImagesByCollection({});
+          setTotalImagesAvailable(0);
         })
         .finally(() => {
           setLoading(false);
@@ -401,18 +408,7 @@ const ArtworkInfoBar = ({
               {/* Logical OR (||): Returns first truthy value (fallback pattern) */}
             </Typography>
 
-            {/* Subtitle */}
-            <Typography
-              variant="body2"
-              sx={{
-                color: 'text.secondary',
-                fontStyle: 'italic',
-                fontSize: '0.875rem',
-                mt: 0.5
-              }}
-            >
-              An image from {countryName || countryISO}
-            </Typography>
+
           </Box>
 
           {/* Button container */}
@@ -509,17 +505,27 @@ const ArtworkInfoBar = ({
                 - Explore mode: Show all collections with full galleries
               */}
               {mode === 'quiz' && !showAllImagesInQuiz ? (
-                // Quiz mode: Single random image with caption and "Show all" button (only if more than 1 image)
+                // Quiz mode: Single random image with caption and "Show all" button
                 // Always render even if no images - QuizImageDisplay shows map and "No images available" message
+                // Show "See all images" button only when there are multiple images available
                 <QuizImageDisplay
                   imagesByCollection={imagesByCollection}
                   countryName={countryName}
                   countryISO={countryISO}
-                  onShowAll={totalImages > 1 ? () => setShowAllImagesInQuiz(true) : null}
+                  onShowAll={totalImagesAvailable > 1 ? () => setShowAllImagesInQuiz(true) : null}
                 />
               ) : mode === 'quiz' && showAllImagesInQuiz ? (
-                // Quiz mode with "Show all" clicked: Display all images with same format as single image
+                // Quiz mode with "Show all" clicked: Display map once at top, then all images
                 <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
+                  {/* Show map once at the top */}
+                  <QuizImageDisplay
+                    imagesByCollection={{}}
+                    countryName={countryName}
+                    countryISO={countryISO}
+                    onShowAll={null}
+                    showMap={true}
+                  />
+                  {/* Show all images without maps */}
                   {Object.entries(imagesByCollection).map(([collection, images]) =>
                     images?.map((image, index) => (
                       <QuizImageDisplay
@@ -528,6 +534,7 @@ const ArtworkInfoBar = ({
                         countryName={countryName}
                         countryISO={countryISO}
                         onShowAll={null}
+                        showMap={false}
                       />
                     ))
                   )}
