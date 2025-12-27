@@ -414,6 +414,7 @@ function App() {
                       setShowOnLoad(false);
                       setMode('explore');
                     }}
+                    onClose={() => setShowOnLoad(false)}
                   />
                 )}
 
@@ -422,6 +423,8 @@ function App() {
                   <WelcomeOverlay
                     onClose={() => setShowWelcome(false)}
                     colors={COLORS}
+                    mode={mode}
+                    onModeToggle={handleModeToggle}
                     hintsEnabled={hintsEnabled}
                     setHintsEnabled={setHintsEnabled}
                     selectedQuizRegion={selectedQuizRegion}

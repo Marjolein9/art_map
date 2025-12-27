@@ -10,19 +10,38 @@ import {
   Button,
   Box,
   Typography,
+  IconButton,
 } from '@mui/material';
 import { ThemeProvider } from '@mui/material/styles';
 import muiTheme from '../theme/muiTheme';
 
-const OnLoadOverlay = ({ onStartQuiz, onExplore }) => {
+const OnLoadOverlay = ({ onStartQuiz, onExplore, onClose }) => {
   return (
     <ThemeProvider theme={muiTheme}>
       <Dialog
         open={true}
         maxWidth="sm"
         fullWidth
+        onClose={onClose}
       >
         <DialogContent>
+          {/* Close button in top right */}
+          {onClose && (
+            <Box sx={{ display: 'flex', justifyContent: 'flex-end', mb: -2 }}>
+              <Button
+                variant="outlined"
+                onClick={onClose}
+                size="small"
+                sx={{
+                  minWidth: 'auto',
+                  padding: '4px 8px'
+                }}
+              >
+                ✕
+              </Button>
+            </Box>
+          )}
+
           <Box sx={{
             display: 'flex',
             flexDirection: 'column',
@@ -31,11 +50,11 @@ const OnLoadOverlay = ({ onStartQuiz, onExplore }) => {
             py: 4
           }}>
             <Typography variant="h4" component="h1" sx={{ fontWeight: 600 }}>
-              Welcome to Art Map
+              Geography & Public Domain
             </Typography>
 
             <Typography variant="body1" color="textSecondary" sx={{ textAlign: 'center', mb: 2 }}>
-              Choose how you'd like to explore art from around the world
+              Explore public domain images from around the world
             </Typography>
 
             <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, width: '100%', maxWidth: '300px' }}>

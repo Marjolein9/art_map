@@ -28,6 +28,8 @@ import muiTheme from '../theme/muiTheme';
 const WelcomeOverlay = ({
   onClose,
   colors,
+  mode,
+  onModeToggle,
   hintsEnabled,
   setHintsEnabled,
   selectedQuizRegion,
@@ -91,7 +93,7 @@ const WelcomeOverlay = ({
               mb: 2
             }}
           >
-            Image Types
+            Help & Settings
           </Typography>
         </DialogTitle>
 
@@ -109,27 +111,82 @@ const WelcomeOverlay = ({
               }}
             />
             <CardContent>
-              <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+              <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3, alignItems: 'center' }}>
+                {/* Quiz Mode Toggle */}
+                <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 0.5 }}>
+                  <FormControlLabel
+                    control={
+                      <Switch
+                        checked={mode === 'quiz'}
+                        onChange={onModeToggle}
+                        size="small"
+                      />
+                    }
+                    label="Quiz"
+                  />
+                  <Typography variant="caption" color="textSecondary" sx={{ textAlign: 'center' }}>
+                    Turn Quiz Mode on/off
+                  </Typography>
+                </Box>
+
+                {/* Next Button */}
+                <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 0.5 }}>
+                  <Button
+                    variant="outlined"
+                    size="small"
+                    disabled
+                    sx={{
+                      minWidth: 'auto',
+                      padding: '2px 8px',
+                      fontSize: '1rem'
+                    }}
+                  >
+                    Next
+                  </Button>
+                  <Typography variant="caption" color="textSecondary" sx={{ textAlign: 'center' }}>
+                    Get a new country to find
+                  </Typography>
+                </Box>
+
+                {/* Show Me Button */}
+                <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 0.5 }}>
+                  <Button
+                    variant="outlined"
+                    size="small"
+                    disabled
+                    sx={{
+                      minWidth: 'auto',
+                      padding: '2px 8px',
+                      fontSize: '1rem'
+                    }}
+                  >
+                    Show
+                  </Button>
+                  <Typography variant="caption" color="textSecondary" sx={{ textAlign: 'center' }}>
+                    Reveal the answer and its location
+                  </Typography>
+                </Box>
+
                 {/* Hints Toggle */}
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 0.5 }}>
                   <FormControlLabel
                     control={
                       <Switch
                         checked={hintsEnabled}
                         onChange={(e) => setHintsEnabled(e.target.checked)}
+                        disabled={mode !== 'quiz'}
                         size="small"
                       />
                     }
                     label="Hints"
-                    sx={{ minWidth: '100px' }}
                   />
-                  <Typography variant="body2">
+                  <Typography variant="caption" color="textSecondary" sx={{ textAlign: 'center' }}>
                     Show neighboring countries in quiz mode
                   </Typography>
                 </Box>
 
                 {/* Region Filter */}
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 0.5 }}>
                   <Select
                     value={selectedQuizRegion || ''}
                     onChange={(e) => setSelectedQuizRegion(e.target.value || null)}
@@ -144,13 +201,26 @@ const WelcomeOverlay = ({
                     <MenuItem value="Europe">Europe</MenuItem>
                     <MenuItem value="Oceania">Oceania</MenuItem>
                   </Select>
-                  <Typography variant="body2">
+                  <Typography variant="caption" color="textSecondary" sx={{ textAlign: 'center' }}>
                     Filter quiz questions by region
                   </Typography>
                 </Box>
               </Box>
             </CardContent>
           </Card>
+
+          {/* Image Types Section Header */}
+          <Typography
+            variant="h6"
+            sx={{
+              fontWeight: 600,
+              textAlign: 'center',
+              mb: 2,
+              mt: 1
+            }}
+          >
+            Image Types
+          </Typography>
 
           {/* Country Examples */}
           {welcomeExamples.countries.map((country) => (
@@ -259,58 +329,6 @@ const WelcomeOverlay = ({
               )}
             </Box>
           ))}
-
-          {/* Quiz Mode Controls Section */}
-          <Card>
-            <CardHeader
-              title="Quiz Mode Controls"
-              sx={{
-                bgcolor: 'background.paper',
-                borderBottom: '1px solid',
-                borderColor: 'divider',
-                textAlign: 'center',
-              }}
-            />
-            <CardContent>
-              <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1.5 }}>
-                {/* Quiz Toggle */}
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                  <FormControlLabel
-                    control={<Switch disabled />}
-                    label="Quiz"
-                    sx={{ minWidth: '100px' }}
-                  />
-                  <Typography variant="body2">Turn Quiz Mode on/off</Typography>
-                </Box>
-
-                {/* Skip */}
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                  <Button variant="outlined" size="small" sx={{ minWidth: '40px' }}>
-                    Next
-                  </Button>
-                  <Typography variant="body2">Get a new country to find</Typography>
-                </Box>
-
-                {/* Show Me */}
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                  <Button variant="outlined" size="small" sx={{ minWidth: '60px' }}>
-                    Show Me
-                  </Button>
-                  <Typography variant="body2">Reveal the answer and its location</Typography>
-                </Box>
-
-                {/* Hint Toggle */}
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                  <FormControlLabel
-                    control={<Switch disabled />}
-                    label="Hint"
-                    sx={{ minWidth: '100px' }}
-                  />
-                  <Typography variant="body2">Show/hide the country and neighboring countries</Typography>
-                </Box>
-              </Box>
-            </CardContent>
-          </Card>
         </DialogContent>
       </Dialog>
     </ThemeProvider>
