@@ -20,13 +20,15 @@ import React, { memo, useState, useEffect, useRef, useMemo } from 'react';
 import Globe from 'react-globe.gl';
 // Globe: A 3D globe visualization library that renders an interactive Earth
 
-import { Button, Box, Select, MenuItem, FormControlLabel, Switch } from '@mui/material';
+import { Button, Box, Select, MenuItem, FormControlLabel, Switch, IconButton } from '@mui/material';
+import SettingsIcon from '@mui/icons-material/Settings';
 // Material-UI (MUI): A popular React component library that provides pre-built, styled components
 // Button: Clickable button component
 // Box: A flexible container component for layout
-// Typography: Text component with built-in styling
+// IconButton: Button component for icons
 // Select/MenuItem: Dropdown menu components
 // FormControlLabel/Switch: Toggle switch components
+// SettingsIcon: Gear icon from Material-UI icons
 
 import { getCountryIsoCode, initializeCountryMapping } from '../utils/countryCodeMapping';
 // Utility functions for working with country codes (ISO3 format like "USA", "DEU")
@@ -69,8 +71,7 @@ const WorldMap = ({
   countryLookup = {},     // Object mapping country codes to country data
   backendReady = false,   // Whether the backend server is ready to accept requests
   setShowWelcome,         // Function to show/hide the welcome overlay
-  selectedQuizRegion = null, // Selected region for filtering quiz questions
-  onQuizRegionChange = null, // Function to change quiz region filter
+  hintsEnabled = false,   // Whether hints are enabled (show neighboring countries)
 }) => {
   // Store colors in a constant for easy access throughout the component
   const COLORS = colors;
@@ -117,8 +118,7 @@ const WorldMap = ({
     height: window.innerHeight - 120 // Full window height minus header/footer space
   });
 
-  // hintsEnabled: Whether hints are currently turned on
-  const [hintsEnabled, setHintsEnabled] = useState(true);
+  // hintsEnabled is now passed as a prop from App.js
 
   // allCountries: Complete list of valid countries from the database
   const [allCountries, setAllCountries] = useState([]);
@@ -868,22 +868,45 @@ const WorldMap = ({
                 'Click to Explore'
               )}
 
-              {/* Info Button - opens welcome overlay */}
-              <Button
-                variant="outlined"
-                size="small"
+              {/* Settings Button - opens settings/help overlay */}
+              <IconButton
                 onClick={() => setShowWelcome(true)}
-                title="Open Welcome Menu"
+                title="Settings & Help"
                 sx={{
-                  minWidth: 'auto',
-                  padding: '2px 8px',
-                  fontSize: '16px'
+                  padding: '4px',
+                  color: 'var(--text-color)',
+                  '&:hover': {
+                    backgroundColor: 'transparent',
+                  }
                 }}
               >
-                ℹ
-              </Button>
+                <SettingsIcon fontSize="small" />
+              </IconButton>
+            </Box>
+          </div>
 
-              {/* Show and Next buttons (only in quiz mode) */}
+          <div className="overlay-controls">
+            {/* Quiz Mode Toggle and Action Buttons */}
+            <Box sx={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: 1,
+              mb: 1,
+              flexWrap: 'wrap'
+            }}>
+              {/* Quiz Mode Toggle Switch */}
+              <FormControlLabel
+                control={
+                  <Switch
+                    checked={mode === 'quiz'}
+                    onChange={onModeToggle}
+                    size="small"
+                  />
+                }
+                label="Quiz"
+              />
+
+              {/* Next and Show buttons (only in quiz mode) */}
               {mode === 'quiz' && (
                 <>
                   <Button
@@ -917,90 +940,6 @@ const WorldMap = ({
                 </>
               )}
             </Box>
-          </div>
-
-          <div className="overlay-controls">
-            {/*
-              Quiz Mode Toggle and Controls
-
-              Box is a MUI component for layout (like a <div> with built-in styling)
-              sx prop: MUI's styling system (CSS-in-JS)
-            */}
-            <Box sx={{
-              display: 'flex',        // Flexbox layout
-              alignItems: 'center',   // Vertically center items
-              gap: 1,                 // 8px gap (1 unit = 8px in MUI)
-              mb: 1,                  // Margin bottom: 8px
-              flexWrap: 'wrap'        // Wrap to next line on small screens
-            }}>
-              {/*
-                Quiz Mode Toggle Switch
-
-                FormControlLabel wraps a control (Switch) with a label
-              */}
-              <FormControlLabel
-                control={
-                  <Switch
-                    checked={mode === 'quiz'}  // Switch is on when mode is 'quiz'
-                    onChange={onModeToggle}     // Call this function when toggled
-                    size="small"
-                  />
-                }
-                label="Quiz"
-              />
-
-              {/*
-                Hints Toggle (only visible in quiz mode)
-
-                Conditional rendering with && operator:
-                - If left side is truthy, render right side
-                - If left side is falsy, render nothing
-              */}
-              {mode === 'quiz' && (
-                <FormControlLabel
-                  control={
-                    <Switch
-                      checked={hintsEnabled}
-                      onChange={() => setHintsEnabled(prev => !prev)}  // Toggle: prev => !prev flips boolean
-                      size="small"
-                    />
-                  }
-                  label="Hints"
-                />
-              )}
-            </Box>
-
-            {/* Quiz-Specific Controls (only visible in quiz mode) */}
-            {mode === 'quiz' && (
-              <Box sx={{
-                display: 'flex',
-                flexDirection: 'column',  // Stack vertically
-                gap: 1.5                  // 12px gap between items
-              }}>
-
-                {/* Region Filter Dropdown - Only visible in test mode */}
-                {process.env.REACT_APP_TEST && onQuizRegionChange && (
-                  <Select
-                    value={selectedQuizRegion || ''}
-                    onChange={(e) => onQuizRegionChange(e.target.value || null)}
-                    size="small"
-                    displayEmpty
-                    sx={{
-                      maxWidth: '150px',
-                      minWidth: '140px',
-                    }}
-                  >
-                    <MenuItem value="">All Regions</MenuItem>
-                    <MenuItem value="Africa">Africa</MenuItem>
-                    <MenuItem value="Americas">Americas</MenuItem>
-                    <MenuItem value="Asia">Asia</MenuItem>
-                    <MenuItem value="Europe">Europe</MenuItem>
-                    <MenuItem value="Oceania">Oceania</MenuItem>
-                  </Select>
-                )}
-              </Box>
-            )}
-
           </div>
         </div>
       </div>

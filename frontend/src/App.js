@@ -12,6 +12,7 @@ import './styles/App.css';
 import './styles/components.css';
 import WorldMap from './components/WorldMap';
 import ArtworkInfoBar from './components/ArtworkInfoBar';
+import OnLoadOverlay from './components/OnLoadOverlay';
 import WelcomeOverlay from './components/WelcomeOverlay.mui';
 import COLOR_SCHEME from './styles/colorSchemes';
 import { useQuiz } from './hooks/useQuiz';
@@ -75,8 +76,14 @@ function App() {
   // Controls disclaimer modal visibility
   const [disclaimerOpen, setDisclaimerOpen] = useState(false);
 
-  // Controls welcome overlay visibility on initial load
+  // Controls on-load overlay visibility (shown once on initial load)
+  const [showOnLoad, setShowOnLoad] = useState(true);
+
+  // Controls welcome/settings overlay visibility (opened via gear icon)
   const [showWelcome, setShowWelcome] = useState(false);
+
+  // Controls whether hints (neighboring countries) are shown in quiz mode
+  const [hintsEnabled, setHintsEnabled] = useState(false);
 
   // Selected image collections to display (all selected by default)
   const [selectedCollections, setSelectedCollections] = useState([
@@ -395,19 +402,30 @@ function App() {
                   '--text-color': COLORS.text,
                 }}
               >
-                {/* Welcome Overlay - Shows on initial load */}
-                {showWelcome && (
-                  <WelcomeOverlay
+                {/* On-Load Overlay - Shows once when app first loads */}
+                {showOnLoad && (
+                  <OnLoadOverlay
                     onStartQuiz={() => {
-                      setShowWelcome(false);
+                      setShowOnLoad(false);
                       setMode('quiz');
                       fetchNewCountry();
                     }}
                     onExplore={() => {
-                      setShowWelcome(false);
+                      setShowOnLoad(false);
                       setMode('explore');
                     }}
+                  />
+                )}
+
+                {/* Welcome/Settings Overlay - Opened via gear icon */}
+                {showWelcome && (
+                  <WelcomeOverlay
+                    onClose={() => setShowWelcome(false)}
                     colors={COLORS}
+                    hintsEnabled={hintsEnabled}
+                    setHintsEnabled={setHintsEnabled}
+                    selectedQuizRegion={selectedQuizRegion}
+                    setSelectedQuizRegion={setSelectedQuizRegion}
                   />
                 )}
 
@@ -427,11 +445,10 @@ function App() {
                   onManualCountrySelect={setManualTargetCountry}
                   countryLookup={countryLookup}
                   setShowWelcome={setShowWelcome}
-                  selectedQuizRegion={selectedQuizRegion}
-                  onQuizRegionChange={setSelectedQuizRegion}
+                  hintsEnabled={hintsEnabled}
                 />
 
-                {((loading && mode === 'quiz') || (exploreLoading && mode === 'explore')) && (
+                {(!backendReady || (loading && mode === 'quiz') || (exploreLoading && mode === 'explore')) && (
                   <div className="loading-overlay">
                     <div
                       className="loading-content"
@@ -444,7 +461,9 @@ function App() {
                     >
                       <div className="loading-spinner"></div>
                       <p className="loading-text">
-                        {mode === 'quiz' ? 'Loading quiz data...' : 'Loading explore mode...'}
+                        {!backendReady
+                          ? 'Connecting to backend...'
+                          : mode === 'quiz' ? 'Loading quiz data...' : 'Loading explore mode...'}
                       </p>
                     </div>
                   </div>

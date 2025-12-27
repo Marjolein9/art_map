@@ -1,8 +1,7 @@
 /**
- * WelcomeOverlay Component - Using Material-UI
+ * WelcomeOverlay Component - Settings and Help Dialog
  *
- * Refactored to use @mui/material Dialog, Button, Typography components
- * Maintains all original functionality with cleaner, maintained code
+ * Provides access to game settings (hints, region filter) and helpful information
  */
 import React, { useState } from 'react';
 import {
@@ -19,25 +18,27 @@ import {
   Link as MuiLink,
   Switch,
   FormControlLabel,
+  Select,
+  MenuItem,
 } from '@mui/material';
 import { ThemeProvider } from '@mui/material/styles';
 import { welcomeExamples } from '../data/welcomeExamples';
 import muiTheme from '../theme/muiTheme';
 
-const WelcomeOverlay = ({ onStartQuiz, onExplore, colors }) => {
+const WelcomeOverlay = ({
+  onClose,
+  colors,
+  hintsEnabled,
+  setHintsEnabled,
+  selectedQuizRegion,
+  setSelectedQuizRegion
+}) => {
   const [isClosing, setIsClosing] = useState(false);
 
   const handleClose = () => {
     setIsClosing(true);
     setTimeout(() => {
-      onExplore();
-    }, 300);
-  };
-
-  const handleStartQuiz = () => {
-    setIsClosing(true);
-    setTimeout(() => {
-      onStartQuiz();
+      onClose();
     }, 300);
   };
 
@@ -90,45 +91,67 @@ const WelcomeOverlay = ({ onStartQuiz, onExplore, colors }) => {
               mb: 2
             }}
           >
-            Click on a country for info
+            Image Types
           </Typography>
-
-          <Box sx={{ display: 'flex', gap: 2, flex: 1, justifyContent: 'center' }}>
-            <Button
-              variant="contained"
-              onClick={handleClose}
-              size="large"
-              sx={{
-                fontSize: '18px',
-                padding: '12px 32px',
-                boxShadow: '0 4px 12px rgba(0, 0, 0, 0.3), 0 8px 24px rgba(0, 0, 0, 0.2)',
-                '&:hover': {
-                  boxShadow: '0 6px 16px rgba(0, 0, 0, 0.35), 0 10px 28px rgba(0, 0, 0, 0.25)',
-                }
-              }}
-            >
-              Explore
-            </Button>
-            <Button
-              variant="contained"
-              onClick={handleStartQuiz}
-              size="large"
-              sx={{
-                fontSize: '18px',
-                padding: '12px 32px',
-                boxShadow: '0 4px 12px rgba(0, 0, 0, 0.3), 0 8px 24px rgba(0, 0, 0, 0.2)',
-                '&:hover': {
-                  boxShadow: '0 6px 16px rgba(0, 0, 0, 0.35), 0 10px 28px rgba(0, 0, 0, 0.25)',
-                }
-              }}
-            >
-              Start Quiz
-            </Button>
-          </Box>
         </DialogTitle>
 
         {/* Dialog Content */}
         <DialogContent>
+          {/* Settings Section */}
+          <Card sx={{ mb: 3 }}>
+            <CardHeader
+              title="Game Settings"
+              sx={{
+                bgcolor: 'background.paper',
+                borderBottom: '1px solid',
+                borderColor: 'divider',
+                textAlign: 'center',
+              }}
+            />
+            <CardContent>
+              <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+                {/* Hints Toggle */}
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                  <FormControlLabel
+                    control={
+                      <Switch
+                        checked={hintsEnabled}
+                        onChange={(e) => setHintsEnabled(e.target.checked)}
+                        size="small"
+                      />
+                    }
+                    label="Hints"
+                    sx={{ minWidth: '100px' }}
+                  />
+                  <Typography variant="body2">
+                    Show neighboring countries in quiz mode
+                  </Typography>
+                </Box>
+
+                {/* Region Filter */}
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                  <Select
+                    value={selectedQuizRegion || ''}
+                    onChange={(e) => setSelectedQuizRegion(e.target.value || null)}
+                    size="small"
+                    displayEmpty
+                    sx={{ minWidth: '150px' }}
+                  >
+                    <MenuItem value="">All Regions</MenuItem>
+                    <MenuItem value="Africa">Africa</MenuItem>
+                    <MenuItem value="Americas">Americas</MenuItem>
+                    <MenuItem value="Asia">Asia</MenuItem>
+                    <MenuItem value="Europe">Europe</MenuItem>
+                    <MenuItem value="Oceania">Oceania</MenuItem>
+                  </Select>
+                  <Typography variant="body2">
+                    Filter quiz questions by region
+                  </Typography>
+                </Box>
+              </Box>
+            </CardContent>
+          </Card>
+
           {/* Country Examples */}
           {welcomeExamples.countries.map((country) => (
             <Box key={country.iso3} sx={{ mb: 2 }}>
@@ -142,32 +165,6 @@ const WelcomeOverlay = ({ onStartQuiz, onExplore, colors }) => {
                       borderColor: 'divider',
                     }}
                   >
-                    {/* Card Header - Source */}
-                    <CardHeader
-                      title={
-                        image.link ? (
-                          <MuiLink
-                            href={image.link}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            sx={{ color: colors.linkColor, textDecoration: 'underline', fontWeight: 600 }}
-                          >
-                            {image.source || collectionName}
-                          </MuiLink>
-                        ) : (
-                          <Typography variant="h6">
-                            {image.source || collectionName}
-                          </Typography>
-                        )
-                      }
-                      sx={{
-                        bgcolor: 'background.paper',
-                        borderBottom: '1px solid',
-                        borderColor: 'divider',
-                        textAlign: 'center',
-                      }}
-                    />
-
                     {/* Card Content */}
                     <CardContent>
                       {/* Image */}
@@ -184,6 +181,31 @@ const WelcomeOverlay = ({ onStartQuiz, onExplore, colors }) => {
 
                       {/* Caption */}
                       <Box sx={{ textAlign: 'center', mb: 2 }}>
+                        {/* Source as subtitle */}
+                        {image.source && (
+                          <Typography
+                            variant="subtitle1"
+                            sx={{
+                              mb: 1,
+                              fontWeight: 600,
+                              fontStyle: 'italic',
+                            }}
+                          >
+                            {image.link ? (
+                              <MuiLink
+                                href={image.link}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                sx={{ color: colors.linkColor, textDecoration: 'underline' }}
+                              >
+                                {image.source}
+                              </MuiLink>
+                            ) : (
+                              image.source
+                            )}
+                          </Typography>
+                        )}
+
                         {image.subtitle && (
                           <Typography variant="subtitle2" sx={{ mb: 0.5 }}>
                             {image.subtitle_link ? (
@@ -202,19 +224,7 @@ const WelcomeOverlay = ({ onStartQuiz, onExplore, colors }) => {
                         )}
                         {image.title && (
                           <Typography variant="body2" sx={{ mb: 0.5 }}>
-                            {image.link ? (
-                              <MuiLink
-                                href={image.link}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                variant="body2"
-                                sx={{ color: colors.linkColor, textDecoration: 'underline' }}
-                              >
-                                {image.title}
-                              </MuiLink>
-                            ) : (
-                              image.title
-                            )}
+                            {image.title}
                           </Typography>
                         )}
                         {image.artist && (
