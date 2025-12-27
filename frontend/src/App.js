@@ -83,7 +83,7 @@ function App() {
   const [showWelcome, setShowWelcome] = useState(false);
 
   // Controls whether hints (neighboring countries) are shown in quiz mode
-  const [hintsEnabled, setHintsEnabled] = useState(false);
+  const [hintsEnabled, setHintsEnabled] = useState(true);
 
   // Selected image collections to display (all selected by default)
   const [selectedCollections, setSelectedCollections] = useState([
@@ -421,7 +421,13 @@ function App() {
                 {/* Welcome/Settings Overlay - Opened via gear icon */}
                 {showWelcome && (
                   <WelcomeOverlay
-                    onClose={() => setShowWelcome(false)}
+                    onClose={() => {
+                      setShowWelcome(false);
+                      // Auto-next when closing in quiz mode
+                      if (mode === 'quiz') {
+                        setTimeout(() => fetchNewCountry(), 100);
+                      }
+                    }}
                     colors={COLORS}
                     mode={mode}
                     onModeToggle={handleModeToggle}
@@ -431,7 +437,8 @@ function App() {
                     setSelectedQuizRegion={setSelectedQuizRegion}
                     onRegionChange={() => {
                       if (mode === 'quiz') {
-                        fetchNewCountry();
+                        // Small delay to ensure state has updated
+                        setTimeout(() => fetchNewCountry(), 100);
                       }
                     }}
                   />

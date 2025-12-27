@@ -161,105 +161,55 @@ const QuizImageDisplay = ({ imagesByCollection, countryName, countryISO, onShowA
     return displayNames[collection] || collection;
   };
 
+  // Helper function to map source field to display names
+  const getSourceDisplayName = (source) => {
+    const mapping = {
+      'wiki commons': 'Wikimedia Commons',
+      'chicago': 'Art Institute of Chicago',
+      'smithsonian': 'Smithsonian American Art Museum'
+    };
+    return mapping[source?.toLowerCase()] || source;
+  };
+
+  // Helper function to get source URL for Children in Art
+  const getSourceUrl = (source) => {
+    const mapping = {
+      'wiki commons': 'https://commons.wikimedia.org/',
+      'chicago': 'https://www.artic.edu/',
+      'smithsonian': 'https://www.si.edu/'
+    };
+    return mapping[source?.toLowerCase()] || null;
+  };
+
+  // Helper function to get image link URL based on collection type
+  const getImageLinkUrl = () => {
+    if (!randomImage || !collectionName) return null;
+
+    switch(collectionName) {
+      case 'Albert Kahn':
+        return randomImage.page_url;
+      case 'Children in Art':
+        return randomImage.work_url;
+      case 'Public Domain Review':
+        return randomImage.source_url;
+      case 'Met Museum':
+      case 'Metropolitan Museum of Art':
+        return randomImage.object_url;
+      default:
+        return null;
+    }
+  };
+
   const renderCaption = () => {
     const displayName = getCollectionDisplayName(collectionName);
 
-    // Collection header section
-    const renderCollectionHeader = () => {
-      switch(displayName) {
-        case 'Albert Kahn':
-          return (
-            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0.5, mb: 1.5 }}>
-              <Link
-                href="https://albert-kahn.hauts-de-seine.fr/en/"
-                target="_blank"
-                rel="noopener noreferrer"
-                sx={{
-                  color: COLOR_SCHEME.linkColor,
-                  textDecoration: 'underline',
-                  fontWeight: 600,
-                  fontSize: '1rem'
-                }}
-              >
-                Albert Kahn's Archives of the Planet
-              </Link>
-              <Link
-                href="https://publicdomainreview.org/essay/albert-kahns-archives-of-the-planet/"
-                target="_blank"
-                rel="noopener noreferrer"
-                variant="body2"
-                sx={{
-                  color: COLOR_SCHEME.linkColor,
-                  textDecoration: 'underline',
-                  fontSize: '0.875rem'
-                }}
-              >
-                The Color of Memory
-              </Link>
-            </Box>
-          );
-
-        case 'Metropolitan Museum of Art':
-          return (
-            <Box sx={{ mb: 1.5 }}>
-              <Link
-                href="https://www.metmuseum.org/"
-                target="_blank"
-                rel="noopener noreferrer"
-                sx={{
-                  color: COLOR_SCHEME.linkColor,
-                  textDecoration: 'underline',
-                  fontWeight: 600,
-                  fontSize: '1rem'
-                }}
-              >
-                Metropolitan Museum of Art collection
-              </Link>
-            </Box>
-          );
-
-        case 'Children in Art':
-          return (
-            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0.5, mb: 1.5 }}>
-              <Typography variant="body1" sx={{ fontWeight: 600 }}>
-                Children in Art
-              </Typography>
-              <Typography variant="body2" sx={{ fontSize: '0.875rem' }}>
-                Artists from {countryName}
-              </Typography>
-            </Box>
-          );
-
-        case 'Public Domain Review':
-          return (
-            <Box sx={{ mb: 1.5 }}>
-              <Link
-                href="https://publicdomainreview.org/"
-                target="_blank"
-                rel="noopener noreferrer"
-                sx={{
-                  color: COLOR_SCHEME.linkColor,
-                  textDecoration: 'underline',
-                  fontWeight: 600,
-                  fontSize: '1rem'
-                }}
-              >
-                Public Domain Review
-              </Link>
-            </Box>
-          );
-
-        default:
-          return null;
-      }
-    };
-
-    // Image-specific caption
+    // Unified caption rendering with all metadata in one block
     const renderImageCaption = () => {
       switch(displayName) {
         case 'Albert Kahn':
           return (
             <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+              {/* Title (linked to page_url) */}
               {randomImage.title && randomImage.page_url && (
                 <Link
                   href={randomImage.page_url}
@@ -271,56 +221,40 @@ const QuizImageDisplay = ({ imagesByCollection, countryName, countryISO, onShowA
                   {randomImage.title}
                 </Link>
               )}
+              {/* Location, Date (combined on one line) */}
+              {(randomImage.location || randomImage.date) && (
+                <Typography variant="body2">
+                  {randomImage.location && randomImage.date
+                    ? `${randomImage.location}, ${randomImage.date}`
+                    : randomImage.location || randomImage.date}
+                </Typography>
+              )}
+              {/* Mission (plain text, no hyperlink) */}
               {randomImage.mission && (
                 <Typography variant="body2">
                   {randomImage.mission}
                 </Typography>
               )}
-              {randomImage.date && (
-                <Typography variant="body2">
-                  {randomImage.date}
-                </Typography>
-              )}
-              {randomImage.page_url ? (
-                <Link
-                  href={randomImage.page_url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  variant="body2"
-                  sx={{ color: COLOR_SCHEME.linkColor, textDecoration: 'underline' }}
-                >
-                  Musée départemental Albert-Kahn
-                </Link>
-              ) : (
-                <Link
-                  href="https://albert-kahn.hauts-de-seine.fr/en/"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  variant="body2"
-                  sx={{ color: COLOR_SCHEME.linkColor, textDecoration: 'underline' }}
-                >
-                  Musée départemental Albert-Kahn
-                </Link>
-              )}
+              {/* Organization (always link to homepage) */}
+              <Link
+                href="https://albert-kahn.hauts-de-seine.fr/en/"
+                target="_blank"
+                rel="noopener noreferrer"
+                variant="body2"
+                sx={{ color: COLOR_SCHEME.linkColor, textDecoration: 'underline' }}
+              >
+                Musée départemental Albert-Kahn
+              </Link>
             </Box>
           );
 
         case 'Metropolitan Museum of Art':
           return (
             <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
-              {randomImage.object_url && randomImage.title ? (
+              {/* Title (linked to object_url) */}
+              {randomImage.title && (
                 <Link
-                  href={randomImage.object_url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  variant="body2"
-                  sx={{ color: COLOR_SCHEME.linkColor, textDecoration: 'underline' }}
-                >
-                  {randomImage.title}
-                </Link>
-              ) : (
-                <Link
-                  href="https://www.metmuseum.org/"
+                  href={randomImage.object_url || 'https://www.metmuseum.org/exhibitions'}
                   target="_blank"
                   rel="noopener noreferrer"
                   variant="body2"
@@ -329,27 +263,39 @@ const QuizImageDisplay = ({ imagesByCollection, countryName, countryISO, onShowA
                   {randomImage.title}
                 </Link>
               )}
-              {randomImage.artist_name && (
+              {/* Artist/Culture, Date (combined on one line) */}
+              {(randomImage.artist_name || randomImage.culture || randomImage.object_date) && (
                 <Typography variant="body2">
-                  {randomImage.artist_name}
-                  {randomImage.object_date && ` (${randomImage.object_date})`}
+                  {randomImage.artist_name || randomImage.culture}
+                  {randomImage.object_date && `, ${randomImage.object_date}`}
                 </Typography>
               )}
-              {randomImage.culture && (
+              {/* Medium */}
+              {randomImage.medium && (
                 <Typography variant="body2">
-                  {randomImage.culture}
+                  {randomImage.medium}
                 </Typography>
               )}
+              {/* Organization (link to exhibitions page) */}
+              <Link
+                href="https://www.metmuseum.org/exhibitions"
+                target="_blank"
+                rel="noopener noreferrer"
+                variant="body2"
+                sx={{ color: COLOR_SCHEME.linkColor, textDecoration: 'underline' }}
+              >
+                Metropolitan Museum of Art
+              </Link>
             </Box>
           );
 
         case 'Children in Art':
-          const sourceInfo = getSourceInfo(randomImage.source);
           return (
             <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
-              {randomImage.title && (
+              {/* Title (linked to work_url) */}
+              {randomImage.title && randomImage.work_url && (
                 <Link
-                  href={randomImage.work_url || sourceInfo?.url}
+                  href={randomImage.work_url}
                   target="_blank"
                   rel="noopener noreferrer"
                   variant="body2"
@@ -358,69 +304,70 @@ const QuizImageDisplay = ({ imagesByCollection, countryName, countryISO, onShowA
                   {randomImage.title}
                 </Link>
               )}
+              {/* Artist Name (Nationality) - parentheses, not comma */}
               {randomImage.artist_name && (
                 <Typography variant="body2">
-                  {randomImage.author_wikilink ? (
-                    <Link
-                      href={randomImage.author_wikilink}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      variant="body2"
-                      sx={{ color: COLOR_SCHEME.linkColor, textDecoration: 'underline' }}
-                    >
-                      {randomImage.artist_name}
-                    </Link>
-                  ) : (
-                    randomImage.artist_name
-                  )}
-                  {randomImage.artist_nationality && `, ${randomImage.artist_nationality}`}
+                  {randomImage.artist_name}
+                  {randomImage.artist_nationality && ` (${randomImage.artist_nationality})`}
                 </Typography>
               )}
-              {sourceInfo && (
+              {/* via Source Name (with hyperlink) */}
+              {randomImage.source && getSourceUrl(randomImage.source) && (
                 <Typography variant="body2">
                   via{' '}
                   <Link
-                    href={randomImage.work_url || sourceInfo.url}
+                    href={getSourceUrl(randomImage.source)}
                     target="_blank"
                     rel="noopener noreferrer"
-                    variant="body2"
                     sx={{ color: COLOR_SCHEME.linkColor, textDecoration: 'underline' }}
                   >
-                    {sourceInfo.name}
+                    {getSourceDisplayName(randomImage.source)}
                   </Link>
                 </Typography>
               )}
+              {/* Artists from Country: Children in Art */}
+              <Typography variant="body2">
+                Artists from {countryName}: Children in Art
+              </Typography>
             </Box>
           );
 
         case 'Public Domain Review':
           return (
             <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
-              {randomImage.source_link && randomImage.description && (
-                <Link
-                  href={randomImage.source_link}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  variant="body2"
-                  sx={{ color: COLOR_SCHEME.linkColor, textDecoration: 'underline' }}
-                >
-                  {randomImage.description}
-                </Link>
-              )}
-              {randomImage.title && randomImage.image_url && (
+              {/* Description (plain text, NOT linked) */}
+              {randomImage.description && (
                 <Typography variant="body2">
-                  <Link
-                    href={randomImage.image_url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    variant="body2"
-                    sx={{ color: COLOR_SCHEME.linkColor, textDecoration: 'underline' }}
-                  >
-                    {randomImage.title}
-                  </Link>
-                  {' '}Public Domain Review
+                  {randomImage.description}
                 </Typography>
               )}
+              {/* Source - Public Domain Review: Title (source and PDR linked, title plain text) */}
+              <Typography variant="body2">
+                {randomImage.source_link && (
+                  <>
+                    <Link
+                      href={randomImage.source_link}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      sx={{ color: COLOR_SCHEME.linkColor, textDecoration: 'underline' }}
+                    >
+                      Source
+                    </Link>
+                    {' - '}
+                  </>
+                )}
+                {randomImage.source_url && (
+                  <Link
+                    href={randomImage.source_url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    sx={{ color: COLOR_SCHEME.linkColor, textDecoration: 'underline' }}
+                  >
+                    Public Domain Review
+                  </Link>
+                )}
+                {randomImage.title && `: ${randomImage.title}`}
+              </Typography>
             </Box>
           );
 
@@ -431,7 +378,6 @@ const QuizImageDisplay = ({ imagesByCollection, countryName, countryISO, onShowA
 
     return (
       <Box sx={{ display: 'flex', flexDirection: 'column', textAlign: 'center' }}>
-        {renderCollectionHeader()}
         {renderImageCaption()}
       </Box>
     );
@@ -714,20 +660,45 @@ const QuizImageDisplay = ({ imagesByCollection, countryName, countryISO, onShowA
                 overflow: 'hidden',
               }}
             >
-              <img
-                src={imageUrl}
-                alt={randomImage.title || randomImage.description || 'Artwork'}
-                style={{
-                  maxWidth: '100%',
-                  height: 'auto',
-                  maxHeight: '400px',
-                  objectFit: 'contain',
-                  borderRadius: '4px',
-                }}
-                onError={(e) => {
-                  e.target.style.display = 'none';
-                }}
-              />
+              {getImageLinkUrl() ? (
+                <Link
+                  href={getImageLinkUrl()}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  sx={{ display: 'flex', justifyContent: 'center' }}
+                >
+                  <img
+                    src={imageUrl}
+                    alt={randomImage.title || randomImage.description || 'Artwork'}
+                    style={{
+                      maxWidth: '100%',
+                      height: 'auto',
+                      maxHeight: '400px',
+                      objectFit: 'contain',
+                      borderRadius: '4px',
+                      cursor: 'pointer',
+                    }}
+                    onError={(e) => {
+                      e.target.style.display = 'none';
+                    }}
+                  />
+                </Link>
+              ) : (
+                <img
+                  src={imageUrl}
+                  alt={randomImage.title || randomImage.description || 'Artwork'}
+                  style={{
+                    maxWidth: '100%',
+                    height: 'auto',
+                    maxHeight: '400px',
+                    objectFit: 'contain',
+                    borderRadius: '4px',
+                  }}
+                  onError={(e) => {
+                    e.target.style.display = 'none';
+                  }}
+                />
+              )}
             </Box>
 
             {/* Caption */}

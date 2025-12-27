@@ -38,6 +38,216 @@ const WelcomeOverlay = ({
 }) => {
   const [isClosing, setIsClosing] = useState(false);
 
+  // Helper function to map source field to display names
+  const getSourceDisplayName = (source) => {
+    const mapping = {
+      'wiki commons': 'Wikimedia Commons',
+      'chicago': 'Art Institute of Chicago',
+      'smithsonian': 'Smithsonian American Art Museum'
+    };
+    return mapping[source?.toLowerCase()] || source;
+  };
+
+  // Helper function to get source URL for Children in Art
+  const getSourceUrl = (source) => {
+    const mapping = {
+      'wiki commons': 'https://commons.wikimedia.org/',
+      'chicago': 'https://www.artic.edu/',
+      'smithsonian': 'https://www.si.edu/'
+    };
+    return mapping[source?.toLowerCase()] || null;
+  };
+
+  // Helper function to get image link URL based on collection type
+  const getImageLinkUrl = (image) => {
+    switch(image.collection_type) {
+      case 'Albert Kahn':
+        return image.page_url;
+      case 'Children in Art':
+        return image.work_url;
+      case 'Public Domain Review':
+        return image.source_url;
+      case 'Met Museum':
+        return image.object_url;
+      default:
+        return null;
+    }
+  };
+
+  // Render collection-specific caption
+  const renderCaption = (image, countryName) => {
+    switch (image.collection_type) {
+      case 'Albert Kahn':
+        return (
+          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1, textAlign: 'center' }}>
+            {/* Title (linked to page_url) */}
+            {image.title && image.page_url && (
+              <MuiLink
+                href={image.page_url}
+                target="_blank"
+                rel="noopener noreferrer"
+                variant="body2"
+                sx={{ color: colors.linkColor, textDecoration: 'underline' }}
+              >
+                {image.title}
+              </MuiLink>
+            )}
+            {/* Location, Date (combined on one line) */}
+            {(image.location || image.date) && (
+              <Typography variant="body2">
+                {image.location && image.date
+                  ? `${image.location}, ${image.date}`
+                  : image.location || image.date}
+              </Typography>
+            )}
+            {/* Mission (plain text, no hyperlink) */}
+            {image.mission && (
+              <Typography variant="body2">
+                {image.mission}
+              </Typography>
+            )}
+            {/* Organization (always link to homepage) */}
+            <MuiLink
+              href="https://albert-kahn.hauts-de-seine.fr/en/"
+              target="_blank"
+              rel="noopener noreferrer"
+              variant="body2"
+              sx={{ color: colors.linkColor, textDecoration: 'underline' }}
+            >
+              Musée départemental Albert-Kahn
+            </MuiLink>
+          </Box>
+        );
+
+      case 'Children in Art':
+        return (
+          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1, textAlign: 'center' }}>
+            {/* Title (linked to work_url) */}
+            {image.title && image.work_url && (
+              <MuiLink
+                href={image.work_url}
+                target="_blank"
+                rel="noopener noreferrer"
+                variant="body2"
+                sx={{ color: colors.linkColor, textDecoration: 'underline' }}
+              >
+                {image.title}
+              </MuiLink>
+            )}
+            {/* Artist Name (Nationality) - parentheses, not comma */}
+            {image.artist_name && (
+              <Typography variant="body2">
+                {image.artist_name}
+                {image.artist_nationality && ` (${image.artist_nationality})`}
+              </Typography>
+            )}
+            {/* via Source Name (with hyperlink) */}
+            {image.source && getSourceUrl(image.source) && (
+              <Typography variant="body2">
+                via{' '}
+                <MuiLink
+                  href={getSourceUrl(image.source)}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  sx={{ color: colors.linkColor, textDecoration: 'underline' }}
+                >
+                  {getSourceDisplayName(image.source)}
+                </MuiLink>
+              </Typography>
+            )}
+            {/* Artists from Country: Children in Art */}
+            <Typography variant="body2">
+              Artists from {countryName}: Children in Art
+            </Typography>
+          </Box>
+        );
+
+      case 'Public Domain Review':
+        return (
+          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1, textAlign: 'center' }}>
+            {/* Description (plain text, NOT linked) */}
+            {image.description && (
+              <Typography variant="body2">
+                {image.description}
+              </Typography>
+            )}
+            {/* Source - Public Domain Review: Title (source and PDR linked, title plain text) */}
+            <Typography variant="body2">
+              {image.source_link && (
+                <>
+                  <MuiLink
+                    href={image.source_link}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    sx={{ color: colors.linkColor, textDecoration: 'underline' }}
+                  >
+                    Source
+                  </MuiLink>
+                  {' - '}
+                </>
+              )}
+              {image.source_url && (
+                <MuiLink
+                  href={image.source_url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  sx={{ color: colors.linkColor, textDecoration: 'underline' }}
+                >
+                  Public Domain Review
+                </MuiLink>
+              )}
+              {image.title && `: ${image.title}`}
+            </Typography>
+          </Box>
+        );
+
+      case 'Met Museum':
+        return (
+          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1, textAlign: 'center' }}>
+            {/* Title (linked to object_url) */}
+            {image.title && image.object_url && (
+              <MuiLink
+                href={image.object_url}
+                target="_blank"
+                rel="noopener noreferrer"
+                variant="body2"
+                sx={{ color: colors.linkColor, textDecoration: 'underline' }}
+              >
+                {image.title}
+              </MuiLink>
+            )}
+            {/* Artist/Culture, Date (combined on one line) */}
+            {(image.artist_name || image.culture || image.object_date) && (
+              <Typography variant="body2">
+                {(image.artist_name || image.culture) && image.object_date
+                  ? `${image.artist_name || image.culture}, ${image.object_date}`
+                  : image.artist_name || image.culture || image.object_date}
+              </Typography>
+            )}
+            {/* Medium */}
+            {image.medium && (
+              <Typography variant="body2">
+                {image.medium}
+              </Typography>
+            )}
+            {/* Organization (link to exhibitions page) */}
+            <MuiLink
+              href="https://www.metmuseum.org/exhibitions"
+              target="_blank"
+              rel="noopener noreferrer"
+              variant="body2"
+              sx={{ color: colors.linkColor, textDecoration: 'underline' }}
+            >
+              Metropolitan Museum of Art
+            </MuiLink>
+          </Box>
+        );
+
+      default:
+        return null;
+    }
+  };
+
   const handleClose = () => {
     setIsClosing(true);
     setTimeout(() => {
@@ -130,44 +340,6 @@ const WelcomeOverlay = ({
                   </Typography>
                 </Box>
 
-                {/* Next Button */}
-                <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 0.5 }}>
-                  <Button
-                    variant="outlined"
-                    size="small"
-                    disabled
-                    sx={{
-                      minWidth: 'auto',
-                      padding: '2px 8px',
-                      fontSize: '1rem'
-                    }}
-                  >
-                    Next
-                  </Button>
-                  <Typography variant="caption" color="textSecondary" sx={{ textAlign: 'center' }}>
-                    Get a new country to find
-                  </Typography>
-                </Box>
-
-                {/* Show Me Button */}
-                <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 0.5 }}>
-                  <Button
-                    variant="outlined"
-                    size="small"
-                    disabled
-                    sx={{
-                      minWidth: 'auto',
-                      padding: '2px 8px',
-                      fontSize: '1rem'
-                    }}
-                  >
-                    Show
-                  </Button>
-                  <Typography variant="caption" color="textSecondary" sx={{ textAlign: 'center' }}>
-                    Reveal the answer and its location
-                  </Typography>
-                </Box>
-
                 {/* Hints Toggle */}
                 <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 0.5 }}>
                   <FormControlLabel
@@ -211,6 +383,42 @@ const WelcomeOverlay = ({
                     Filter quiz questions by region
                   </Typography>
                 </Box>
+
+                {/* Next Button */}
+                <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 0.5 }}>
+                  <Button
+                    variant="outlined"
+                    size="small"
+                    sx={{
+                      minWidth: 'auto',
+                      padding: '2px 8px',
+                      fontSize: '1rem'
+                    }}
+                  >
+                    Next
+                  </Button>
+                  <Typography variant="caption" color="textSecondary" sx={{ textAlign: 'center' }}>
+                    Get a new country to find
+                  </Typography>
+                </Box>
+
+                {/* Show Me Button */}
+                <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 0.5 }}>
+                  <Button
+                    variant="outlined"
+                    size="small"
+                    sx={{
+                      minWidth: 'auto',
+                      padding: '2px 8px',
+                      fontSize: '1rem'
+                    }}
+                  >
+                    Show
+                  </Button>
+                  <Typography variant="caption" color="textSecondary" sx={{ textAlign: 'center' }}>
+                    Reveal the answer and its location
+                  </Typography>
+                </Box>
               </Box>
             </CardContent>
           </Card>
@@ -244,91 +452,39 @@ const WelcomeOverlay = ({
                     {/* Card Content */}
                     <CardContent>
                       {/* Image */}
-                      <CardMedia
-                        component="img"
-                        image={image.image}
-                        alt={image.title || collectionName}
-                        sx={{
-                          mb: 2,
-                          borderRadius: '4px',
-                          objectFit: 'contain',
-                        }}
-                      />
+                      {getImageLinkUrl(image) ? (
+                        <MuiLink
+                          href={getImageLinkUrl(image)}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          sx={{ display: 'block', mb: 2 }}
+                        >
+                          <CardMedia
+                            component="img"
+                            image={image.filepath}
+                            alt={image.title || collectionName}
+                            sx={{
+                              borderRadius: '4px',
+                              objectFit: 'contain',
+                              cursor: 'pointer',
+                            }}
+                          />
+                        </MuiLink>
+                      ) : (
+                        <CardMedia
+                          component="img"
+                          image={image.filepath}
+                          alt={image.title || collectionName}
+                          sx={{
+                            mb: 2,
+                            borderRadius: '4px',
+                            objectFit: 'contain',
+                          }}
+                        />
+                      )}
 
                       {/* Caption */}
-                      <Box sx={{ textAlign: 'center', mb: 2 }}>
-                        {/* Source as subtitle */}
-                        {image.source && (
-                          <Typography
-                            variant="subtitle1"
-                            sx={{
-                              mb: 1,
-                              fontWeight: 600,
-                              fontStyle: 'italic',
-                            }}
-                          >
-                            {image.link ? (
-                              <MuiLink
-                                href={image.link}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                sx={{ color: colors.linkColor, textDecoration: 'underline' }}
-                              >
-                                {image.source}
-                              </MuiLink>
-                            ) : (
-                              image.source
-                            )}
-                          </Typography>
-                        )}
-
-                        {image.subtitle && (
-                          <Typography variant="subtitle2" sx={{ mb: 0.5 }}>
-                            {image.subtitle_link ? (
-                              <MuiLink
-                                href={image.subtitle_link}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                sx={{ color: colors.linkColor, textDecoration: 'underline' }}
-                              >
-                                {image.subtitle}
-                              </MuiLink>
-                            ) : (
-                              image.subtitle
-                            )}
-                          </Typography>
-                        )}
-                        {image.title && (
-                          <Typography variant="body2" sx={{ mb: 0.5 }}>
-                            {image.title}
-                          </Typography>
-                        )}
-                        {image.artist && (
-                          <Typography variant="caption" color="textSecondary" sx={{ display: 'block' }}>
-                            {image.artist}
-                          </Typography>
-                        )}
-                        {image.nationality && (
-                          <Typography variant="caption" color="textSecondary" sx={{ display: 'block' }}>
-                            {image.nationality}
-                          </Typography>
-                        )}
-                        {image.date && (
-                          <Typography variant="caption" color="textSecondary" sx={{ display: 'block' }}>
-                            {image.date}
-                          </Typography>
-                        )}
-                      </Box>
-
-                      {/* Description */}
-                      {image.description && (
-                        <Typography
-                          variant="body2"
-                          color="textSecondary"
-                        >
-                          {image.description}
-                        </Typography>
-                      )}
+                      {renderCaption(image, country.name)}
                     </CardContent>
                   </Card>
                 )

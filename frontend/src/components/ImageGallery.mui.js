@@ -87,11 +87,32 @@ const ImageGallery = ({
     }
   };
 
+  // Helper function to map source field to display names
+  const getSourceDisplayName = (source) => {
+    const mapping = {
+      'wiki commons': 'Wikimedia Commons',
+      'chicago': 'Art Institute of Chicago',
+      'smithsonian': 'Smithsonian American Art Museum'
+    };
+    return mapping[source?.toLowerCase()] || source;
+  };
+
+  // Helper function to get source URL for Children in Art
+  const getSourceUrl = (source) => {
+    const mapping = {
+      'wiki commons': 'https://commons.wikimedia.org/',
+      'chicago': 'https://www.artic.edu/',
+      'smithsonian': 'https://www.si.edu/'
+    };
+    return mapping[source?.toLowerCase()] || null;
+  };
+
   const renderCaption = (image, collectionType) => {
     switch(collectionType) {
       case 'Albert Kahn':
         return (
           <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+            {/* Title (linked to page_url) */}
             {image.title && image.page_url && (
              <Link
                 href={image.page_url}
@@ -100,49 +121,42 @@ const ImageGallery = ({
                 variant="body2"
                 sx={{ color: COLOR_SCHEME.linkColor, textDecoration: 'underline' }}
               >
-               {image.title }
+               {image.title}
               </Link>
             )}
+            {/* Location, Date (combined on one line) */}
+            {(image.location || image.date) && (
+              <Typography variant="body2" sx={{ color: COLOR_SCHEME.textPrimary }}>
+                {image.location && image.date
+                  ? `${image.location}, ${image.date}`
+                  : image.location || image.date}
+              </Typography>
+            )}
+            {/* Mission (plain text, no hyperlink) */}
             {image.mission && (
               <Typography variant="body2" sx={{ color: COLOR_SCHEME.textPrimary }}>
                 {image.mission}
               </Typography>
             )}
-            {image.date && (
-              <Typography variant="body2" sx={{ color: COLOR_SCHEME.textPrimary }}>
-                {image.date}
-              </Typography>
-            )}
-            {image.page_url ? (
-              <Link
-                href={image.page_url}
-                target="_blank"
-                rel="noopener noreferrer"
-                variant="body2"
-                sx={{ color: COLOR_SCHEME.linkColor, textDecoration: 'underline' }}
-              >
-                Musée départemental Albert-Kahn
-              </Link>
-            ) : (
-              <Link
-                href="https://albert-kahn.hauts-de-seine.fr/en/"
-                target="_blank"
-                rel="noopener noreferrer"
-                variant="body2"
-                sx={{ color: COLOR_SCHEME.linkColor, textDecoration: 'underline' }}
-              >
-                 Musée départemental Albert-Kahn
-              </Link>
-            )}
+            {/* Organization (always link to homepage) */}
+            <Link
+              href="https://albert-kahn.hauts-de-seine.fr/en/"
+              target="_blank"
+              rel="noopener noreferrer"
+              variant="body2"
+              sx={{ color: COLOR_SCHEME.linkColor, textDecoration: 'underline' }}
+            >
+              Musée départemental Albert-Kahn
+            </Link>
           </Box>
         );
       case 'Children in Art':
-        const sourceInfo = getSourceInfo(image.source);
         return (
           <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
-            {image.title && (image.work_url || (sourceInfo && sourceInfo.url)) && (
-          <Link
-                href={image.work_url || (sourceInfo && sourceInfo.url)}
+            {/* Title (linked to work_url) */}
+            {image.title && image.work_url && (
+              <Link
+                href={image.work_url}
                 target="_blank"
                 rel="noopener noreferrer"
                 variant="body2"
@@ -151,88 +165,78 @@ const ImageGallery = ({
                 {image.title}
               </Link>
             )}
+            {/* Artist Name (Nationality) - parentheses, not comma */}
             {image.artist_name && (
               <Typography variant="body2" sx={{ color: COLOR_SCHEME.textPrimary }}>
-                {image.author_wikilink ? (
-                  <Link
-                    href={image.author_wikilink}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    variant="body2"
-                    sx={{ color: COLOR_SCHEME.linkColor, textDecoration: 'underline' }}
-                  >
-                    {image.artist_name}
-                  </Link>
-                ) : (
-                  image.artist_name
-                )}
-                {image.artist_nationality && `, ${image.artist_nationality}`}
+                {image.artist_name}
+                {image.artist_nationality && ` (${image.artist_nationality})`}
               </Typography>
             )}
-            {sourceInfo && (
+            {/* via Source Name (with hyperlink) */}
+            {image.source && getSourceUrl(image.source) && (
               <Typography variant="body2" sx={{ color: COLOR_SCHEME.textPrimary }}>
                 via{' '}
                 <Link
-                  href={image.work_url || sourceInfo.url}
+                  href={getSourceUrl(image.source)}
                   target="_blank"
                   rel="noopener noreferrer"
-                  variant="body2"
                   sx={{ color: COLOR_SCHEME.linkColor, textDecoration: 'underline' }}
                 >
-                  {sourceInfo.name}
+                  {getSourceDisplayName(image.source)}
                 </Link>
               </Typography>
             )}
+            {/* Artists from Country: Children in Art */}
+            <Typography variant="body2" sx={{ color: COLOR_SCHEME.textPrimary }}>
+              Artists from {countryName}: Children in Art
+            </Typography>
           </Box>
         );
       case 'Public Domain Review':
         return (
           <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
-
-            {image.source_link && image.description &&(
-              <Link
-                href={image.source_link}
-                target="_blank"
-                rel="noopener noreferrer"
-                variant="body2"
-                sx={{ color: COLOR_SCHEME.linkColor, textDecoration: 'underline' }}
-              >
-                {image.description}
-              </Link>
-            )}
-            {image.title && image.image_url && (
+            {/* Description (plain text, NOT linked) */}
+            {image.description && (
               <Typography variant="body2" sx={{ color: COLOR_SCHEME.textPrimary }}>
-                <Link
-                  href={image.image_url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  variant="body2"
-                  sx={{ color: COLOR_SCHEME.linkColor, textDecoration: 'underline' }}
-                >
-                  {image.title}
-                </Link>
-                {' '}Public Domain Review
+                {image.description}
               </Typography>
             )}
+            {/* Source - Public Domain Review: Title (source and PDR linked, title plain text) */}
+            <Typography variant="body2" sx={{ color: COLOR_SCHEME.textPrimary }}>
+              {image.source_link && (
+                <>
+                  <Link
+                    href={image.source_link}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    sx={{ color: COLOR_SCHEME.linkColor, textDecoration: 'underline' }}
+                  >
+                    Source
+                  </Link>
+                  {' - '}
+                </>
+              )}
+              {image.source_url && (
+                <Link
+                  href={image.source_url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  sx={{ color: COLOR_SCHEME.linkColor, textDecoration: 'underline' }}
+                >
+                  Public Domain Review
+                </Link>
+              )}
+              {image.title && `: ${image.title}`}
+            </Typography>
           </Box>
         );
       case 'Met Museum':
         return (
           <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
-
-            {image.object_url && image.title ? (
+            {/* Title (linked to object_url) */}
+            {image.title && (
               <Link
-                href={image.object_url}
-                target="_blank"
-                rel="noopener noreferrer"
-                variant="body2"
-                sx={{ color: COLOR_SCHEME.linkColor, textDecoration: 'underline' }}
-              >
-                {image.title}
-              </Link>
-            ) : (
-              <Link
-                href="https://www.metmuseum.org/"
+                href={image.object_url || 'https://www.metmuseum.org/exhibitions'}
                 target="_blank"
                 rel="noopener noreferrer"
                 variant="body2"
@@ -241,18 +245,29 @@ const ImageGallery = ({
                 {image.title}
               </Link>
             )}
-            {image.artist_name && (
+            {/* Artist/Culture, Date (combined on one line) */}
+            {(image.artist_name || image.culture || image.object_date) && (
               <Typography variant="body2" sx={{ color: COLOR_SCHEME.textPrimary }}>
-                {image.artist_name}
-                {image.object_date && ` (${image.object_date})`}
+                {image.artist_name || image.culture}
+                {image.object_date && `, ${image.object_date}`}
               </Typography>
             )}
-            {image.culture && (
+            {/* Medium */}
+            {image.medium && (
               <Typography variant="body2" sx={{ color: COLOR_SCHEME.textPrimary }}>
-                {image.culture}
+                {image.medium}
               </Typography>
             )}
-
+            {/* Organization (link to exhibitions page) */}
+            <Link
+              href="https://www.metmuseum.org/exhibitions"
+              target="_blank"
+              rel="noopener noreferrer"
+              variant="body2"
+              sx={{ color: COLOR_SCHEME.linkColor, textDecoration: 'underline' }}
+            >
+              Metropolitan Museum of Art
+            </Link>
           </Box>
         );
       default:
@@ -339,18 +354,15 @@ const ImageGallery = ({
   const getImageLinkUrl = (image, collectionType) => {
     switch(collectionType) {
       case 'Albert Kahn':
-        return image.page_url || `${API_BASE}/${image.filepath}`;
+        return image.page_url || null;
       case 'Children in Art':
-        const sourceInfo = getSourceInfo(image.source);
-        return image.work_url || sourceInfo?.url || `${API_BASE}/${image.filepath}`;
+        return image.work_url || null;
       case 'Public Domain Review':
-        return image.image_url || `${API_BASE}/${image.filepath}`;
+        return image.source_url || null;
       case 'Met Museum':
-        return image.object_url || `${API_BASE}/${image.filepath}`;
+        return image.object_url || null;
       default:
-        return image.filepath.startsWith('http')
-          ? image.filepath
-          : `${API_BASE}/${image.filepath}`;
+        return null;
     }
   };
 
