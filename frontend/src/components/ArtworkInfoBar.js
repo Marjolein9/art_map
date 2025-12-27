@@ -524,6 +524,7 @@ const ArtworkInfoBar = ({
                     countryISO={countryISO}
                     onShowAll={null}
                     showMap={true}
+                    hideNoImagesMessage={true}
                   />
                   {/* Show all images without maps */}
                   {Object.entries(imagesByCollection).map(([collection, images]) =>

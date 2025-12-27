@@ -27,8 +27,9 @@ import { getCountryIsoCode } from '../utils/countryCodeMapping';
  * @param {string} countryISO - ISO3 code of the country
  * @param {Function} onShowAll - Callback to show all images in collections
  * @param {boolean} showMap - Whether to show the map (default: true)
+ * @param {boolean} hideNoImagesMessage - Whether to hide "No images available" message (default: false)
  */
-const QuizImageDisplay = ({ imagesByCollection, countryName, countryISO, onShowAll, showMap = true }) => {
+const QuizImageDisplay = ({ imagesByCollection, countryName, countryISO, onShowAll, showMap = true, hideNoImagesMessage = false }) => {
   const [randomImage, setRandomImage] = useState(null);
   const [collectionName, setCollectionName] = useState(null);
   const [neighbors, setNeighbors] = useState([]);
@@ -753,7 +754,7 @@ const QuizImageDisplay = ({ imagesByCollection, countryName, countryISO, onShowA
             )}
           </CardContent>
         </Card>
-      ) : (
+      ) : !hideNoImagesMessage ? (
         <Paper
           elevation={0}
           sx={{
@@ -768,7 +769,7 @@ const QuizImageDisplay = ({ imagesByCollection, countryName, countryISO, onShowA
             No images available for this country
           </Typography>
         </Paper>
-      )}
+      ) : null}
     </Box>
   );
 };
