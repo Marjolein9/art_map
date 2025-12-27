@@ -109,7 +109,7 @@ const ArtworkInfoBar = ({
    * FADE-IN ANIMATION EFFECT
    *
    * This effect triggers a smooth fade-in animation when a new country is loaded.
-   * Waits 2 seconds before showing the overlay, then fades in over 1 second.
+   * Shows overlay with minimal delay for better responsiveness.
    */
   useEffect(() => {
     // Guard clause: only run if we have a country
@@ -123,7 +123,7 @@ const ArtworkInfoBar = ({
     setShowAllImagesInQuiz(false);
     setOverlayVisible(false);
 
-    // Wait 2 seconds before starting to show the overlay
+    // Show overlay almost immediately (small delay for smooth transition)
     const timer = setTimeout(() => {
       setOverlayVisible(true);
       // requestAnimationFrame: Waits for the next browser paint cycle
@@ -131,7 +131,7 @@ const ArtworkInfoBar = ({
       requestAnimationFrame(() => {
         setIsVisible(true);  // Trigger fade-in via CSS transition
       });
-    }, 2000);
+    }, 100);
 
     return () => clearTimeout(timer);
   }, [countryISO]); // Re-run when country changes

@@ -625,7 +625,7 @@ const WorldMap = ({
       const centroid = calculateCentroid(clickedFeature.geometry.coordinates);
       if (!centroid) return;
 
-      // Delay label appearance by 2 seconds (matching overlay delay)
+      // Small delay for label appearance (matching overlay delay)
       const timer = setTimeout(() => {
         // Add label to array (accumulate multiple incorrect clicks)
         setPersistedIncorrectLabels(prev => [...prev, {
@@ -633,7 +633,7 @@ const WorldMap = ({
           lng: centroid.lng,
           text: countryName
         }]);
-      }, 2000);
+      }, 100);
 
       return () => clearTimeout(timer);
     }
@@ -655,7 +655,7 @@ const WorldMap = ({
       const centroid = calculateCentroid(targetFeature.geometry.coordinates);
       if (!centroid) return;
 
-      // Delay label appearance by 2 seconds (matching overlay delay)
+      // Small delay for label appearance (matching overlay delay)
       const timer = setTimeout(() => {
         // Add label to array (can have multiple correct clicks shown together with incorrect)
         setPersistedCorrectLabels(prev => [...prev, {
@@ -663,7 +663,7 @@ const WorldMap = ({
           lng: centroid.lng,
           text: countryName
         }]);
-      }, 2000);
+      }, 100);
 
       return () => clearTimeout(timer);
     }
