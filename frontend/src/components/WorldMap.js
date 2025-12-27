@@ -72,6 +72,7 @@ const WorldMap = ({
   backendReady = false,   // Whether the backend server is ready to accept requests
   setShowWelcome,         // Function to show/hide the welcome overlay
   hintsEnabled = false,   // Whether hints are enabled (show neighboring countries)
+  selectedQuizRegion = null, // Selected region for filtering quiz questions
 }) => {
   // Store colors in a constant for easy access throughout the component
   const COLORS = colors;
@@ -827,43 +828,50 @@ const WorldMap = ({
           <div className="overlay-title">
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, flexWrap: 'wrap' }}>
               {mode === 'quiz' ? (
-                <Select
-                  value={
-                    // Show target country if it's in our list, otherwise show empty
-                    targetCountry && allCountries.some(c => c.iso3 === targetCountry)
-                      ? targetCountry
-                      : ''
-                  }
-                  onChange={handleCountryDropdownChange}
-                  size="small"
-                  displayEmpty
-                  sx={{
-                    minWidth: '180px',
-                    backgroundColor: 'var(--card-bg)',
-                    '& .MuiOutlinedInput-notchedOutline': {
-                      borderColor: 'var(--border-color)',
-                    },
-                    '&:hover .MuiOutlinedInput-notchedOutline': {
-                      borderColor: 'var(--glow-color)',
-                    },
-                  }}
-                >
-                  {/* Placeholder option */}
-                  <MenuItem value="">Select country...</MenuItem>
+                <>
+                  <Select
+                    value={
+                      // Show target country if it's in our list, otherwise show empty
+                      targetCountry && allCountries.some(c => c.iso3 === targetCountry)
+                        ? targetCountry
+                        : ''
+                    }
+                    onChange={handleCountryDropdownChange}
+                    size="small"
+                    displayEmpty
+                    sx={{
+                      minWidth: '180px',
+                      backgroundColor: 'var(--card-bg)',
+                      '& .MuiOutlinedInput-notchedOutline': {
+                        borderColor: 'var(--border-color)',
+                      },
+                      '&:hover .MuiOutlinedInput-notchedOutline': {
+                        borderColor: 'var(--glow-color)',
+                      },
+                    }}
+                  >
+                    {/* Placeholder option */}
+                    <MenuItem value="">Select country...</MenuItem>
 
-                  {/* Map over sorted countries to create menu items */}
-                  {allCountries
-                    .sort((a, b) =>
-                      (a.common_name || a.name).localeCompare(
-                        b.common_name || b.name
+                    {/* Map over sorted countries to create menu items */}
+                    {allCountries
+                      .sort((a, b) =>
+                        (a.common_name || a.name).localeCompare(
+                          b.common_name || b.name
+                        )
                       )
-                    )
-                    .map(c => (
-                      <MenuItem key={c.iso3} value={c.iso3}>
-                        {c.common_name || c.name}
-                      </MenuItem>
-                    ))}
-                </Select>
+                      .map(c => (
+                        <MenuItem key={c.iso3} value={c.iso3}>
+                          {c.common_name || c.name}
+                        </MenuItem>
+                      ))}
+                  </Select>
+                  {selectedQuizRegion && (
+                    <Typography variant="caption" sx={{ color: 'var(--text-color)', fontStyle: 'italic' }}>
+                      ({selectedQuizRegion})
+                    </Typography>
+                  )}
+                </>
               ) : (
                 'Click to Explore'
               )}

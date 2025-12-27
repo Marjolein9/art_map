@@ -429,6 +429,11 @@ function App() {
                     setHintsEnabled={setHintsEnabled}
                     selectedQuizRegion={selectedQuizRegion}
                     setSelectedQuizRegion={setSelectedQuizRegion}
+                    onRegionChange={() => {
+                      if (mode === 'quiz') {
+                        fetchNewCountry();
+                      }
+                    }}
                   />
                 )}
 
@@ -449,6 +454,7 @@ function App() {
                   countryLookup={countryLookup}
                   setShowWelcome={setShowWelcome}
                   hintsEnabled={hintsEnabled}
+                  selectedQuizRegion={selectedQuizRegion}
                 />
 
                 {(!backendReady || (loading && mode === 'quiz') || (exploreLoading && mode === 'explore')) && (

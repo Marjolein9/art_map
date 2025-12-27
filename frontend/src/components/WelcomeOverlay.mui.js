@@ -33,7 +33,8 @@ const WelcomeOverlay = ({
   hintsEnabled,
   setHintsEnabled,
   selectedQuizRegion,
-  setSelectedQuizRegion
+  setSelectedQuizRegion,
+  onRegionChange
 }) => {
   const [isClosing, setIsClosing] = useState(false);
 
@@ -189,7 +190,12 @@ const WelcomeOverlay = ({
                 <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 0.5 }}>
                   <Select
                     value={selectedQuizRegion || ''}
-                    onChange={(e) => setSelectedQuizRegion(e.target.value || null)}
+                    onChange={(e) => {
+                      setSelectedQuizRegion(e.target.value || null);
+                      if (onRegionChange) {
+                        onRegionChange();
+                      }
+                    }}
                     size="small"
                     displayEmpty
                     sx={{ minWidth: '150px' }}
