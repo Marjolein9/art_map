@@ -159,12 +159,13 @@ const ArtworkInfoBar = ({
     // Show loading spinner
     setLoading(true);
 
-    // In quiz mode (when not showing all), fetch only one random image for performance
-    if (mode === 'quiz' && !showAllImagesInQuiz) {
+    // Initially (when not showing all), fetch only one random image for performance
+    // This applies to both quiz and explore modes for consistent behavior
+    if (!showAllImagesInQuiz) {
       fetchRandomImage(countryISO)
         .then(data => {
           // data = {image: {...}, collection: 'Albert Kahn', iso3: 'ITA', total_images: 5}
-          // Store total_images count to determine if "Show all" button should appear
+          // Store total_images count to determine if "Show more" button should appear
           setTotalImagesAvailable(data.total_images || 0);
 
           if (data.image && data.collection) {
@@ -185,7 +186,7 @@ const ArtworkInfoBar = ({
           setLoading(false);
         });
     } else {
-      // In explore mode or when showing all images, fetch all images
+      // When "Show more" clicked, fetch all images
       fetchImages(countryISO)
         .then(data => {
           // Filter out empty collections
@@ -500,22 +501,21 @@ const ArtworkInfoBar = ({
               gap: 3                    // 24px gap between sections
             }}>
               {/*
-                Conditional image display based on mode:
-                - Quiz mode: Always show QuizImageDisplay (handles no-image case)
-                - Explore mode: Show all collections with full galleries
+                Unified image display for both quiz and explore modes:
+                - Both modes: Show single random image initially with "Show more" button
+                - Only difference: action buttons (Try Again/Next vs Close)
               */}
-              {mode === 'quiz' && !showAllImagesInQuiz ? (
-                // Quiz mode: Single random image with caption and "Show all" button
+              {!showAllImagesInQuiz ? (
+                // Initial view: Single random image with "Show more" button
                 // Always render even if no images - QuizImageDisplay shows map and "No images available" message
-                // Show "See all images" button only when there are multiple images available
                 <QuizImageDisplay
                   imagesByCollection={imagesByCollection}
                   countryName={countryName}
                   countryISO={countryISO}
                   onShowAll={totalImagesAvailable > 1 ? () => setShowAllImagesInQuiz(true) : null}
                 />
-              ) : mode === 'quiz' && showAllImagesInQuiz ? (
-                // Quiz mode with "Show all" clicked: Display map once at top, then all images
+              ) : (
+                // "Show more" clicked: Display map once at top, then all images
                 <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
                   {/* Show map once at the top */}
                   <QuizImageDisplay
@@ -539,8 +539,10 @@ const ArtworkInfoBar = ({
                     ))
                   )}
                 </Box>
-              ) : collections.length > 0 ? (
-                // Explore mode: Show all galleries with navigation (only if images exist)
+              )}
+
+              {/* Legacy explore mode gallery - no longer used */}
+              {false && collections.length > 0 ? (
                 <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
                   {collections.map(collection => (
                     <ImageGallery
