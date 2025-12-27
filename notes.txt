@@ -1,37 +1,11 @@
-During my maternity leave, I made a geography-learning website that is as Nerdfighters-coded as I could make it. It's a "find this country" quiz, but when you find the country, you seee that countries 1) painting depicting a child 2) art from the Met museum, 3) Public Domain Review articles, 4) historical photgraphs comissioned by Albert Kanh, a pacific with a a romantized view of the world. Why so many categories? I started with paintings of children, gave up eventually because all biases (selection biases, survivorship bias, etc), tried the next thing, gave up on that, but ultimately I got an okay countries coverage. The tricky part was my total ignorance of art history and fear of being harmfully ignorant, combined with only using art before 1923 (in the public domain). Not a great combination. There is a lot of very racist or simply wrong dipictions of other cultures out there! I relied on only sources that provided at least some context for me, and mostly have art about the culture made by people of the culture. That said, please let me know if anything is still wrong, and if you know of any great public domain resources yourself (with lots of background info), please tell me! This started as an attempt to advocate about child mortality (post-partum always makes me think too much about that), but I really admire how the Green brothers have built a community that fights child mortality with a lot of guinuine joy and love of many human things. So the child mortality rates from 1990 and 2023 are there from Our World in Data (check out the sponsor list of Our World in Data for a familiar name), but there are joyful human things there as well. 
+imsge types as title to subsectuon images not the full title which should still be Help & Setting
+icon in task bar should be a globe instead of react a[pp should say Geography]
 
-  are still in there  (although I did learn a lot from this project) and articles from Public Domain Review. It also includes Our World in Data (two guesses on which familiar name is on their donor page.) Since I am in baby-mode, I started with the hope of finding paintings of babies from every country in the public domain. Anyone with a better grasp of art history or plain history than me can understand why I didn't succeed, but you can see my attempt. Maybe I'll just link the cool copy-right art in the future. I hope you all like it, and feedback would be welcome. I'd love ideas on additional public domiain or cc images to include, especially dipictions of children in art and open ~/.claude/plans/melodic-doodling-honey.md
+instead of Art Map Geography & Public Domain 
+Choose how you'd like to explore art from around the world to public domain images.
+add close out to welcome overlay
 
-✅ HINTS FETCHED for SSD: (2) ['140', '800'] on initial quuiz not hinting south sudan itself
+merge quiz mode contols with game settings. describrtion below item whic is centered. next amf show me disabled in settings overlay but quiz enables and just like the one in cpntrol overkay like hints. hints off and disabled if quiz is off. 
+remove country labels tooltipes. 
 
-try again instead of close out for incorredc tin quiz mode
-formating center captions and titles in infobar and welcome
-
-same lines for extrnal links not break at :
-
-
-quiz no quiz hint no hint botton instead of toggle. (no quiz an dno hint visible when quiz hint on)
-
-move i for open welcone to end of line
-
-move skip show to zoom contols overlay
-
-hint quiz next to each other
-
-slight see through  all overlays
-
-dont grey out skip when in quiz mode
-
-
-turn black country path see through and white when hints is on, revert back in explore mode or when hints are on
-
-
-
-clearer Click on a country to get the public domain images and info described below
-
-Child Mortality Progress instead of Child MOrtality
-
-bigger images click on image for more info, hover for expand, bigger image
-
-don't cut off image in welcome
-
+in quiz or explore mode show the same quiz overlay (so one image initally show more etc). the only differemt will be try agai or next for quiz mode close out for explore

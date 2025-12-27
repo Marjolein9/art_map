@@ -20,7 +20,7 @@ import React, { memo, useState, useEffect, useRef, useMemo } from 'react';
 import Globe from 'react-globe.gl';
 // Globe: A 3D globe visualization library that renders an interactive Earth
 
-import { Button, Box, Select, MenuItem, FormControlLabel, Switch, IconButton } from '@mui/material';
+import { Button, Box, Select, MenuItem, FormControlLabel, Switch, IconButton, Typography } from '@mui/material';
 import SettingsIcon from '@mui/icons-material/Settings';
 // Material-UI (MUI): A popular React component library that provides pre-built, styled components
 // Button: Clickable button component

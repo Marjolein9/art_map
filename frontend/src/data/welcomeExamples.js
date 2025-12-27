@@ -14,11 +14,10 @@ export const welcomeExamples = {
       collections: {
         "Albert Kahn's Archives of the Planet": {
           title: 'A Woman and Her Child Pose for the Photographer',
-          source: 'Musée départemental Albert-Kahn',
+          source: "Albert Kahn's Archives of the Planet",
           description:
-            'Photographs from Albert Kahn’s project to document everyday life with color photography in the early 20th century organized by the location the photograph was taken.',
-          link:
-            'https://collections.albert-kahn.hauts-de-seine.fr/document/une-femme-et-son-enfant-posent-pour-l-operateur/617a7a44cf8b8968b3384d52?filtrerParThme%5B0%5D=Etres%20humains&wm=1&filtrerParSousthme%5B0%5D=Femme&filtrerParMission%5B0%5D=1914%20-%20Egypte%20-%20Auguste%20L%C3%A9on%20%20-%20%28janvier-f%C3%A9vrier%29&pos=35&pgn=2',
+            'Photographs from Albert Kahn\'s project to document everyday life with color photography in the early 20th century.',
+          link: 'https://albert-kahn.hauts-de-seine.fr/en/',
           image: '/welcome-examples/egy-woman-child.jpg',
         },
       },
@@ -33,7 +32,7 @@ export const welcomeExamples = {
           nationality: 'Greek',
           source: 'Children in Art',
           description:
-            'Artwork that depicts children from artists from each country, mostly found using WikiArt. All categories are incomplete, but this one is especially so due to my lack of art knowledge.',
+            'Artwork that depicts children from artists from each country, mostly found using WikiArt.',
           link: 'https://www.wikiart.org/en/nikolaos-gyzis',
           image: '/welcome-examples/grc-peek-a-boo.jpg',
         },
@@ -48,8 +47,8 @@ export const welcomeExamples = {
           nationality: 'Latvian',
           source: 'Metropolitan Museum of Art',
           description:
-            'Metropolitan Museum of Art collection items related to the selected country. The Met collection often includes extensive background information on the items.',
-          link: 'https://www.metmuseum.org/art/collection/search/84280',
+            'Collection items from the Metropolitan Museum of Art related to the selected country.',
+          link: 'https://www.metmuseum.org/exhibitions',
           image: '/welcome-examples/lva-coat.jpg',
         },
       },
@@ -65,8 +64,8 @@ export const welcomeExamples = {
           artist: 'Käthe Kollwitz',
           source: 'Public Domain Review',
           description:
-            'Images from Public Domain Review essays that relate to selected country. The Public Domain Review is a free online journal that reviews works in the public domain.',
-          link: 'https://www.kollwitz.de/en/sheet-8-call-of-death',
+            'Images from Public Domain Review essays that relate to selected country.',
+          link: 'https://publicdomainreview.org/',
           image: '/welcome-examples/deu-waltz.jpg',
         },
       },
