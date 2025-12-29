@@ -18,6 +18,7 @@ import COLOR_SCHEME from './styles/colorSchemes';
 import { useQuiz } from './hooks/useQuiz';
 import { fetchCountries } from './services/api';
 import { getDisplayName } from './utils/displayHelpers';
+import { Analytics } from '@vercel/analytics/react';
 
 /**
  * APP COMPONENT
@@ -383,6 +384,7 @@ function App() {
   // ===========================================================================
   return (
     <ThemeProvider theme={muiTheme}>
+      <Analytics />
       <div className="App">
         <div className="app-background" style={{
           '--bg-gradient': COLORS.backgroundGradient,
