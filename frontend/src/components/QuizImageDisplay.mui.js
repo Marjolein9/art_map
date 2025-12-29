@@ -221,14 +221,6 @@ const QuizImageDisplay = ({ imagesByCollection, countryName, countryISO, onShowA
                   {randomImage.title}
                 </Link>
               )}
-              {/* Location, Date (combined on one line) */}
-              {(randomImage.location || randomImage.date) && (
-                <Typography variant="body2">
-                  {randomImage.location && randomImage.date
-                    ? `${randomImage.location}, ${randomImage.date}`
-                    : randomImage.location || randomImage.date}
-                </Typography>
-              )}
               {/* Mission (plain text, no hyperlink) */}
               {randomImage.mission && (
                 <Typography variant="body2">

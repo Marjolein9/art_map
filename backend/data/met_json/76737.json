@@ -1,0 +1,81 @@
+{
+  "objectID": 76737,
+  "isHighlight": false,
+  "accessionNumber": "2011.499",
+  "accessionYear": "2011",
+  "isPublicDomain": true,
+  "primaryImage": "https://images.metmuseum.org/CRDImages/as/original/DP341628.jpg",
+  "primaryImageSmall": "https://images.metmuseum.org/CRDImages/as/web-large/DP341628.jpg",
+  "additionalImages": [
+    "https://images.metmuseum.org/CRDImages/as/original/DP341629.jpg",
+    "https://images.metmuseum.org/CRDImages/as/original/DP341626.jpg"
+  ],
+  "constituents": null,
+  "department": "Asian Art",
+  "objectName": "Relief",
+  "title": "Manasa, the Snake Goddess",
+  "culture": "India (Bengal) or Bangladesh",
+  "period": "Pala period",
+  "dynasty": "",
+  "reign": "",
+  "portfolio": "",
+  "artistRole": "",
+  "artistPrefix": "",
+  "artistDisplayName": "",
+  "artistDisplayBio": "",
+  "artistSuffix": "",
+  "artistAlphaSort": "",
+  "artistNationality": "",
+  "artistBeginDate": "",
+  "artistEndDate": "",
+  "artistGender": "",
+  "artistWikidata_URL": "",
+  "artistULAN_URL": "",
+  "objectDate": "11th century",
+  "objectBeginDate": 1000,
+  "objectEndDate": 1099,
+  "medium": "Copper sheet, repousséd and engraved, with traces of gilding",
+  "dimensions": "H. 11 in. (28 cm)",
+  "measurements": [
+    {
+      "elementName": "Overall",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Height": 28
+      }
+    }
+  ],
+  "creditLine": "Purchase, Frederick and Marie-Claude Butler Gift and Gift of Mrs. W. J. Calhoun, by exchange, 2011",
+  "geographyType": "",
+  "city": "",
+  "state": "",
+  "county": "",
+  "country": "",
+  "region": "",
+  "subregion": "",
+  "locale": "",
+  "locus": "",
+  "excavation": "",
+  "river": "",
+  "classification": "Sculpture",
+  "rightsAndReproduction": "",
+  "linkResource": "",
+  "metadataDate": "2025-03-06T04:54:30Z",
+  "repository": "Metropolitan Museum of Art, New York, NY",
+  "objectURL": "https://www.metmuseum.org/art/collection/search/76737",
+  "tags": [
+    {
+      "term": "Goddess",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300343852",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q205985"
+    },
+    {
+      "term": "Hinduism",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300073727",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q9089"
+    }
+  ],
+  "objectWikidata_URL": "",
+  "isTimelineWork": false,
+  "GalleryNumber": ""
+}

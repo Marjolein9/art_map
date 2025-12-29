@@ -1,0 +1,88 @@
+{
+  "objectID": 643506,
+  "isHighlight": false,
+  "accessionNumber": "2015.566",
+  "accessionYear": "2015",
+  "isPublicDomain": true,
+  "primaryImage": "https://images.metmuseum.org/CRDImages/ao/original/DP-892-001.jpg",
+  "primaryImageSmall": "https://images.metmuseum.org/CRDImages/ao/web-large/DP-892-001.jpg",
+  "additionalImages": [
+    "https://images.metmuseum.org/CRDImages/ao/original/DP-892-002.jpg",
+    "https://images.metmuseum.org/CRDImages/ao/original/DP-892-003.jpg",
+    "https://images.metmuseum.org/CRDImages/ao/original/DP-892-004.jpg"
+  ],
+  "constituents": [
+    {
+      "constituentID": 155514,
+      "role": "Artist",
+      "name": "Baule artist",
+      "constituentULAN_URL": "",
+      "constituentWikidata_URL": "",
+      "gender": ""
+    }
+  ],
+  "department": "The Michael C. Rockefeller Wing",
+  "objectName": "Mask",
+  "title": "Moon face mask from a mblo performance",
+  "culture": "Baule peoples",
+  "period": "",
+  "dynasty": "",
+  "reign": "",
+  "portfolio": "",
+  "artistRole": "Artist",
+  "artistPrefix": "",
+  "artistDisplayName": "Baule artist",
+  "artistDisplayBio": "",
+  "artistSuffix": "",
+  "artistAlphaSort": "Baule artist",
+  "artistNationality": "Baoulé",
+  "artistBeginDate": "",
+  "artistEndDate": "",
+  "artistGender": "",
+  "artistWikidata_URL": "",
+  "artistULAN_URL": "",
+  "objectDate": "Mid-19th–early 20th century",
+  "objectBeginDate": 1850,
+  "objectEndDate": 1930,
+  "medium": "Wood",
+  "dimensions": "H. 10 1/2 × W. 6 3/4 × D. 5 1/4 in. (26.7 × 17.1 × 13.3 cm)\r\nHeight on stand: 13 1/4 (33.7 cm)",
+  "measurements": [
+    {
+      "elementName": "Overall",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Depth": 13.335027,
+        "Height": 26.670053,
+        "Width": 17.145035
+      }
+    }
+  ],
+  "creditLine": "Purchase, Mrs. Howard J. Barnet Gift, 2015",
+  "geographyType": "",
+  "city": "",
+  "state": "",
+  "county": "",
+  "country": "central Côte d'Ivoire",
+  "region": "",
+  "subregion": "",
+  "locale": "",
+  "locus": "",
+  "excavation": "",
+  "river": "",
+  "classification": "Wood-Sculpture",
+  "rightsAndReproduction": "",
+  "linkResource": "",
+  "metadataDate": "2025-09-24T04:50:58.447Z",
+  "repository": "Metropolitan Museum of Art, New York, NY",
+  "objectURL": "https://www.metmuseum.org/art/collection/search/643506",
+  "tags": [
+    {
+      "term": "Faces",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300251798",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q37017"
+    }
+  ],
+  "objectWikidata_URL": "",
+  "isTimelineWork": false,
+  "GalleryNumber": "341"
+}

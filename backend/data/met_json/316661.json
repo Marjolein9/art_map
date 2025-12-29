@@ -1,0 +1,84 @@
+{
+  "objectID": 316661,
+  "isHighlight": true,
+  "accessionNumber": "1991.419.1",
+  "accessionYear": "1991",
+  "isPublicDomain": true,
+  "primaryImage": "https://images.metmuseum.org/CRDImages/ao/original/DT2593.jpg",
+  "primaryImageSmall": "https://images.metmuseum.org/CRDImages/ao/web-large/DT2593.jpg",
+  "additionalImages": [],
+  "constituents": [
+    {
+      "constituentID": 223081,
+      "role": "Artist",
+      "name": "Chiriquí artist(s)",
+      "constituentULAN_URL": "",
+      "constituentWikidata_URL": "",
+      "gender": ""
+    }
+  ],
+  "department": "The Michael C. Rockefeller Wing",
+  "objectName": "Pendant",
+  "title": "Frog pendant",
+  "culture": "Chiriquí",
+  "period": "",
+  "dynasty": "",
+  "reign": "",
+  "portfolio": "",
+  "artistRole": "Artist",
+  "artistPrefix": "",
+  "artistDisplayName": "Chiriquí artist(s)",
+  "artistDisplayBio": "",
+  "artistSuffix": "",
+  "artistAlphaSort": "Chiriquí artist(s)",
+  "artistNationality": "",
+  "artistBeginDate": "",
+  "artistEndDate": "",
+  "artistGender": "",
+  "artistWikidata_URL": "",
+  "artistULAN_URL": "",
+  "objectDate": "700–1550 CE",
+  "objectBeginDate": 700,
+  "objectEndDate": 1550,
+  "medium": "Gold",
+  "dimensions": "H. 4 1/8 × W. 4 × D. 1 in. (10.5 × 10.2 × 2.5 cm)",
+  "measurements": [
+    {
+      "elementName": "Overall",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Depth": 2.540005,
+        "Height": 10.477521,
+        "Width": 10.16002
+      }
+    }
+  ],
+  "creditLine": "Jan Mitchell and Sons Collection, Gift of Jan Mitchell, 1991",
+  "geographyType": "",
+  "city": "",
+  "state": "",
+  "county": "",
+  "country": "Costa Rica",
+  "region": "",
+  "subregion": "",
+  "locale": "",
+  "locus": "",
+  "excavation": "",
+  "river": "",
+  "classification": "Metal-Ornaments",
+  "rightsAndReproduction": "",
+  "linkResource": "",
+  "metadataDate": "2025-12-20T04:50:39.43Z",
+  "repository": "Metropolitan Museum of Art, New York, NY",
+  "objectURL": "https://www.metmuseum.org/art/collection/search/316661",
+  "tags": [
+    {
+      "term": "Frogs",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300250018",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q3116510"
+    }
+  ],
+  "objectWikidata_URL": "https://www.wikidata.org/wiki/Q28659360",
+  "isTimelineWork": true,
+  "GalleryNumber": "360"
+}

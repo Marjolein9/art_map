@@ -1,0 +1,81 @@
+{
+  "objectID": 316004,
+  "isHighlight": false,
+  "accessionNumber": "1988.117.10",
+  "accessionYear": "1988",
+  "isPublicDomain": true,
+  "primaryImage": "https://images.metmuseum.org/CRDImages/ao/original/DP-24266-001.jpg",
+  "primaryImageSmall": "https://images.metmuseum.org/CRDImages/ao/web-large/DP-24266-001.jpg",
+  "additionalImages": [
+    "https://images.metmuseum.org/CRDImages/ao/original/vs1988_117_10a.jpg",
+    "https://images.metmuseum.org/CRDImages/ao/original/DP-24266-002.jpg"
+  ],
+  "constituents": [
+    {
+      "constituentID": 233095,
+      "role": "Artist",
+      "name": "Manteño artist(s)",
+      "constituentULAN_URL": "",
+      "constituentWikidata_URL": "",
+      "gender": ""
+    }
+  ],
+  "department": "The Michael C. Rockefeller Wing",
+  "objectName": "Vessel",
+  "title": "Figure vessel",
+  "culture": "Manteño",
+  "period": "",
+  "dynasty": "",
+  "reign": "",
+  "portfolio": "",
+  "artistRole": "Artist",
+  "artistPrefix": "",
+  "artistDisplayName": "Manteño artist(s)",
+  "artistDisplayBio": "",
+  "artistSuffix": "",
+  "artistAlphaSort": "Manteño artist(s)",
+  "artistNationality": "",
+  "artistBeginDate": "",
+  "artistEndDate": "",
+  "artistGender": "",
+  "artistWikidata_URL": "",
+  "artistULAN_URL": "",
+  "objectDate": "800–1450 CE",
+  "objectBeginDate": 800,
+  "objectEndDate": 1450,
+  "medium": "Ceramic, pigment",
+  "dimensions": "H. 3 3/8 × W. 4 × D. 8 1/4 in. (8.6 × 10.2 × 21 cm)",
+  "measurements": [
+    {
+      "elementName": "Overall",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Depth": 20.955042,
+        "Height": 8.572517,
+        "Width": 10.16002
+      }
+    }
+  ],
+  "creditLine": "Gift of Peggy and Tessim Zorach, 1988",
+  "geographyType": "",
+  "city": "",
+  "state": "",
+  "county": "",
+  "country": "Ecuador",
+  "region": "",
+  "subregion": "",
+  "locale": "",
+  "locus": "",
+  "excavation": "",
+  "river": "",
+  "classification": "Ceramics-Containers",
+  "rightsAndReproduction": "",
+  "linkResource": "",
+  "metadataDate": "2025-06-06T04:50:48.053Z",
+  "repository": "Metropolitan Museum of Art, New York, NY",
+  "objectURL": "https://www.metmuseum.org/art/collection/search/316004",
+  "tags": null,
+  "objectWikidata_URL": "",
+  "isTimelineWork": true,
+  "GalleryNumber": "360"
+}

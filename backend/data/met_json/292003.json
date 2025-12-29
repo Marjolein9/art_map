@@ -46,19 +46,19 @@
   "dimensions": "Image: 31.7 × 41.5 cm (12 1/2 × 16 5/16 in.)\r\nMount: 42.3 × 58.2 cm (16 5/8 × 22 15/16 in.)",
   "measurements": [
     {
-      "elementName": "Image",
-      "elementDescription": null,
-      "elementMeasurements": {
-        "Height": 31.7,
-        "Width": 41.5
-      }
-    },
-    {
       "elementName": "Mount",
       "elementDescription": null,
       "elementMeasurements": {
         "Height": 42.3,
         "Width": 58.2
+      }
+    },
+    {
+      "elementName": "Image",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Height": 31.7,
+        "Width": 41.5
       }
     }
   ],

@@ -173,6 +173,15 @@ def get_file_size_mb(filepath):
     """Get file size in megabytes."""
     return os.path.getsize(filepath) / (1024 * 1024)
 
+def sanitize_filename(title):
+    """Convert title to safe filename with underscores"""
+    if not title:
+        return None
+    # Replace spaces with underscores, remove unsafe characters
+    safe = title.replace(' ', '_').replace('/', '_').replace('\\', '_')
+    safe = ''.join(c for c in safe if c.isalnum() or c in ('_', '-', '.'))
+    return safe + '.jpg' if not safe.endswith('.jpg') else safe
+
 def check_image_exists(filepath):
     """
     Check if an image file exists, also checking for .jpg version if path ends in .webp
@@ -194,20 +203,24 @@ def check_image_exists(filepath):
 
     return False, filepath
 
-def process_image(filepath):
+def process_image(filepath, max_dimension=None):
     """
     Process an image file:
     - Convert webp to jpeg (deletes original webp)
-    - Resize if > 1MB
+    - Resize if > 1MB or larger than max_dimension
     - Convert RGBA to RGB
 
     Args:
         filepath: Full path to image file
+        max_dimension: Optional max dimension in pixels (defaults to MAX_IMAGE_DIMENSION from config)
 
     Returns:
         New filepath (jpg) if format changed, or original filepath
     """
     try:
+        # Use MAX_IMAGE_DIMENSION if max_dimension not specified
+        effective_max_dimension = max_dimension if max_dimension is not None else MAX_IMAGE_DIMENSION
+
         original_filepath = filepath
         original_size = get_file_size_mb(filepath)
 
@@ -226,20 +239,20 @@ def process_image(filepath):
 
         # Check if needs resizing
         width, height = img.size
-        if original_size > MAX_IMAGE_SIZE_MB or width > MAX_IMAGE_DIMENSION or height > MAX_IMAGE_DIMENSION:
+        if original_size > MAX_IMAGE_SIZE_MB or width > effective_max_dimension or height > effective_max_dimension:
             print(f"  ↕️ Resizing image: {original_size:.2f}MB / {width}x{height}px")
 
             # Calculate new dimensions
             if width > height:
-                if width > MAX_IMAGE_DIMENSION:
-                    new_width = MAX_IMAGE_DIMENSION
-                    new_height = int((MAX_IMAGE_DIMENSION / width) * height)
+                if width > effective_max_dimension:
+                    new_width = effective_max_dimension
+                    new_height = int((effective_max_dimension / width) * height)
                 else:
                     new_width, new_height = width, height
             else:
-                if height > MAX_IMAGE_DIMENSION:
-                    new_height = MAX_IMAGE_DIMENSION
-                    new_width = int((MAX_IMAGE_DIMENSION / height) * width)
+                if height > effective_max_dimension:
+                    new_height = effective_max_dimension
+                    new_width = int((effective_max_dimension / height) * width)
                 else:
                     new_width, new_height = width, height
 
@@ -274,7 +287,7 @@ def process_image(filepath):
         print(f"  ❌ Error processing image {filepath}: {e}")
         return filepath  # Return original path on error
 
-def copy_local_image(local_path, iso3, collection_type, target_filename=None):
+def copy_local_image(local_path, iso3, collection_type, target_filename=None, max_dimension=None):
     """
     Copy a local image file to the correct folder structure.
 
@@ -283,6 +296,7 @@ def copy_local_image(local_path, iso3, collection_type, target_filename=None):
         iso3: Country ISO3 code
         collection_type: Collection type ('albert_kahn', 'children_artwork', or 'public_domain')
         target_filename: Optional filename to use (will use original filename if not provided)
+        max_dimension: Optional max dimension in pixels for resizing
 
     Returns:
         Relative filepath (e.g., 'images/USA/children_artwork/image.jpg') or None if copy fails
@@ -321,7 +335,7 @@ def copy_local_image(local_path, iso3, collection_type, target_filename=None):
             print(f"  ✅ File already exists: {filename}")
 
         # Process image (convert webp, resize if needed)
-        processed_filepath = process_image(filepath_full)
+        processed_filepath = process_image(filepath_full, max_dimension=max_dimension)
 
         # Get final filename (may have changed from .webp to .jpg)
         final_filename = os.path.basename(processed_filepath)
@@ -333,7 +347,7 @@ def copy_local_image(local_path, iso3, collection_type, target_filename=None):
         print(f"  ❌ Error copying {local_path}: {e}")
         return None
 
-def download_image(url, iso3, collection_type, target_filename=None):
+def download_image(url, iso3, collection_type, target_filename=None, max_dimension=None):
     """
     Download an image from URL and save it to the correct folder structure.
 
@@ -342,6 +356,7 @@ def download_image(url, iso3, collection_type, target_filename=None):
         iso3: Country ISO3 code
         collection_type: Collection type ('albert_kahn', 'children_artwork', or 'public_domain')
         target_filename: Optional filename to use (will extract from URL if not provided)
+        max_dimension: Optional max dimension in pixels for resizing
 
     Returns:
         Relative filepath (e.g., 'images/USA/public_domain/image.jpg') or None if download fails
@@ -391,7 +406,7 @@ def download_image(url, iso3, collection_type, target_filename=None):
             print(f"  ✅ File already exists: {filename}")
 
         # Process image (convert webp, resize if needed)
-        processed_filepath = process_image(filepath_full)
+        processed_filepath = process_image(filepath_full, max_dimension=max_dimension)
 
         # Get final filename (may have changed from .webp to .jpg)
         final_filename = os.path.basename(processed_filepath)
@@ -759,9 +774,11 @@ def init_database():
     cursor.execute('CREATE INDEX idx_borders_country_iso3 ON country_borders(country_iso3)')
     cursor.execute('CREATE INDEX idx_borders_country_m49 ON country_borders(country_m49)')
 
-    # Insert countries from M49 data
-    print(f"🌍 Inserting {len(m49_countries)} countries...")
-    for country in m49_countries:
+    # Insert countries from M49 data in two passes to handle foreign key constraints
+    # First pass: Insert countries without parent territories
+    print(f"🌍 Inserting countries (first pass - parent countries)...")
+    parent_countries = [c for c in m49_countries if c['parent_country_iso3'] is None]
+    for country in parent_countries:
         cursor.execute('''
             INSERT INTO countries (iso3, iso2, name, common_name, m49, continent, subregion, is_country, include_in_quiz, parent_country_iso3)
             VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
@@ -777,8 +794,29 @@ def init_database():
             country['include_in_quiz'],
             country['parent_country_iso3']
         ))
+    print(f"✅ Inserted {len(parent_countries)} parent countries")
 
-    print(f"✅ Inserted {len(m49_countries)} countries")
+    # Second pass: Insert territories with parent countries
+    print(f"🌍 Inserting territories (second pass - with parent references)...")
+    territories = [c for c in m49_countries if c['parent_country_iso3'] is not None]
+    for country in territories:
+        cursor.execute('''
+            INSERT INTO countries (iso3, iso2, name, common_name, m49, continent, subregion, is_country, include_in_quiz, parent_country_iso3)
+            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+        ''', (
+            country['iso3'],
+            country['iso2'],
+            country['name'],
+            country['common_name'],
+            country['m49'],
+            country['continent'],
+            country['subregion'],
+            country['is_country'],
+            country['include_in_quiz'],
+            country['parent_country_iso3']
+        ))
+    print(f"✅ Inserted {len(territories)} territories")
+    print(f"✅ Total inserted: {len(m49_countries)} countries")
 
     # Load Albert Kahn images - use image_url column
     print(f"🖼️  Loading Albert Kahn images from: {ALBERT_KAHN_CSV_PATH}")
@@ -885,15 +923,6 @@ def init_database():
     print(f"🎨 Loading Children Artwork from: {CHILDREN_ARTWORK_CSV_PATH}")
     children_artwork_count = 0
 
-    def sanitize_filename(title):
-        """Convert title to safe filename with underscores"""
-        if not title:
-            return None
-        # Replace spaces with underscores, remove unsafe characters
-        safe = title.replace(' ', '_').replace('/', '_').replace('\\', '_')
-        safe = ''.join(c for c in safe if c.isalnum() or c in ('_', '-', '.'))
-        return safe + '.jpg' if not safe.endswith('.jpg') else safe
-
     with open(CHILDREN_ARTWORK_CSV_PATH, 'r', encoding='utf-8') as f:
         reader = csv.DictReader(f)
 
@@ -991,7 +1020,7 @@ def init_database():
 
     print(f"✅ Inserted {children_artwork_count} children artwork images")
 
-    # Load Public Domain images (skip rows with Remove="yes") - use image_url column
+    # Load Public Domain images (skip rows with Remove="yes") - use local_path column
     print(f"📚 Loading Public Domain images from: {PUBLIC_DOMAIN_CSV_PATH}")
     public_domain_count = 0
 
@@ -999,57 +1028,97 @@ def init_database():
         reader = csv.DictReader(f)
 
         for row in reader:
+            # Skip rows marked for removal
             remove_status = row.get('Remove', '').strip().lower()
             if remove_status == 'yes':
                 continue
 
             iso3 = row.get('iso3', '').strip()
-            image_url = row.get('image_url', '').strip()
+            filepath_col = row.get('filepath', '').strip()
+            local_path = row.get('local_path', '').strip()
+            title = row.get('title', '').strip()
 
-            if not iso3 or not image_url:
+            # Validate required fields
+            if not iso3:
+                print(f"  ⚠️  Skipping row: missing iso3")
                 continue
 
+            # Determine source: filepath first, then local_path
+            source_path = filepath_col if filepath_col else local_path
+
+            if not source_path:
+                print(f"  ⚠️  Skipping row for {iso3}: both filepath and local_path are empty")
+                continue
+
+            if not title:
+                print(f"  ⚠️  Skipping row for {iso3}: missing title")
+                continue
+
+            # Create sanitized filename from title
+            target_filename = sanitize_filename(title)
+            if not target_filename:
+                print(f"  ⚠️  Skipping row for {iso3}: could not sanitize title '{title}'")
+                continue
+
+            # Check if image already exists at expected path
+            expected_path = os.path.join(base_dir, 'images', iso3, 'public_domain', target_filename)
             filepath = None
 
-            # Determine source and check if file already exists
-            if image_url.startswith('http'):
-                # Get expected filename from URL
-                parsed_url = urlparse(image_url)
-                filename = unquote(os.path.basename(parsed_url.path))
-                # Check for both .jpg and original extension
-                expected_path_jpg = os.path.join(base_dir, 'images', iso3, 'public_domain', filename.replace('.webp', '.jpg') if filename.endswith('.webp') else filename)
-                expected_path_original = os.path.join(base_dir, 'images', iso3, 'public_domain', filename)
+            # Handle renaming if file exists with different name
+            if not os.path.exists(expected_path) and source_path.startswith('http'):
+                # Check for URL-based filename
+                parsed_url = urlparse(source_path)
+                url_filename = unquote(os.path.basename(parsed_url.path))
+                # Also check for .jpg version if URL was .webp
+                if url_filename.endswith('.webp'):
+                    url_filename_jpg = url_filename[:-5] + '.jpg'
+                    url_based_path_jpg = os.path.join(base_dir, 'images', iso3, 'public_domain', url_filename_jpg)
+                    if os.path.exists(url_based_path_jpg) and url_filename_jpg != target_filename:
+                        print(f"  ♻️  Renaming {url_filename_jpg} -> {target_filename}")
+                        os.rename(url_based_path_jpg, expected_path)
 
-                if os.path.exists(expected_path_jpg):
-                    filepath = f"images/{iso3}/public_domain/{os.path.basename(expected_path_jpg)}"
-                elif os.path.exists(expected_path_original):
-                    filepath = f"images/{iso3}/public_domain/{filename}"
-                else:
-                    # Download from URL
-                    print(f"  🔄 Downloading from URL...")
-                    filepath = download_image(image_url, iso3, 'public_domain')
+                url_based_path = os.path.join(base_dir, 'images', iso3, 'public_domain', url_filename)
+                if os.path.exists(url_based_path) and url_filename != target_filename:
+                    print(f"  ♻️  Renaming {url_filename} -> {target_filename}")
+                    os.rename(url_based_path, expected_path)
+
+            if os.path.exists(expected_path):
+                # Image already exists with correct name
+                filepath = f"images/{iso3}/public_domain/{target_filename}"
             else:
-                # Assume it's in Downloads folder
-                local_path = os.path.join(downloads_folder, image_url)
-                filename = os.path.basename(local_path)
-                # Check for both .jpg and original extension
-                expected_path_jpg = os.path.join(base_dir, 'images', iso3, 'public_domain', filename.replace('.webp', '.jpg') if filename.endswith('.webp') else filename)
-                expected_path_original = os.path.join(base_dir, 'images', iso3, 'public_domain', filename)
-
-                if os.path.exists(expected_path_jpg):
-                    filepath = f"images/{iso3}/public_domain/{os.path.basename(expected_path_jpg)}"
-                elif os.path.exists(expected_path_original):
-                    filepath = f"images/{iso3}/public_domain/{filename}"
+                # Download or copy image with 500px max dimension
+                if source_path.startswith('http'):
+                    # Download from URL
+                    print(f"  🔄 Downloading: {title}")
+                    filepath = download_image(
+                        source_path,
+                        iso3,
+                        'public_domain',
+                        target_filename=target_filename,
+                        max_dimension=500
+                    )
                 else:
                     # Copy from Downloads folder
-                    print(f"  🔄 Copying from Downloads folder...")
-                    filepath = copy_local_image(local_path, iso3, 'public_domain')
+                    if source_path.startswith('/') or source_path.startswith('~'):
+                        local_file_path = os.path.expanduser(source_path)
+                    else:
+                        local_file_path = os.path.join(downloads_folder, source_path)
+
+                    print(f"  🔄 Copying: {title}")
+                    filepath = copy_local_image(
+                        local_file_path,
+                        iso3,
+                        'public_domain',
+                        target_filename=target_filename,
+                        max_dimension=500
+                    )
 
             # If filepath acquisition failed, skip
             if not filepath:
-                print(f"  ⏭️  Skipping row due to failed image acquisition")
+                print(f"  ⏭️  Skipping '{title}' - failed to acquire image")
                 continue
 
+            # Insert into database
             cursor.execute('''
                 INSERT INTO public_domain_images (
                     source_url, title, description, source_link,

@@ -1,0 +1,88 @@
+{
+  "objectID": 320631,
+  "isHighlight": false,
+  "accessionNumber": "2010.177",
+  "accessionYear": "2010",
+  "isPublicDomain": true,
+  "primaryImage": "https://images.metmuseum.org/CRDImages/ao/original/DP-17812-001.jpg",
+  "primaryImageSmall": "https://images.metmuseum.org/CRDImages/ao/web-large/DP-17812-001.jpg",
+  "additionalImages": [
+    "https://images.metmuseum.org/CRDImages/ao/original/DP-17812-002.jpg",
+    "https://images.metmuseum.org/CRDImages/ao/original/TR.436.2009_b.jpg",
+    "https://images.metmuseum.org/CRDImages/ao/original/TR.436.2009_a.jpg"
+  ],
+  "constituents": [
+    {
+      "constituentID": 221402,
+      "role": "Artist",
+      "name": "Taíno artist(s)",
+      "constituentULAN_URL": "",
+      "constituentWikidata_URL": "",
+      "gender": ""
+    }
+  ],
+  "department": "The Michael C. Rockefeller Wing",
+  "objectName": "Ornament",
+  "title": "Figure Pendant",
+  "culture": "Taíno",
+  "period": "",
+  "dynasty": "",
+  "reign": "",
+  "portfolio": "",
+  "artistRole": "Artist",
+  "artistPrefix": "",
+  "artistDisplayName": "Taíno artist(s)",
+  "artistDisplayBio": "",
+  "artistSuffix": "",
+  "artistAlphaSort": "Taíno artist(s)",
+  "artistNationality": "",
+  "artistBeginDate": "",
+  "artistEndDate": "",
+  "artistGender": "",
+  "artistWikidata_URL": "",
+  "artistULAN_URL": "",
+  "objectDate": "13th–15th century",
+  "objectBeginDate": 1175,
+  "objectEndDate": 1525,
+  "medium": "Stone",
+  "dimensions": "H. 2 1/16 x W. 1 x D. 3/4 in. (5.2 x 2.5 x 1.9 cm)",
+  "measurements": [
+    {
+      "elementName": "Overall",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Depth": 1.9050038,
+        "Height": 5.2387605,
+        "Width": 2.540005
+      }
+    }
+  ],
+  "creditLine": "Gift of Ron Nasser, 2010",
+  "geographyType": "",
+  "city": "",
+  "state": "",
+  "county": "",
+  "country": "Dominican Republic",
+  "region": "Caribbean",
+  "subregion": "",
+  "locale": "",
+  "locus": "",
+  "excavation": "",
+  "river": "",
+  "classification": "Stone-Sculpture",
+  "rightsAndReproduction": "",
+  "linkResource": "",
+  "metadataDate": "2025-01-30T04:54:21.21Z",
+  "repository": "Metropolitan Museum of Art, New York, NY",
+  "objectURL": "https://www.metmuseum.org/art/collection/search/320631",
+  "tags": [
+    {
+      "term": "Human Figures",
+      "AAT_URL": "http://vocab.getty.edu/page/aat/300404114",
+      "Wikidata_URL": "https://www.wikidata.org/wiki/Q5937779"
+    }
+  ],
+  "objectWikidata_URL": "",
+  "isTimelineWork": false,
+  "GalleryNumber": ""
+}

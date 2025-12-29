@@ -1,0 +1,81 @@
+{
+  "objectID": 309901,
+  "isHighlight": false,
+  "accessionNumber": "1972.64",
+  "accessionYear": "1972",
+  "isPublicDomain": true,
+  "primaryImage": "https://images.metmuseum.org/CRDImages/ao/original/DP-17794-001.jpg",
+  "primaryImageSmall": "https://images.metmuseum.org/CRDImages/ao/web-large/DP-17794-001.jpg",
+  "additionalImages": [
+    "https://images.metmuseum.org/CRDImages/ao/original/DP-17794-002.jpg",
+    "https://images.metmuseum.org/CRDImages/ao/original/DP-17794-003.jpg",
+    "https://images.metmuseum.org/CRDImages/ao/original/DP-17794-004.jpg"
+  ],
+  "constituents": [
+    {
+      "constituentID": 232430,
+      "role": "Artist",
+      "name": "Ulúa Valley artist(s)",
+      "constituentULAN_URL": "",
+      "constituentWikidata_URL": "",
+      "gender": ""
+    }
+  ],
+  "department": "The Michael C. Rockefeller Wing",
+  "objectName": "Bowl",
+  "title": "Pedestal vessel",
+  "culture": "Ulúa Valley",
+  "period": "",
+  "dynasty": "",
+  "reign": "",
+  "portfolio": "",
+  "artistRole": "Artist",
+  "artistPrefix": "",
+  "artistDisplayName": "Ulúa Valley artist(s)",
+  "artistDisplayBio": "",
+  "artistSuffix": "",
+  "artistAlphaSort": "Ulúa Valley artist(s)",
+  "artistNationality": "",
+  "artistBeginDate": "",
+  "artistEndDate": "",
+  "artistGender": "",
+  "artistWikidata_URL": "",
+  "artistULAN_URL": "",
+  "objectDate": "800–1000 CE",
+  "objectBeginDate": 800,
+  "objectEndDate": 1000,
+  "medium": "Marble",
+  "dimensions": "H. 5 7/8 x Diam. 5 in. (14.9 x 12.7 cm)",
+  "measurements": [
+    {
+      "elementName": "Overall",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Diameter": 12.7,
+        "Height": 14.9225
+      }
+    }
+  ],
+  "creditLine": "Harris Brisbane Dick Fund, 1972",
+  "geographyType": "",
+  "city": "",
+  "state": "",
+  "county": "",
+  "country": "Honduras",
+  "region": "",
+  "subregion": "",
+  "locale": "",
+  "locus": "",
+  "excavation": "",
+  "river": "",
+  "classification": "Stone-Containers",
+  "rightsAndReproduction": "",
+  "linkResource": "",
+  "metadataDate": "2025-05-31T04:50:53.377Z",
+  "repository": "Metropolitan Museum of Art, New York, NY",
+  "objectURL": "https://www.metmuseum.org/art/collection/search/309901",
+  "tags": null,
+  "objectWikidata_URL": "",
+  "isTimelineWork": false,
+  "GalleryNumber": "360"
+}
