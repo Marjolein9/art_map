@@ -119,7 +119,7 @@ def get_countries():
         # Join with parent countries to get parent names for territories
         countries = execute_query('''
             SELECT c.iso3, c.iso2, c.name, c.common_name, c.m49, c.continent, c.subregion, c.is_country,
-                   c.parent_country_iso3,
+                   c.include_in_quiz, c.parent_country_iso3,
                    p.common_name as parent_common_name, p.name as parent_name
             FROM countries c
             LEFT JOIN countries p ON c.parent_country_iso3 = p.iso3

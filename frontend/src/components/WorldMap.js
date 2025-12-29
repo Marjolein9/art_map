@@ -224,12 +224,10 @@ const WorldMap = ({
         // Initialize mapping between country codes
         initializeCountryMapping(dbCountries);
 
-        // Filter out territories and special regions we don't want in the quiz
-        const excluded = ['BES','BVT','CXR','CCK','GUF','GIB','GLP','MTQ','MYT','REU','SJM','TKL','TUV','UMI'];
-
-        // Array.filter creates a new array with only elements that pass the test
-        // c => boolean is an arrow function: compact syntax for function(c) { return boolean }
-        const validCountries = dbCountries.filter(c => c.is_country && !excluded.includes(c.iso3));
+        // Filter to only include countries/territories that are marked for quiz inclusion
+        // This includes all sovereign countries AND the 7 territories with clickable geometries
+        // (Greenland, Puerto Rico, French Polynesia, New Caledonia, Guam, Curaçao, Aruba)
+        const validCountries = dbCountries.filter(c => c.include_in_quiz);
         setAllCountries(validCountries);
 
         // Load TopoJSON map data
