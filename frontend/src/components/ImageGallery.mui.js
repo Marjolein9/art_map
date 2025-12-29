@@ -107,6 +107,22 @@ const ImageGallery = ({
     return mapping[source?.toLowerCase()] || null;
   };
 
+  // Helper function to get type subtitle based on collection
+  const getTypeSubtitle = (collectionType) => {
+    switch(collectionType) {
+      case 'Albert Kahn':
+        return 'Historical Photograph';
+      case 'Public Domain Review':
+        return 'Public Domain Review';
+      case 'Met Museum':
+        return 'Museum Artwork';
+      case 'Children in Art':
+        return `Artists from ${countryName || 'this country'}`;
+      default:
+        return null;
+    }
+  };
+
   const renderCaption = (image, collectionType) => {
     switch(collectionType) {
       case 'Albert Kahn':
@@ -168,7 +184,18 @@ const ImageGallery = ({
             {/* Artist Name (Nationality) - parentheses, not comma */}
             {image.artist_name && (
               <Typography variant="body2" sx={{ color: COLOR_SCHEME.textPrimary }}>
-                {image.artist_name}
+                {image.author_wikilink ? (
+                  <Link
+                    href={image.author_wikilink}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    sx={{ color: COLOR_SCHEME.linkColor, textDecoration: 'underline' }}
+                  >
+                    {image.artist_name}
+                  </Link>
+                ) : (
+                  image.artist_name
+                )}
                 {image.artist_nationality && ` (${image.artist_nationality})`}
               </Typography>
             )}
@@ -186,10 +213,6 @@ const ImageGallery = ({
                 </Link>
               </Typography>
             )}
-            {/* Artists from Country: Children in Art */}
-            <Typography variant="body2" sx={{ color: COLOR_SCHEME.textPrimary }}>
-              Artists from {countryName}: Children in Art
-            </Typography>
           </Box>
         );
       case 'Public Domain Review':
@@ -249,7 +272,7 @@ const ImageGallery = ({
             {(image.artist_name || image.culture || image.object_date) && (
               <Typography variant="body2" sx={{ color: COLOR_SCHEME.textPrimary }}>
                 {image.artist_name || image.culture}
-                {image.object_date && `, ${image.object_date}`}
+                {image.object_date && (image.artist_name || image.culture ? `, ${image.object_date}` : image.object_date)}
               </Typography>
             )}
             {/* Medium */}
@@ -280,74 +303,19 @@ const ImageGallery = ({
   };
 
   const getCollectionTitle = (collectionType) => {
-    switch(collectionType) {
-      case 'Albert Kahn':
-        return (
-          <Link
-            href="https://albert-kahn.hauts-de-seine.fr/en/"
-            target="_blank"
-            rel="noopener noreferrer"
-            sx={{ color: COLOR_SCHEME.linkColor, textDecoration: 'underline', fontWeight: 600 }}
-          >
-            Albert Kahn's Archives of the Planet
-          </Link>
-        );
-      case 'Children in Art':
-        return "Children in Art";
-      case 'Public Domain Review':
-        return (
-          <Link
-            href="https://publicdomainreview.org/"
-            target="_blank"
-            rel="noopener noreferrer"
-            sx={{ color: COLOR_SCHEME.linkColor, textDecoration: 'underline', fontWeight: 600 }}
-          >
-            Public Domain Review
-          </Link>
-        );
-      case 'Met Museum':
-        return (
-          <Link
-            href="https://www.metmuseum.org/"
-            target="_blank"
-            rel="noopener noreferrer"
-            sx={{ color: COLOR_SCHEME.linkColor, textDecoration: 'underline', fontWeight: 600 }}
-          >
-            Metropolitan Museum of Art collection
-          </Link>
-        );
-      default:
-        return collectionType;
-    }
+    // All images are public domain, so show unified title based on count
+    return images.length === 1 ? 'A Public Domain Image:' : 'All Public Domain Images';
   };
 
   const getCollectionSubtitle = (collectionType) => {
-    switch(collectionType) {
-      case 'Albert Kahn':
-        return (
-          <Link
-            href="https://publicdomainreview.org/essay/albert-kahns-archives-of-the-planet/"
-            target="_blank"
-            rel="noopener noreferrer"
-            variant="body2"
-            sx={{ color: COLOR_SCHEME.linkColor, textDecoration: 'underline' }}
-          >
-            The Color of Memory
-          </Link>
-        );
-      case 'Children in Art':
-        return (
-          <Typography variant="body2" sx={{ color: COLOR_SCHEME.textPrimary }}>
-            Artists from {countryName || 'this country'}
-          </Typography>
-        );
-      case 'Public Domain Review':
-        return null;
-      case 'Met Museum':
-        return null
-      default:
-        return null;
-    }
+    const subtitle = getTypeSubtitle(collectionType);
+    if (!subtitle) return null;
+
+    return (
+      <Typography variant="body2" sx={{ color: COLOR_SCHEME.textPrimary }}>
+        {subtitle}
+      </Typography>
+    );
   };
 
   // Get the appropriate link URL for the image based on collection type

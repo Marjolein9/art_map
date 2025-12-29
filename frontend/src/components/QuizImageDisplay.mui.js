@@ -29,7 +29,7 @@ import { getCountryIsoCode } from '../utils/countryCodeMapping';
  * @param {boolean} showMap - Whether to show the map (default: true)
  * @param {boolean} hideNoImagesMessage - Whether to hide "No images available" message (default: false)
  */
-const QuizImageDisplay = ({ imagesByCollection, countryName, countryISO, onShowAll, showMap = true, hideNoImagesMessage = false }) => {
+const QuizImageDisplay = ({ imagesByCollection, countryName, countryISO, onShowAll, showMap = true, hideNoImagesMessage = false, hideMainTitle = false }) => {
   const [randomImage, setRandomImage] = useState(null);
   const [collectionName, setCollectionName] = useState(null);
   const [neighbors, setNeighbors] = useState([]);
@@ -46,27 +46,32 @@ const QuizImageDisplay = ({ imagesByCollection, countryName, countryISO, onShowA
       return;
     }
 
-    // Flatten all images from all collections into a single array
-    const allImagesWithCollection = [];
-    Object.entries(imagesByCollection).forEach(([collection, images]) => {
-      if (images && images.length > 0) {
-        images.forEach(image => {
-          allImagesWithCollection.push({ image, collection });
-        });
-      }
-    });
+    // Priority order: Children in Art → Public Domain Review → Albert Kahn → Met Museum
+    const priorityOrder = ['Children in Art', 'Public Domain Review', 'Albert Kahn', 'Met Museum'];
 
-    if (allImagesWithCollection.length === 0) {
+    // Find the first collection with available images
+    let selectedCollection = null;
+    let collectionImages = null;
+
+    for (const collection of priorityOrder) {
+      const images = imagesByCollection[collection];
+      if (images && images.length > 0) {
+        selectedCollection = collection;
+        collectionImages = images;
+        break;
+      }
+    }
+
+    if (!selectedCollection || !collectionImages) {
       setRandomImage(null);
       setCollectionName(null);
       return;
     }
 
-    // Pick a random image
-    const randomIndex = Math.floor(Math.random() * allImagesWithCollection.length);
-    const selected = allImagesWithCollection[randomIndex];
-    setRandomImage(selected.image);
-    setCollectionName(selected.collection);
+    // Pick a random image from the selected collection
+    const randomIndex = Math.floor(Math.random() * collectionImages.length);
+    setRandomImage(collectionImages[randomIndex]);
+    setCollectionName(selectedCollection);
   }, [imagesByCollection]);
 
   // Load GeoJSON data with full country list
@@ -200,6 +205,23 @@ const QuizImageDisplay = ({ imagesByCollection, countryName, countryISO, onShowA
     }
   };
 
+  // Helper function to get type subtitle based on collection
+  const getTypeSubtitle = (collection) => {
+    switch(collection) {
+      case 'Albert Kahn':
+        return 'Historical Photograph';
+      case 'Public Domain Review':
+        return 'Public Domain Review';
+      case 'Met Museum':
+      case 'Metropolitan Museum of Art':
+        return 'Museum Artwork';
+      case 'Children in Art':
+        return `Artists from ${countryName}: Children in Art`;
+      default:
+        return null;
+    }
+  };
+
   const renderCaption = () => {
     const displayName = getCollectionDisplayName(collectionName);
 
@@ -259,7 +281,7 @@ const QuizImageDisplay = ({ imagesByCollection, countryName, countryISO, onShowA
               {(randomImage.artist_name || randomImage.culture || randomImage.object_date) && (
                 <Typography variant="body2">
                   {randomImage.artist_name || randomImage.culture}
-                  {randomImage.object_date && `, ${randomImage.object_date}`}
+                  {randomImage.object_date && (randomImage.artist_name || randomImage.culture ? `, ${randomImage.object_date}` : randomImage.object_date)}
                 </Typography>
               )}
               {/* Medium */}
@@ -299,7 +321,18 @@ const QuizImageDisplay = ({ imagesByCollection, countryName, countryISO, onShowA
               {/* Artist Name (Nationality) - parentheses, not comma */}
               {randomImage.artist_name && (
                 <Typography variant="body2">
-                  {randomImage.artist_name}
+                  {randomImage.author_wikilink ? (
+                    <Link
+                      href={randomImage.author_wikilink}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      sx={{ color: COLOR_SCHEME.linkColor, textDecoration: 'underline' }}
+                    >
+                      {randomImage.artist_name}
+                    </Link>
+                  ) : (
+                    randomImage.artist_name
+                  )}
                   {randomImage.artist_nationality && ` (${randomImage.artist_nationality})`}
                 </Typography>
               )}
@@ -317,10 +350,6 @@ const QuizImageDisplay = ({ imagesByCollection, countryName, countryISO, onShowA
                   </Link>
                 </Typography>
               )}
-              {/* Artists from Country: Children in Art */}
-              <Typography variant="body2">
-                Artists from {countryName}: Children in Art
-              </Typography>
             </Box>
           );
 
@@ -632,16 +661,55 @@ const QuizImageDisplay = ({ imagesByCollection, countryName, countryISO, onShowA
 
       {/* Image Section - Only show if images exist */}
       {hasImages ? (
-        <Card
-          sx={{
-            backgroundColor: COLOR_SCHEME.cardBg,
-            color: COLOR_SCHEME.text,
-            border: `1px solid ${COLOR_SCHEME.border}`,
-            boxShadow: 'none',
-            borderRadius: 2,
-          }}
-        >
-          <CardContent sx={{ p: 2, '&:last-child': { pb: 2 } }}>
+        <>
+          {/* Main Title - only show if not hidden */}
+          {!hideMainTitle && (
+            <Paper
+              elevation={0}
+              sx={{
+                backgroundColor: COLOR_SCHEME.cardBg,
+                border: `1px solid ${COLOR_SCHEME.border}`,
+                borderRadius: 2,
+                p: 2,
+                textAlign: 'center',
+                mb: 2,
+              }}
+            >
+              <Typography variant="h6" sx={{ fontWeight: 600, color: COLOR_SCHEME.text }}>
+                A Public Domain Image:
+              </Typography>
+            </Paper>
+          )}
+
+          {/* Type Subtitle */}
+          {collectionName && getTypeSubtitle(collectionName) && (
+            <Paper
+              elevation={0}
+              sx={{
+                backgroundColor: COLOR_SCHEME.cardBg,
+                border: `1px solid ${COLOR_SCHEME.border}`,
+                borderRadius: 2,
+                p: 1.5,
+                textAlign: 'center',
+                mb: 2,
+              }}
+            >
+              <Typography variant="subtitle1" sx={{ fontWeight: 600, color: COLOR_SCHEME.text }}>
+                {getTypeSubtitle(collectionName)}
+              </Typography>
+            </Paper>
+          )}
+
+          <Card
+            sx={{
+              backgroundColor: COLOR_SCHEME.cardBg,
+              color: COLOR_SCHEME.text,
+              border: `1px solid ${COLOR_SCHEME.border}`,
+              boxShadow: 'none',
+              borderRadius: 2,
+            }}
+          >
+            <CardContent sx={{ p: 2, '&:last-child': { pb: 2 } }}>
             {/* Image */}
             <Box
               sx={{
@@ -717,6 +785,7 @@ const QuizImageDisplay = ({ imagesByCollection, countryName, countryISO, onShowA
             )}
           </CardContent>
         </Card>
+        </>
       ) : !hideNoImagesMessage ? (
         <Paper
           elevation={0}

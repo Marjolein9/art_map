@@ -525,20 +525,51 @@ const ArtworkInfoBar = ({
                     onShowAll={null}
                     showMap={true}
                     hideNoImagesMessage={true}
+                    hideMainTitle={true}
                   />
-                  {/* Show all images without maps */}
-                  {Object.entries(imagesByCollection).map(([collection, images]) =>
-                    images?.map((image, index) => (
-                      <QuizImageDisplay
-                        key={`${collection}-${index}`}
-                        imagesByCollection={{ [collection]: [image] }}
-                        countryName={countryName}
-                        countryISO={countryISO}
-                        onShowAll={null}
-                        showMap={false}
-                      />
-                    ))
-                  )}
+
+                  {/* Main title shown once for all images */}
+                  <Box
+                    sx={{
+                      backgroundColor: '#f5f5f5',
+                      border: '1px solid #ddd',
+                      borderRadius: 2,
+                      p: 2,
+                      textAlign: 'center',
+                    }}
+                  >
+                    <Typography variant="h6" sx={{ fontWeight: 600 }}>
+                      All Public Domain Images
+                    </Typography>
+                  </Box>
+
+                  {/* Show all images without maps - ordered by priority */}
+                  {(() => {
+                    // Priority order: Children in Art → Public Domain Review → Albert Kahn → Met Museum
+                    const priorityOrder = ['Children in Art', 'Public Domain Review', 'Albert Kahn', 'Met Museum'];
+                    const sortedEntries = Object.entries(imagesByCollection).sort(([collectionA], [collectionB]) => {
+                      const indexA = priorityOrder.indexOf(collectionA);
+                      const indexB = priorityOrder.indexOf(collectionB);
+                      // If not in priority list, put at end
+                      const orderA = indexA === -1 ? 999 : indexA;
+                      const orderB = indexB === -1 ? 999 : indexB;
+                      return orderA - orderB;
+                    });
+
+                    return sortedEntries.map(([collection, images]) =>
+                      images?.map((image, index) => (
+                        <QuizImageDisplay
+                          key={`${collection}-${index}`}
+                          imagesByCollection={{ [collection]: [image] }}
+                          countryName={countryName}
+                          countryISO={countryISO}
+                          onShowAll={null}
+                          showMap={false}
+                          hideMainTitle={true}
+                        />
+                      ))
+                    );
+                  })()}
                 </Box>
               )}
 
