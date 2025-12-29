@@ -48,6 +48,9 @@ import { fetchCountries, fetchNeighbors, fetchSimilarIslands } from '../services
 import { getPathColor, getPathStrokeColor } from '../utils/pastelColorPalette';
 // Functions that determine what colors to use for country borders
 
+import { getDisplayName } from '../utils/displayHelpers';
+// Helper function to format country/territory names as "Territory (Parent Country)"
+
 /**
  * WorldMap Component Definition
  *
@@ -617,9 +620,9 @@ const WorldMap = ({
       const clickedFeature = countries.features.find(f => getCountryIsoCode(f) === clickedCountry);
       if (!clickedFeature) return;
 
-      // Get the human-readable country name
+      // Get the human-readable country name (with parent for territories)
       const countryData = allCountries.find(c => c.iso3 === clickedCountry);
-      const countryName = countryData?.common_name || countryData?.name || clickedCountry;
+      const countryName = getDisplayName(countryData) || clickedCountry;
 
       // Calculate where to place the label
       const centroid = calculateCentroid(clickedFeature.geometry.coordinates);
@@ -647,9 +650,9 @@ const WorldMap = ({
       const targetFeature = countries.features.find(f => getCountryIsoCode(f) === targetCountry);
       if (!targetFeature) return;
 
-      // Get the human-readable country name
+      // Get the human-readable country name (with parent for territories)
       const countryData = allCountries.find(c => c.iso3 === targetCountry);
-      const countryName = countryData?.common_name || countryData?.name || targetCountry;
+      const countryName = getDisplayName(countryData) || targetCountry;
 
       // Calculate where to place the label
       const centroid = calculateCentroid(targetFeature.geometry.coordinates);
@@ -856,13 +859,11 @@ const WorldMap = ({
                     {/* Map over sorted countries to create menu items */}
                     {allCountries
                       .sort((a, b) =>
-                        (a.common_name || a.name).localeCompare(
-                          b.common_name || b.name
-                        )
+                        getDisplayName(a).localeCompare(getDisplayName(b))
                       )
                       .map(c => (
                         <MenuItem key={c.iso3} value={c.iso3}>
-                          {c.common_name || c.name}
+                          {getDisplayName(c)}
                         </MenuItem>
                       ))}
                   </Select>

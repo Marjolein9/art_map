@@ -17,6 +17,7 @@ import WelcomeOverlay from './components/WelcomeOverlay.mui';
 import COLOR_SCHEME from './styles/colorSchemes';
 import { useQuiz } from './hooks/useQuiz';
 import { fetchCountries } from './services/api';
+import { getDisplayName } from './utils/displayHelpers';
 
 /**
  * APP COMPONENT
@@ -159,7 +160,7 @@ function App() {
          */
         const lookup = {};
         countries.forEach(country => {
-          lookup[country.iso3] = country.common_name || country.name;
+          lookup[country.iso3] = getDisplayName(country);
         });
         setCountryLookup(lookup);
 

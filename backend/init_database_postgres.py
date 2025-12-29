@@ -439,6 +439,37 @@ def load_m49_data():
         common_name = country.get('common_name', name)
         is_country = country.get('is_country', False)
 
+        # Set include_in_quiz based on is_country status
+        include_in_quiz = is_country
+
+        # Override for territories with geometries in TopoJSON (clickable on globe)
+        # Only include territories that have separate geometries in world-atlas TopoJSON
+        territory_overrides = [
+            'GRL',  # Greenland (Denmark)
+            'PRI',  # Puerto Rico (United States)
+            'PYF',  # French Polynesia (France)
+            'NCL',  # New Caledonia (France)
+            'GUM',  # Guam (United States)
+            'CUW',  # Curaçao (Netherlands)
+            'ABW',  # Aruba (Netherlands)
+        ]
+        if iso3 in territory_overrides:
+            include_in_quiz = True
+
+        # Set parent country for territories
+        parent_country_iso3 = None
+        parent_mapping = {
+            'PYF': 'FRA',  # French Polynesia → France
+            'NCL': 'FRA',  # New Caledonia → France
+            'GRL': 'DNK',  # Greenland → Denmark
+            'CUW': 'NLD',  # Curaçao → Netherlands
+            'ABW': 'NLD',  # Aruba → Netherlands
+            'PRI': 'USA',  # Puerto Rico → United States
+            'GUM': 'USA',  # Guam → United States
+        }
+        if iso3 in parent_mapping:
+            parent_country_iso3 = parent_mapping[iso3]
+
         countries.append({
             'iso3': iso3,
             'iso2': alpha2,
@@ -447,7 +478,9 @@ def load_m49_data():
             'm49': country.get('m49code', ''),
             'continent': continent,
             'subregion': subregion,
-            'is_country': is_country
+            'is_country': is_country,
+            'include_in_quiz': include_in_quiz,
+            'parent_country_iso3': parent_country_iso3
         })
 
     print(f"✅ Loaded {len(countries)} countries from UN M49 data")
@@ -585,8 +618,16 @@ def init_database():
             m49 INTEGER,
             continent TEXT NOT NULL,
             subregion TEXT NOT NULL,
-            is_country BOOLEAN NOT NULL DEFAULT FALSE
+            is_country BOOLEAN NOT NULL DEFAULT FALSE,
+            include_in_quiz BOOLEAN DEFAULT FALSE,
+            parent_country_iso3 TEXT,
+            CONSTRAINT fk_parent_country FOREIGN KEY (parent_country_iso3) REFERENCES countries(iso3)
         )
+    ''')
+
+    # Create index on parent_country_iso3
+    cursor.execute('''
+        CREATE INDEX idx_countries_parent ON countries(parent_country_iso3)
     ''')
 
     # Create albert_kahn_images table with ALL columns from CSV
@@ -722,8 +763,8 @@ def init_database():
     print(f"🌍 Inserting {len(m49_countries)} countries...")
     for country in m49_countries:
         cursor.execute('''
-            INSERT INTO countries (iso3, iso2, name, common_name, m49, continent, subregion, is_country)
-            VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
+            INSERT INTO countries (iso3, iso2, name, common_name, m49, continent, subregion, is_country, include_in_quiz, parent_country_iso3)
+            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
         ''', (
             country['iso3'],
             country['iso2'],
@@ -732,7 +773,9 @@ def init_database():
             country['m49'],
             country['continent'],
             country['subregion'],
-            country['is_country']
+            country['is_country'],
+            country['include_in_quiz'],
+            country['parent_country_iso3']
         ))
 
     print(f"✅ Inserted {len(m49_countries)} countries")

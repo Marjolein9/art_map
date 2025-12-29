@@ -116,9 +116,15 @@ def get_countries():
     try:
         # Execute query using utility function (automatically manages connection)
         # execute_query() handles: connect → execute → fetch → close
-        countries = execute_query(
-            'SELECT iso3, iso2, name, common_name, m49, continent, subregion, is_country FROM countries ORDER BY common_name'
-        )
+        # Join with parent countries to get parent names for territories
+        countries = execute_query('''
+            SELECT c.iso3, c.iso2, c.name, c.common_name, c.m49, c.continent, c.subregion, c.is_country,
+                   c.parent_country_iso3,
+                   p.common_name as parent_common_name, p.name as parent_name
+            FROM countries c
+            LEFT JOIN countries p ON c.parent_country_iso3 = p.iso3
+            ORDER BY c.common_name
+        ''')
 
         # Return JSON response
         return jsonify({
@@ -161,30 +167,21 @@ def random_country():
         # Get optional region query parameter
         region = request.args.get('region')
 
-        # List of territories to exclude from quiz mode
-        excluded_territories = [
-            'BES', 'BVT', 'CXR', 'CCK', 'GUF', 'GIB', 'GLP',
-            'MTQ', 'MYT', 'REU', 'SJM', 'TKL', 'TUV', 'UMI'
-        ]
-
-        # Get all sovereign countries excluding small territories
-        # Build dynamic query with correct number of placeholders
-        placeholders = ', '.join(['%s'] * len(excluded_territories))
-
-        # Build query parameters tuple
-        query_params = list(excluded_territories)
-
-        # Add optional region filter
+        # Get all countries/territories marked for quiz inclusion
+        # This includes sovereign countries AND selected overseas territories
+        query_params = []
         region_filter = ''
         if region:
             region_filter = 'AND continent = %s'
             query_params.append(region)
 
         countries = execute_query(f'''
-            SELECT iso3, name, common_name, continent, subregion
-            FROM countries
-            WHERE is_country = TRUE
-            AND iso3 NOT IN ({placeholders})
+            SELECT c.iso3, c.name, c.common_name, c.continent, c.subregion,
+                   c.parent_country_iso3,
+                   p.common_name as parent_common_name, p.name as parent_name
+            FROM countries c
+            LEFT JOIN countries p ON c.parent_country_iso3 = p.iso3
+            WHERE c.include_in_quiz = TRUE
             {region_filter}
         ''', tuple(query_params))
 
@@ -204,7 +201,10 @@ def random_country():
                 'name': selected_country['name'],
                 'common_name': selected_country['common_name'],
                 'continent': selected_country['continent'],
-                'subregion': selected_country['subregion']
+                'subregion': selected_country['subregion'],
+                'parent_country_iso3': selected_country.get('parent_country_iso3'),
+                'parent_common_name': selected_country.get('parent_common_name'),
+                'parent_name': selected_country.get('parent_name')
             }
         })
     except APIError:
