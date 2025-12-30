@@ -692,9 +692,10 @@ const QuizImageDisplay = ({ imagesByCollection, countryName, countryISO, onShowA
                 sx={{
                   mb: 2,
                   display: 'flex',
+                  flexDirection: 'column',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  gap: 2,
+                  gap: 1,
                 }}
               >
                 <Typography sx={{ fontSize: '1rem', color: COLOR_SCHEME.text }}>
@@ -779,26 +780,6 @@ const QuizImageDisplay = ({ imagesByCollection, countryName, countryISO, onShowA
 
             {/* Caption */}
             {renderCaption()}
-
-            {/* Show all images button */}
-            {onShowAll && (
-              <Box sx={{ mt: 3, display: 'flex', justifyContent: 'center' }}>
-                <Button
-                  variant="outlined"
-                  onClick={onShowAll}
-                  sx={{
-                    color: COLOR_SCHEME.linkColor,
-                    borderColor: COLOR_SCHEME.border,
-                    '&:hover': {
-                      borderColor: COLOR_SCHEME.linkColor,
-                      backgroundColor: 'rgba(0, 0, 0, 0.04)',
-                    },
-                  }}
-                >
-                  Show all images
-                </Button>
-              </Box>
-            )}
           </CardContent>
         </Card>
       ) : !hideNoImagesMessage ? (
