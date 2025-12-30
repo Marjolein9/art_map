@@ -440,9 +440,9 @@ const QuizImageDisplay = ({ imagesByCollection, countryName, countryISO, onShowA
 
     if (minLng === Infinity) return null;
 
-    // Add 10% padding
-    const lngPadding = (maxLng - minLng) * 0.1;
-    const latPadding = (maxLat - minLat) * 0.1;
+    // Add 5% padding
+    const lngPadding = (maxLng - minLng) * 0.05;
+    const latPadding = (maxLat - minLat) * 0.05;
 
     return {
       minLng: minLng - lngPadding,
@@ -549,8 +549,8 @@ const QuizImageDisplay = ({ imagesByCollection, countryName, countryISO, onShowA
 
   // Calculate SVG dimensions based on aspect ratio
   // Use a base width for calculation, will be responsive in CSS
-  const baseMapWidth = 300;
-  let baseMapHeight = 300;
+  const baseMapWidth = 250;
+  let baseMapHeight = 250;
 
   if (bounds) {
     const lngRange = bounds.maxLng - bounds.minLng;
@@ -560,8 +560,8 @@ const QuizImageDisplay = ({ imagesByCollection, countryName, countryISO, onShowA
     // Calculate height to maintain aspect ratio
     baseMapHeight = Math.round(baseMapWidth * aspectRatio);
 
-    // Clamp height between 150 and 450 for reasonable sizes
-    baseMapHeight = Math.max(150, Math.min(450, baseMapHeight));
+    // Clamp height between 125 and 350 for reasonable sizes
+    baseMapHeight = Math.max(125, Math.min(350, baseMapHeight));
   }
 
   // Generate SVG paths with dynamic dimensions
@@ -597,9 +597,9 @@ const QuizImageDisplay = ({ imagesByCollection, countryName, countryISO, onShowA
             {/* Map Box with SVG - Dynamic height based on aspect ratio */}
             {loadingNeighbors || !geoData ? (
             <Box sx={{
-              width: { xs: '100%', sm: 300 },
-              maxWidth: 300,
-              height: { xs: 'auto', sm: 300 },
+              width: { xs: '100%', sm: 250 },
+              maxWidth: 250,
+              height: { xs: 'auto', sm: 250 },
               aspectRatio: '1',
               backgroundColor: '#e8f4f8',
               border: `2px solid ${COLOR_SCHEME.border}`,
