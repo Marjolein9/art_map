@@ -106,35 +106,43 @@ const ArtworkInfoBar = ({
   const imageRefs = useRef({});
 
   /**
-   * FADE-IN ANIMATION EFFECT
+   * OVERLAY VISIBILITY EFFECT
    *
-   * This effect triggers a smooth fade-in animation when a new country is loaded.
-   * Shows overlay with minimal delay for better responsiveness.
+   * This effect controls when the overlay dialog appears.
+   * Shows overlay immediately when country is selected.
    */
   useEffect(() => {
     // Guard clause: only run if we have a country
     if (!countryISO) {
       setOverlayVisible(false);
+      setIsVisible(false);
       return;
     }
 
-    // Start with overlay invisible and reset "show all" state
+    // Reset states for new country
     setIsVisible(false);
     setShowAllImagesInQuiz(false);
-    setOverlayVisible(false);
-
-    // Show overlay almost immediately (small delay for smooth transition)
-    const timer = setTimeout(() => {
-      setOverlayVisible(true);
-      // requestAnimationFrame: Waits for the next browser paint cycle
-      // This ensures the opacity:0 is rendered before we set opacity:1
-      requestAnimationFrame(() => {
-        setIsVisible(true);  // Trigger fade-in via CSS transition
-      });
-    }, 100);
-
-    return () => clearTimeout(timer);
+    setOverlayVisible(true); // Show dialog immediately
   }, [countryISO]); // Re-run when country changes
+
+  /**
+   * FADE-IN ANIMATION EFFECT
+   *
+   * This effect triggers the fade-in animation when loading completes.
+   * Waits for data to be ready before starting the fade-in.
+   */
+  useEffect(() => {
+    // Only trigger fade-in when we have a country and loading is complete
+    if (!countryISO || loading) {
+      return;
+    }
+
+    // Use requestAnimationFrame to ensure smooth transition
+    // This waits for the next browser paint cycle so opacity:0 is rendered first
+    requestAnimationFrame(() => {
+      setIsVisible(true);  // Trigger fade-in via CSS transition
+    });
+  }, [countryISO, loading]); // Re-run when country changes or loading completes
 
   /**
    * FETCH IMAGES EFFECT
