@@ -157,7 +157,7 @@ const WelcomeOverlay = ({
             )}
             {/* Artists from Country: Children in Art */}
             <Typography variant="body2">
-              Artists from {countryName}: Children in Art
+             Children in Art
             </Typography>
           </Box>
         );
@@ -485,6 +485,18 @@ const WelcomeOverlay = ({
 
                       {/* Caption */}
                       {renderCaption(image, country.name)}
+
+                      {/* Collection Description */}
+                      {image.collection_description && (
+                        <Box sx={{ mt: 2, p: 2, backgroundColor: 'rgba(0, 0, 0, 0.03)', borderRadius: 1 }}>
+                          <Typography variant="body2" sx={{ fontWeight: 600, mb: 0.5 }}>
+                            {collectionName}
+                          </Typography>
+                          <Typography variant="body2" color="text.secondary">
+                            {image.collection_description}
+                          </Typography>
+                        </Box>
+                      )}
                     </CardContent>
                   </Card>
                 )
