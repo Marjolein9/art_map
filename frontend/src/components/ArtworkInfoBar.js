@@ -529,7 +529,7 @@ const ArtworkInfoBar = ({
                     return orderA - orderB;
                   });
 
-                  return sortedEntries.map(([collection, images]) =>
+                  return sortedEntries.flatMap(([collection, images]) =>
                     images?.map((image, index) => (
                       <QuizImageDisplay
                         key={`${collection}-${index}`}
@@ -540,7 +540,7 @@ const ArtworkInfoBar = ({
                         showMap={false}
                         hideMainTitle={true}
                       />
-                    ))
+                    )) || []
                   );
                 })()}
               </Box>
