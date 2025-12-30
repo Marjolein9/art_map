@@ -756,31 +756,8 @@ const WorldMap = ({
           onPathHover={setHoverD}
           onPathClick={handlePolygonClick}
           enablePointerInteraction  // Allow mouse/touch interaction
-          // Labels: Text labels that appear on the globe
-          // Used to show the name of incorrectly clicked countries
-          labelsData={countryLabels}  // Array of label objects
-          labelLat={d => d.lat}       // Accessor for label latitude
-          labelLng={d => d.lng}       // Accessor for label longitude
-          // labelLabel: HTML content of the label
-          // Template literal with inline CSS styling
-          labelLabel={d => `
-            <div style="
-              background-color: rgba(255, 255, 255, 0.85);
-              color: #000000;
-              padding: 4px 8px;
-              border-radius: 4px;
-              font-size: 1rem;
-              font-weight: 600;
-              white-space: nowrap;
-              border: 1px solid rgba(0, 0, 0, 0.2);
-              box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-            ">${d.text}</div>
-          `}
-          labelSize={1.5}         // Label size multiplier
-          labelDotRadius={0}      // No dot at label position
-          labelResolution={3}     // Label rendering quality (higher = better)
-          labelRotation={0}       // Keep labels horizontal (don't rotate with globe)
-          labelAltitude={0.01}    // Slight altitude to prevent z-fighting
+          // Labels: Disabled (no country name labels on globe)
+          labelsData={[]}  // Empty array - no labels
           // Globe dimensions (responsive to window size)
           width={globeDimensions.width}
           height={globeDimensions.height}

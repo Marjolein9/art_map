@@ -435,9 +435,9 @@ const QuizImageDisplay = ({ imagesByCollection, countryName, countryISO, onShowA
 
     if (minLng === Infinity) return null;
 
-    // Add 20% padding
-    const lngPadding = (maxLng - minLng) * 0.3;
-    const latPadding = (maxLat - minLat) * 0.3;
+    // Add 10% padding
+    const lngPadding = (maxLng - minLng) * 0.1;
+    const latPadding = (maxLat - minLat) * 0.1;
 
     return {
       minLng: minLng - lngPadding,
