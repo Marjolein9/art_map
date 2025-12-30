@@ -217,7 +217,7 @@ const QuizImageDisplay = ({ imagesByCollection, countryName, countryISO, onShowA
       case 'Metropolitan Museum of Art':
         return 'Museum Artwork';
       case 'Children in Art':
-        return `Artists from ${countryName}: Children in Art`;
+        return 'Children Depicted in Art';
       default:
         return null;
     }
