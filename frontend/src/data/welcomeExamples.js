@@ -14,6 +14,7 @@ export const welcomeExamples = {
       collections: {
         'Albert Kahn': {
           collection_type: 'Albert Kahn',
+          collection_description: 'Photographs from Albert Kahn\'s project to document everyday life with color photography in the early 20th century organized by the location the photograph was taken.',
           title: 'A Woman and Her Child Pose for the Photographer',
           location: 'Cairo, Egypt',
           date: '1914',
@@ -29,6 +30,7 @@ export const welcomeExamples = {
       collections: {
         'Children in Art': {
           collection_type: 'Children in Art',
+          collection_description: 'Artwork that depicts children from artists from each country, mostly found using WikiArt. All categories are incomplete, but this one is especially so due to my lack of art knowledge.',
           title: 'Peek-a-Boo',
           artist_name: 'Nikolaos Gyzis',
           artist_nationality: 'Greek',
@@ -44,6 +46,7 @@ export const welcomeExamples = {
       collections: {
         'Met Museum': {
           collection_type: 'Met Museum',
+          collection_description: 'Metropolitan Museum of Art collection items related to the selected country. The Met collection often includes extensive background information on the items.',
           title: 'Coat',
           culture: 'Latvian',
           object_date: '19th century',
@@ -59,8 +62,9 @@ export const welcomeExamples = {
       collections: {
         'Public Domain Review': {
           collection_type: 'Public Domain Review',
+          collection_description: 'Images from Public Domain Review essays that relate to selected country. The Public Domain Review is a free online journal that reviews works in the public domain.',
           title: 'Our Mortal Waltz: The Dance of Death Across Centuries',
-          description: 'Call of Death by Käthe Kollwitz, featured in an essay exploring the dance of death motif across centuries.',
+          description: 'Call of Death by Käthe Kollwitz',
           source_link: 'https://www.kollwitz.de/en/sheet-8-call-of-death',
           source_url: 'https://publicdomainreview.org/essay/our-mortal-waltz-the-dance-of-death-across-centuries/',
           filepath: '/welcome-examples/deu-waltz.jpg',
