@@ -517,6 +517,7 @@ const ArtworkInfoBar = ({
                   countryName={countryName}
                   countryISO={countryISO}
                   onShowAll={totalImagesAvailable > 1 ? () => setShowAllImagesInQuiz(true) : null}
+                  totalImagesAvailable={totalImagesAvailable}
                 />
               ) : (
                 // "Show more" clicked: Display map once at top, then all images

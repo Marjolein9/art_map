@@ -26,10 +26,11 @@ import { getCountryIsoCode } from '../utils/countryCodeMapping';
  * @param {string} countryName - Name of the country
  * @param {string} countryISO - ISO3 code of the country
  * @param {Function} onShowAll - Callback to show all images in collections
+ * @param {number} totalImagesAvailable - Total number of images available (from parent)
  * @param {boolean} showMap - Whether to show the map (default: true)
  * @param {boolean} hideNoImagesMessage - Whether to hide "No images available" message (default: false)
  */
-const QuizImageDisplay = ({ imagesByCollection, countryName, countryISO, onShowAll, showMap = true, hideNoImagesMessage = false, hideMainTitle = false }) => {
+const QuizImageDisplay = ({ imagesByCollection, countryName, countryISO, onShowAll, totalImagesAvailable = 0, showMap = true, hideNoImagesMessage = false, hideMainTitle = false }) => {
   const [randomImage, setRandomImage] = useState(null);
   const [collectionName, setCollectionName] = useState(null);
   const [neighbors, setNeighbors] = useState([]);
@@ -139,11 +140,6 @@ const QuizImageDisplay = ({ imagesByCollection, countryName, countryISO, onShowA
   }, [countryISO, geoData]);
 
   const hasImages = randomImage && collectionName;
-
-  // Calculate total number of images across all collections
-  const totalImageCount = imagesByCollection
-    ? Object.values(imagesByCollection).reduce((total, images) => total + (images?.length || 0), 0)
-    : 0;
 
   const getSourceInfo = (source) => {
     switch(source?.toLowerCase()) {
@@ -719,7 +715,7 @@ const QuizImageDisplay = ({ imagesByCollection, countryName, countryISO, onShowA
                       },
                     }}
                   >
-                    Show all ({totalImageCount})
+                    Show all ({totalImagesAvailable})
                   </Button>
                 )}
               </Box>
