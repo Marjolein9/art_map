@@ -373,6 +373,22 @@ const ArtworkInfoBar = ({
             // Lock height when images are present to prevent expansion during loading
             minHeight: totalImagesAvailable > 0 ? '80vh' : 'auto',
             maxHeight: totalImagesAvailable > 0 ? '80vh' : 'none',
+
+            // Custom scrollbar styling - wider and more visible
+            '&::-webkit-scrollbar': {
+              width: '12px',
+            },
+            '&::-webkit-scrollbar-track': {
+              backgroundColor: '#f1f1f1',
+              borderRadius: '6px',
+            },
+            '&::-webkit-scrollbar-thumb': {
+              backgroundColor: '#888',
+              borderRadius: '6px',
+              '&:hover': {
+                backgroundColor: '#555',
+              },
+            },
           }
         }}
       >
