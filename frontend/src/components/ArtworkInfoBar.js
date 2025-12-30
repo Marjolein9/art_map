@@ -85,9 +85,6 @@ const ArtworkInfoBar = ({
   // isVisible: Controls fade-in animation (starts false, becomes true for transition)
   const [isVisible, setIsVisible] = useState(false);
 
-  // showAllImagesInQuiz: In quiz mode, controls whether to show all images or just random one
-  const [showAllImagesInQuiz, setShowAllImagesInQuiz] = useState(false);
-
   // overlayVisible: Controls the entire overlay fade-in after 2 second delay
   const [overlayVisible, setOverlayVisible] = useState(false);
 
@@ -118,9 +115,8 @@ const ArtworkInfoBar = ({
       return;
     }
 
-    // Start with overlay invisible and reset "show all" state
+    // Start with overlay invisible
     setIsVisible(false);
-    setShowAllImagesInQuiz(false);
     setOverlayVisible(false);
 
     // Show overlay almost immediately (small delay for smooth transition)
@@ -159,72 +155,49 @@ const ArtworkInfoBar = ({
     // Show loading spinner
     setLoading(true);
 
-    // Initially (when not showing all), fetch only one random image for performance
-    // This applies to both quiz and explore modes for consistent behavior
-    if (!showAllImagesInQuiz) {
-      fetchRandomImage(countryISO)
-        .then(data => {
-          // data = {image: {...}, collection: 'Albert Kahn', iso3: 'ITA', total_images: 5}
-          // Store total_images count to determine if "Show more" button should appear
-          setTotalImagesAvailable(data.total_images || 0);
+    // Always fetch all images
+    fetchImages(countryISO)
+      .then(data => {
+        // Filter out empty collections
+        const filtered = {};
 
-          if (data.image && data.collection) {
-            // Format as imagesByCollection structure with single image
-            const imageData = {
-              [data.collection]: [data.image]
-            };
-            setImagesByCollection(imageData);
-          } else {
-            setImagesByCollection({});
+        // Object.entries(obj): Converts object to array of [key, value] pairs
+        // Example: {a: 1, b: 2} becomes [["a", 1], ["b", 2]]
+        Object.entries(data || {}).forEach(([collection, images]) => {
+          // Destructuring in parameters: [collection, images] extracts key and value
+
+          // Only keep collections that have images
+          if (images && images.length > 0) {
+            filtered[collection] = images;
           }
-        })
-        .catch(() => {
-          setImagesByCollection({});
-          setTotalImagesAvailable(0);
-        })
-        .finally(() => {
-          setLoading(false);
         });
-    } else {
-      // When "Show more" clicked, fetch all images
-      fetchImages(countryISO)
-        .then(data => {
-          // Filter out empty collections
-          const filtered = {};
 
-          // Object.entries(obj): Converts object to array of [key, value] pairs
-          // Example: {a: 1, b: 2} becomes [["a", 1], ["b", 2]]
-          Object.entries(data || {}).forEach(([collection, images]) => {
-            // Destructuring in parameters: [collection, images] extracts key and value
+        setImagesByCollection(filtered);
 
-            // Only keep collections that have images
-            if (images && images.length > 0) {
-              filtered[collection] = images;
-            }
-          });
+        // Calculate total images for display
+        const totalCount = Object.values(filtered).reduce((sum, images) => sum + images.length, 0);
+        setTotalImagesAvailable(totalCount);
 
-          setImagesByCollection(filtered);
+        // Initialize image index to 0 for each collection
+        const initialIndex = {};
 
-          // Initialize image index to 0 for each collection
-          const initialIndex = {};
-
-          // Object.keys(obj): Returns array of object's keys
-          // Example: {a: 1, b: 2} becomes ["a", "b"]
-          Object.keys(filtered).forEach(c => {
-            initialIndex[c] = 0;  // Start at first image (index 0)
-          });
-          setCurrentImageIndex(initialIndex);
-        })
-        .catch(() => {
-          // If fetching fails, reset to empty
-          setImagesByCollection({});
-        })
-        .finally(() => {
-          // Always hide loading spinner when done (success or failure)
-          setLoading(false);
+        // Object.keys(obj): Returns array of object's keys
+        // Example: {a: 1, b: 2} becomes ["a", "b"]
+        Object.keys(filtered).forEach(c => {
+          initialIndex[c] = 0;  // Start at first image (index 0)
         });
-    }
-  }, [countryISO, mode, showAllImagesInQuiz]); // Re-run when country, mode, or showAll changes
+        setCurrentImageIndex(initialIndex);
+      })
+      .catch(() => {
+        // If fetching fails, reset to empty
+        setImagesByCollection({});
+        setTotalImagesAvailable(0);
+      })
+      .finally(() => {
+        // Always hide loading spinner when done (success or failure)
+        setLoading(false);
+      });
+  }, [countryISO, mode]); // Re-run when country or mode changes
 
   /**
    * IMAGE NAVIGATION FUNCTIONS
@@ -522,68 +495,55 @@ const ArtworkInfoBar = ({
             }}>
               {/*
                 Unified image display for both quiz and explore modes:
-                - Both modes: Show single random image initially with "Show more" button
+                - Always show all images with map at top
                 - Only difference: action buttons (Try Again/Next vs Close)
               */}
-              {!showAllImagesInQuiz ? (
-                // Initial view: Single random image with "Show more" button
-                // Always render even if no images - QuizImageDisplay shows map and "No images available" message
+              <Box
+                sx={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: 3,
+                }}
+              >
+                {/* Show map once at the top */}
                 <QuizImageDisplay
-                  imagesByCollection={imagesByCollection}
+                  imagesByCollection={{}}
                   countryName={countryName}
                   countryISO={countryISO}
-                  onShowAll={totalImagesAvailable > 1 ? () => setShowAllImagesInQuiz(true) : null}
-                  totalImagesAvailable={totalImagesAvailable}
+                  onShowAll={null}
+                  showMap={true}
+                  hideNoImagesMessage={true}
+                  hideMainTitle={true}
                 />
-              ) : (
-                // "Show more" clicked: Display map once at top, then all images
-                <Box
-                  sx={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    gap: 3,
-                  }}
-                >
-                  {/* Show map once at the top */}
-                  <QuizImageDisplay
-                    imagesByCollection={{}}
-                    countryName={countryName}
-                    countryISO={countryISO}
-                    onShowAll={null}
-                    showMap={true}
-                    hideNoImagesMessage={true}
-                    hideMainTitle={true}
-                  />
 
-                  {/* Show all images without maps - ordered by priority */}
-                  {(() => {
-                    // Priority order: Children in Art → Albert Kahn → Met Museum → Public Domain Review
-                    const priorityOrder = ['Children in Art', 'Albert Kahn', 'Met Museum', 'Public Domain Review'];
-                    const sortedEntries = Object.entries(imagesByCollection).sort(([collectionA], [collectionB]) => {
-                      const indexA = priorityOrder.indexOf(collectionA);
-                      const indexB = priorityOrder.indexOf(collectionB);
-                      // If not in priority list, put at end
-                      const orderA = indexA === -1 ? 999 : indexA;
-                      const orderB = indexB === -1 ? 999 : indexB;
-                      return orderA - orderB;
-                    });
+                {/* Show all images without maps - ordered by priority */}
+                {(() => {
+                  // Priority order: Children in Art → Albert Kahn → Met Museum → Public Domain Review
+                  const priorityOrder = ['Children in Art', 'Albert Kahn', 'Met Museum', 'Public Domain Review'];
+                  const sortedEntries = Object.entries(imagesByCollection).sort(([collectionA], [collectionB]) => {
+                    const indexA = priorityOrder.indexOf(collectionA);
+                    const indexB = priorityOrder.indexOf(collectionB);
+                    // If not in priority list, put at end
+                    const orderA = indexA === -1 ? 999 : indexA;
+                    const orderB = indexB === -1 ? 999 : indexB;
+                    return orderA - orderB;
+                  });
 
-                    return sortedEntries.map(([collection, images]) =>
-                      images?.map((image, index) => (
-                        <QuizImageDisplay
-                          key={`${collection}-${index}`}
-                          imagesByCollection={{ [collection]: [image] }}
-                          countryName={countryName}
-                          countryISO={countryISO}
-                          onShowAll={null}
-                          showMap={false}
-                          hideMainTitle={true}
-                        />
-                      ))
-                    );
-                  })()}
-                </Box>
-              )}
+                  return sortedEntries.map(([collection, images]) =>
+                    images?.map((image, index) => (
+                      <QuizImageDisplay
+                        key={`${collection}-${index}`}
+                        imagesByCollection={{ [collection]: [image] }}
+                        countryName={countryName}
+                        countryISO={countryISO}
+                        onShowAll={null}
+                        showMap={false}
+                        hideMainTitle={true}
+                      />
+                    ))
+                  );
+                })()}
+              </Box>
 
               {/* Legacy explore mode gallery - no longer used */}
               {false && collections.length > 0 ? (
