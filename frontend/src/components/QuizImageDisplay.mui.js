@@ -133,11 +133,6 @@ const QuizImageDisplay = ({ imagesByCollection, countryName, countryISO, onShowA
 
   const hasImages = randomImage && collectionName;
 
-  // Count total images across all collections
-  const totalImageCount = Object.values(imagesByCollection || {}).reduce((sum, images) => {
-    return sum + (images?.length || 0);
-  }, 0);
-
   const getSourceInfo = (source) => {
     switch(source?.toLowerCase()) {
       case 'smithsonian':
@@ -677,7 +672,7 @@ const QuizImageDisplay = ({ imagesByCollection, countryName, countryISO, onShowA
               }}
             >
               <Typography sx={{ fontSize: '1rem', color: COLOR_SCHEME.text }}>
-                {!hideMainTitle && totalImageCount > 1 && <span style={{ fontWeight: 'normal' }}>Random Public Domain Image: </span>}
+                {!hideMainTitle && onShowAll && <span style={{ fontWeight: 'normal' }}>Random Public Domain Image: </span>}
                 <span style={{ fontWeight: 600 }}>{getTypeSubtitle(collectionName)}</span>
               </Typography>
             </Paper>
