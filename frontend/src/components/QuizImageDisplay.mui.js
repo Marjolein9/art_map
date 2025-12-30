@@ -234,7 +234,7 @@ const QuizImageDisplay = ({ imagesByCollection, countryName, countryISO, onShowA
       switch(displayName) {
         case 'Albert Kahn':
           return (
-            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0.5 }}>
               {/* Title (linked to page_url) */}
               {randomImage.title && randomImage.page_url && (
                 <Link
@@ -268,7 +268,7 @@ const QuizImageDisplay = ({ imagesByCollection, countryName, countryISO, onShowA
 
         case 'Metropolitan Museum of Art':
           return (
-            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0.5 }}>
               {/* Title (linked to object_url) */}
               {randomImage.title && (
                 <Link
@@ -309,7 +309,7 @@ const QuizImageDisplay = ({ imagesByCollection, countryName, countryISO, onShowA
 
         case 'Children in Art':
           return (
-            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0.5 }}>
               {/* Title (linked to work_url) */}
               {randomImage.title && randomImage.work_url && (
                 <Link
@@ -359,7 +359,7 @@ const QuizImageDisplay = ({ imagesByCollection, countryName, countryISO, onShowA
 
         case 'Public Domain Review':
           return (
-            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0.5 }}>
               {/* Description with Source link to source_link */}
               {randomImage.description && (
                 <Typography variant="body2">
