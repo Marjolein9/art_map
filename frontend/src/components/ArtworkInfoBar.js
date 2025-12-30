@@ -369,6 +369,9 @@ const ArtworkInfoBar = ({
 
             pointerEvents: isVisible ? 'auto' : 'none',
             // Disable mouse interactions while invisible
+
+            // Set minimum height when images are present to prevent expansion during loading
+            minHeight: totalImagesAvailable > 0 ? '80vh' : 'auto',
           }
         }}
       >
@@ -516,7 +519,16 @@ const ArtworkInfoBar = ({
                 />
               ) : (
                 // "Show more" clicked: Display map once at top, then all images
-                <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
+                <Box
+                  sx={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: 3,
+                    minHeight: 'calc(100vh - 200px)',
+                    maxHeight: 'calc(100vh - 200px)',
+                    overflowY: 'auto'
+                  }}
+                >
                   {/* Show map once at the top */}
                   <QuizImageDisplay
                     imagesByCollection={{}}

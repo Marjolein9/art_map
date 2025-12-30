@@ -39,7 +39,7 @@ const calculatePolygonArea = (coordinates) => {
 };
 
 /**
- * Filter multi-polygon features to keep only the largest 10 polygons
+ * Filter multi-polygon features to keep only the largest 20 polygons
  * @param {Object} feature - GeoJSON feature
  * @returns {Object} - Filtered feature
  */
@@ -50,7 +50,7 @@ const filterLargestIslands = (feature) => {
 
   const polygons = feature.geometry.coordinates;
 
-  // If 10 or fewer polygons, keep all
+  // If 20 or fewer polygons, keep all (increased from 10 to handle Greenland's 17 parts)
   if (polygons.length <= 10) {
     return feature;
   }
@@ -62,10 +62,10 @@ const filterLargestIslands = (feature) => {
     index
   }));
 
-  // Sort by area (largest first) and take top 10
-  const largest10 = polygonsWithArea
+  // Sort by area (largest first) and take top 20 (increased from 10)
+  const largest20 = polygonsWithArea
     .sort((a, b) => b.area - a.area)
-    .slice(0, 10)
+    .slice(0, 20)
     .map(p => p.coords);
 
 
@@ -73,7 +73,7 @@ const filterLargestIslands = (feature) => {
     ...feature,
     geometry: {
       ...feature.geometry,
-      coordinates: largest10
+      coordinates: largest20
     }
   };
 };

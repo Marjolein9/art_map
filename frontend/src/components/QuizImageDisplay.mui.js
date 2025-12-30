@@ -37,12 +37,15 @@ const QuizImageDisplay = ({ imagesByCollection, countryName, countryISO, onShowA
   const [geoData, setGeoData] = useState(null);
   const [targetCountryFeature, setTargetCountryFeature] = useState(null);
   const [neighborFeatures, setNeighborFeatures] = useState([]);
+  const [imageLoaded, setImageLoaded] = useState(false);
 
   // Select a random image when imagesByCollection changes
   useEffect(() => {
     if (!imagesByCollection || Object.keys(imagesByCollection).length === 0) {
       setRandomImage(null);
       setCollectionName(null);
+      // If no images, set loaded to true so map can still be visible
+      setImageLoaded(true);
       return;
     }
 
@@ -59,6 +62,8 @@ const QuizImageDisplay = ({ imagesByCollection, countryName, countryISO, onShowA
     if (allImagesWithCollection.length === 0) {
       setRandomImage(null);
       setCollectionName(null);
+      // If no images, set loaded to true so map can still be visible
+      setImageLoaded(true);
       return;
     }
 
@@ -67,6 +72,8 @@ const QuizImageDisplay = ({ imagesByCollection, countryName, countryISO, onShowA
     const selected = allImagesWithCollection[randomIndex];
     setRandomImage(selected.image);
     setCollectionName(selected.collection);
+    // Reset image loaded state when new image is selected
+    setImageLoaded(false);
   }, [imagesByCollection]);
 
   // Load GeoJSON data with full country list
@@ -352,38 +359,24 @@ const QuizImageDisplay = ({ imagesByCollection, countryName, countryISO, onShowA
         case 'Public Domain Review':
           return (
             <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
-              {/* Description (plain text, NOT linked) */}
-              {randomImage.description && (
-                <Typography variant="body2">
-                  {randomImage.description}
-                </Typography>
-              )}
-              {/* Source - Public Domain Review: Title (source and PDR linked, title plain text) */}
               <Typography variant="body2">
-                {randomImage.source_link && (
+                {/* Description/Title */}
+                {randomImage.description && randomImage.description}
+                {randomImage.title && randomImage.title}
+                {/* Source link at the end, linked to Public Domain Review */}
+                {randomImage.source_url && (
                   <>
+                    {' - '}
                     <Link
-                      href={randomImage.source_link}
+                      href={randomImage.source_url}
                       target="_blank"
                       rel="noopener noreferrer"
                       sx={{ color: COLOR_SCHEME.linkColor, textDecoration: 'underline' }}
                     >
                       Source
                     </Link>
-                    {' - '}
                   </>
                 )}
-                {randomImage.source_url && (
-                  <Link
-                    href={randomImage.source_url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    sx={{ color: COLOR_SCHEME.linkColor, textDecoration: 'underline' }}
-                  >
-                    Public Domain Review
-                  </Link>
-                )}
-                {randomImage.title && `: ${randomImage.title}`}
               </Typography>
             </Box>
           );
@@ -571,7 +564,13 @@ const QuizImageDisplay = ({ imagesByCollection, countryName, countryISO, onShowA
   }));
 
   return (
-    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+    <Box sx={{
+      display: 'flex',
+      flexDirection: 'column',
+      gap: 2,
+      opacity: imageLoaded ? 1 : 0,
+      transition: 'opacity 0.5s cubic-bezier(0.4, 0, 0.2, 1) 0.5s',
+    }}>
       {/* Map View Section - Only show if showMap prop is true */}
       {showMap && (
         <Paper
@@ -716,6 +715,9 @@ const QuizImageDisplay = ({ imagesByCollection, countryName, countryISO, onShowA
                       borderRadius: '4px',
                       cursor: 'pointer',
                     }}
+                    onLoad={() => {
+                      setImageLoaded(true);
+                    }}
                     onError={(e) => {
                       e.target.style.display = 'none';
                     }}
@@ -731,6 +733,9 @@ const QuizImageDisplay = ({ imagesByCollection, countryName, countryISO, onShowA
                     maxHeight: '400px',
                     objectFit: 'contain',
                     borderRadius: '4px',
+                  }}
+                  onLoad={() => {
+                    setImageLoaded(true);
                   }}
                   onError={(e) => {
                     e.target.style.display = 'none';
