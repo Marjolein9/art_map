@@ -589,7 +589,7 @@ const QuizImageDisplay = ({ imagesByCollection, countryName, countryISO, onShowA
       flexDirection: 'column',
       gap: 2,
       opacity: imageLoaded ? 1 : 0,
-      transition: 'opacity 0.5s cubic-bezier(0.4, 0, 0.2, 1) 0.5s',
+      transition: 'opacity 0.3s ease-in-out',
     }}>
       {/* Map View Section - Only show if showMap prop is true */}
       {showMap && (
