@@ -671,8 +671,9 @@ const QuizImageDisplay = ({ imagesByCollection, countryName, countryISO, onShowA
                 mb: 2,
               }}
             >
-              <Typography sx={{ fontSize: '1rem', fontWeight: 600, color: COLOR_SCHEME.text }}>
-                {!hideMainTitle && 'Random Public Domain Image: '}{getTypeSubtitle(collectionName)}
+              <Typography sx={{ fontSize: '1rem', color: COLOR_SCHEME.text }}>
+                {!hideMainTitle && <span style={{ fontWeight: 'normal' }}>Random Public Domain Image: </span>}
+                <span style={{ fontWeight: 600 }}>{getTypeSubtitle(collectionName)}</span>
               </Typography>
             </Paper>
           )}
