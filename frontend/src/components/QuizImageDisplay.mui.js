@@ -140,6 +140,11 @@ const QuizImageDisplay = ({ imagesByCollection, countryName, countryISO, onShowA
 
   const hasImages = randomImage && collectionName;
 
+  // Calculate total number of images across all collections
+  const totalImageCount = imagesByCollection
+    ? Object.values(imagesByCollection).reduce((total, images) => total + (images?.length || 0), 0)
+    : 0;
+
   const getSourceInfo = (source) => {
     switch(source?.toLowerCase()) {
       case 'smithsonian':
@@ -359,25 +364,44 @@ const QuizImageDisplay = ({ imagesByCollection, countryName, countryISO, onShowA
         case 'Public Domain Review':
           return (
             <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
-              <Typography variant="body2">
-                {/* Description/Title */}
-                {randomImage.description && randomImage.description}
-                {randomImage.title && randomImage.title}
-                {/* Source link at the end, linked to Public Domain Review */}
-                {randomImage.source_url && (
-                  <>
-                    {' - '}
-                    <Link
-                      href={randomImage.source_url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      sx={{ color: COLOR_SCHEME.linkColor, textDecoration: 'underline' }}
-                    >
-                      Source
-                    </Link>
-                  </>
-                )}
-              </Typography>
+              {/* Description with Source link to source_link */}
+              {randomImage.description && (
+                <Typography variant="body2">
+                  {randomImage.description}
+                  {randomImage.source_link && (
+                    <>
+                      {' - '}
+                      <Link
+                        href={randomImage.source_link}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        sx={{ color: COLOR_SCHEME.linkColor, textDecoration: 'underline' }}
+                      >
+                        Source
+                      </Link>
+                    </>
+                  )}
+                </Typography>
+              )}
+              {/* Title with Source link to source_url */}
+              {randomImage.title && (
+                <Typography variant="body2">
+                  {randomImage.title}
+                  {randomImage.source_url && (
+                    <>
+                      {' - '}
+                      <Link
+                        href={randomImage.source_url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        sx={{ color: COLOR_SCHEME.linkColor, textDecoration: 'underline' }}
+                      >
+                        Source
+                      </Link>
+                    </>
+                  )}
+                </Typography>
+              )}
             </Box>
           );
 
@@ -656,37 +680,50 @@ const QuizImageDisplay = ({ imagesByCollection, countryName, countryISO, onShowA
 
       {/* Image Section - Only show if images exist */}
       {hasImages ? (
-        <>
-          {/* Type Subtitle */}
-          {collectionName && getTypeSubtitle(collectionName) && (
-            <Paper
-              elevation={0}
-              sx={{
-                backgroundColor: COLOR_SCHEME.cardBg,
-                border: `1px solid ${COLOR_SCHEME.border}`,
-                borderRadius: 2,
-                p: 1.5,
-                textAlign: 'center',
-                mb: 2,
-              }}
-            >
-              <Typography sx={{ fontSize: '1rem', color: COLOR_SCHEME.text }}>
-                {!hideMainTitle && onShowAll && <span style={{ fontWeight: 'normal' }}>Random Public Domain Image: </span>}
-                <span style={{ fontWeight: 600 }}>{getTypeSubtitle(collectionName)}</span>
-              </Typography>
-            </Paper>
-          )}
-
-          <Card
-            sx={{
-              backgroundColor: COLOR_SCHEME.cardBg,
-              color: COLOR_SCHEME.text,
-              border: `1px solid ${COLOR_SCHEME.border}`,
-              boxShadow: 'none',
-              borderRadius: 2,
-            }}
-          >
-            <CardContent sx={{ p: 2, '&:last-child': { pb: 2 } }}>
+        <Card
+          sx={{
+            backgroundColor: COLOR_SCHEME.cardBg,
+            color: COLOR_SCHEME.text,
+            border: `1px solid ${COLOR_SCHEME.border}`,
+            boxShadow: 'none',
+            borderRadius: 2,
+          }}
+        >
+          <CardContent sx={{ p: 2, '&:last-child': { pb: 2 } }}>
+            {/* Type Subtitle */}
+            {collectionName && getTypeSubtitle(collectionName) && (
+              <Box
+                sx={{
+                  mb: 2,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: 2,
+                }}
+              >
+                <Typography sx={{ fontSize: '1rem', color: COLOR_SCHEME.text }}>
+                  {!hideMainTitle && onShowAll && <span style={{ fontWeight: 'normal' }}>Random Image: </span>}
+                  <span style={{ fontWeight: 600 }}>{getTypeSubtitle(collectionName)}</span>
+                </Typography>
+                {onShowAll && (
+                  <Button
+                    variant="outlined"
+                    size="small"
+                    onClick={onShowAll}
+                    sx={{
+                      color: COLOR_SCHEME.linkColor,
+                      borderColor: COLOR_SCHEME.border,
+                      '&:hover': {
+                        borderColor: COLOR_SCHEME.linkColor,
+                        backgroundColor: 'rgba(0, 0, 0, 0.04)',
+                      },
+                    }}
+                  >
+                    Show all ({totalImageCount})
+                  </Button>
+                )}
+              </Box>
+            )}
             {/* Image */}
             <Box
               sx={{
@@ -768,7 +805,6 @@ const QuizImageDisplay = ({ imagesByCollection, countryName, countryISO, onShowA
             )}
           </CardContent>
         </Card>
-        </>
       ) : !hideNoImagesMessage ? (
         <Paper
           elevation={0}
