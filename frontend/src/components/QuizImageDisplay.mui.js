@@ -633,9 +633,9 @@ const QuizImageDisplay = ({ imagesByCollection, countryName, countryISO, onShowA
           ) : (
             <Box sx={{
               position: 'relative',
-              width: { xs: '100%', sm: baseMapWidth },
-              maxWidth: baseMapWidth,
-              aspectRatio: `${baseMapWidth} / ${baseMapHeight}`,
+              width: { xs: '100%', sm: 250 },
+              maxWidth: 250,
+              height: 250,
               overflow: 'hidden',
               borderRadius: 1
             }}>
