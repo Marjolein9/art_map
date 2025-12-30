@@ -610,7 +610,7 @@ const QuizImageDisplay = ({ imagesByCollection, countryName, countryISO, onShowA
               position: 'relative',
               width: { xs: '100%', sm: baseMapWidth },
               maxWidth: baseMapWidth,
-              height: 'auto',
+              aspectRatio: `${baseMapWidth} / ${baseMapHeight}`,
               overflow: 'hidden',
               borderRadius: 1
             }}>
@@ -619,7 +619,7 @@ const QuizImageDisplay = ({ imagesByCollection, countryName, countryISO, onShowA
                 preserveAspectRatio="xMidYMid meet"
                 style={{
                   width: '100%',
-                  height: 'auto',
+                  height: '100%',
                   border: `2px solid ${COLOR_SCHEME.border}`,
                   borderRadius: '4px',
                   backgroundColor: '#e8f4f8',
