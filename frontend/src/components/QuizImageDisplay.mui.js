@@ -46,32 +46,27 @@ const QuizImageDisplay = ({ imagesByCollection, countryName, countryISO, onShowA
       return;
     }
 
-    // Priority order: Children in Art → Public Domain Review → Albert Kahn → Met Museum
-    const priorityOrder = ['Children in Art', 'Public Domain Review', 'Albert Kahn', 'Met Museum'];
-
-    // Find the first collection with available images
-    let selectedCollection = null;
-    let collectionImages = null;
-
-    for (const collection of priorityOrder) {
-      const images = imagesByCollection[collection];
+    // Truly random selection: flatten all images from all collections
+    const allImagesWithCollection = [];
+    Object.entries(imagesByCollection).forEach(([collection, images]) => {
       if (images && images.length > 0) {
-        selectedCollection = collection;
-        collectionImages = images;
-        break;
+        images.forEach(image => {
+          allImagesWithCollection.push({ image, collection });
+        });
       }
-    }
+    });
 
-    if (!selectedCollection || !collectionImages) {
+    if (allImagesWithCollection.length === 0) {
       setRandomImage(null);
       setCollectionName(null);
       return;
     }
 
-    // Pick a random image from the selected collection
-    const randomIndex = Math.floor(Math.random() * collectionImages.length);
-    setRandomImage(collectionImages[randomIndex]);
-    setCollectionName(selectedCollection);
+    // Pick a truly random image from all collections
+    const randomIndex = Math.floor(Math.random() * allImagesWithCollection.length);
+    const selected = allImagesWithCollection[randomIndex];
+    setRandomImage(selected.image);
+    setCollectionName(selected.collection);
   }, [imagesByCollection]);
 
   // Load GeoJSON data with full country list
@@ -108,16 +103,17 @@ const QuizImageDisplay = ({ imagesByCollection, countryName, countryISO, onShowA
     const loadNeighbors = async () => {
       setLoadingNeighbors(true);
       try {
-        // Fetch neighbor data
+        // Fetch neighbor data and filter out France and Russia
         const neighborData = await fetchNeighbors(countryISO);
-        setNeighbors(neighborData || []);
+        const filteredNeighbors = (neighborData || []).filter(n => n.iso3 !== 'FRA' && n.iso3 !== 'RUS');
+        setNeighbors(filteredNeighbors);
 
         // Find target country feature
         const targetFeature = geoData.features.find(f => getCountryIsoCode(f) === countryISO);
         setTargetCountryFeature(targetFeature);
 
-        // Find neighbor features
-        const neighborISO3s = (neighborData || []).map(n => n.iso3);
+        // Find neighbor features (excluding France and Russia)
+        const neighborISO3s = filteredNeighbors.map(n => n.iso3);
         const neighborGeoFeatures = geoData.features.filter(f =>
           neighborISO3s.includes(getCountryIsoCode(f))
         );
@@ -662,25 +658,6 @@ const QuizImageDisplay = ({ imagesByCollection, countryName, countryISO, onShowA
       {/* Image Section - Only show if images exist */}
       {hasImages ? (
         <>
-          {/* Main Title - only show if not hidden */}
-          {!hideMainTitle && (
-            <Paper
-              elevation={0}
-              sx={{
-                backgroundColor: COLOR_SCHEME.cardBg,
-                border: `1px solid ${COLOR_SCHEME.border}`,
-                borderRadius: 2,
-                p: 2,
-                textAlign: 'center',
-                mb: 2,
-              }}
-            >
-              <Typography variant="h6" sx={{ fontWeight: 600, color: COLOR_SCHEME.text }}>
-                A Public Domain Image:
-              </Typography>
-            </Paper>
-          )}
-
           {/* Type Subtitle */}
           {collectionName && getTypeSubtitle(collectionName) && (
             <Paper
@@ -694,7 +671,7 @@ const QuizImageDisplay = ({ imagesByCollection, countryName, countryISO, onShowA
                 mb: 2,
               }}
             >
-              <Typography variant="subtitle1" sx={{ fontWeight: 600, color: COLOR_SCHEME.text }}>
+              <Typography sx={{ fontSize: '1rem', fontWeight: 600, color: COLOR_SCHEME.text }}>
                 {getTypeSubtitle(collectionName)}
               </Typography>
             </Paper>

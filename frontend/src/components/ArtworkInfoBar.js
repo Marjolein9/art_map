@@ -528,25 +528,10 @@ const ArtworkInfoBar = ({
                     hideMainTitle={true}
                   />
 
-                  {/* Main title shown once for all images */}
-                  <Box
-                    sx={{
-                      backgroundColor: '#f5f5f5',
-                      border: '1px solid #ddd',
-                      borderRadius: 2,
-                      p: 2,
-                      textAlign: 'center',
-                    }}
-                  >
-                    <Typography variant="h6" sx={{ fontWeight: 600 }}>
-                      All Public Domain Images
-                    </Typography>
-                  </Box>
-
                   {/* Show all images without maps - ordered by priority */}
                   {(() => {
-                    // Priority order: Children in Art → Public Domain Review → Albert Kahn → Met Museum
-                    const priorityOrder = ['Children in Art', 'Public Domain Review', 'Albert Kahn', 'Met Museum'];
+                    // Priority order: Children in Art → Albert Kahn → Met Museum → Public Domain Review
+                    const priorityOrder = ['Children in Art', 'Albert Kahn', 'Met Museum', 'Public Domain Review'];
                     const sortedEntries = Object.entries(imagesByCollection).sort(([collectionA], [collectionB]) => {
                       const indexA = priorityOrder.indexOf(collectionA);
                       const indexB = priorityOrder.indexOf(collectionB);
