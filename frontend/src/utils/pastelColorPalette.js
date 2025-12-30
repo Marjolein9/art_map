@@ -174,26 +174,33 @@ export const getPathColor = (
  * Get Stroke (Outline) Color for Path
  *
  * Determines the color of the country border outline.
- * Simpler than getPathColor - only cares about special overlays.
+ * Handles visibility based on hints mode.
  *
  * @param {Object} path - The country path data
  * @param {boolean} isHintOverlay - Whether this is a hint
  * @param {boolean} isShowMeOverlay - Whether this is the revealed answer
+ * @param {boolean} hintsEnabled - Whether hints are enabled in quiz mode
+ * @param {string} mode - Current app mode ('quiz' or 'explore')
  * @returns {string} - Hex color code for the outline
  */
-export const getPathStrokeColor = (path, isHintOverlay, isShowMeOverlay) => {
+export const getPathStrokeColor = (path, isHintOverlay, isShowMeOverlay, hintsEnabled = false, mode = 'explore') => {
   // "Show Me" overlay gets a darker outline for emphasis
   if (isShowMeOverlay) {
     return COLOR_SCHEME.borderPrimary;
   }
 
-  // All other cases (hints and default): Black outline
+  // In quiz mode with hints enabled: only show borders for hint countries
+  if (mode === 'quiz' && hintsEnabled) {
+    // Hint countries get black borders for visibility
+    if (isHintOverlay) {
+      return COLOR_SCHEME.black;
+    }
+    // Non-hint countries get transparent borders (invisible)
+    return 'rgba(0, 0, 0, 0)';
+  }
+
+  // All other cases (explore mode or hints off): Black outline
   return COLOR_SCHEME.black;
-  /**
-   * WHY BLACK FOR HINTS?
-   * Black borders on pastel fills creates clear contrast
-   * Makes country boundaries easy to see
-   */
 };
 
 /**

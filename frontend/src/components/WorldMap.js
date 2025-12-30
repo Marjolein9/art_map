@@ -743,7 +743,7 @@ const WorldMap = ({
             );
           }}
           // pathStrokeColor: Color of the path outline/border
-          pathStrokeColor={d => getPathStrokeColor(d, d.isHintOverlay, d.isShowMeOverlay)}
+          pathStrokeColor={d => getPathStrokeColor(d, d.isHintOverlay, d.isShowMeOverlay, hintsEnabled, mode)}
           // pathStroke: Border thickness (thicker for hints and "Show Me")
           pathStroke={d => (d.isShowMeOverlay || d.isHintOverlay) ? 4 : 2}
           // Path animation settings (all disabled for performance)
