@@ -468,7 +468,7 @@ const ArtworkInfoBar = ({
         </DialogTitle>
 
         {/* DIALOG CONTENT */}
-        <DialogContent>
+        <DialogContent sx={{ pt: 1, pb: 1 }}>
           {/* Collection Filter - Only visible in test mode */}
           {process.env.REACT_APP_TEST && onCollectionsChange && (
             <Box sx={{ mb: 2 }}>
