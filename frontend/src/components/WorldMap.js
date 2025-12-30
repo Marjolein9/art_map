@@ -744,8 +744,12 @@ const WorldMap = ({
           }}
           // pathStrokeColor: Color of the path outline/border
           pathStrokeColor={d => getPathStrokeColor(d, d.isHintOverlay, d.isShowMeOverlay, hintsEnabled, mode)}
-          // pathStroke: Border thickness (thicker for hints and "Show Me")
-          pathStroke={d => (d.isShowMeOverlay || d.isHintOverlay) ? 4 : 2}
+          // pathStroke: Border thickness (thicker for hints and "Show Me", 0 for non-hints when hints enabled)
+          pathStroke={d => {
+            if (d.isShowMeOverlay || d.isHintOverlay) return 4;
+            if (mode === 'quiz' && hintsEnabled) return 0;
+            return 2;
+          }}
           // Path animation settings (all disabled for performance)
           pathDashLength={1}           // No dashed lines
           pathDashGap={0}              // No gaps in dashes
