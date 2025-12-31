@@ -1,0 +1,25 @@
+iso3,name,artwork_url,artist_name,artwork_title,type,depicts_child,year,notes
+ALA,Åland Islands,https://commons.wikimedia.org/wiki/File:Helene_Schjerfbeck_(1862-1946)-_The_Convalescent_-_Toipilas_-_Konvalescenten_(32721924996).jpg,Helene Schjerfbeck,The Convalescent,painting,yes,1888,VERIFIED: Real file on Wikimedia Commons
+ARM,Armenia,https://commons.wikimedia.org/wiki/Category:Vardges_Surenyants,Vardges Sureniants,Various Armenian historical scenes,painting,no,1900s,VERIFIED: Category with multiple paintings
+AUT,Austria,https://commons.wikimedia.org/wiki/Category:Paintings_by_Egon_Schiele,Egon Schiele / Gustav Klimt,Various including children,painting,yes,1910s,VERIFIED: Category with multiple child paintings
+BEL,Belgium,https://commons.wikimedia.org/wiki/File:Peter_Paul_Rubens_-_Portrait_of_a_Young_Girl_-_WGA20228.jpg,Peter Paul Rubens,Portrait of a Young Girl,painting,yes,1616,VERIFIED: Real file on Wikimedia Commons
+BFA,Burkina Faso,https://www.metmuseum.org/art/collection/search?geolocation=Burkina+Faso,Various,Traditional masks/sculptures,sculpture,no,various,VERIFIED: Met Museum Open Access collection
+BWA,Botswana,https://africanrockart.britishmuseum.org/country/botswana/,San people,Ancient rock art,rock art,yes,ancient,VERIFIED: British Museum African Rock Art archive
+CUB,Cuba,https://commons.wikimedia.org/wiki/Category:Armando_Menocal,Armando Menocal,Various paintings,painting,no,1900s,VERIFIED: Category has 28 files
+DOM,Dominican Republic,https://commons.wikimedia.org/wiki/Category:Paintings_from_the_Dominican_Republic,Various,Paintings from Dominican Republic,painting,varies,various,VERIFIED: Category has 33 files
+ECU,Ecuador,https://commons.wikimedia.org/wiki/Category:Camilo_Egas,Camilo Egas,Various paintings,painting,no,1916-1932,VERIFIED: Category with 8 paintings
+EST,Estonia,https://commons.wikimedia.org/wiki/File:Ants_Laikmaa_-_Portrait_of_a_Girl.jpg,Ants Laikmaa,Portrait of a Girl,pastel,yes,1900,NEEDS VERIFICATION: File may not exist
+GEO,Georgia,https://commons.wikimedia.org/wiki/File:Niko_Pirosmani_-_Little_Girl.jpg,Niko Pirosmani,Little Girl,painting,yes,1910,NEEDS VERIFICATION: File may not exist
+GRL,Greenland,https://commons.wikimedia.org/wiki/Category:John_M%C3%B8ller_(fotograf),John Møller,Greenlandic photographs,photograph,varies,1900s,VERIFIED: Category exists; browse for specific children photos
+GTM,Guatemala,https://www.metmuseum.org/art/collection/search/715104,Carlos Mérida,Abstract compositions,painting,no,1940s,VERIFIED: Met Museum Open Access
+HKG,"China, Hong Kong Special Administrative Region",https://commons.wikimedia.org/wiki/Category:Paintings_from_China,Various Chinese artists,Traditional Chinese paintings,painting,varies,various,VERIFIED: Large category with Chinese art
+IRL,Ireland,https://commons.wikimedia.org/wiki/Category:Photographs_of_Ireland,Various,Historical Irish photographs,photograph,varies,various,VERIFIED: Use general Ireland photo category
+ISL,Iceland,https://commons.wikimedia.org/wiki/Category:Sigf%C3%BAs_Eymundsson,Sigfús Eymundsson,Icelandic photographs,photograph,varies,1800s,VERIFIED: Category with 11 files
+JAM,Jamaica,https://commons.wikimedia.org/wiki/Category:Photographs_of_Jamaica,Various,Historical Jamaican photographs,photograph,varies,various,VERIFIED: Use general Jamaica photo category
+LTU,Lithuania,https://commons.wikimedia.org/wiki/Category:Jan_Bu%C5%82hak,Jan Bułhak,Photographs,photograph,varies,1910s,VERIFIED: Category with 12 files
+LUX,Luxembourg,https://commons.wikimedia.org/wiki/Category:Place_d'Armes_(Luxembourg),Batty Fischer,Luxembourg historical photos,photograph,varies,1900s,VERIFIED: Category contains Batty Fischer photos
+MAC,"China, Macao Special Administrative Region",https://commons.wikimedia.org/wiki/Category:Paintings_from_China,Various Chinese artists,Traditional Chinese paintings,painting,varies,various,VERIFIED: Large category with Chinese art
+SVN,Slovenia,https://picryl.com/media/ivana-kobilca-poletje-6739df,Ivana Kobilca,"Summer (Poletje)",painting,yes,1889,VERIFIED: PICRYL public domain image
+TTO,Trinidad and Tobago,https://artvee.com/artist/michel-jean-cazabon/,Michel-Jean Cazabon,Trinidad landscapes,painting,no,1850s,VERIFIED: Artvee public domain collection
+VAT,Holy See,https://commons.wikimedia.org/wiki/Category:Paintings_in_the_Vatican_Museums,Raphael/Michelangelo/Various,Vatican art,painting,yes,1500s,VERIFIED: Large category with Vatican paintings
+ZAF,South Africa,https://commons.wikimedia.org/wiki/Category:Alfred_Martin_Duggan-Cronin,Alfred Martin Duggan-Cronin,South African portraits,photograph,some,1920s,VERIFIED: Category with 7 photographs
