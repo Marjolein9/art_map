@@ -22,7 +22,6 @@ import {
   DialogContent,   // Dialog body content
   Button,          // Clickable button
   Box,             // Flexible container for layout
-  CircularProgress,// Loading spinner
   Typography,      // Styled text component
   Select,          // Dropdown select component
   MenuItem,        // Menu item for select
@@ -75,21 +74,12 @@ const ArtworkInfoBar = ({
   // Example: { "albert_kahn": [...images], "children_artwork": [...images] }
   const [imagesByCollection, setImagesByCollection] = useState({});
 
-  // loading: Boolean indicating if data is currently being fetched
-  const [loading, setLoading] = useState(false);
-
   // currentImageIndex: Object tracking which image is displayed for each collection
   // Example: { "albert_kahn": 2, "children_artwork": 0 } means showing 3rd and 1st images
   const [currentImageIndex, setCurrentImageIndex] = useState({});
 
-  // isVisible: Controls fade-in animation (starts false, becomes true for transition)
-  const [isVisible, setIsVisible] = useState(false);
-
-  // overlayVisible: Controls the entire overlay fade-in after 2 second delay
+  // overlayVisible: Controls whether the overlay is shown
   const [overlayVisible, setOverlayVisible] = useState(false);
-
-  // totalImagesAvailable: Total number of images available for current country (from backend)
-  const [totalImagesAvailable, setTotalImagesAvailable] = useState(0);
 
   /**
    * REFS (Persistent References)
@@ -103,10 +93,10 @@ const ArtworkInfoBar = ({
   const imageRefs = useRef({});
 
   /**
-   * FADE-IN ANIMATION EFFECT
+   * OVERLAY VISIBILITY EFFECT
    *
-   * This effect triggers a smooth fade-in animation when a new country is loaded.
-   * Shows overlay with minimal delay for better responsiveness.
+   * Shows overlay immediately when a new country is loaded.
+   * No delay or fade-in - images handle their own animations.
    */
   useEffect(() => {
     // Guard clause: only run if we have a country
@@ -115,21 +105,8 @@ const ArtworkInfoBar = ({
       return;
     }
 
-    // Start with overlay invisible
-    setIsVisible(false);
-    setOverlayVisible(false);
-
-    // Show overlay almost immediately (small delay for smooth transition)
-    const timer = setTimeout(() => {
-      setOverlayVisible(true);
-      // requestAnimationFrame: Waits for the next browser paint cycle
-      // This ensures the opacity:0 is rendered before we set opacity:1
-      requestAnimationFrame(() => {
-        setIsVisible(true);  // Trigger fade-in via CSS transition
-      });
-    }, 100);
-
-    return () => clearTimeout(timer);
+    // Show overlay immediately
+    setOverlayVisible(true);
   }, [countryISO]); // Re-run when country changes
 
   /**
@@ -152,9 +129,6 @@ const ArtworkInfoBar = ({
       return;
     }
 
-    // Show loading spinner
-    setLoading(true);
-
     // Always fetch all images
     fetchImages(countryISO)
       .then(data => {
@@ -174,10 +148,6 @@ const ArtworkInfoBar = ({
 
         setImagesByCollection(filtered);
 
-        // Calculate total images for display
-        const totalCount = Object.values(filtered).reduce((sum, images) => sum + images.length, 0);
-        setTotalImagesAvailable(totalCount);
-
         // Initialize image index to 0 for each collection
         const initialIndex = {};
 
@@ -191,11 +161,6 @@ const ArtworkInfoBar = ({
       .catch(() => {
         // If fetching fails, reset to empty
         setImagesByCollection({});
-        setTotalImagesAvailable(0);
-      })
-      .finally(() => {
-        // Always hide loading spinner when done (success or failure)
-        setLoading(false);
       });
   }, [countryISO, mode]); // Re-run when country or mode changes
 
@@ -330,22 +295,11 @@ const ArtworkInfoBar = ({
             left: '5px',
             right: '5px',
             bottom: '5px',
-            // Fade-in animation for backdrop
-            opacity: isVisible ? 0.3 : 0,
-            transition: 'opacity 1s ease-in-out',
           },
           '& .MuiDialog-paper': {
-            // Fade-in animation controlled by isVisible state
-            opacity: isVisible ? 1 : 0,  // Ternary operator: condition ? ifTrue : ifFalse
-            transition: 'opacity 1s ease-in-out',
-            // CSS transition: Smoothly animates opacity change over 1 second
-
-            pointerEvents: isVisible ? 'auto' : 'none',
-            // Disable mouse interactions while invisible
-
-            // Lock height when images are present to prevent expansion during loading
-            minHeight: totalImagesAvailable > 0 ? '80vh' : 'auto',
-            maxHeight: totalImagesAvailable > 0 ? '80vh' : 'none',
+            // Fixed height to prevent layout shifts during loading
+            minHeight: '80vh',
+            maxHeight: '80vh',
 
             // Custom scrollbar styling - wider and more visible
             '&::-webkit-scrollbar': {
@@ -465,29 +419,9 @@ const ArtworkInfoBar = ({
             </Box>
           )}
 
-          {/*
-            CONDITIONAL RENDERING WITH &&
-
-            Logical AND (&&): If left side is truthy, render right side
-            If left side is falsy, render nothing
-          */}
-          {loading && (
-            // Show loading spinner while fetching data
-            <Box sx={{ p: 3, textAlign: 'center' }}>
-              {/* p: 3 is shorthand for padding: 24px (3 * 8px) */}
-
-              <CircularProgress size={40} />
-              {/* Animated spinning circle */}
-
-              <Typography variant="body2" sx={{ mt: 2 }}>
-                {/* mt: 2 is shorthand for marginTop: 16px */}
-                Loading images…
-              </Typography>
-            </Box>
-          )}
-
-          {!loading && (
-            // Show content when loading is complete
+          {/* Show content */}
+          {(
+            // Content display
             <Box sx={{
               display: 'flex',
               flexDirection: 'column',  // Stack children vertically

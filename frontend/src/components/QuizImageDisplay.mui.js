@@ -41,9 +41,13 @@ const QuizImageDisplay = ({ imagesByCollection, countryName, countryISO, onShowA
   const [imageLoaded, setImageLoaded] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
 
-  // Trigger fade-in immediately on mount
+  // Trigger fade-in after 0.5s delay on mount
   useEffect(() => {
-    setIsMounted(true);
+    const timer = setTimeout(() => {
+      setIsMounted(true);
+    }, 500);
+
+    return () => clearTimeout(timer);
   }, []);
 
   // Select a random image when imagesByCollection changes
@@ -595,7 +599,7 @@ const QuizImageDisplay = ({ imagesByCollection, countryName, countryISO, onShowA
       flexDirection: 'column',
       gap: 2,
       opacity: isMounted ? 1 : 0,
-      transition: 'opacity 0.3s ease-in-out',
+      transition: 'opacity 0.5s ease-in-out',
     }}>
       {/* Map View Section - Only show if showMap prop is true */}
       {showMap && (
