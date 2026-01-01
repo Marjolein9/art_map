@@ -21,15 +21,23 @@ HTTP Request → Flask App → Route Handler → Database → Response
 
 ```
 backend/
-├── app.py              # Main Flask application (API routes)
-├── init_database.py    # Script to initialize/reset database
-├── config.py           # Configuration constants (paths, ports, etc.)
-├── db_utils.py         # Database helper functions
+├── app.py                      # Main Flask application (API routes)
+├── init_database.py            # Script to initialize/reset database
+├── config.py                   # Configuration constants (paths, ports, etc.)
+├── db_utils.py                 # Database helper functions
 ├── data/
-│   ├── m49-list.json   # UN M49 country data (single source of truth)
-│   └── exports/        # CSV exports of database tables
-├── database.db         # SQLite database file (auto-generated)
-└── requirements.txt    # Python dependencies
+│   ├── artwork_final.csv       # Final curated artwork data (161 entries)
+│   ├── children_artwork_images.csv  # Research file for children artwork
+│   ├── m49-list.json           # UN M49 country data
+│   └── exports/                # CSV exports and research files
+│       ├── countries.csv       # All countries from M49
+│       ├── countries_no_children_images.csv
+│       ├── countries_need_children_research.csv
+│       └── children_artwork_images.csv
+├── database.db                 # SQLite database file (auto-generated)
+├── images/                     # Local artwork images by country
+│   └── {ISO3}/children_artwork/  # Country-specific images
+└── requirements.txt            # Python dependencies
 ```
 
 ## Key Files Explained

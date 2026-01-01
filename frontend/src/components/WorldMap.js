@@ -788,6 +788,10 @@ const WorldMap = ({
               backdropFilter: 'blur(10px)',
               animation: 'fadeIn 0.3s ease-in-out',
               pointerEvents: 'none', // Allow clicking through the overlay
+              minHeight: '80px', // Fixed minimum height to prevent jumping
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
             }}
           >
             Find: {targetCountryName}
