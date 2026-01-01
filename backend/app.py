@@ -263,7 +263,7 @@ def get_images(iso3):
     albert_kahn = execute_query('''
         SELECT 'Albert Kahn' as collection_type,
                filepath, title_en as title, location, date,
-               operator, inventory_number, page_url, mission
+               operator, inventory_number, page_url, mission, license
         FROM albert_kahn_images
         WHERE iso3 = %s
     ''', (iso3,))
@@ -327,7 +327,7 @@ def get_random_image(iso3):
         SELECT * FROM (
             (SELECT 'Albert Kahn' as collection_type,
                    filepath, title_en as title, location, date,
-                   operator, inventory_number, page_url, mission,
+                   operator, inventory_number, page_url, mission, license,
                    NULL as artist_name, NULL as artist_nationality,
                    NULL as author_wikilink, NULL as work_url, NULL as source,
                    NULL as country, NULL as source_link, NULL as source_url,
@@ -340,7 +340,7 @@ def get_random_image(iso3):
 
             (SELECT 'Children in Art' as collection_type,
                    filepath, title, NULL as location, NULL as date,
-                   NULL as operator, NULL as inventory_number, NULL as page_url, NULL as mission,
+                   NULL as operator, NULL as inventory_number, NULL as page_url, NULL as mission, NULL as license,
                    artist_name, artist_nationality,
                    author_wikilink, work_url, source,
                    NULL as country, NULL as source_link, NULL as source_url,
@@ -353,7 +353,7 @@ def get_random_image(iso3):
 
             (SELECT 'Public Domain Review' as collection_type,
                    filepath, title, NULL as location, NULL as date,
-                   NULL as operator, NULL as inventory_number, NULL as page_url, NULL as mission,
+                   NULL as operator, NULL as inventory_number, NULL as page_url, NULL as mission, NULL as license,
                    NULL as artist_name, NULL as artist_nationality,
                    NULL as author_wikilink, NULL as work_url, NULL as source,
                    country, source_link, source_url,
@@ -366,7 +366,7 @@ def get_random_image(iso3):
 
             (SELECT 'Met Museum' as collection_type,
                    filepath, title, NULL as location, NULL as date,
-                   NULL as operator, NULL as inventory_number, NULL as page_url, NULL as mission,
+                   NULL as operator, NULL as inventory_number, NULL as page_url, NULL as mission, NULL as license,
                    artist_name, NULL as artist_nationality,
                    NULL as author_wikilink, NULL as work_url, NULL as source,
                    NULL as country, NULL as source_link, NULL as source_url,

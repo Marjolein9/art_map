@@ -828,6 +828,11 @@ def init_database():
         reader = csv.DictReader(f)
 
         for row in reader:
+            # Only process rows with Keep="keep"
+            keep_status = row.get('Keep', '').strip()
+            if keep_status != 'Keep':
+                continue
+
             iso3 = row.get('iso3', '').strip()
             image_url = row.get('image_url', '').strip()
 

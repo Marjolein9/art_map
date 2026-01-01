@@ -154,16 +154,29 @@ const ImageGallery = ({
                 {image.mission}
               </Typography>
             )}
-            {/* Organization (always link to homepage) */}
-            <Link
-              href="https://albert-kahn.hauts-de-seine.fr/en/"
-              target="_blank"
-              rel="noopener noreferrer"
-              variant="body2"
-              sx={{ color: COLOR_SCHEME.linkColor, textDecoration: 'underline' }}
-            >
-              Musée départemental Albert-Kahn
-            </Link>
+            {/* License information */}
+            {image.license === 'Librement réutilisable (CC-BY-4.0)' && (
+              <Typography variant="body2" sx={{ color: COLOR_SCHEME.textPrimary }}>
+                CC-BY-4.0
+              </Typography>
+            )}
+            {image.license === 'No known copyright restrictions' && (
+              <Typography variant="body2" sx={{ color: COLOR_SCHEME.textPrimary }}>
+                No known copyright restrictions
+              </Typography>
+            )}
+            {/* Organization (conditionally display based on license) */}
+            {image.license !== 'No known copyright restrictions' && (
+              <Link
+                href="https://albert-kahn.hauts-de-seine.fr/en/"
+                target="_blank"
+                rel="noopener noreferrer"
+                variant="body2"
+                sx={{ color: COLOR_SCHEME.linkColor, textDecoration: 'underline' }}
+              >
+                Musée départemental Albert-Kahn
+              </Link>
+            )}
           </Box>
         );
       case 'Children in Art':
