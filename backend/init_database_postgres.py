@@ -45,13 +45,7 @@ from config import (
     MAX_IMAGE_DIMENSION,
     JPEG_QUALITY
 )
-
-# Try to import pycountry for common names
-try:
-    import pycountry
-except ImportError:
-    print("⚠️  pycountry not installed, using official names only")
-    pycountry = None
+from filename_utils import sanitize_filename
 
 # UN M49 Region code to continent name
 REGION_NAMES = {
@@ -105,82 +99,12 @@ MACRO_SUBREGIONS = {
     202: "Sub-Saharan Africa"
 }
 
-
-def get_common_name(official_name, iso3, iso2):
-    """Get the common name for a country using pycountry"""
-    # Special cases where pycountry doesn't have the best common name
-    special_cases = {
-        'USA': 'United States',
-        'GBR': 'United Kingdom',
-        'BOL': 'Bolivia',
-        'VEN': 'Venezuela',
-        'TZA': 'Tanzania',
-        'COD': 'Democratic Republic of the Congo',
-        'COG': 'Republic of the Congo',
-        'MDA': 'Moldova',
-        'KOR': 'South Korea',
-        'PRK': 'North Korea',
-        'RUS': 'Russia',
-        'IRN': 'Iran',
-        'SYR': 'Syria',
-        'LAO': 'Laos',
-        'VNM': 'Vietnam',
-        'CIV': 'Ivory Coast',
-        'PSE': 'Palestine',
-        'VAT': 'Vatican City',
-    }
-
-    # Check special cases first
-    if iso3 in special_cases:
-        return special_cases[iso3]
-
-    # Try pycountry lookup if available
-    if pycountry:
-        if iso2:
-            try:
-                country = pycountry.countries.get(alpha_2=iso2.upper())
-                if country:
-                    return getattr(country, 'common_name', country.name)
-            except:
-                pass
-        if iso3:
-            try:
-                country = pycountry.countries.get(alpha_3=iso3.upper())
-                if country:
-                    return getattr(country, 'common_name', country.name)
-            except:
-                pass
-
-    # Fallback to cleaning up the official name
-    name = official_name
-    if '(' in name:
-        name = name.split('(')[0].strip()
-    name = name.replace('Republic of ', '')
-    name = name.replace('Kingdom of ', '')
-    name = name.replace('Plurinational State of ', '')
-    name = name.replace('Islamic Republic of ', '')
-    name = name.replace('Bolivarian Republic of ', '')
-    name = name.replace('United Republic of ', '')
-    name = name.replace('Democratic Republic of the ', '')
-    name = name.replace("People's Democratic Republic", '')
-    name = name.replace('Federated States of ', '')
-    return name.strip()
-
 # Image processing configuration
 MAX_IMAGE_SIZE_MB = 1  # Maximum file size in MB before optimization
 
 def get_file_size_mb(filepath):
     """Get file size in megabytes."""
     return os.path.getsize(filepath) / (1024 * 1024)
-
-def sanitize_filename(title):
-    """Convert title to safe filename with underscores"""
-    if not title:
-        return None
-    # Replace spaces with underscores, remove unsafe characters
-    safe = title.replace(' ', '_').replace('/', '_').replace('\\', '_')
-    safe = ''.join(c for c in safe if c.isalnum() or c in ('_', '-', '.'))
-    return safe + '.jpg' if not safe.endswith('.jpg') else safe
 
 def check_image_exists(filepath):
     """

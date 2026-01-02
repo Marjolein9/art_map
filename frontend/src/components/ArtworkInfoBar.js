@@ -34,12 +34,11 @@ import {
 import { ThemeProvider } from '@mui/material/styles';
 // ThemeProvider: Wraps components to apply a consistent theme (colors, fonts, etc.)
 
-import { fetchImages, fetchRandomImage } from '../services/api';
+import { fetchImages } from '../services/api';
 // API functions to fetch data from the backend server
 // fetchImages: Gets artwork images for a country
 
 // Import child components
-import ImageGallery from './ImageGallery.mui';
 import QuizImageDisplay from './QuizImageDisplay.mui';
 
 import muiTheme from '../theme/muiTheme';
@@ -492,24 +491,6 @@ const ArtworkInfoBar = ({
                   );
                 })()}
               </Box>
-
-              {/* Legacy explore mode gallery - no longer used */}
-              {false && collections.length > 0 ? (
-                <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
-                  {collections.map(collection => (
-                    <ImageGallery
-                      key={collection}
-                      collection={collection}
-                      images={imagesByCollection[collection]}
-                      countryName={countryName}
-                      currentIndex={currentImageIndex[collection] || 0}
-                      onPrev={() => prevImage(collection)}
-                      onNext={() => nextImage(collection)}
-                      imageRef={el => (imageRefs.current[collection] = el)}
-                    />
-                  ))}
-                </Box>
-              ) : null}
             </Box>
           )}
         </DialogContent>

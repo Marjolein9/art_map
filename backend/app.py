@@ -189,7 +189,7 @@ def random_country():
         if not countries:
             raise InternalError(
                 'No countries available in database',
-                details={'endpoint': '/api/game/random-country', 'excluded_count': len(excluded_territories)}
+                details={'endpoint': '/api/game/random-country'}
             )
 
         # Select one random country

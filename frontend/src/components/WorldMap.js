@@ -325,51 +325,7 @@ const WorldMap = ({
 
           highlightM49s.push(...subregionM49s);
 
-          console.log(`🎯 TESTING: Highlighting entire ${targetSubregion} subregion (${subregionM49s.length} countries)`);
-
-          // ORIGINAL CODE (commented out for testing):
-          /*
-          const islandData = await fetchSimilarIslands(targetCountry);
-          if (islandData.is_island && islandData.islands?.length > 0) {
-            const islandM49s = islandData.islands
-              .slice(0, 4)
-              .map(i => String(i.m49).padStart(3,'0'))
-              .filter(Boolean);
-            highlightM49s.push(...islandM49s);
-          } else {
-            const neighbors = await fetchNeighbors(targetCountry);
-            let hintCountries = [];
-            if (neighbors?.length) {
-              const shuffledNeighbors = [...neighbors].sort(() => Math.random() - 0.5);
-              hintCountries.push(...shuffledNeighbors);
-            }
-            if (hintCountries.length < 4) {
-              const needed = 4 - hintCountries.length;
-              const existingIso3s = new Set([targetCountry, ...hintCountries.map(n => n.iso3)]);
-              let additionalCountries = allCountries.filter(c =>
-                c.subregion === targetSubregion &&
-                !existingIso3s.has(c.iso3)
-              );
-              if (additionalCountries.length < needed && targetContinent) {
-                const continentCountries = allCountries.filter(c =>
-                  c.continent === targetContinent &&
-                  !existingIso3s.has(c.iso3) &&
-                  !additionalCountries.some(ac => ac.iso3 === c.iso3)
-                );
-                additionalCountries = [...additionalCountries, ...continentCountries];
-              }
-              const shuffledAdditional = additionalCountries
-                .sort(() => Math.random() - 0.5)
-                .slice(0, needed);
-              hintCountries.push(...shuffledAdditional);
-            }
-            const hintM49s = hintCountries
-              .slice(0, 4)
-              .map(n => String(n.m49).padStart(3,'0'))
-              .filter(Boolean);
-            highlightM49s.push(...hintM49s);
-          }
-          */
+          console.log(`🎯 Highlighting entire ${targetSubregion} subregion (${subregionM49s.length} countries)`);
 
           // Template literal (`string ${variable}`) embeds variables in strings
           console.log(`✅ HINTS FETCHED for ${targetCountry}: ${highlightM49s.length} countries (including target)`, highlightM49s);
