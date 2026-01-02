@@ -139,6 +139,9 @@ const WorldMap = ({
   // showTargetOverlay: Controls visibility of "Find: [Country]" overlay in quiz mode
   const [showTargetOverlay, setShowTargetOverlay] = useState(false);
 
+  // exploreSelectedCountry: Tracks the selected country in explore mode
+  const [exploreSelectedCountry, setExploreSelectedCountry] = useState('');
+
   /**
    * SIDE EFFECTS
    *
@@ -434,6 +437,13 @@ const WorldMap = ({
   // Determine which hints to show (empty if "Show Me" was clicked)
   const activeHints = showMeActivated ? [] : hintNeighborsM49;
 
+  // Clear explore selection when switching modes
+  useEffect(() => {
+    if (mode === 'quiz') {
+      setExploreSelectedCountry('');
+    }
+  }, [mode]);
+
   // Rotate to region on change OR when new country appears (to reset manual adjustments)
   useEffect(() => {
     // Guard clause: ensure globe exists and we're in quiz mode with a region
@@ -538,11 +548,32 @@ const WorldMap = ({
   const handleCountryDropdownChange = (e) => {
     // e.target.value contains the selected option's value
     const iso3 = e.target.value;
-    if (!iso3 || !onManualCountrySelect) return;
+    if (!iso3) return;
 
     // Find the full country data object
     const selectedCountry = allCountries.find(c => c.iso3 === iso3);
-    if (selectedCountry) onManualCountrySelect(selectedCountry);
+    if (!selectedCountry) return;
+
+    // In quiz mode, use the manual select callback
+    if (mode === 'quiz' && onManualCountrySelect) {
+      onManualCountrySelect(selectedCountry);
+    } else if (mode === 'explore') {
+      // In explore mode, zoom to the country's subregion
+      setExploreSelectedCountry(iso3);
+
+      // Get the subregion view
+      const subregion = selectedCountry.subregion;
+      const targetView = REGION_VIEWS[subregion] || REGION_VIEWS['default'];
+
+      // Zoom to the subregion
+      if (globeEl.current) {
+        globeEl.current.pointOfView({
+          lat: targetView.lat,
+          lng: targetView.lng,
+          altitude: targetView.altitude
+        }, 1000);
+      }
+    }
   };
 
   /**
@@ -804,54 +835,49 @@ const WorldMap = ({
           '--glow-color': COLORS.glow,
           '--border-color': COLORS.border
         }}>
-          {/* Title area - shows dropdown in quiz mode, "Click to Explore" in explore mode */}
+          {/* Title area - shows dropdown in both quiz and explore modes */}
           <div className="overlay-title">
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, flexWrap: 'wrap' }}>
-              {mode === 'quiz' ? (
-                <>
-                  <Select
-                    value={
-                      // Show target country if it's in our list, otherwise show empty
-                      targetCountry && allCountries.some(c => c.iso3 === targetCountry)
-                        ? targetCountry
-                        : ''
-                    }
-                    onChange={handleCountryDropdownChange}
-                    size="small"
-                    displayEmpty
-                    sx={{
-                      minWidth: '180px',
-                      backgroundColor: 'var(--card-bg)',
-                      '& .MuiOutlinedInput-notchedOutline': {
-                        borderColor: 'var(--border-color)',
-                      },
-                      '&:hover .MuiOutlinedInput-notchedOutline': {
-                        borderColor: 'var(--glow-color)',
-                      },
-                    }}
-                  >
-                    {/* Placeholder option */}
-                    <MenuItem value="">Select country...</MenuItem>
+              <Select
+                value={
+                  mode === 'quiz'
+                    ? (targetCountry && allCountries.some(c => c.iso3 === targetCountry) ? targetCountry : '')
+                    : exploreSelectedCountry
+                }
+                onChange={handleCountryDropdownChange}
+                size="small"
+                displayEmpty
+                sx={{
+                  minWidth: '180px',
+                  backgroundColor: 'var(--card-bg)',
+                  '& .MuiOutlinedInput-notchedOutline': {
+                    borderColor: 'var(--border-color)',
+                  },
+                  '&:hover .MuiOutlinedInput-notchedOutline': {
+                    borderColor: 'var(--glow-color)',
+                  },
+                }}
+              >
+                {/* Placeholder option */}
+                <MenuItem value="">
+                  {mode === 'quiz' ? 'Select country...' : 'Explore a country...'}
+                </MenuItem>
 
-                    {/* Map over sorted countries to create menu items */}
-                    {allCountries
-                      .sort((a, b) =>
-                        getDisplayName(a).localeCompare(getDisplayName(b))
-                      )
-                      .map(c => (
-                        <MenuItem key={c.iso3} value={c.iso3}>
-                          {getDisplayName(c)} {c.subregion && `(${c.subregion})`}
-                        </MenuItem>
-                      ))}
-                  </Select>
-                  {selectedQuizRegion && (
-                    <Typography variant="caption" sx={{ color: 'var(--text-color)', fontStyle: 'italic' }}>
-                      ({selectedQuizRegion})
-                    </Typography>
-                  )}
-                </>
-              ) : (
-                'Click to Explore'
+                {/* Map over sorted countries to create menu items */}
+                {allCountries
+                  .sort((a, b) =>
+                    getDisplayName(a).localeCompare(getDisplayName(b))
+                  )
+                  .map(c => (
+                    <MenuItem key={c.iso3} value={c.iso3}>
+                      {getDisplayName(c)} {c.subregion && `(${c.subregion})`}
+                    </MenuItem>
+                  ))}
+              </Select>
+              {mode === 'quiz' && selectedQuizRegion && (
+                <Typography variant="caption" sx={{ color: 'var(--text-color)', fontStyle: 'italic' }}>
+                  ({selectedQuizRegion})
+                </Typography>
               )}
 
               {/* Settings Button - opens settings/help overlay */}

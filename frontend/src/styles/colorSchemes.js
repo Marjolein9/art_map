@@ -45,15 +45,48 @@ export const COLOR_SCHEME = {
   shadowMedium: 'rgba(0, 0, 0, 0.2)',
   shadowHeavy: 'rgba(0, 0, 0, 0.3)',
 
-  // Pastel palette for hints (moved from pastelColorPalette.js)
+  // Distinct vibrant colors for hints (designed for clear differentiation)
   pastelColors: [
-    '#FFB3BA', '#FFCCCB', '#FFE5B4', '#FFDAB9', '#FFE4B5', '#FFEFD5',
-    '#FFFACD', '#F0FFF0', '#E0FFFF', '#B0E0E6', '#ADD8E6', '#87CEEB',
-    '#DDA0DD', '#EE82EE', '#FFB6C1', '#FFC0CB', '#F5DEB3', '#DEB887',
-    '#D2B48C', '#F0E68C', '#FAFAD2', '#F5F5DC', '#FFF8DC', '#FFFAF0',
-    '#FAF0E6', '#FFE4E1', '#F0FFFF', '#E6F2FF', '#F0F8FF', '#F5FFFA',
-    '#FFE4C4', '#FFDEAD', '#BC8F8F', '#DA70D6', '#BA55D3', '#9370DB',
-    '#D8BFD8', '#F08080', '#CD5C5C', '#F4A460', '#DAA520'
+    '#FF4444', // Bright Red
+    '#FF8800', // Vivid Orange
+    '#FFDD00', // Golden Yellow
+    '#00CC44', // Emerald Green
+    '#00CCCC', // Cyan
+    '#0088FF', // Sky Blue
+    '#4466FF', // Royal Blue
+    '#8844FF', // Purple
+    '#CC44FF', // Magenta
+    '#FF44CC', // Hot Pink
+    '#FF6B6B', // Coral Red
+    '#FFB84D', // Tangerine
+    '#FFE74D', // Lemon Yellow
+    '#4DFF88', // Mint Green
+    '#4DFFFF', // Aqua
+    '#4DB8FF', // Light Blue
+    '#7B8FFF', // Periwinkle
+    '#B47BFF', // Lavender
+    '#FF7BFF', // Orchid
+    '#FF7BC4', // Rose Pink
+    '#CC0000', // Dark Red
+    '#CC6600', // Dark Orange
+    '#CCAA00', // Olive Gold
+    '#00AA33', // Forest Green
+    '#00AAAA', // Teal
+    '#0066CC', // Ocean Blue
+    '#3344CC', // Indigo
+    '#6633CC', // Deep Purple
+    '#AA33CC', // Violet
+    '#CC33AA', // Fuchsia
+    '#E63946', // Crimson
+    '#F77F00', // Amber
+    '#FCBF49', // Honey
+    '#06D6A0', // Turquoise
+    '#118AB2', // Steel Blue
+    '#073B4C', // Navy
+    '#7209B7', // Royal Purple
+    '#F72585', // Neon Pink
+    '#B5179E', // Plum
+    '#560BAD'  // Dark Violet
   ],
 
   // Deprecated (keeping for backward compatibility during migration)
