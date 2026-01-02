@@ -93,7 +93,7 @@ SUBREGION_NAMES = {
     419: "Latin America and the Caribbean",  # macro grouping
 
     # Oceania subregions
-    53: "Australia and New Zealand",
+    53: "Australia New Zealand Indo",
     54: "Melanesia",
     57: "Micronesia",
     61: "Polynesia"

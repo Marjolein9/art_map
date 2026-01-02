@@ -445,12 +445,14 @@ function App() {
                   />
                 )}
 
+                {/* TESTING SUBREGION ZOOM: Only use subregion (no continent fallback)
+                    TO REVERT: Change region line below back to (targetCountry?.subregion || targetCountry?.continent) */}
                 <WorldMap
                   backendReady={backendReady}
                   onCountryClick={handleExploreClick}
                   targetCountry={mode === 'quiz' ? targetCountry?.iso : null}
                   targetCountryName={mode === 'quiz' ? targetCountry?.name : null}
-                  region={mode === 'quiz' && !loading ? (targetCountry?.subregion || targetCountry?.continent) : null}
+                  region={mode === 'quiz' && !loading ? targetCountry?.subregion : null}
                   gameStatus={gameStatus}
                   colors={COLORS}
                   onNewGame={fetchNewCountry}

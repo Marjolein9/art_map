@@ -317,45 +317,46 @@ const WorldMap = ({
           const targetSubregion = targetCountryInfo?.subregion;
           const targetContinent = targetCountryInfo?.continent;
 
-          // Check if target is an island nation and get similar islands
-          const islandData = await fetchSimilarIslands(targetCountry);
+          // TESTING: Highlight entire subregion for zoom level testing
+          // TO REVERT: Replace this section with the original neighbor-based hint logic
 
+          // Get all countries in the same subregion
+          const subregionCountries = allCountries.filter(c =>
+            c.subregion === targetSubregion && c.iso3 !== targetCountry
+          );
+
+          // Convert all subregion countries to M49 codes
+          const subregionM49s = subregionCountries
+            .map(c => String(c.m49).padStart(3,'0'))
+            .filter(Boolean);
+
+          highlightM49s.push(...subregionM49s);
+
+          console.log(`🎯 TESTING: Highlighting entire ${targetSubregion} subregion (${subregionM49s.length} countries)`);
+
+          // ORIGINAL CODE (commented out for testing):
+          /*
+          const islandData = await fetchSimilarIslands(targetCountry);
           if (islandData.is_island && islandData.islands?.length > 0) {
-            // For island nations, highlight similar island countries (up to 4)
-            // Array.map transforms each element: array.map(item => newItem)
-            // Array.filter keeps only elements that pass the test (removes falsy values)
             const islandM49s = islandData.islands
-              .slice(0, 4)  // Take up to 4 islands
+              .slice(0, 4)
               .map(i => String(i.m49).padStart(3,'0'))
               .filter(Boolean);
-
-            // Spread operator (...) expands array elements: push(...[1,2,3]) = push(1,2,3)
             highlightM49s.push(...islandM49s);
           } else {
-            // For non-island countries, highlight neighboring countries
             const neighbors = await fetchNeighbors(targetCountry);
-
             let hintCountries = [];
-
-            // Add neighbors (up to 4 if available)
             if (neighbors?.length) {
-              // Shuffle neighbors randomly
               const shuffledNeighbors = [...neighbors].sort(() => Math.random() - 0.5);
               hintCountries.push(...shuffledNeighbors);
             }
-
-            // If we have fewer than 4 neighbors, fill with countries from same subregion/region
             if (hintCountries.length < 4) {
               const needed = 4 - hintCountries.length;
               const existingIso3s = new Set([targetCountry, ...hintCountries.map(n => n.iso3)]);
-
-              // Try to find countries from same subregion first
               let additionalCountries = allCountries.filter(c =>
                 c.subregion === targetSubregion &&
                 !existingIso3s.has(c.iso3)
               );
-
-              // If not enough from subregion, add countries from same continent
               if (additionalCountries.length < needed && targetContinent) {
                 const continentCountries = allCountries.filter(c =>
                   c.continent === targetContinent &&
@@ -364,23 +365,18 @@ const WorldMap = ({
                 );
                 additionalCountries = [...additionalCountries, ...continentCountries];
               }
-
-              // Shuffle and take what we need
               const shuffledAdditional = additionalCountries
                 .sort(() => Math.random() - 0.5)
                 .slice(0, needed);
-
               hintCountries.push(...shuffledAdditional);
             }
-
-            // Take up to 4 total hints and convert to M49 codes
             const hintM49s = hintCountries
               .slice(0, 4)
               .map(n => String(n.m49).padStart(3,'0'))
               .filter(Boolean);
-
             highlightM49s.push(...hintM49s);
           }
+          */
 
           // Template literal (`string ${variable}`) embeds variables in strings
           console.log(`✅ HINTS FETCHED for ${targetCountry}: ${highlightM49s.length} countries (including target)`, highlightM49s);
@@ -438,27 +434,25 @@ const WorldMap = ({
   // Determine which hints to show (empty if "Show Me" was clicked)
   const activeHints = showMeActivated ? [] : hintNeighborsM49;
 
-  // Rotate to region on change
+  // Rotate to region on change OR when new country appears (to reset manual adjustments)
   useEffect(() => {
-    // Guard clause: ensure globe exists
-    if (!globeEl.current) return;
+    // Guard clause: ensure globe exists and we're in quiz mode with a region
+    if (!globeEl.current || !region || mode !== 'quiz') return;
 
-    // Check if region changed
-    if (region && region !== previousRegionRef.current) {
-      previousRegionRef.current = region;
+    // Get camera position for this region (or default if not found)
+    const targetView = REGION_VIEWS[region] || REGION_VIEWS['default'];
 
-      // Get camera position for this region (or default if not found)
-      // Logical OR (||) returns first truthy value
-      const targetView = REGION_VIEWS[region] || REGION_VIEWS['default'];
+    // Move camera to region's position over 1000ms (1 second)
+    // This resets the view even if user manually adjusted it
+    globeEl.current.pointOfView({
+      lat: targetView.lat,      // Latitude
+      lng: targetView.lng,      // Longitude
+      altitude: targetView.altitude  // Zoom level
+    }, 1000);
 
-      // Move camera to region's position over 1000ms (1 second)
-      globeEl.current.pointOfView({
-        lat: targetView.lat,      // Latitude
-        lng: targetView.lng,      // Longitude
-        altitude: targetView.altitude  // Zoom level
-      }, 1000);
-    }
-  }, [region]);
+    // Update tracking ref
+    previousRegionRef.current = region;
+  }, [region, targetCountry, mode]);
 
   // Zoom to Middle East during loading
   useEffect(() => {
@@ -846,7 +840,7 @@ const WorldMap = ({
                       )
                       .map(c => (
                         <MenuItem key={c.iso3} value={c.iso3}>
-                          {getDisplayName(c)}
+                          {getDisplayName(c)} {c.subregion && `(${c.subregion})`}
                         </MenuItem>
                       ))}
                   </Select>

@@ -1701,7 +1701,7 @@
     },
     {
       "region": 142,
-      "subRegion": 35,
+      "subRegion": 53,
       "name": "Indonesia",
       "m49code": 360,
       "alpha2": "ID",
@@ -2273,7 +2273,7 @@
     {
       "region": 19,
       "subRegion": 419,
-      "intermediateRegion": 13,
+      "intermediateRegion": 21,
       "name": "Mexico",
       "m49code": 484,
       "alpha2": "MX",
@@ -3525,7 +3525,7 @@
     },
     {
       "region": 142,
-      "subRegion": 35,
+      "subRegion": 53,
       "name": "Timor-Leste",
       "m49code": 626,
       "alpha2": "TL",
