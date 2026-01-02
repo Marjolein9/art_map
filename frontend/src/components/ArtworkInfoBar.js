@@ -110,6 +110,20 @@ const ArtworkInfoBar = ({
   }, [countryISO]); // Re-run when country changes
 
   /**
+   * SHUFFLE HELPER FUNCTION
+   *
+   * Fisher-Yates shuffle algorithm to randomize array order
+   */
+  const shuffleArray = (array) => {
+    const shuffled = [...array]; // Create a copy to avoid mutating original
+    for (let i = shuffled.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]]; // Swap elements
+    }
+    return shuffled;
+  };
+
+  /**
    * FETCH IMAGES EFFECT
    *
    * This effect fetches artwork images when the country changes.
@@ -132,7 +146,7 @@ const ArtworkInfoBar = ({
     // Always fetch all images
     fetchImages(countryISO)
       .then(data => {
-        // Filter out empty collections
+        // Filter out empty collections and randomize order within each collection
         const filtered = {};
 
         // Object.entries(obj): Converts object to array of [key, value] pairs
@@ -140,9 +154,9 @@ const ArtworkInfoBar = ({
         Object.entries(data || {}).forEach(([collection, images]) => {
           // Destructuring in parameters: [collection, images] extracts key and value
 
-          // Only keep collections that have images
+          // Only keep collections that have images, and shuffle them
           if (images && images.length > 0) {
-            filtered[collection] = images;
+            filtered[collection] = shuffleArray(images);
           }
         });
 

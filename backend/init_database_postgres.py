@@ -421,9 +421,55 @@ def download_image(url, iso3, collection_type, target_filename=None, max_dimensi
         print(f"  ❌ Error processing {url}: {e}")
         return None
 
+def load_topojson_m49_codes():
+    """
+    Load both TopoJSON files and extract all available M49 codes.
+    Returns a set of M49 codes (as strings) that have geometry in either file.
+    """
+    print("📥 Loading TopoJSON files to determine available geometries...")
+
+    # Paths to TopoJSON files
+    frontend_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'frontend')
+    topojson_110m_path = os.path.join(frontend_dir, 'public', 'geo', 'countries-110m.json')
+    topojson_50m_path = os.path.join(frontend_dir, 'public', 'geo', 'countries-50m.json')
+
+    m49_codes = set()
+
+    # Load 110m file
+    try:
+        with open(topojson_110m_path, 'r', encoding='utf-8') as f:
+            topojson_110m = json.load(f)
+            geometries_110m = topojson_110m.get('objects', {}).get('countries', {}).get('geometries', [])
+            for geom in geometries_110m:
+                m49 = str(geom.get('id', '')).zfill(3)
+                if m49 and m49 != '000':
+                    m49_codes.add(m49)
+            print(f"  ✓ Found {len(geometries_110m)} countries in 110m TopoJSON")
+    except FileNotFoundError:
+        print(f"  ⚠️  Warning: 110m TopoJSON not found at {topojson_110m_path}")
+
+    # Load 50m file
+    try:
+        with open(topojson_50m_path, 'r', encoding='utf-8') as f:
+            topojson_50m = json.load(f)
+            geometries_50m = topojson_50m.get('objects', {}).get('countries', {}).get('geometries', [])
+            for geom in geometries_50m:
+                m49 = str(geom.get('id', '')).zfill(3)
+                if m49 and m49 != '000':
+                    m49_codes.add(m49)
+            print(f"  ✓ Found {len(geometries_50m)} countries in 50m TopoJSON")
+    except FileNotFoundError:
+        print(f"  ⚠️  Warning: 50m TopoJSON not found at {topojson_50m_path}")
+
+    print(f"  ✓ Total unique countries with geometry: {len(m49_codes)}")
+    return m49_codes
+
 def load_m49_data():
     """Load and parse UN M49 country data"""
     print(f"📥 Loading UN M49 data from: {M49_JSON_PATH}")
+
+    # Load TopoJSON M49 codes first to know which countries have geometry
+    topojson_m49_codes = load_topojson_m49_codes()
 
     with open(M49_JSON_PATH, 'r', encoding='utf-8') as f:
         data = json.load(f)
@@ -450,26 +496,16 @@ def load_m49_data():
 
         alpha2 = country.get('alpha2', '')
         name = country.get('name', '')
+        m49_code = str(country.get('m49code', '')).zfill(3)
+
         # Read common_name and is_country directly from JSON (added by add_common_names.py)
         common_name = country.get('common_name', name)
         is_country = country.get('is_country', False)
 
-        # Set include_in_quiz based on is_country status
-        include_in_quiz = is_country
-
-        # Override for territories with geometries in TopoJSON (clickable on globe)
-        # Only include territories that have separate geometries in world-atlas TopoJSON
-        territory_overrides = [
-            'GRL',  # Greenland (Denmark)
-            'PRI',  # Puerto Rico (United States)
-            'PYF',  # French Polynesia (France)
-            'NCL',  # New Caledonia (France)
-            'GUM',  # Guam (United States)
-            'CUW',  # Curaçao (Netherlands)
-            'ABW',  # Aruba (Netherlands)
-        ]
-        if iso3 in territory_overrides:
-            include_in_quiz = True
+        # Include in quiz if country has geometry in either TopoJSON file
+        # This automatically includes sovereign countries AND territories with available maps
+        # Excludes countries like Tuvalu that are too small to appear in either resolution
+        include_in_quiz = m49_code in topojson_m49_codes
 
         # Set parent country for territories
         parent_country_iso3 = None

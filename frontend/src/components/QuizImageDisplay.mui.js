@@ -6,14 +6,10 @@ import {
   Typography,
   Link,
   Button,
-  CircularProgress,
   Paper,
 } from '@mui/material';
 import COLOR_SCHEME from '../styles/colorSchemes';
 import { API_BASE } from '../utils/apiConfig';
-import { fetchNeighbors, fetchCountries } from '../services/api';
-import { loadTopoJSON } from '../utils/topoJsonLoader';
-import { getCountryIsoCode } from '../utils/countryCodeMapping';
 
 /**
  * QuizImageDisplay Component
@@ -33,12 +29,6 @@ import { getCountryIsoCode } from '../utils/countryCodeMapping';
 const QuizImageDisplay = ({ imagesByCollection, countryName, countryISO, onShowAll, totalImagesAvailable = 0, showMap = true, hideNoImagesMessage = false, hideMainTitle = false }) => {
   const [randomImage, setRandomImage] = useState(null);
   const [collectionName, setCollectionName] = useState(null);
-  const [neighbors, setNeighbors] = useState([]);
-  const [loadingNeighbors, setLoadingNeighbors] = useState(false);
-  const [geoData, setGeoData] = useState(null);
-  const [targetCountryFeature, setTargetCountryFeature] = useState(null);
-  const [neighborFeatures, setNeighborFeatures] = useState([]);
-  const [imageLoaded, setImageLoaded] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
 
   // Trigger fade-in after 0.5s delay on mount
@@ -55,8 +45,6 @@ const QuizImageDisplay = ({ imagesByCollection, countryName, countryISO, onShowA
     if (!imagesByCollection || Object.keys(imagesByCollection).length === 0) {
       setRandomImage(null);
       setCollectionName(null);
-      // If no images, set loaded to true so map can still be visible
-      setImageLoaded(true);
       return;
     }
 
@@ -73,8 +61,6 @@ const QuizImageDisplay = ({ imagesByCollection, countryName, countryISO, onShowA
     if (allImagesWithCollection.length === 0) {
       setRandomImage(null);
       setCollectionName(null);
-      // If no images, set loaded to true so map can still be visible
-      setImageLoaded(true);
       return;
     }
 
@@ -83,71 +69,7 @@ const QuizImageDisplay = ({ imagesByCollection, countryName, countryISO, onShowA
     const selected = allImagesWithCollection[randomIndex];
     setRandomImage(selected.image);
     setCollectionName(selected.collection);
-    // Reset image loaded state when new image is selected
-    setImageLoaded(false);
   }, [imagesByCollection]);
-
-  // Load GeoJSON data with full country list
-  useEffect(() => {
-    const loadGeoData = async () => {
-      try {
-        // Fetch countries list first to ensure all countries are loaded
-        const countries = await fetchCountries();
-        const data = await loadTopoJSON(countries);
-        setGeoData(data);
-      } catch (error) {
-        console.error('Error loading GeoJSON:', error);
-        // Fallback to simple topology if countries fetch fails
-        try {
-          const data = await loadTopoJSON([]);
-          setGeoData(data);
-        } catch (fallbackError) {
-          console.error('Fallback GeoJSON loading failed:', fallbackError);
-        }
-      }
-    };
-    loadGeoData();
-  }, []);
-
-  // Fetch neighbors and extract country features when country changes
-  useEffect(() => {
-    if (!countryISO || !geoData) {
-      setNeighbors([]);
-      setTargetCountryFeature(null);
-      setNeighborFeatures([]);
-      return;
-    }
-
-    const loadNeighbors = async () => {
-      setLoadingNeighbors(true);
-      try {
-        // Fetch neighbor data and filter out France and Russia
-        const neighborData = await fetchNeighbors(countryISO);
-        const filteredNeighbors = (neighborData || []).filter(n => n.iso3 !== 'FRA' && n.iso3 !== 'RUS');
-        setNeighbors(filteredNeighbors);
-
-        // Find target country feature
-        const targetFeature = geoData.features.find(f => getCountryIsoCode(f) === countryISO);
-        setTargetCountryFeature(targetFeature);
-
-        // Find neighbor features (excluding France and Russia)
-        const neighborISO3s = filteredNeighbors.map(n => n.iso3);
-        const neighborGeoFeatures = geoData.features.filter(f =>
-          neighborISO3s.includes(getCountryIsoCode(f))
-        );
-        setNeighborFeatures(neighborGeoFeatures);
-      } catch (error) {
-        console.error('Error fetching neighbors:', error);
-        setNeighbors([]);
-        setTargetCountryFeature(null);
-        setNeighborFeatures([]);
-      } finally {
-        setLoadingNeighbors(false);
-      }
-    };
-
-    loadNeighbors();
-  }, [countryISO, geoData]);
 
   const hasImages = randomImage && collectionName;
 
@@ -442,170 +364,6 @@ const QuizImageDisplay = ({ imagesByCollection, countryName, countryISO, onShowA
         : `${API_BASE}/${randomImage.filepath}`)
     : null;
 
-  // Helper function to calculate bounding box for a set of features
-  const calculateBounds = (features) => {
-    if (!features || features.length === 0) return null;
-
-    let minLng = Infinity, maxLng = -Infinity;
-    let minLat = Infinity, maxLat = -Infinity;
-
-    const processCoords = (coords) => {
-      if (!Array.isArray(coords)) return;
-
-      if (typeof coords[0] === 'number' && typeof coords[1] === 'number') {
-        const [lng, lat] = coords;
-        minLng = Math.min(minLng, lng);
-        maxLng = Math.max(maxLng, lng);
-        minLat = Math.min(minLat, lat);
-        maxLat = Math.max(maxLat, lat);
-      } else {
-        coords.forEach(c => processCoords(c));
-      }
-    };
-
-    features.forEach(feature => {
-      if (feature?.geometry?.coordinates) {
-        processCoords(feature.geometry.coordinates);
-      }
-    });
-
-    if (minLng === Infinity) return null;
-
-    // Add 5% padding
-    const lngPadding = (maxLng - minLng) * 0.05;
-    const latPadding = (maxLat - minLat) * 0.05;
-
-    return {
-      minLng: minLng - lngPadding,
-      maxLng: maxLng + lngPadding,
-      minLat: minLat - latPadding,
-      maxLat: maxLat + latPadding
-    };
-  };
-
-  // Helper function to convert GeoJSON to SVG path
-  const geometryToSVGPath = (geometry, bounds, width = 500, height = 500) => {
-    if (!geometry || !bounds) return '';
-
-    const lngRange = bounds.maxLng - bounds.minLng;
-    const latRange = bounds.maxLat - bounds.minLat;
-    const scale = Math.min(width / lngRange, height / latRange);
-
-    // Center the map
-    const offsetX = (width - lngRange * scale) / 2;
-    const offsetY = (height - latRange * scale) / 2;
-
-    const projectPoint = ([lng, lat]) => {
-      const x = (lng - bounds.minLng) * scale + offsetX;
-      const y = height - ((lat - bounds.minLat) * scale + offsetY);
-      return [x, y];
-    };
-
-    const coordsToPath = (coords, isFirst = true) => {
-      if (!Array.isArray(coords) || coords.length === 0) return '';
-
-      if (typeof coords[0] === 'number') {
-        const [x, y] = projectPoint(coords);
-        return `${x},${y}`;
-      }
-
-      if (Array.isArray(coords[0]) && typeof coords[0][0] === 'number') {
-        // Filter out invalid coordinates
-        const validCoords = coords.filter(coord => {
-          if (!coord || coord.length < 2) return false;
-          const [lng, lat] = coord;
-          return Math.abs(lng) <= 180 && Math.abs(lat) <= 90;
-        });
-
-        if (validCoords.length === 0) return '';
-
-        // Build path, breaking it when there's a large longitude jump (antimeridian crossing)
-        let pathSegments = [];
-        let currentSegment = [];
-
-        validCoords.forEach((coord, i) => {
-          if (i === 0) {
-            currentSegment.push(coord);
-          } else {
-            const [prevLng] = validCoords[i - 1];
-            const [currLng] = coord;
-            const lngDiff = Math.abs(currLng - prevLng);
-
-            // If longitude jumps more than 180 degrees, it's crossing the antimeridian
-            // Start a new segment to avoid drawing a line across the map
-            if (lngDiff > 180) {
-              if (currentSegment.length > 0) {
-                pathSegments.push(currentSegment);
-              }
-              currentSegment = [coord];
-            } else {
-              currentSegment.push(coord);
-            }
-          }
-        });
-
-        // Add the last segment
-        if (currentSegment.length > 0) {
-          pathSegments.push(currentSegment);
-        }
-
-        // Convert each segment to SVG path
-        return pathSegments.map(segment => {
-          if (segment.length < 2) return '';
-          return segment.map((coord, i) => {
-            const [x, y] = projectPoint(coord);
-            return i === 0 ? `M ${x},${y}` : `L ${x},${y}`;
-          }).join(' ') + ' Z';
-        }).filter(Boolean).join(' ');
-      }
-
-      return coords.map(ring => coordsToPath(ring, false)).join(' ');
-    };
-
-    if (geometry.type === 'Polygon') {
-      return coordsToPath(geometry.coordinates);
-    } else if (geometry.type === 'MultiPolygon') {
-      // Render each polygon separately to avoid weird connectors
-      return geometry.coordinates.map(polygon => coordsToPath(polygon)).filter(Boolean).join(' ');
-    }
-
-    return '';
-  };
-
-  // Calculate bounds including target country and neighbors
-  const allFeatures = targetCountryFeature
-    ? [targetCountryFeature, ...neighborFeatures]
-    : [];
-  const bounds = calculateBounds(allFeatures);
-
-  // Calculate SVG dimensions based on aspect ratio
-  // Use a base width for calculation, will be responsive in CSS
-  const baseMapWidth = 250;
-  let baseMapHeight = 250;
-
-  if (bounds) {
-    const lngRange = bounds.maxLng - bounds.minLng;
-    const latRange = bounds.maxLat - bounds.minLat;
-    const aspectRatio = latRange / lngRange;
-
-    // Calculate height to maintain aspect ratio
-    baseMapHeight = Math.round(baseMapWidth * aspectRatio);
-
-    // Clamp height between 125 and 350 for reasonable sizes
-    baseMapHeight = Math.max(125, Math.min(350, baseMapHeight));
-  }
-
-  // Generate SVG paths with dynamic dimensions
-  const targetPath = targetCountryFeature && bounds
-    ? geometryToSVGPath(targetCountryFeature.geometry, bounds, baseMapWidth, baseMapHeight)
-    : '';
-
-  const neighborPaths = neighborFeatures.map(feature => ({
-    path: bounds ? geometryToSVGPath(feature.geometry, bounds, baseMapWidth, baseMapHeight) : '',
-    name: neighbors.find(n => n.iso3 === getCountryIsoCode(feature))?.common_name ||
-          neighbors.find(n => n.iso3 === getCountryIsoCode(feature))?.name || ''
-  }));
-
   return (
     <Box sx={{
       display: 'flex',
@@ -631,23 +389,7 @@ const QuizImageDisplay = ({ imagesByCollection, countryName, countryISO, onShowA
             alignItems: 'center',
             gap: 2
           }}>
-            {/* Map Box with SVG - Dynamic height based on aspect ratio */}
-            {loadingNeighbors || !geoData ? (
-            <Box sx={{
-              width: { xs: '100%', sm: 250 },
-              maxWidth: 250,
-              height: { xs: 'auto', sm: 250 },
-              aspectRatio: '1',
-              backgroundColor: '#e8f4f8',
-              border: `2px solid ${COLOR_SCHEME.border}`,
-              borderRadius: 1,
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center'
-            }}>
-              <CircularProgress size={40} />
-            </Box>
-          ) : (
+            {/* Map Box - Load pre-generated SVG from backend */}
             <Box sx={{
               position: 'relative',
               width: { xs: '100%', sm: 250 },
@@ -656,43 +398,35 @@ const QuizImageDisplay = ({ imagesByCollection, countryName, countryISO, onShowA
               overflow: 'hidden',
               borderRadius: 1
             }}>
-              <svg
-                viewBox={`0 0 ${baseMapWidth} ${baseMapHeight}`}
-                preserveAspectRatio="xMidYMid meet"
+              <img
+                src={`${API_BASE}/api/maps/${countryISO}`}
+                alt={`Map of ${countryName}`}
                 style={{
                   width: '100%',
                   height: '100%',
-                  border: `2px solid ${COLOR_SCHEME.border}`,
-                  borderRadius: '4px',
-                  backgroundColor: '#e8f4f8',
                   display: 'block'
                 }}
-              >
-                {/* Render neighbor countries */}
-                {neighborPaths.map((neighbor, idx) => (
-                  <path
-                    key={idx}
-                    d={neighbor.path}
-                    fill="#d0e8f0"
-                    stroke="#5a8fa8"
-                    strokeWidth="1"
-                    opacity="0.6"
-                  />
-                ))}
-
-                {/* Render target country (highlighted) */}
-                {targetPath && (
-                  <path
-                    d={targetPath}
-                    fill="#ff6b6b"
-                    stroke="#d63031"
-                    strokeWidth="2"
-                    opacity="0.8"
-                  />
-                )}
-              </svg>
+                onError={(e) => {
+                  // Fallback: show placeholder if map not found
+                  e.target.style.display = 'none';
+                  e.target.nextSibling.style.display = 'flex';
+                }}
+              />
+              <Box sx={{
+                display: 'none',
+                width: '100%',
+                height: '100%',
+                backgroundColor: '#e8f4f8',
+                border: `2px solid ${COLOR_SCHEME.border}`,
+                borderRadius: 1,
+                alignItems: 'center',
+                justifyContent: 'center',
+                fontSize: '0.875rem',
+                color: '#666'
+              }}>
+                Map not available
+              </Box>
             </Box>
-          )}
         </Box>
       </Paper>
       )}
@@ -772,9 +506,7 @@ const QuizImageDisplay = ({ imagesByCollection, countryName, countryISO, onShowA
                       borderRadius: '4px',
                       cursor: 'pointer',
                     }}
-                    onLoad={() => {
-                      setImageLoaded(true);
-                    }}
+                    onLoad={() => {}}
                     onError={(e) => {
                       e.target.style.display = 'none';
                     }}
@@ -791,9 +523,7 @@ const QuizImageDisplay = ({ imagesByCollection, countryName, countryISO, onShowA
                     objectFit: 'contain',
                     borderRadius: '4px',
                   }}
-                  onLoad={() => {
-                    setImageLoaded(true);
-                  }}
+                  onLoad={() => {}}
                   onError={(e) => {
                     e.target.style.display = 'none';
                   }}

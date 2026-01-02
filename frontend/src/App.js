@@ -233,12 +233,12 @@ function App() {
     setManualTargetCountry   // Function to set target country manually
   } = useQuiz(backendReady, selectedQuizRegion); // Pass backendReady and selected region
 
-  // Fetch initial target country when starting in quiz mode
+  // Fetch initial target country when starting in quiz mode (but not while OnLoadOverlay is showing)
   useEffect(() => {
-    if (backendReady && mode === 'quiz' && !targetCountry) {
+    if (backendReady && mode === 'quiz' && !targetCountry && !showOnLoad) {
       fetchNewCountry();
     }
-  }, [backendReady, mode, targetCountry, fetchNewCountry]);
+  }, [backendReady, mode, targetCountry, fetchNewCountry, showOnLoad]);
 
   // ===========================================================================
   // EVENT HANDLERS
@@ -415,7 +415,10 @@ function App() {
                       setShowOnLoad(false);
                       setMode('explore');
                     }}
-                    onClose={() => setShowOnLoad(false)}
+                    onClose={() => {
+                      setShowOnLoad(false);
+                      setMode('explore'); // Default to explore mode when closing without selection
+                    }}
                   />
                 )}
 

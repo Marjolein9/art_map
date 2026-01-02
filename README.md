@@ -171,6 +171,36 @@ Art Map is a full-stack web application that combines geography education with a
 - Frontend groups images by collection
 - Dynamic captions based on collection metadata
 
+### 5. Pre-generated SVG Maps
+
+**Performance Optimization:**
+- SVG maps are pre-generated on the backend for all 169 countries (32 small territories not available in 110m resolution)
+- Maps include target country (highlighted in red) and neighboring countries (shown in blue)
+- Optimized bounding boxes for each region
+- Dynamic height based on country aspect ratio
+
+**Technical Implementation:**
+- **Backend Script** (`generate_country_maps.py`):
+  - Loads TopoJSON data from frontend geo files
+  - Converts TopoJSON arcs to GeoJSON coordinates using delta decoding
+  - Fetches neighbors from database (excludes France and Russia)
+  - Calculates optimal bounding boxes with 5% padding
+  - Handles antimeridian crossing for countries spanning date line
+  - Generates SVG files saved to `backend/static/maps/`
+- **API Endpoint**: `GET /api/maps/<iso3>` serves pre-generated SVG files
+- **Frontend**: Simple `<img>` tag loads static SVG instead of client-side generation
+- **Benefits**:
+  - Reduced bundle size (-1.14 kB)
+  - Instant map loading (no computation on client)
+  - Simplified frontend code (~160 lines removed)
+  - Better performance on low-power devices
+
+**Regenerating Maps:**
+```bash
+cd backend
+DATABASE_URL='postgresql://localhost/artmap' python3 generate_country_maps.py
+```
+
 ---
 
 ## 🔧 Development Setup
@@ -388,6 +418,24 @@ python3 init_database_postgres.py  # Re-initializes entire DB
 python3 your_custom_update_script.py  # Custom updates
 ```
 
+### Regenerating SVG Maps
+
+If you've updated country data or neighbor relationships, regenerate the maps:
+
+```bash
+cd backend
+DATABASE_URL='postgresql://localhost/artmap' python3 generate_country_maps.py
+
+# For production database:
+export DATABASE_URL="<external-database-url>"
+python3 generate_country_maps.py
+
+# Then commit and push the updated SVG files
+git add static/maps/
+git commit -m "Update pre-generated SVG maps"
+git push origin main
+```
+
 ---
 
 ## 📚 Code Organization
@@ -431,6 +479,7 @@ backend/
 ├── db_utils.py             # Database utilities
 ├── error_handler.py        # Error handling
 ├── init_database_postgres.py  # Database initialization
+├── generate_country_maps.py    # Pre-generate SVG maps script
 ├── data/                   # Data files
 │   ├── m49-list.json              # UN country data
 │   ├── albert_kahn_metadata.csv   # Image metadata
@@ -442,6 +491,11 @@ backend/
 │   ├── USA/
 │   ├── DEU/
 │   └── ...
+├── static/                 # Static files served by Flask
+│   └── maps/                      # Pre-generated SVG maps
+│       ├── USA.svg
+│       ├── DEU.svg
+│       └── ... (169 country maps)
 └── requirements.txt        # Python dependencies
 ```
 
@@ -538,6 +592,20 @@ Returns: {
     ...
   ]
 }
+```
+
+**Get Country Map (SVG)**
+```
+GET /api/maps/:iso3
+
+Returns: SVG file (image/svg+xml)
+Example: GET /api/maps/USA
+
+Description:
+- Serves pre-generated SVG map for the specified country
+- Includes target country (red) and neighbors (blue)
+- Optimized bounding box for the region
+- Returns 404 if map not available (small territories)
 ```
 
 ---
@@ -649,7 +717,8 @@ Returns: {
 - **Total Countries**: 248 (UN M49 standard)
 - **Total Images**: 213+ across 4 collections
 - **Border Relationships**: 642 adjacency records
-- **API Endpoints**: 8 endpoints
+- **Pre-generated Maps**: 169 SVG files
+- **API Endpoints**: 9 endpoints
 - **React Components**: 10+ components
 - **Lines of Code**: ~5,000+ (frontend + backend)
 
@@ -742,4 +811,4 @@ This is a portfolio/educational project, but suggestions and feedback are welcom
 
 ---
 
-**Last Updated**: December 2024
+**Last Updated**: January 2026

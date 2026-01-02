@@ -39,11 +39,9 @@ import { REGION_VIEWS } from '../config/regions';
 import { loadTopoJSON } from '../utils/topoJsonLoader';
 // Function to load TopoJSON map data (a compact format for geographic boundaries)
 
-import { fetchCountries, fetchNeighbors, fetchSimilarIslands } from '../services/api';
+import { fetchCountries } from '../services/api';
 // API functions that fetch data from our backend server
 // fetchCountries: Gets list of all countries
-// fetchNeighbors: Gets countries that border a specific country
-// fetchSimilarIslands: Gets islands similar to a target island country
 
 import { getPathColor, getPathStrokeColor } from '../utils/pastelColorPalette';
 // Functions that determine what colors to use for country borders
@@ -63,7 +61,6 @@ const WorldMap = ({
   targetCountry = null,    // The country the user needs to find (ISO3 code)
   targetCountryName = null,// Human-readable name of target country
   region = null,           // Current region view (e.g., "Europe", "Asia")
-  gameStatus = 'playing',  // Current quiz state: 'playing', 'correct', 'incorrect'
   colors,                  // Color scheme object with theme colors
   onNewGame,              // Function to start a new quiz game
   onStartOver,            // Function to skip to next country
@@ -129,12 +126,6 @@ const WorldMap = ({
 
   // showMeActivated: Whether user clicked "Show Me" button to reveal the answer
   const [showMeActivated, setShowMeActivated] = useState(false);
-
-  // persistedIncorrectLabels: Array of labels for showing names of incorrectly clicked countries
-  const [persistedIncorrectLabels, setPersistedIncorrectLabels] = useState([]);
-
-  // persistedCorrectLabels: Array of labels for showing names of correctly clicked countries
-  const [persistedCorrectLabels, setPersistedCorrectLabels] = useState([]);
 
   // showTargetOverlay: Controls visibility of "Find: [Country]" overlay in quiz mode
   const [showTargetOverlay, setShowTargetOverlay] = useState(false);
@@ -318,7 +309,6 @@ const WorldMap = ({
           // Get target country details for subregion/region fallback
           const targetCountryInfo = allCountries.find(c => c.iso3 === targetCountry);
           const targetSubregion = targetCountryInfo?.subregion;
-          const targetContinent = targetCountryInfo?.continent;
 
           // TESTING: Highlight entire subregion for zoom level testing
           // TO REVERT: Replace this section with the original neighbor-based hint logic
@@ -400,7 +390,7 @@ const WorldMap = ({
     };
 
     showHints();
-  }, [targetCountry, targetCountryName, mode, countries, hintsEnabled, backendReady, clickedCountry]);
+  }, [targetCountry, targetCountryName, mode, countries, hintsEnabled, backendReady, clickedCountry, allCountries]);
   // Re-run when any of these dependencies change
 
   // Reset hint state when a new target appears
@@ -632,85 +622,8 @@ const WorldMap = ({
     }
 
     return paths;
-  }, [countryPaths, activeHints, showMeActivated, targetCountry, clickedCountry]);
+  }, [countryPaths, activeHints, showMeActivated, targetCountry]);
   // Only recalculate when these dependencies change
-
-  // Persist incorrect country label when user clicks wrong country
-  useEffect(() => {
-    // Only in quiz mode when answer is incorrect
-    if (mode === 'quiz' && gameStatus === 'incorrect' && clickedCountry) {
-      // Find the clicked country's geographic data
-      const clickedFeature = countries.features.find(f => getCountryIsoCode(f) === clickedCountry);
-      if (!clickedFeature) return;
-
-      // Get the human-readable country name (with parent for territories)
-      const countryData = allCountries.find(c => c.iso3 === clickedCountry);
-      const countryName = getDisplayName(countryData) || clickedCountry;
-
-      // Calculate where to place the label
-      const centroid = calculateCentroid(clickedFeature.geometry.coordinates);
-      if (!centroid) return;
-
-      // Small delay for label appearance (matching overlay delay)
-      const timer = setTimeout(() => {
-        // Add label to array (accumulate multiple incorrect clicks)
-        setPersistedIncorrectLabels(prev => [...prev, {
-          lat: centroid.lat,
-          lng: centroid.lng,
-          text: countryName
-        }]);
-      }, 100);
-
-      return () => clearTimeout(timer);
-    }
-  }, [mode, gameStatus, clickedCountry, countries, allCountries]);
-
-  // Persist correct country label when user clicks right country
-  useEffect(() => {
-    // Only in quiz mode when answer is correct
-    if (mode === 'quiz' && gameStatus === 'correct' && targetCountry) {
-      // Find the target country's geographic data
-      const targetFeature = countries.features.find(f => getCountryIsoCode(f) === targetCountry);
-      if (!targetFeature) return;
-
-      // Get the human-readable country name (with parent for territories)
-      const countryData = allCountries.find(c => c.iso3 === targetCountry);
-      const countryName = getDisplayName(countryData) || targetCountry;
-
-      // Calculate where to place the label
-      const centroid = calculateCentroid(targetFeature.geometry.coordinates);
-      if (!centroid) return;
-
-      // Small delay for label appearance (matching overlay delay)
-      const timer = setTimeout(() => {
-        // Add label to array (can have multiple correct clicks shown together with incorrect)
-        setPersistedCorrectLabels(prev => [...prev, {
-          lat: centroid.lat,
-          lng: centroid.lng,
-          text: countryName
-        }]);
-      }, 100);
-
-      return () => clearTimeout(timer);
-    }
-  }, [mode, gameStatus, targetCountry, countries, allCountries]);
-
-  // Clear persisted labels when new target country appears (new quiz question)
-  useEffect(() => {
-    if (targetCountry) {
-      setPersistedIncorrectLabels([]);
-      setPersistedCorrectLabels([]);
-    }
-  }, [targetCountry]);
-
-  // Create labels for both incorrect and correct countries (use persisted labels to survive state transitions)
-  const countryLabels = useMemo(() => {
-    // Only show labels in quiz mode
-    if (mode !== 'quiz') return [];
-
-    // Combine all incorrect and correct labels
-    return [...persistedIncorrectLabels, ...persistedCorrectLabels];
-  }, [mode, persistedIncorrectLabels, persistedCorrectLabels]);
 
   /**
    * JSX RENDERING
