@@ -1,122 +1,47 @@
-#!/usr/bin/env python3
-"""
-Find countries missing from met.csv and create a file with missing entries
-"""
+import pandas as pd
+import requests
+import urllib.parse
+from time import sleep
 
-import csv
-import os
-from db_utils import get_db_connection
+INPUT_CSV = "backend/data/exports/countries.csv"
+OUTPUT_CSV = "countries_wikipedia_links.csv"
 
-def get_all_countries_from_db():
-    """Get all countries from the database"""
-    conn = get_db_connection()
-    cursor = conn.cursor()
+HEADERS = {
+    "User-Agent": "Mozilla/5.0 (compatible; GeographyBot/1.0)"
+}
 
-    cursor.execute('SELECT iso3, name FROM countries ORDER BY iso3')
-    all_countries = [dict(row) for row in cursor.fetchall()]
+def make_wikipedia_url(name):
+    encoded = urllib.parse.quote(name.replace(" ", "_"))
+    return f"https://en.wikipedia.org/wiki/{encoded}"
 
-    conn.close()
-    return all_countries
+def check_url(url):
+    try:
+        r = requests.get(url, headers=HEADERS, allow_redirects=True, timeout=10)
+        return r.status_code, r.url
+    except Exception:
+        return "ERROR", ""
 
-def get_existing_met_countries():
-    """Get list of iso3 codes already in met.csv"""
-    met_file = 'data/met.csv'
-    existing_iso3 = set()
+df = pd.read_csv(INPUT_CSV)
 
-    if os.path.exists(met_file):
-        with open(met_file, 'r', encoding='utf-8') as f:
-            reader = csv.DictReader(f)
-            for row in reader:
-                iso3 = row.get('iso3', '').strip()
-                if iso3:
-                    existing_iso3.add(iso3)
+rows = []
 
-    return existing_iso3
+for _, row in df.iterrows():
+    iso3 = row["iso3"]
+    name = row["common_name"]
 
-def find_empty_countries():
-    """Find countries with no images in any collection"""
-    conn = get_db_connection()
-    cursor = conn.cursor()
+    wiki_url = make_wikipedia_url(name)
+    status, final_url = check_url(wiki_url)
 
-    # Get countries that have at least one image using UNION
-    cursor.execute('''
-        SELECT DISTINCT iso3 FROM albert_kahn_images
-        UNION
-        SELECT DISTINCT artist_iso3 AS iso3 FROM children_artwork_images WHERE artist_iso3 IS NOT NULL
-        UNION
-        SELECT DISTINCT iso3 FROM public_domain_images WHERE iso3 IS NOT NULL
-        UNION
-        SELECT DISTINCT iso3 FROM met_images WHERE iso3 IS NOT NULL
-    ''')
-    countries_with_images = {row['iso3'] for row in cursor.fetchall()}
+    rows.append({
+        "iso3": iso3,
+        "wikipedia_url": wiki_url,
+        "http_status": status,
+        "final_url": final_url
+    })
 
-    conn.close()
-    return countries_with_images
+    sleep(0.5)  # polite to Wikipedia
 
-def main():
-    print("Finding countries missing from met.csv...")
+out_df = pd.DataFrame(rows)
+out_df.to_csv(OUTPUT_CSV, index=False)
 
-    # Get all countries from database
-    all_countries = get_all_countries_from_db()
-
-    # Get countries already in met.csv
-    existing_in_met = get_existing_met_countries()
-
-    # Find missing countries
-    missing_countries = [
-        country for country in all_countries
-        if country['iso3'] not in existing_in_met
-    ]
-
-    # Create output file with missing countries
-    output_file = 'data/exports/missing_met_countries.csv'
-    os.makedirs('data/exports', exist_ok=True)
-
-    fieldnames = ['id', 'iso3', 'title', 'country', 'source_link']
-
-    with open(output_file, 'w', newline='', encoding='utf-8') as f:
-        writer = csv.DictWriter(f, fieldnames=fieldnames)
-        writer.writeheader()
-
-        for country in missing_countries:
-            writer.writerow({
-                'id': '',
-                'iso3': country['iso3'],
-                'title': '',
-                'country': country['name'],
-                'source_link': ''
-            })
-
-    print(f"✅ Found {len(missing_countries)} countries missing from met.csv")
-    print(f"📄 Exported to: {output_file}")
-
-    # Also create the countries with no images report
-    countries_with_images = find_empty_countries()
-    empty_countries = [
-        country for country in all_countries
-        if country['iso3'] not in countries_with_images
-    ]
-
-    output_file2 = 'data/exports/countries_no_images.csv'
-    with open(output_file2, 'w', newline='', encoding='utf-8') as f:
-        writer = csv.DictWriter(f, fieldnames=['iso3', 'name'])
-        writer.writeheader()
-        writer.writerows(empty_countries)
-
-    print(f"\n✅ Found {len(empty_countries)} countries with no images")
-    print(f"📄 Exported to: {output_file2}")
-
-    print(f"\n📊 Summary:")
-    print(f"  Total countries in database: {len(all_countries)}")
-    print(f"  Countries already in met.csv: {len(existing_in_met)}")
-    print(f"  Countries missing from met.csv: {len(missing_countries)}")
-    print(f"  Countries with images: {len(all_countries) - len(empty_countries)}")
-    print(f"  Countries without images: {len(empty_countries)}")
-
-    if missing_countries:
-        print(f"\n📋 Missing countries from met.csv (first 20):")
-        for country in missing_countries[:20]:
-            print(f"  {country['iso3']}: {country['name']}")
-
-if __name__ == '__main__':
-    main()
+print(f"Saved {len(out_df)} rows to {OUTPUT_CSV}")

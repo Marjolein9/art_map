@@ -1,250 +1,250 @@
-iso3,iso2,name,common_name,m49,continent,subregion,is_country,include_in_quiz,parent_country_iso3
-AFG,AF,Afghanistan,Afghanistan,4,Asia,Southern Asia,True,True,
-ALB,AL,Albania,Albania,8,Europe,Southern Europe,True,True,
-DZA,DZ,Algeria,Algeria,12,Africa,Northern Africa,True,True,
-ASM,AS,American Samoa,American Samoa,16,Oceania,Polynesia,False,True,
-AND,AD,Andorra,Andorra,20,Europe,Southern Europe,True,True,
-AGO,AO,Angola,Angola,24,Africa,Middle Africa,True,True,
-AIA,AI,Anguilla,Anguilla,660,Americas,Caribbean,False,True,
-ATA,AQ,Antarctica,Antarctica,10,World,World,False,True,
-ATG,AG,Antigua and Barbuda,Antigua and Barbuda,28,Americas,Caribbean,True,True,
-ARG,AR,Argentina,Argentina,32,Americas,South America,True,True,
-ARM,AM,Armenia,Armenia,51,Asia,Western Asia,True,True,
-AUS,AU,Australia,Australia,36,Oceania,Australia New Zealand Indo,True,True,
-AUT,AT,Austria,Austria,40,Europe,Western Europe,True,True,
-AZE,AZ,Azerbaijan,Azerbaijan,31,Asia,Western Asia,True,True,
-BHS,BS,Bahamas,Bahamas,44,Americas,Caribbean,True,True,
-BHR,BH,Bahrain,Bahrain,48,Asia,Western Asia,True,True,
-BGD,BD,Bangladesh,Bangladesh,50,Asia,Southern Asia,True,True,
-BRB,BB,Barbados,Barbados,52,Americas,Caribbean,True,True,
-BLR,BY,Belarus,Belarus,112,Europe,Eastern Europe,True,True,
-BEL,BE,Belgium,Belgium,56,Europe,Western Europe,True,True,
-BLZ,BZ,Belize,Belize,84,Americas,Central America,True,True,
-BEN,BJ,Benin,Benin,204,Africa,Western Africa,True,True,
-BMU,BM,Bermuda,Bermuda,60,Americas,Northern America,False,True,
-BTN,BT,Bhutan,Bhutan,64,Asia,Southern Asia,True,True,
-BOL,BO,Bolivia (Plurinational State of),Bolivia,68,Americas,South America,True,True,
-BES,BQ,"Bonaire, Sint Eustatius and Saba","Bonaire, Sint Eustatius and Saba",535,Americas,Caribbean,False,False,
-BIH,BA,Bosnia and Herzegovina,Bosnia and Herzegovina,70,Europe,Southern Europe,True,True,
-BWA,BW,Botswana,Botswana,72,Africa,Southern Africa,True,True,
-BVT,BV,Bouvet Island,Bouvet Island,74,Americas,South America,False,False,
-BRA,BR,Brazil,Brazil,76,Americas,South America,True,True,
-IOT,IO,British Indian Ocean Territory,British Indian Ocean Territory,86,Africa,Eastern Africa,False,True,
-VGB,VG,British Virgin Islands,"Virgin Islands, British",92,Americas,Caribbean,False,True,
-BRN,BN,Brunei Darussalam,Brunei Darussalam,96,Asia,Southeast Asia,True,True,
-BGR,BG,Bulgaria,Bulgaria,100,Europe,Eastern Europe,True,True,
-BFA,BF,Burkina Faso,Burkina Faso,854,Africa,Western Africa,True,True,
-BDI,BI,Burundi,Burundi,108,Africa,Eastern Africa,True,True,
-CPV,CV,Cabo Verde,Cabo Verde,132,Africa,Western Africa,True,True,
-KHM,KH,Cambodia,Cambodia,116,Asia,Southeast Asia,True,True,
-CMR,CM,Cameroon,Cameroon,120,Africa,Middle Africa,True,True,
-CAN,CA,Canada,Canada,124,Americas,Northern America,True,True,
-CYM,KY,Cayman Islands,Cayman Islands,136,Americas,Caribbean,False,True,
-CAF,CF,Central African Republic,Central African Republic,140,Africa,Middle Africa,True,True,
-TCD,TD,Chad,Chad,148,Africa,Middle Africa,True,True,
-CHL,CL,Chile,Chile,152,Americas,South America,True,True,
-CHN,CN,China,China,156,Asia,Eastern Asia,True,True,
-HKG,HK,"China, Hong Kong Special Administrative Region",Hong Kong,344,Asia,Eastern Asia,False,True,
-MAC,MO,"China, Macao Special Administrative Region",Macao,446,Asia,Eastern Asia,False,True,
-CXR,CX,Christmas Island,Christmas Island,162,Oceania,Australia New Zealand Indo,False,False,
-CCK,CC,Cocos (Keeling) Islands,Cocos (Keeling) Islands,166,Oceania,Australia New Zealand Indo,False,False,
-COL,CO,Colombia,Colombia,170,Americas,South America,True,True,
-COM,KM,Comoros,Comoros,174,Africa,Eastern Africa,True,True,
-COG,CG,Congo,Republic of the Congo,178,Africa,Middle Africa,True,True,
-COK,CK,Cook Islands,Cook Islands,184,Oceania,Polynesia,False,True,
-CRI,CR,Costa Rica,Costa Rica,188,Americas,Central America,True,True,
-HRV,HR,Croatia,Croatia,191,Europe,Southern Europe,True,True,
-CUB,CU,Cuba,Cuba,192,Americas,Caribbean,True,True,
-CYP,CY,Cyprus,Cyprus,196,Asia,Western Asia,True,True,
-CZE,CZ,Czechia,Czechia,203,Europe,Eastern Europe,True,True,
-CIV,CI,Côte d’Ivoire,Ivory Coast,384,Africa,Western Africa,True,True,
-PRK,KP,Democratic People's Republic of Korea,North Korea,408,Asia,Eastern Asia,True,True,
-COD,CD,Democratic Republic of the Congo,Democratic Republic of the Congo,180,Africa,Middle Africa,True,True,
-DNK,DK,Denmark,Denmark,208,Europe,Northern Europe,True,True,
-DJI,DJ,Djibouti,Djibouti,262,Africa,Eastern Africa,True,True,
-DMA,DM,Dominica,Dominica,212,Americas,Caribbean,True,True,
-DOM,DO,Dominican Republic,Dominican Republic,214,Americas,Caribbean,True,True,
-ECU,EC,Ecuador,Ecuador,218,Americas,South America,True,True,
-EGY,EG,Egypt,Egypt,818,Africa,Northern Africa,True,True,
-SLV,SV,El Salvador,El Salvador,222,Americas,Central America,True,True,
-GNQ,GQ,Equatorial Guinea,Equatorial Guinea,226,Africa,Middle Africa,True,True,
-ERI,ER,Eritrea,Eritrea,232,Africa,Eastern Africa,True,True,
-EST,EE,Estonia,Estonia,233,Europe,Northern Europe,True,True,
-SWZ,SZ,Eswatini,Eswatini,748,Africa,Southern Africa,True,True,
-ETH,ET,Ethiopia,Ethiopia,231,Africa,Eastern Africa,True,True,
-FLK,FK,Falkland Islands (Malvinas),Falkland Islands (Malvinas),238,Americas,South America,False,True,
-FRO,FO,Faroe Islands,Faroe Islands,234,Europe,Northern Europe,False,True,
-FJI,FJ,Fiji,Fiji,242,Oceania,Melanesia,True,True,
-FIN,FI,Finland,Finland,246,Europe,Northern Europe,True,True,
-FRA,FR,France,France,250,Europe,Western Europe,True,True,
-GUF,GF,French Guiana,French Guiana,254,Americas,South America,False,False,
-ATF,TF,French Southern Territories,French Southern Territories,260,Africa,Eastern Africa,False,True,
-GAB,GA,Gabon,Gabon,266,Africa,Middle Africa,True,True,
-GMB,GM,Gambia,Gambia,270,Africa,Western Africa,True,True,
-GEO,GE,Georgia,Georgia,268,Asia,Western Asia,True,True,
-DEU,DE,Germany,Germany,276,Europe,Western Europe,True,True,
-GHA,GH,Ghana,Ghana,288,Africa,Western Africa,True,True,
-GIB,GI,Gibraltar,Gibraltar,292,Europe,Southern Europe,False,False,
-GRC,GR,Greece,Greece,300,Europe,Southern Europe,True,True,
-GRD,GD,Grenada,Grenada,308,Americas,Caribbean,True,True,
-GLP,GP,Guadeloupe,Guadeloupe,312,Americas,Caribbean,False,False,
-GTM,GT,Guatemala,Guatemala,320,Americas,Central America,True,True,
-GGY,GG,Guernsey,Guernsey,831,Europe,Northern Europe,False,True,
-GIN,GN,Guinea,Guinea,324,Africa,Western Africa,True,True,
-GNB,GW,Guinea-Bissau,Guinea-Bissau,624,Africa,Western Africa,True,True,
-GUY,GY,Guyana,Guyana,328,Americas,South America,True,True,
-HTI,HT,Haiti,Haiti,332,Americas,Caribbean,True,True,
-HMD,HM,Heard Island and McDonald Islands,Heard Island and McDonald Islands,334,Oceania,Australia New Zealand Indo,False,True,
-VAT,VA,Holy See,Vatican City,336,Europe,Southern Europe,False,True,
-HND,HN,Honduras,Honduras,340,Americas,Central America,True,True,
-HUN,HU,Hungary,Hungary,348,Europe,Eastern Europe,True,True,
-ISL,IS,Iceland,Iceland,352,Europe,Northern Europe,True,True,
-IND,IN,India,India,356,Asia,Southern Asia,True,True,
-IDN,ID,Indonesia,Indonesia,360,Asia,Australia New Zealand Indo,True,True,
-IRN,IR,Iran (Islamic Republic of),Iran,364,Asia,Southern Asia,True,True,
-IRQ,IQ,Iraq,Iraq,368,Asia,Western Asia,True,True,
-IRL,IE,Ireland,Ireland,372,Europe,Northern Europe,True,True,
-IMN,IM,Isle of Man,Isle of Man,833,Europe,Northern Europe,False,True,
-ISR,IL,Israel,Israel,376,Asia,Western Asia,True,True,
-ITA,IT,Italy,Italy,380,Europe,Southern Europe,True,True,
-JAM,JM,Jamaica,Jamaica,388,Americas,Caribbean,True,True,
-JPN,JP,Japan,Japan,392,Asia,Eastern Asia,True,True,
-JEY,JE,Jersey,Jersey,832,Europe,Northern Europe,False,True,
-JOR,JO,Jordan,Jordan,400,Asia,Western Asia,True,True,
-KAZ,KZ,Kazakhstan,Kazakhstan,398,Asia,Central Asia,True,True,
-KEN,KE,Kenya,Kenya,404,Africa,Eastern Africa,True,True,
-KIR,KI,Kiribati,Kiribati,296,Oceania,Micronesia,True,True,
-KWT,KW,Kuwait,Kuwait,414,Asia,Western Asia,True,True,
-KGZ,KG,Kyrgyzstan,Kyrgyzstan,417,Asia,Central Asia,True,True,
-LAO,LA,Lao People's Democratic Republic,Laos,418,Asia,Southeast Asia,True,True,
-LVA,LV,Latvia,Latvia,428,Europe,Northern Europe,True,True,
-LBN,LB,Lebanon,Lebanon,422,Asia,Western Asia,True,True,
-LSO,LS,Lesotho,Lesotho,426,Africa,Southern Africa,True,True,
-LBR,LR,Liberia,Liberia,430,Africa,Western Africa,True,True,
-LBY,LY,Libya,Libya,434,Africa,Northern Africa,True,True,
-LIE,LI,Liechtenstein,Liechtenstein,438,Europe,Western Europe,True,True,
-LTU,LT,Lithuania,Lithuania,440,Europe,Northern Europe,True,True,
-LUX,LU,Luxembourg,Luxembourg,442,Europe,Western Europe,True,True,
-MDG,MG,Madagascar,Madagascar,450,Africa,Eastern Africa,True,True,
-MWI,MW,Malawi,Malawi,454,Africa,Eastern Africa,True,True,
-MYS,MY,Malaysia,Malaysia,458,Asia,Southeast Asia,True,True,
-MDV,MV,Maldives,Maldives,462,Asia,Southern Asia,True,True,
-MLI,ML,Mali,Mali,466,Africa,Western Africa,True,True,
-MLT,MT,Malta,Malta,470,Europe,Southern Europe,True,True,
-MHL,MH,Marshall Islands,Marshall Islands,584,Oceania,Micronesia,True,True,
-MTQ,MQ,Martinique,Martinique,474,Americas,Caribbean,False,False,
-MRT,MR,Mauritania,Mauritania,478,Africa,Western Africa,True,True,
-MUS,MU,Mauritius,Mauritius,480,Africa,Eastern Africa,True,True,
-MYT,YT,Mayotte,Mayotte,175,Africa,Eastern Africa,False,False,
-MEX,MX,Mexico,Mexico,484,Americas,Northern America,True,True,
-FSM,FM,Micronesia (Federated States of),"Micronesia, Federated States of",583,Oceania,Micronesia,True,True,
-MCO,MC,Monaco,Monaco,492,Europe,Western Europe,True,True,
-MNG,MN,Mongolia,Mongolia,496,Asia,Eastern Asia,True,True,
-MNE,ME,Montenegro,Montenegro,499,Europe,Southern Europe,True,True,
-MSR,MS,Montserrat,Montserrat,500,Americas,Caribbean,False,True,
-MAR,MA,Morocco,Morocco,504,Africa,Northern Africa,True,True,
-MOZ,MZ,Mozambique,Mozambique,508,Africa,Eastern Africa,True,True,
-MMR,MM,Myanmar,Myanmar,104,Asia,Southeast Asia,True,True,
-NAM,NA,Namibia,Namibia,516,Africa,Southern Africa,True,True,
-NRU,NR,Nauru,Nauru,520,Oceania,Micronesia,True,True,
-NPL,NP,Nepal,Nepal,524,Asia,Southern Asia,True,True,
-NLD,NL,Netherlands,Netherlands,528,Europe,Western Europe,True,True,
-NZL,NZ,New Zealand,New Zealand,554,Oceania,Australia New Zealand Indo,True,True,
-NIC,NI,Nicaragua,Nicaragua,558,Americas,Central America,True,True,
-NER,NE,Niger,Niger,562,Africa,Western Africa,True,True,
-NGA,NG,Nigeria,Nigeria,566,Africa,Western Africa,True,True,
-NIU,NU,Niue,Niue,570,Oceania,Polynesia,False,True,
-NFK,NF,Norfolk Island,Norfolk Island,574,Oceania,Australia New Zealand Indo,False,True,
-MKD,MK,North Macedonia,North Macedonia,807,Europe,Southern Europe,True,True,
-MNP,MP,Northern Mariana Islands,Northern Mariana Islands,580,Oceania,Micronesia,False,True,
-NOR,NO,Norway,Norway,578,Europe,Northern Europe,True,True,
-OMN,OM,Oman,Oman,512,Asia,Western Asia,True,True,
-PAK,PK,Pakistan,Pakistan,586,Asia,Southern Asia,True,True,
-PLW,PW,Palau,Palau,585,Oceania,Micronesia,True,True,
-PAN,PA,Panama,Panama,591,Americas,Central America,True,True,
-PNG,PG,Papua New Guinea,Papua New Guinea,598,Oceania,Melanesia,True,True,
-PRY,PY,Paraguay,Paraguay,600,Americas,South America,True,True,
-PER,PE,Peru,Peru,604,Americas,South America,True,True,
-PHL,PH,Philippines,Philippines,608,Asia,Southeast Asia,True,True,
-PCN,PN,Pitcairn,Pitcairn,612,Oceania,Polynesia,False,True,
-POL,PL,Poland,Poland,616,Europe,Eastern Europe,True,True,
-PRT,PT,Portugal,Portugal,620,Europe,Southern Europe,True,True,
-QAT,QA,Qatar,Qatar,634,Asia,Western Asia,True,True,
-KOR,KR,Republic of Korea,South Korea,410,Asia,Eastern Asia,True,True,
-MDA,MD,Republic of Moldova,Moldova,498,Europe,Eastern Europe,True,True,
-ROU,RO,Romania,Romania,642,Europe,Eastern Europe,True,True,
-RUS,RU,Russian Federation,Russia,643,Europe,Eastern Europe,True,True,
-RWA,RW,Rwanda,Rwanda,646,Africa,Eastern Africa,True,True,
-REU,RE,Réunion,Réunion,638,Africa,Eastern Africa,False,False,
-BLM,BL,Saint Barthélemy,Saint Barthélemy,652,Americas,Caribbean,False,True,
-SHN,SH,Saint Helena,"Saint Helena, Ascension and Tristan da Cunha",654,Africa,Western Africa,False,True,
-KNA,KN,Saint Kitts and Nevis,Saint Kitts and Nevis,659,Americas,Caribbean,True,True,
-LCA,LC,Saint Lucia,Saint Lucia,662,Americas,Caribbean,True,True,
-MAF,MF,Saint Martin (French Part),Saint Martin (French part),663,Americas,Caribbean,False,True,
-SPM,PM,Saint Pierre and Miquelon,Saint Pierre and Miquelon,666,Americas,Northern America,False,True,
-VCT,VC,Saint Vincent and the Grenadines,Saint Vincent and the Grenadines,670,Americas,Caribbean,True,True,
-WSM,WS,Samoa,Samoa,882,Oceania,Polynesia,True,True,
-SMR,SM,San Marino,San Marino,674,Europe,Southern Europe,True,True,
-STP,ST,Sao Tome and Principe,Sao Tome and Principe,678,Africa,Middle Africa,True,True,
-SAU,SA,Saudi Arabia,Saudi Arabia,682,Asia,Western Asia,True,True,
-SEN,SN,Senegal,Senegal,686,Africa,Western Africa,True,True,
-SRB,RS,Serbia,Serbia,688,Europe,Southern Europe,True,True,
-SYC,SC,Seychelles,Seychelles,690,Africa,Eastern Africa,True,True,
-SLE,SL,Sierra Leone,Sierra Leone,694,Africa,Western Africa,True,True,
-SGP,SG,Singapore,Singapore,702,Asia,Southeast Asia,True,True,
-SXM,SX,Sint Maarten (Dutch part),Sint Maarten (Dutch part),534,Americas,Caribbean,False,True,
-SVK,SK,Slovakia,Slovakia,703,Europe,Eastern Europe,True,True,
-SVN,SI,Slovenia,Slovenia,705,Europe,Southern Europe,True,True,
-SLB,SB,Solomon Islands,Solomon Islands,90,Oceania,Melanesia,True,True,
-SOM,SO,Somalia,Somalia,706,Africa,Eastern Africa,True,True,
-ZAF,ZA,South Africa,South Africa,710,Africa,Southern Africa,True,True,
-SGS,GS,South Georgia and the South Sandwich Islands,South Georgia and the South Sandwich Islands,239,Americas,South America,False,True,
-SSD,SS,South Sudan,South Sudan,728,Africa,Eastern Africa,True,True,
-ESP,ES,Spain,Spain,724,Europe,Southern Europe,True,True,
-LKA,LK,Sri Lanka,Sri Lanka,144,Asia,Southern Asia,True,True,
-PSE,PS,State of Palestine,Palestine,275,Asia,Western Asia,False,True,
-SDN,SD,Sudan,Sudan,729,Africa,Northern Africa,True,True,
-SUR,SR,Suriname,Suriname,740,Americas,South America,True,True,
-SJM,SJ,Svalbard and Jan Mayen Islands,Svalbard and Jan Mayen,744,Europe,Northern Europe,False,False,
-SWE,SE,Sweden,Sweden,752,Europe,Northern Europe,True,True,
-CHE,CH,Switzerland,Switzerland,756,Europe,Western Europe,True,True,
-SYR,SY,Syrian Arab Republic,Syria,760,Asia,Western Asia,True,True,
-TJK,TJ,Tajikistan,Tajikistan,762,Asia,Central Asia,True,True,
-TWN,TW,Taiwan,Taiwan,158,Asia,Eastern Asia,True,True,
-THA,TH,Thailand,Thailand,764,Asia,Southeast Asia,True,True,
-TLS,TL,Timor-Leste,Timor-Leste,626,Asia,Australia New Zealand Indo,True,True,
-TGO,TG,Togo,Togo,768,Africa,Western Africa,True,True,
-TKL,TK,Tokelau,Tokelau,772,Oceania,Polynesia,False,False,
-TON,TO,Tonga,Tonga,776,Oceania,Polynesia,True,True,
-TTO,TT,Trinidad and Tobago,Trinidad and Tobago,780,Americas,Caribbean,True,True,
-TUN,TN,Tunisia,Tunisia,788,Africa,Northern Africa,True,True,
-TKM,TM,Turkmenistan,Turkmenistan,795,Asia,Central Asia,True,True,
-TCA,TC,Turks and Caicos Islands,Turks and Caicos Islands,796,Americas,Caribbean,False,True,
-TUV,TV,Tuvalu,Tuvalu,798,Oceania,Polynesia,True,False,
-TUR,TR,Türkiye,Türkiye,792,Asia,Western Asia,True,True,
-UGA,UG,Uganda,Uganda,800,Africa,Eastern Africa,True,True,
-UKR,UA,Ukraine,Ukraine,804,Europe,Eastern Europe,True,True,
-ARE,AE,United Arab Emirates,United Arab Emirates,784,Asia,Western Asia,True,True,
-GBR,GB,United Kingdom of Great Britain and Northern Ireland,United Kingdom,826,Europe,Northern Europe,True,True,
-TZA,TZ,United Republic of Tanzania,Tanzania,834,Africa,Eastern Africa,True,True,
-UMI,UM,United States Minor Outlying Islands,United States Minor Outlying Islands,581,Oceania,Micronesia,False,False,
-VIR,VI,United States Virgin Islands,"Virgin Islands, U.S.",850,Americas,Caribbean,False,True,
-USA,US,United States of America,United States,840,Americas,Northern America,True,True,
-URY,UY,Uruguay,Uruguay,858,Americas,South America,True,True,
-UZB,UZ,Uzbekistan,Uzbekistan,860,Asia,Central Asia,True,True,
-VUT,VU,Vanuatu,Vanuatu,548,Oceania,Melanesia,True,True,
-VEN,VE,Venezuela (Bolivarian Republic of),Venezuela,862,Americas,South America,True,True,
-VNM,VN,Viet Nam,Vietnam,704,Asia,Southeast Asia,True,True,
-WLF,WF,Wallis and Futuna Islands,Wallis and Futuna,876,Oceania,Polynesia,False,True,
-ESH,EH,Western Sahara,Western Sahara,732,Africa,Northern Africa,False,True,
-YEM,YE,Yemen,Yemen,887,Asia,Western Asia,True,True,
-ZMB,ZM,Zambia,Zambia,894,Africa,Eastern Africa,True,True,
-ZWE,ZW,Zimbabwe,Zimbabwe,716,Africa,Eastern Africa,True,True,
-ALA,AX,Åland Islands,Åland Islands,248,Europe,Northern Europe,False,True,
-ABW,AW,Aruba,Aruba,533,Americas,Caribbean,False,True,NLD
-CUW,CW,Curaçao,Curaçao,531,Americas,Caribbean,False,True,NLD
-PYF,PF,French Polynesia,French Polynesia,258,Oceania,Polynesia,False,True,FRA
-GRL,GL,Greenland,Greenland,304,Americas,Northern America,False,True,DNK
-GUM,GU,Guam,Guam,316,Oceania,Micronesia,False,True,USA
-NCL,NC,New Caledonia,New Caledonia,540,Oceania,Melanesia,False,True,FRA
-PRI,PR,Puerto Rico,Puerto Rico,630,Americas,Caribbean,False,True,USA
+iso3,iso2,name,common_name,m49,continent,subregion,is_country,include_in_quiz,parent_country_iso3,wikipedia_url
+AFG,AF,Afghanistan,Afghanistan,4,Asia,Southern Asia,True,True,,https://en.wikipedia.org/wiki/Afghanistan
+ALB,AL,Albania,Albania,8,Europe,Southern Europe,True,True,,https://en.wikipedia.org/wiki/Albania
+DZA,DZ,Algeria,Algeria,12,Africa,Northern Africa,True,True,,https://en.wikipedia.org/wiki/Algeria
+ASM,AS,American Samoa,American Samoa,16,Oceania,Polynesia,False,True,,https://en.wikipedia.org/wiki/American_Samoa
+AND,AD,Andorra,Andorra,20,Europe,Southern Europe,True,True,,https://en.wikipedia.org/wiki/Andorra
+AGO,AO,Angola,Angola,24,Africa,Middle Africa,True,True,,https://en.wikipedia.org/wiki/Angola
+AIA,AI,Anguilla,Anguilla,660,Americas,Caribbean,False,True,,https://en.wikipedia.org/wiki/Anguilla
+ATA,AQ,Antarctica,Antarctica,10,World,World,False,True,,https://en.wikipedia.org/wiki/Antarctica
+ATG,AG,Antigua and Barbuda,Antigua and Barbuda,28,Americas,Caribbean,True,True,,https://en.wikipedia.org/wiki/Antigua_and_Barbuda
+ARG,AR,Argentina,Argentina,32,Americas,South America,True,True,,https://en.wikipedia.org/wiki/Argentina
+ARM,AM,Armenia,Armenia,51,Asia,Western Asia,True,True,,https://en.wikipedia.org/wiki/Armenia
+AUS,AU,Australia,Australia,36,Oceania,Australia New Zealand Indo,True,True,,https://en.wikipedia.org/wiki/Australia
+AUT,AT,Austria,Austria,40,Europe,Western Europe,True,True,,https://en.wikipedia.org/wiki/Austria
+AZE,AZ,Azerbaijan,Azerbaijan,31,Asia,Western Asia,True,True,,https://en.wikipedia.org/wiki/Azerbaijan
+BHS,BS,Bahamas,Bahamas,44,Americas,Caribbean,True,True,,https://en.wikipedia.org/wiki/Bahamas
+BHR,BH,Bahrain,Bahrain,48,Asia,Western Asia,True,True,,https://en.wikipedia.org/wiki/Bahrain
+BGD,BD,Bangladesh,Bangladesh,50,Asia,Southern Asia,True,True,,https://en.wikipedia.org/wiki/Bangladesh
+BRB,BB,Barbados,Barbados,52,Americas,Caribbean,True,True,,https://en.wikipedia.org/wiki/Barbados
+BLR,BY,Belarus,Belarus,112,Europe,Eastern Europe,True,True,,https://en.wikipedia.org/wiki/Belarus
+BEL,BE,Belgium,Belgium,56,Europe,Western Europe,True,True,,https://en.wikipedia.org/wiki/Belgium
+BLZ,BZ,Belize,Belize,84,Americas,Central America,True,True,,https://en.wikipedia.org/wiki/Belize
+BEN,BJ,Benin,Benin,204,Africa,Western Africa,True,True,,https://en.wikipedia.org/wiki/Benin
+BMU,BM,Bermuda,Bermuda,60,Americas,Northern America,False,True,,https://en.wikipedia.org/wiki/Bermuda
+BTN,BT,Bhutan,Bhutan,64,Asia,Southern Asia,True,True,,https://en.wikipedia.org/wiki/Bhutan
+BOL,BO,Bolivia (Plurinational State of),Bolivia,68,Americas,South America,True,True,,https://en.wikipedia.org/wiki/Bolivia
+BES,BQ,"Bonaire, Sint Eustatius and Saba","Bonaire, Sint Eustatius and Saba",535,Americas,Caribbean,False,False,,https://en.wikipedia.org/wiki/Bonaire%2C_Sint_Eustatius_and_Saba
+BIH,BA,Bosnia and Herzegovina,Bosnia and Herzegovina,70,Europe,Southern Europe,True,True,,https://en.wikipedia.org/wiki/Bosnia_and_Herzegovina
+BWA,BW,Botswana,Botswana,72,Africa,Southern Africa,True,True,,https://en.wikipedia.org/wiki/Botswana
+BVT,BV,Bouvet Island,Bouvet Island,74,Americas,South America,False,False,,https://en.wikipedia.org/wiki/Bouvet_Island
+BRA,BR,Brazil,Brazil,76,Americas,South America,True,True,,https://en.wikipedia.org/wiki/Brazil
+IOT,IO,British Indian Ocean Territory,British Indian Ocean Territory,86,Africa,Eastern Africa,False,True,,https://en.wikipedia.org/wiki/British_Indian_Ocean_Territory
+VGB,VG,British Virgin Islands,"Virgin Islands, British",92,Americas,Caribbean,False,True,,https://en.wikipedia.org/wiki/Virgin_Islands%2C_British
+BRN,BN,Brunei Darussalam,Brunei Darussalam,96,Asia,Southeast Asia,True,True,,https://en.wikipedia.org/wiki/Brunei_Darussalam
+BGR,BG,Bulgaria,Bulgaria,100,Europe,Eastern Europe,True,True,,https://en.wikipedia.org/wiki/Bulgaria
+BFA,BF,Burkina Faso,Burkina Faso,854,Africa,Western Africa,True,True,,https://en.wikipedia.org/wiki/Burkina_Faso
+BDI,BI,Burundi,Burundi,108,Africa,Eastern Africa,True,True,,https://en.wikipedia.org/wiki/Burundi
+CPV,CV,Cabo Verde,Cabo Verde,132,Africa,Western Africa,True,True,,https://en.wikipedia.org/wiki/Cabo_Verde
+KHM,KH,Cambodia,Cambodia,116,Asia,Southeast Asia,True,True,,https://en.wikipedia.org/wiki/Cambodia
+CMR,CM,Cameroon,Cameroon,120,Africa,Middle Africa,True,True,,https://en.wikipedia.org/wiki/Cameroon
+CAN,CA,Canada,Canada,124,Americas,Northern America,True,True,,https://en.wikipedia.org/wiki/Canada
+CYM,KY,Cayman Islands,Cayman Islands,136,Americas,Caribbean,False,True,,https://en.wikipedia.org/wiki/Cayman_Islands
+CAF,CF,Central African Republic,Central African Republic,140,Africa,Middle Africa,True,True,,https://en.wikipedia.org/wiki/Central_African_Republic
+TCD,TD,Chad,Chad,148,Africa,Middle Africa,True,True,,https://en.wikipedia.org/wiki/Chad
+CHL,CL,Chile,Chile,152,Americas,South America,True,True,,https://en.wikipedia.org/wiki/Chile
+CHN,CN,China,China,156,Asia,Eastern Asia,True,True,,https://en.wikipedia.org/wiki/China
+HKG,HK,"China, Hong Kong Special Administrative Region",Hong Kong,344,Asia,Eastern Asia,False,True,,https://en.wikipedia.org/wiki/Hong_Kong
+MAC,MO,"China, Macao Special Administrative Region",Macao,446,Asia,Eastern Asia,False,True,,https://en.wikipedia.org/wiki/Macao
+CXR,CX,Christmas Island,Christmas Island,162,Oceania,Australia New Zealand Indo,False,False,,https://en.wikipedia.org/wiki/Christmas_Island
+CCK,CC,Cocos (Keeling) Islands,Cocos (Keeling) Islands,166,Oceania,Australia New Zealand Indo,False,False,,https://en.wikipedia.org/wiki/Cocos_%28Keeling%29_Islands
+COL,CO,Colombia,Colombia,170,Americas,South America,True,True,,https://en.wikipedia.org/wiki/Colombia
+COM,KM,Comoros,Comoros,174,Africa,Eastern Africa,True,True,,https://en.wikipedia.org/wiki/Comoros
+COG,CG,Congo,Republic of the Congo,178,Africa,Middle Africa,True,True,,https://en.wikipedia.org/wiki/Republic_of_the_Congo
+COK,CK,Cook Islands,Cook Islands,184,Oceania,Polynesia,False,True,,https://en.wikipedia.org/wiki/Cook_Islands
+CRI,CR,Costa Rica,Costa Rica,188,Americas,Central America,True,True,,https://en.wikipedia.org/wiki/Costa_Rica
+HRV,HR,Croatia,Croatia,191,Europe,Southern Europe,True,True,,https://en.wikipedia.org/wiki/Croatia
+CUB,CU,Cuba,Cuba,192,Americas,Caribbean,True,True,,https://en.wikipedia.org/wiki/Cuba
+CYP,CY,Cyprus,Cyprus,196,Asia,Western Asia,True,True,,https://en.wikipedia.org/wiki/Cyprus
+CZE,CZ,Czechia,Czechia,203,Europe,Eastern Europe,True,True,,https://en.wikipedia.org/wiki/Czechia
+CIV,CI,Côte d’Ivoire,Ivory Coast,384,Africa,Western Africa,True,True,,https://en.wikipedia.org/wiki/Ivory_Coast
+PRK,KP,Democratic People's Republic of Korea,North Korea,408,Asia,Eastern Asia,True,True,,https://en.wikipedia.org/wiki/North_Korea
+COD,CD,Democratic Republic of the Congo,Democratic Republic of the Congo,180,Africa,Middle Africa,True,True,,https://en.wikipedia.org/wiki/Democratic_Republic_of_the_Congo
+DNK,DK,Denmark,Denmark,208,Europe,Northern Europe,True,True,,https://en.wikipedia.org/wiki/Denmark
+DJI,DJ,Djibouti,Djibouti,262,Africa,Eastern Africa,True,True,,https://en.wikipedia.org/wiki/Djibouti
+DMA,DM,Dominica,Dominica,212,Americas,Caribbean,True,True,,https://en.wikipedia.org/wiki/Dominica
+DOM,DO,Dominican Republic,Dominican Republic,214,Americas,Caribbean,True,True,,https://en.wikipedia.org/wiki/Dominican_Republic
+ECU,EC,Ecuador,Ecuador,218,Americas,South America,True,True,,https://en.wikipedia.org/wiki/Ecuador
+EGY,EG,Egypt,Egypt,818,Africa,Northern Africa,True,True,,https://en.wikipedia.org/wiki/Egypt
+SLV,SV,El Salvador,El Salvador,222,Americas,Central America,True,True,,https://en.wikipedia.org/wiki/El_Salvador
+GNQ,GQ,Equatorial Guinea,Equatorial Guinea,226,Africa,Middle Africa,True,True,,https://en.wikipedia.org/wiki/Equatorial_Guinea
+ERI,ER,Eritrea,Eritrea,232,Africa,Eastern Africa,True,True,,https://en.wikipedia.org/wiki/Eritrea
+EST,EE,Estonia,Estonia,233,Europe,Northern Europe,True,True,,https://en.wikipedia.org/wiki/Estonia
+SWZ,SZ,Eswatini,Eswatini,748,Africa,Southern Africa,True,True,,https://en.wikipedia.org/wiki/Eswatini
+ETH,ET,Ethiopia,Ethiopia,231,Africa,Eastern Africa,True,True,,https://en.wikipedia.org/wiki/Ethiopia
+FLK,FK,Falkland Islands (Malvinas),Falkland Islands (Malvinas),238,Americas,South America,False,True,,https://en.wikipedia.org/wiki/Falkland_Islands_%28Malvinas%29
+FRO,FO,Faroe Islands,Faroe Islands,234,Europe,Northern Europe,False,True,,https://en.wikipedia.org/wiki/Faroe_Islands
+FJI,FJ,Fiji,Fiji,242,Oceania,Melanesia,True,True,,https://en.wikipedia.org/wiki/Fiji
+FIN,FI,Finland,Finland,246,Europe,Northern Europe,True,True,,https://en.wikipedia.org/wiki/Finland
+FRA,FR,France,France,250,Europe,Western Europe,True,True,,https://en.wikipedia.org/wiki/France
+GUF,GF,French Guiana,French Guiana,254,Americas,South America,False,False,,https://en.wikipedia.org/wiki/French_Guiana
+ATF,TF,French Southern Territories,French Southern Territories,260,Africa,Eastern Africa,False,True,,https://en.wikipedia.org/wiki/French_Southern_Territories
+GAB,GA,Gabon,Gabon,266,Africa,Middle Africa,True,True,,https://en.wikipedia.org/wiki/Gabon
+GMB,GM,Gambia,Gambia,270,Africa,Western Africa,True,True,,https://en.wikipedia.org/wiki/Gambia
+GEO,GE,Georgia,Georgia,268,Asia,Western Asia,True,True,,https://en.wikipedia.org/wiki/Georgia
+DEU,DE,Germany,Germany,276,Europe,Western Europe,True,True,,https://en.wikipedia.org/wiki/Germany
+GHA,GH,Ghana,Ghana,288,Africa,Western Africa,True,True,,https://en.wikipedia.org/wiki/Ghana
+GIB,GI,Gibraltar,Gibraltar,292,Europe,Southern Europe,False,False,,https://en.wikipedia.org/wiki/Gibraltar
+GRC,GR,Greece,Greece,300,Europe,Southern Europe,True,True,,https://en.wikipedia.org/wiki/Greece
+GRD,GD,Grenada,Grenada,308,Americas,Caribbean,True,True,,https://en.wikipedia.org/wiki/Grenada
+GLP,GP,Guadeloupe,Guadeloupe,312,Americas,Caribbean,False,False,,https://en.wikipedia.org/wiki/Guadeloupe
+GTM,GT,Guatemala,Guatemala,320,Americas,Central America,True,True,,https://en.wikipedia.org/wiki/Guatemala
+GGY,GG,Guernsey,Guernsey,831,Europe,Northern Europe,False,True,,https://en.wikipedia.org/wiki/Guernsey
+GIN,GN,Guinea,Guinea,324,Africa,Western Africa,True,True,,https://en.wikipedia.org/wiki/Guinea
+GNB,GW,Guinea-Bissau,Guinea-Bissau,624,Africa,Western Africa,True,True,,https://en.wikipedia.org/wiki/Guinea-Bissau
+GUY,GY,Guyana,Guyana,328,Americas,South America,True,True,,https://en.wikipedia.org/wiki/Guyana
+HTI,HT,Haiti,Haiti,332,Americas,Caribbean,True,True,,https://en.wikipedia.org/wiki/Haiti
+HMD,HM,Heard Island and McDonald Islands,Heard Island and McDonald Islands,334,Oceania,Australia New Zealand Indo,False,True,,https://en.wikipedia.org/wiki/Heard_Island_and_McDonald_Islands
+VAT,VA,Holy See,Vatican City,336,Europe,Southern Europe,False,True,,https://en.wikipedia.org/wiki/Vatican_City
+HND,HN,Honduras,Honduras,340,Americas,Central America,True,True,,https://en.wikipedia.org/wiki/Honduras
+HUN,HU,Hungary,Hungary,348,Europe,Eastern Europe,True,True,,https://en.wikipedia.org/wiki/Hungary
+ISL,IS,Iceland,Iceland,352,Europe,Northern Europe,True,True,,https://en.wikipedia.org/wiki/Iceland
+IND,IN,India,India,356,Asia,Southern Asia,True,True,,https://en.wikipedia.org/wiki/India
+IDN,ID,Indonesia,Indonesia,360,Asia,Australia New Zealand Indo,True,True,,https://en.wikipedia.org/wiki/Indonesia
+IRN,IR,Iran (Islamic Republic of),Iran,364,Asia,Southern Asia,True,True,,https://en.wikipedia.org/wiki/Iran
+IRQ,IQ,Iraq,Iraq,368,Asia,Western Asia,True,True,,https://en.wikipedia.org/wiki/Iraq
+IRL,IE,Ireland,Ireland,372,Europe,Northern Europe,True,True,,https://en.wikipedia.org/wiki/Ireland
+IMN,IM,Isle of Man,Isle of Man,833,Europe,Northern Europe,False,True,,https://en.wikipedia.org/wiki/Isle_of_Man
+ISR,IL,Israel,Israel,376,Asia,Western Asia,True,True,,https://en.wikipedia.org/wiki/Israel
+ITA,IT,Italy,Italy,380,Europe,Southern Europe,True,True,,https://en.wikipedia.org/wiki/Italy
+JAM,JM,Jamaica,Jamaica,388,Americas,Caribbean,True,True,,https://en.wikipedia.org/wiki/Jamaica
+JPN,JP,Japan,Japan,392,Asia,Eastern Asia,True,True,,https://en.wikipedia.org/wiki/Japan
+JEY,JE,Jersey,Jersey,832,Europe,Northern Europe,False,True,,https://en.wikipedia.org/wiki/Jersey
+JOR,JO,Jordan,Jordan,400,Asia,Western Asia,True,True,,https://en.wikipedia.org/wiki/Jordan
+KAZ,KZ,Kazakhstan,Kazakhstan,398,Asia,Central Asia,True,True,,https://en.wikipedia.org/wiki/Kazakhstan
+KEN,KE,Kenya,Kenya,404,Africa,Eastern Africa,True,True,,https://en.wikipedia.org/wiki/Kenya
+KIR,KI,Kiribati,Kiribati,296,Oceania,Micronesia,True,True,,https://en.wikipedia.org/wiki/Kiribati
+KWT,KW,Kuwait,Kuwait,414,Asia,Western Asia,True,True,,https://en.wikipedia.org/wiki/Kuwait
+KGZ,KG,Kyrgyzstan,Kyrgyzstan,417,Asia,Central Asia,True,True,,https://en.wikipedia.org/wiki/Kyrgyzstan
+LAO,LA,Lao People's Democratic Republic,Laos,418,Asia,Southeast Asia,True,True,,https://en.wikipedia.org/wiki/Laos
+LVA,LV,Latvia,Latvia,428,Europe,Northern Europe,True,True,,https://en.wikipedia.org/wiki/Latvia
+LBN,LB,Lebanon,Lebanon,422,Asia,Western Asia,True,True,,https://en.wikipedia.org/wiki/Lebanon
+LSO,LS,Lesotho,Lesotho,426,Africa,Southern Africa,True,True,,https://en.wikipedia.org/wiki/Lesotho
+LBR,LR,Liberia,Liberia,430,Africa,Western Africa,True,True,,https://en.wikipedia.org/wiki/Liberia
+LBY,LY,Libya,Libya,434,Africa,Northern Africa,True,True,,https://en.wikipedia.org/wiki/Libya
+LIE,LI,Liechtenstein,Liechtenstein,438,Europe,Western Europe,True,True,,https://en.wikipedia.org/wiki/Liechtenstein
+LTU,LT,Lithuania,Lithuania,440,Europe,Northern Europe,True,True,,https://en.wikipedia.org/wiki/Lithuania
+LUX,LU,Luxembourg,Luxembourg,442,Europe,Western Europe,True,True,,https://en.wikipedia.org/wiki/Luxembourg
+MDG,MG,Madagascar,Madagascar,450,Africa,Eastern Africa,True,True,,https://en.wikipedia.org/wiki/Madagascar
+MWI,MW,Malawi,Malawi,454,Africa,Eastern Africa,True,True,,https://en.wikipedia.org/wiki/Malawi
+MYS,MY,Malaysia,Malaysia,458,Asia,Southeast Asia,True,True,,https://en.wikipedia.org/wiki/Malaysia
+MDV,MV,Maldives,Maldives,462,Asia,Southern Asia,True,True,,https://en.wikipedia.org/wiki/Maldives
+MLI,ML,Mali,Mali,466,Africa,Western Africa,True,True,,https://en.wikipedia.org/wiki/Mali
+MLT,MT,Malta,Malta,470,Europe,Southern Europe,True,True,,https://en.wikipedia.org/wiki/Malta
+MHL,MH,Marshall Islands,Marshall Islands,584,Oceania,Micronesia,True,True,,https://en.wikipedia.org/wiki/Marshall_Islands
+MTQ,MQ,Martinique,Martinique,474,Americas,Caribbean,False,False,,https://en.wikipedia.org/wiki/Martinique
+MRT,MR,Mauritania,Mauritania,478,Africa,Western Africa,True,True,,https://en.wikipedia.org/wiki/Mauritania
+MUS,MU,Mauritius,Mauritius,480,Africa,Eastern Africa,True,True,,https://en.wikipedia.org/wiki/Mauritius
+MYT,YT,Mayotte,Mayotte,175,Africa,Eastern Africa,False,False,,https://en.wikipedia.org/wiki/Mayotte
+MEX,MX,Mexico,Mexico,484,Americas,Northern America,True,True,,https://en.wikipedia.org/wiki/Mexico
+FSM,FM,Micronesia (Federated States of),"Micronesia, Federated States of",583,Oceania,Micronesia,True,True,,https://en.wikipedia.org/wiki/Micronesia%2C_Federated_States_of
+MCO,MC,Monaco,Monaco,492,Europe,Western Europe,True,True,,https://en.wikipedia.org/wiki/Monaco
+MNG,MN,Mongolia,Mongolia,496,Asia,Eastern Asia,True,True,,https://en.wikipedia.org/wiki/Mongolia
+MNE,ME,Montenegro,Montenegro,499,Europe,Southern Europe,True,True,,https://en.wikipedia.org/wiki/Montenegro
+MSR,MS,Montserrat,Montserrat,500,Americas,Caribbean,False,True,,https://en.wikipedia.org/wiki/Montserrat
+MAR,MA,Morocco,Morocco,504,Africa,Northern Africa,True,True,,https://en.wikipedia.org/wiki/Morocco
+MOZ,MZ,Mozambique,Mozambique,508,Africa,Eastern Africa,True,True,,https://en.wikipedia.org/wiki/Mozambique
+MMR,MM,Myanmar,Myanmar,104,Asia,Southeast Asia,True,True,,https://en.wikipedia.org/wiki/Myanmar
+NAM,NA,Namibia,Namibia,516,Africa,Southern Africa,True,True,,https://en.wikipedia.org/wiki/Namibia
+NRU,NR,Nauru,Nauru,520,Oceania,Micronesia,True,True,,https://en.wikipedia.org/wiki/Nauru
+NPL,NP,Nepal,Nepal,524,Asia,Southern Asia,True,True,,https://en.wikipedia.org/wiki/Nepal
+NLD,NL,Netherlands,Netherlands,528,Europe,Western Europe,True,True,,https://en.wikipedia.org/wiki/Netherlands
+NZL,NZ,New Zealand,New Zealand,554,Oceania,Australia New Zealand Indo,True,True,,https://en.wikipedia.org/wiki/New_Zealand
+NIC,NI,Nicaragua,Nicaragua,558,Americas,Central America,True,True,,https://en.wikipedia.org/wiki/Nicaragua
+NER,NE,Niger,Niger,562,Africa,Western Africa,True,True,,https://en.wikipedia.org/wiki/Niger
+NGA,NG,Nigeria,Nigeria,566,Africa,Western Africa,True,True,,https://en.wikipedia.org/wiki/Nigeria
+NIU,NU,Niue,Niue,570,Oceania,Polynesia,False,True,,https://en.wikipedia.org/wiki/Niue
+NFK,NF,Norfolk Island,Norfolk Island,574,Oceania,Australia New Zealand Indo,False,True,,https://en.wikipedia.org/wiki/Norfolk_Island
+MKD,MK,North Macedonia,North Macedonia,807,Europe,Southern Europe,True,True,,https://en.wikipedia.org/wiki/North_Macedonia
+MNP,MP,Northern Mariana Islands,Northern Mariana Islands,580,Oceania,Micronesia,False,True,,https://en.wikipedia.org/wiki/Northern_Mariana_Islands
+NOR,NO,Norway,Norway,578,Europe,Northern Europe,True,True,,https://en.wikipedia.org/wiki/Norway
+OMN,OM,Oman,Oman,512,Asia,Western Asia,True,True,,https://en.wikipedia.org/wiki/Oman
+PAK,PK,Pakistan,Pakistan,586,Asia,Southern Asia,True,True,,https://en.wikipedia.org/wiki/Pakistan
+PLW,PW,Palau,Palau,585,Oceania,Micronesia,True,True,,https://en.wikipedia.org/wiki/Palau
+PAN,PA,Panama,Panama,591,Americas,Central America,True,True,,https://en.wikipedia.org/wiki/Panama
+PNG,PG,Papua New Guinea,Papua New Guinea,598,Oceania,Melanesia,True,True,,https://en.wikipedia.org/wiki/Papua_New_Guinea
+PRY,PY,Paraguay,Paraguay,600,Americas,South America,True,True,,https://en.wikipedia.org/wiki/Paraguay
+PER,PE,Peru,Peru,604,Americas,South America,True,True,,https://en.wikipedia.org/wiki/Peru
+PHL,PH,Philippines,Philippines,608,Asia,Southeast Asia,True,True,,https://en.wikipedia.org/wiki/Philippines
+PCN,PN,Pitcairn,Pitcairn,612,Oceania,Polynesia,False,True,,https://en.wikipedia.org/wiki/Pitcairn
+POL,PL,Poland,Poland,616,Europe,Eastern Europe,True,True,,https://en.wikipedia.org/wiki/Poland
+PRT,PT,Portugal,Portugal,620,Europe,Southern Europe,True,True,,https://en.wikipedia.org/wiki/Portugal
+QAT,QA,Qatar,Qatar,634,Asia,Western Asia,True,True,,https://en.wikipedia.org/wiki/Qatar
+KOR,KR,Republic of Korea,South Korea,410,Asia,Eastern Asia,True,True,,https://en.wikipedia.org/wiki/South_Korea
+MDA,MD,Republic of Moldova,Moldova,498,Europe,Eastern Europe,True,True,,https://en.wikipedia.org/wiki/Moldova
+ROU,RO,Romania,Romania,642,Europe,Eastern Europe,True,True,,https://en.wikipedia.org/wiki/Romania
+RUS,RU,Russian Federation,Russia,643,Europe,Eastern Europe,True,True,,https://en.wikipedia.org/wiki/Russia
+RWA,RW,Rwanda,Rwanda,646,Africa,Eastern Africa,True,True,,https://en.wikipedia.org/wiki/Rwanda
+REU,RE,Réunion,Réunion,638,Africa,Eastern Africa,False,False,,https://en.wikipedia.org/wiki/R%C3%A9union
+BLM,BL,Saint Barthélemy,Saint Barthélemy,652,Americas,Caribbean,False,True,,https://en.wikipedia.org/wiki/Saint_Barth%C3%A9lemy
+SHN,SH,Saint Helena,"Saint Helena, Ascension and Tristan da Cunha",654,Africa,Western Africa,False,True,,https://en.wikipedia.org/wiki/Saint_Helena%2C_Ascension_and_Tristan_da_Cunha
+KNA,KN,Saint Kitts and Nevis,Saint Kitts and Nevis,659,Americas,Caribbean,True,True,,https://en.wikipedia.org/wiki/Saint_Kitts_and_Nevis
+LCA,LC,Saint Lucia,Saint Lucia,662,Americas,Caribbean,True,True,,https://en.wikipedia.org/wiki/Saint_Lucia
+MAF,MF,Saint Martin (French Part),Saint Martin (French part),663,Americas,Caribbean,False,True,,https://en.wikipedia.org/wiki/Saint_Martin_%28French_part%29
+SPM,PM,Saint Pierre and Miquelon,Saint Pierre and Miquelon,666,Americas,Northern America,False,True,,https://en.wikipedia.org/wiki/Saint_Pierre_and_Miquelon
+VCT,VC,Saint Vincent and the Grenadines,Saint Vincent and the Grenadines,670,Americas,Caribbean,True,True,,https://en.wikipedia.org/wiki/Saint_Vincent_and_the_Grenadines
+WSM,WS,Samoa,Samoa,882,Oceania,Polynesia,True,True,,https://en.wikipedia.org/wiki/Samoa
+SMR,SM,San Marino,San Marino,674,Europe,Southern Europe,True,True,,https://en.wikipedia.org/wiki/San_Marino
+STP,ST,Sao Tome and Principe,Sao Tome and Principe,678,Africa,Middle Africa,True,True,,https://en.wikipedia.org/wiki/Sao_Tome_and_Principe
+SAU,SA,Saudi Arabia,Saudi Arabia,682,Asia,Western Asia,True,True,,https://en.wikipedia.org/wiki/Saudi_Arabia
+SEN,SN,Senegal,Senegal,686,Africa,Western Africa,True,True,,https://en.wikipedia.org/wiki/Senegal
+SRB,RS,Serbia,Serbia,688,Europe,Southern Europe,True,True,,https://en.wikipedia.org/wiki/Serbia
+SYC,SC,Seychelles,Seychelles,690,Africa,Eastern Africa,True,True,,https://en.wikipedia.org/wiki/Seychelles
+SLE,SL,Sierra Leone,Sierra Leone,694,Africa,Western Africa,True,True,,https://en.wikipedia.org/wiki/Sierra_Leone
+SGP,SG,Singapore,Singapore,702,Asia,Southeast Asia,True,True,,https://en.wikipedia.org/wiki/Singapore
+SXM,SX,Sint Maarten (Dutch part),Sint Maarten (Dutch part),534,Americas,Caribbean,False,True,,https://en.wikipedia.org/wiki/Sint_Maarten_%28Dutch_part%29
+SVK,SK,Slovakia,Slovakia,703,Europe,Eastern Europe,True,True,,https://en.wikipedia.org/wiki/Slovakia
+SVN,SI,Slovenia,Slovenia,705,Europe,Southern Europe,True,True,,https://en.wikipedia.org/wiki/Slovenia
+SLB,SB,Solomon Islands,Solomon Islands,90,Oceania,Melanesia,True,True,,https://en.wikipedia.org/wiki/Solomon_Islands
+SOM,SO,Somalia,Somalia,706,Africa,Eastern Africa,True,True,,https://en.wikipedia.org/wiki/Somalia
+ZAF,ZA,South Africa,South Africa,710,Africa,Southern Africa,True,True,,https://en.wikipedia.org/wiki/South_Africa
+SGS,GS,South Georgia and the South Sandwich Islands,South Georgia and the South Sandwich Islands,239,Americas,South America,False,True,,https://en.wikipedia.org/wiki/South_Georgia_and_the_South_Sandwich_Islands
+SSD,SS,South Sudan,South Sudan,728,Africa,Eastern Africa,True,True,,https://en.wikipedia.org/wiki/South_Sudan
+ESP,ES,Spain,Spain,724,Europe,Southern Europe,True,True,,https://en.wikipedia.org/wiki/Spain
+LKA,LK,Sri Lanka,Sri Lanka,144,Asia,Southern Asia,True,True,,https://en.wikipedia.org/wiki/Sri_Lanka
+PSE,PS,State of Palestine,Palestine,275,Asia,Western Asia,False,True,,https://en.wikipedia.org/wiki/Palestine
+SDN,SD,Sudan,Sudan,729,Africa,Northern Africa,True,True,,https://en.wikipedia.org/wiki/Sudan
+SUR,SR,Suriname,Suriname,740,Americas,South America,True,True,,https://en.wikipedia.org/wiki/Suriname
+SJM,SJ,Svalbard and Jan Mayen Islands,Svalbard and Jan Mayen,744,Europe,Northern Europe,False,False,,https://en.wikipedia.org/wiki/Svalbard_and_Jan_Mayen
+SWE,SE,Sweden,Sweden,752,Europe,Northern Europe,True,True,,https://en.wikipedia.org/wiki/Sweden
+CHE,CH,Switzerland,Switzerland,756,Europe,Western Europe,True,True,,https://en.wikipedia.org/wiki/Switzerland
+SYR,SY,Syrian Arab Republic,Syria,760,Asia,Western Asia,True,True,,https://en.wikipedia.org/wiki/Syria
+TJK,TJ,Tajikistan,Tajikistan,762,Asia,Central Asia,True,True,,https://en.wikipedia.org/wiki/Tajikistan
+TWN,TW,Taiwan,Taiwan,158,Asia,Eastern Asia,True,True,,https://en.wikipedia.org/wiki/Taiwan
+THA,TH,Thailand,Thailand,764,Asia,Southeast Asia,True,True,,https://en.wikipedia.org/wiki/Thailand
+TLS,TL,Timor-Leste,Timor-Leste,626,Asia,Australia New Zealand Indo,True,True,,https://en.wikipedia.org/wiki/Timor-Leste
+TGO,TG,Togo,Togo,768,Africa,Western Africa,True,True,,https://en.wikipedia.org/wiki/Togo
+TKL,TK,Tokelau,Tokelau,772,Oceania,Polynesia,False,False,,https://en.wikipedia.org/wiki/Tokelau
+TON,TO,Tonga,Tonga,776,Oceania,Polynesia,True,True,,https://en.wikipedia.org/wiki/Tonga
+TTO,TT,Trinidad and Tobago,Trinidad and Tobago,780,Americas,Caribbean,True,True,,https://en.wikipedia.org/wiki/Trinidad_and_Tobago
+TUN,TN,Tunisia,Tunisia,788,Africa,Northern Africa,True,True,,https://en.wikipedia.org/wiki/Tunisia
+TKM,TM,Turkmenistan,Turkmenistan,795,Asia,Central Asia,True,True,,https://en.wikipedia.org/wiki/Turkmenistan
+TCA,TC,Turks and Caicos Islands,Turks and Caicos Islands,796,Americas,Caribbean,False,True,,https://en.wikipedia.org/wiki/Turks_and_Caicos_Islands
+TUV,TV,Tuvalu,Tuvalu,798,Oceania,Polynesia,True,False,,https://en.wikipedia.org/wiki/Tuvalu
+TUR,TR,Türkiye,Türkiye,792,Asia,Western Asia,True,True,,https://en.wikipedia.org/wiki/T%C3%BCrkiye
+UGA,UG,Uganda,Uganda,800,Africa,Eastern Africa,True,True,,https://en.wikipedia.org/wiki/Uganda
+UKR,UA,Ukraine,Ukraine,804,Europe,Eastern Europe,True,True,,https://en.wikipedia.org/wiki/Ukraine
+ARE,AE,United Arab Emirates,United Arab Emirates,784,Asia,Western Asia,True,True,,https://en.wikipedia.org/wiki/United_Arab_Emirates
+GBR,GB,United Kingdom of Great Britain and Northern Ireland,United Kingdom,826,Europe,Northern Europe,True,True,,https://en.wikipedia.org/wiki/United_Kingdom
+TZA,TZ,United Republic of Tanzania,Tanzania,834,Africa,Eastern Africa,True,True,,https://en.wikipedia.org/wiki/Tanzania
+UMI,UM,United States Minor Outlying Islands,United States Minor Outlying Islands,581,Oceania,Micronesia,False,False,,https://en.wikipedia.org/wiki/United_States_Minor_Outlying_Islands
+VIR,VI,United States Virgin Islands,"Virgin Islands, U.S.",850,Americas,Caribbean,False,True,,https://en.wikipedia.org/wiki/Virgin_Islands%2C_U.S.
+USA,US,United States of America,United States,840,Americas,Northern America,True,True,,https://en.wikipedia.org/wiki/United_States
+URY,UY,Uruguay,Uruguay,858,Americas,South America,True,True,,https://en.wikipedia.org/wiki/Uruguay
+UZB,UZ,Uzbekistan,Uzbekistan,860,Asia,Central Asia,True,True,,https://en.wikipedia.org/wiki/Uzbekistan
+VUT,VU,Vanuatu,Vanuatu,548,Oceania,Melanesia,True,True,,https://en.wikipedia.org/wiki/Vanuatu
+VEN,VE,Venezuela (Bolivarian Republic of),Venezuela,862,Americas,South America,True,True,,https://en.wikipedia.org/wiki/Venezuela
+VNM,VN,Viet Nam,Vietnam,704,Asia,Southeast Asia,True,True,,https://en.wikipedia.org/wiki/Vietnam
+WLF,WF,Wallis and Futuna Islands,Wallis and Futuna,876,Oceania,Polynesia,False,True,,https://en.wikipedia.org/wiki/Wallis_and_Futuna
+ESH,EH,Western Sahara,Western Sahara,732,Africa,Northern Africa,False,True,,https://en.wikipedia.org/wiki/Western_Sahara
+YEM,YE,Yemen,Yemen,887,Asia,Western Asia,True,True,,https://en.wikipedia.org/wiki/Yemen
+ZMB,ZM,Zambia,Zambia,894,Africa,Eastern Africa,True,True,,https://en.wikipedia.org/wiki/Zambia
+ZWE,ZW,Zimbabwe,Zimbabwe,716,Africa,Eastern Africa,True,True,,https://en.wikipedia.org/wiki/Zimbabwe
+ALA,AX,Åland Islands,Åland Islands,248,Europe,Northern Europe,False,True,,https://en.wikipedia.org/wiki/%C3%85land_Islands
+ABW,AW,Aruba,Aruba,533,Americas,Caribbean,False,True,NLD,https://en.wikipedia.org/wiki/Aruba
+CUW,CW,Curaçao,Curaçao,531,Americas,Caribbean,False,True,NLD,https://en.wikipedia.org/wiki/Cura%C3%A7ao
+PYF,PF,French Polynesia,French Polynesia,258,Oceania,Polynesia,False,True,FRA,https://en.wikipedia.org/wiki/French_Polynesia
+GRL,GL,Greenland,Greenland,304,Americas,Northern America,False,True,DNK,https://en.wikipedia.org/wiki/Greenland
+GUM,GU,Guam,Guam,316,Oceania,Micronesia,False,True,USA,https://en.wikipedia.org/wiki/Guam
+NCL,NC,New Caledonia,New Caledonia,540,Oceania,Melanesia,False,True,FRA,https://en.wikipedia.org/wiki/New_Caledonia
+PRI,PR,Puerto Rico,Puerto Rico,630,Americas,Caribbean,False,True,USA,https://en.wikipedia.org/wiki/Puerto_Rico

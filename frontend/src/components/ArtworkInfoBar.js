@@ -313,17 +313,18 @@ const ArtworkInfoBar = ({
 
             // Custom scrollbar styling - wider and more visible
             '&::-webkit-scrollbar': {
-              width: '12px',
+              width: '14px',
             },
             '&::-webkit-scrollbar-track': {
-              backgroundColor: '#f1f1f1',
-              borderRadius: '6px',
+              backgroundColor: '#e0e0e0',
+              borderRadius: '7px',
             },
             '&::-webkit-scrollbar-thumb': {
-              backgroundColor: '#888',
-              borderRadius: '6px',
+              backgroundColor: '#666',
+              borderRadius: '7px',
+              border: '2px solid #e0e0e0',
               '&:hover': {
-                backgroundColor: '#555',
+                backgroundColor: '#444',
               },
             },
           }

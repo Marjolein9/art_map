@@ -1,11 +1,1 @@
-imsge types as title to subsectuon images not the full title which should still be Help & Setting
-icon in task bar should be a globe instead of react a[pp should say Geography]
-
-instead of Art Map Geography & Public Domain 
-Choose how you'd like to explore art from around the world to public domain images.
-add close out to welcome overlay
-
-merge quiz mode contols with game settings. describrtion below item whic is centered. next amf show me disabled in settings overlay but quiz enables and just like the one in cpntrol overkay like hints. hints off and disabled if quiz is off. 
-remove country labels tooltipes. 
-
-in quiz or explore mode show the same quiz overlay (so one image initally show more etc). the only differemt will be try agai or next for quiz mode close out for explore
+South Georgia and the South Sandwich Islands also Saint Martin French part this turns up in quiz but not on the dropdown. why is that? also guensey  same with Cook islands. Wallis and Futuna and others these countries are also misssing a zoom subregion despite being in a subregion. for example WLF,WF,Wallis and Futuna Islands,Wallis and Futuna,876,Oceania,Polynesia,False,True, but just zooma to island not polynesia subregion faroe islands. toggle so quiz counteis with images first as get true has images column with pro cessed in init datqbase and column added to countries tanble. toggle in settings overlay. default on countries with images first
