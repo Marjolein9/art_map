@@ -119,7 +119,7 @@ def get_countries():
         # Join with parent countries to get parent names for territories
         countries = execute_query('''
             SELECT c.iso3, c.iso2, c.name, c.common_name, c.m49, c.continent, c.subregion, c.is_country,
-                   c.include_in_quiz, c.parent_country_iso3,
+                   c.include_in_quiz, c.parent_country_iso3, c.wikipedia_url,
                    p.common_name as parent_common_name, p.name as parent_name
             FROM countries c
             LEFT JOIN countries p ON c.parent_country_iso3 = p.iso3
@@ -177,7 +177,7 @@ def random_country():
 
         countries = execute_query(f'''
             SELECT c.iso3, c.name, c.common_name, c.continent, c.subregion,
-                   c.parent_country_iso3,
+                   c.parent_country_iso3, c.wikipedia_url,
                    p.common_name as parent_common_name, p.name as parent_name
             FROM countries c
             LEFT JOIN countries p ON c.parent_country_iso3 = p.iso3
@@ -204,7 +204,8 @@ def random_country():
                 'subregion': selected_country['subregion'],
                 'parent_country_iso3': selected_country.get('parent_country_iso3'),
                 'parent_common_name': selected_country.get('parent_common_name'),
-                'parent_name': selected_country.get('parent_name')
+                'parent_name': selected_country.get('parent_name'),
+                'wikipedia_url': selected_country.get('wikipedia_url')
             }
         })
     except APIError:

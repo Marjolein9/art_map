@@ -53,6 +53,7 @@ import muiTheme from '../theme/muiTheme';
 const ArtworkInfoBar = ({
   countryISO,      // Country code (ISO3 format: "USA", "DEU", etc.)
   countryName,     // Human-readable country name
+  wikipediaUrl,    // Wikipedia URL for the country
   colors,          // Color scheme object (not currently used in this component)
   mode,            // Current app mode: 'quiz' or 'explore'
   answerSubmitted, // Whether user submitted an answer in quiz mode
@@ -94,19 +95,9 @@ const ArtworkInfoBar = ({
   /**
    * OVERLAY VISIBILITY EFFECT
    *
-   * Shows overlay immediately when a new country is loaded.
-   * No delay or fade-in - images handle their own animations.
+   * Hides overlay when no country is selected.
+   * Overlay visibility is controlled by the image fetch effect below.
    */
-  useEffect(() => {
-    // Guard clause: only run if we have a country
-    if (!countryISO) {
-      setOverlayVisible(false);
-      return;
-    }
-
-    // Show overlay immediately
-    setOverlayVisible(true);
-  }, [countryISO]); // Re-run when country changes
 
   /**
    * SHUFFLE HELPER FUNCTION
@@ -139,6 +130,7 @@ const ArtworkInfoBar = ({
     // Reset images if no country selected
     if (!countryISO) {
       setImagesByCollection({});
+      setOverlayVisible(false);
       return;
     }
 
@@ -170,10 +162,14 @@ const ArtworkInfoBar = ({
           initialIndex[c] = 0;  // Start at first image (index 0)
         });
         setCurrentImageIndex(initialIndex);
+
+        // Show overlay after images are loaded to prevent size changes
+        setOverlayVisible(true);
       })
       .catch(() => {
-        // If fetching fails, reset to empty
+        // If fetching fails, reset to empty and show overlay
         setImagesByCollection({});
+        setOverlayVisible(true);
       });
   }, [countryISO, mode]); // Re-run when country or mode changes
 
@@ -311,8 +307,9 @@ const ArtworkInfoBar = ({
           },
           '& .MuiDialog-paper': {
             // Fixed height to prevent layout shifts during loading
-            minHeight: '80vh',
-            maxHeight: '80vh',
+            // Smaller height when no images available
+            minHeight: totalImages === 0 ? '300px' : '80vh',
+            maxHeight: totalImages === 0 ? '300px' : '80vh',
 
             // Custom scrollbar styling - wider and more visible
             '&::-webkit-scrollbar': {
@@ -363,9 +360,19 @@ const ArtworkInfoBar = ({
               */}
               {mode === 'quiz' && answerSubmitted
                 ? isCorrectAnswer
-                  ? `Correct: ${countryName || countryISO}`    // Template literal: embeds variables in strings
-                  : `Incorrect: ${countryName || countryISO}`
-                : countryName || countryISO}
+                  ? wikipediaUrl ? (
+                      <>
+                        Correct: <a href={wikipediaUrl} target="_blank" rel="noopener noreferrer" style={{ color: '#1976d2', textDecoration: 'underline' }}>{countryName || countryISO}</a>
+                      </>
+                    ) : `Correct: ${countryName || countryISO}`
+                  : wikipediaUrl ? (
+                      <>
+                        Incorrect: <a href={wikipediaUrl} target="_blank" rel="noopener noreferrer" style={{ color: '#1976d2', textDecoration: 'underline' }}>{countryName || countryISO}</a>
+                      </>
+                    ) : `Incorrect: ${countryName || countryISO}`
+                : wikipediaUrl ? (
+                    <a href={wikipediaUrl} target="_blank" rel="noopener noreferrer" style={{ color: '#1976d2', textDecoration: 'underline' }}>{countryName || countryISO}</a>
+                  ) : (countryName || countryISO)}
               {/* Logical OR (||): Returns first truthy value (fallback pattern) */}
             </Typography>
 

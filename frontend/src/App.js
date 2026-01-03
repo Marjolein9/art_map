@@ -62,6 +62,9 @@ function App() {
   // Map of ISO3 codes to country names for quick lookups (O(1) time complexity)
   const [countryLookup, setCountryLookup] = useState({});
 
+  // Map of ISO3 codes to full country objects (includes wikipedia_url)
+  const [countryDataLookup, setCountryDataLookup] = useState({});
+
   // Tracks which country user clicked in quiz mode
   const [clickedCountry, setClickedCountry] = useState(null);
 
@@ -159,10 +162,13 @@ function App() {
          * - Matters when looking up countries frequently during rendering
          */
         const lookup = {};
+        const dataLookup = {};
         countries.forEach(country => {
           lookup[country.iso3] = getDisplayName(country);
+          dataLookup[country.iso3] = country; // Store full country object
         });
         setCountryLookup(lookup);
+        setCountryDataLookup(dataLookup);
 
         setExploreLoading(false);
         setBackendReady(true);
@@ -329,31 +335,6 @@ function App() {
     fetchNewCountry(); // From useQuiz hook - triggers new quiz question
   };
 
-  /**
-   * Handles clicks on modal backdrop (dark overlay)
-   *
-   * Interview Note: Event bubbling and stopPropagation
-   * - e.target = element that triggered the event
-   * - e.currentTarget = element with the event listener
-   * - Only close if clicked directly on backdrop (not child elements)
-   * - Prevents closing when clicking inside the info panel
-   *
-   * Optional chaining (?.) protects against null/undefined
-   * - targetCountry?.iso returns undefined if targetCountry is null
-   * - Prevents "Cannot read property 'iso' of null" error
-   */
-  const handleBackdropClick = (e) => {
-    if (e.target === e.currentTarget) {
-      if (mode === 'explore') {
-        handleCloseInfoBar();
-      } else {
-        // Quiz mode: auto-advance if correct, close if incorrect
-        const isCorrect = clickedCountry === targetCountry?.iso;
-        if (isCorrect) handleNextCountry();
-        else handleCloseInfoBar();
-      }
-    }
-  };
 
   const getCurrentCountryData = () => {
     if (mode === 'quiz') {
@@ -362,16 +343,19 @@ function App() {
         return {
           iso: isCorrect ? targetCountry?.iso : clickedCountry,
           name: isCorrect ? targetCountry?.name : countryLookup[clickedCountry],
+          wikipedia_url: isCorrect ? targetCountry?.wikipedia_url : countryDataLookup[clickedCountry]?.wikipedia_url,
         };
       }
       return {
         iso: targetCountry?.iso,
         name: targetCountry?.name,
+        wikipedia_url: targetCountry?.wikipedia_url,
       };
     } else {
       return {
         iso: exploreCountry,
         name: countryLookup[exploreCountry],
+        wikipedia_url: countryDataLookup[exploreCountry]?.wikipedia_url,
       };
     }
   };
@@ -492,22 +476,19 @@ function App() {
                 )}
 
                 {infoBarOpen && currentCountry.iso && (
-                  <div  onClick={handleBackdropClick}>
-                    <div >
-                      <ArtworkInfoBar
-                        countryISO={currentCountry.iso}
-                        countryName={currentCountry.name}
-                        colors={COLORS}
-                        mode={mode}
-                        answerSubmitted={answerSubmitted}
-                        isCorrectAnswer={clickedCountry === targetCountry?.iso}
-                        onClose={handleCloseInfoBar}
-                        onNext={handleNextCountry}
-                        selectedCollections={selectedCollections}
-                        onCollectionsChange={setSelectedCollections}
-                      />
-                    </div>
-                  </div>
+                  <ArtworkInfoBar
+                    countryISO={currentCountry.iso}
+                    countryName={currentCountry.name}
+                    wikipediaUrl={currentCountry.wikipedia_url}
+                    colors={COLORS}
+                    mode={mode}
+                    answerSubmitted={answerSubmitted}
+                    isCorrectAnswer={clickedCountry === targetCountry?.iso}
+                    onClose={handleCloseInfoBar}
+                    onNext={handleNextCountry}
+                    selectedCollections={selectedCollections}
+                    onCollectionsChange={setSelectedCollections}
+                  />
                 )}
               </div>
             </div>

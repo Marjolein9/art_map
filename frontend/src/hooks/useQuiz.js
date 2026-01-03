@@ -97,7 +97,7 @@ export const useQuiz = (backendReady, selectedRegion = null) => {
 
       // Create new country object with preferred display name
       const countryWithDisplayName = {
-        ...country,  // Spread operator: Copy all properties from country object
+        ...country,  // Spread operator: Copy all properties from country object (includes wikipedia_url)
         name: country.common_name || country.name
         // Logical OR (||): Use common_name if it exists, otherwise fallback to name
         // This overwrites the 'name' property from the spread

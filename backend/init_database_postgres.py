@@ -461,6 +461,31 @@ def load_m49_data():
     print(f"✅ Loaded {len(countries)} countries from UN M49 data")
     return countries
 
+def load_wikipedia_links():
+    """Load Wikipedia links from CSV and return a dict mapping iso3 -> wikipedia_url"""
+    print("📥 Loading Wikipedia links from countries_wikipedia_links.csv")
+
+    base_dir = os.path.dirname(os.path.abspath(__file__))
+    wiki_csv_path = os.path.join(base_dir, 'data', 'countries_wikipedia_links.csv')
+
+    wiki_links = {}
+
+    if not os.path.exists(wiki_csv_path):
+        print(f"⚠️  Warning: Wikipedia links CSV not found at {wiki_csv_path}")
+        return wiki_links
+
+    with open(wiki_csv_path, 'r', encoding='utf-8') as f:
+        reader = csv.DictReader(f)
+        for row in reader:
+            iso3 = row.get('iso3', '').strip()
+            wikipedia_url = row.get('wikipedia_url', '').strip()
+
+            if iso3 and wikipedia_url:
+                wiki_links[iso3] = wikipedia_url
+
+    print(f"✅ Loaded {len(wiki_links)} Wikipedia links")
+    return wiki_links
+
 def load_borders_data(m49_countries):
     """Load country borders and map ISO2 to ISO3 and M49 codes"""
     print(f"📥 Loading country borders from: {BORDERS_CSV_PATH}")
@@ -545,6 +570,9 @@ def init_database():
     # Load UN M49 country data
     m49_countries = load_m49_data()
 
+    # Load Wikipedia links
+    wikipedia_links = load_wikipedia_links()
+
     # Load country borders data
     borders_data = load_borders_data(m49_countries)
 
@@ -596,6 +624,7 @@ def init_database():
             is_country BOOLEAN NOT NULL DEFAULT FALSE,
             include_in_quiz BOOLEAN DEFAULT FALSE,
             parent_country_iso3 TEXT,
+            wikipedia_url TEXT,
             CONSTRAINT fk_parent_country FOREIGN KEY (parent_country_iso3) REFERENCES countries(iso3)
         )
     ''')
@@ -739,9 +768,10 @@ def init_database():
     print(f"🌍 Inserting countries (first pass - parent countries)...")
     parent_countries = [c for c in m49_countries if c['parent_country_iso3'] is None]
     for country in parent_countries:
+        wikipedia_url = wikipedia_links.get(country['iso3'])
         cursor.execute('''
-            INSERT INTO countries (iso3, iso2, name, common_name, m49, continent, subregion, is_country, include_in_quiz, parent_country_iso3)
-            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+            INSERT INTO countries (iso3, iso2, name, common_name, m49, continent, subregion, is_country, include_in_quiz, parent_country_iso3, wikipedia_url)
+            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
         ''', (
             country['iso3'],
             country['iso2'],
@@ -752,7 +782,8 @@ def init_database():
             country['subregion'],
             country['is_country'],
             country['include_in_quiz'],
-            country['parent_country_iso3']
+            country['parent_country_iso3'],
+            wikipedia_url
         ))
     print(f"✅ Inserted {len(parent_countries)} parent countries")
 
@@ -760,9 +791,10 @@ def init_database():
     print(f"🌍 Inserting territories (second pass - with parent references)...")
     territories = [c for c in m49_countries if c['parent_country_iso3'] is not None]
     for country in territories:
+        wikipedia_url = wikipedia_links.get(country['iso3'])
         cursor.execute('''
-            INSERT INTO countries (iso3, iso2, name, common_name, m49, continent, subregion, is_country, include_in_quiz, parent_country_iso3)
-            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+            INSERT INTO countries (iso3, iso2, name, common_name, m49, continent, subregion, is_country, include_in_quiz, parent_country_iso3, wikipedia_url)
+            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
         ''', (
             country['iso3'],
             country['iso2'],
@@ -773,7 +805,8 @@ def init_database():
             country['subregion'],
             country['is_country'],
             country['include_in_quiz'],
-            country['parent_country_iso3']
+            country['parent_country_iso3'],
+            wikipedia_url
         ))
     print(f"✅ Inserted {len(territories)} territories")
     print(f"✅ Total inserted: {len(m49_countries)} countries")
