@@ -392,9 +392,9 @@ const QuizImageDisplay = ({ imagesByCollection, countryName, countryISO, onShowA
             {/* Map Box - Load pre-generated SVG from backend */}
             <Box sx={{
               position: 'relative',
-              width: { xs: '100%', sm: 250 },
-              maxWidth: 250,
-              height: 250,
+              width: { xs: '100%', sm: 180 },
+              maxWidth: 180,
+              height: 130,
               overflow: 'hidden',
               borderRadius: 1
             }}>
@@ -484,7 +484,7 @@ const QuizImageDisplay = ({ imagesByCollection, countryName, countryISO, onShowA
                 display: 'flex',
                 justifyContent: 'center',
                 mb: 2,
-                maxHeight: '400px',
+                maxHeight: '600px',
                 overflow: 'hidden',
               }}
             >
@@ -493,15 +493,15 @@ const QuizImageDisplay = ({ imagesByCollection, countryName, countryISO, onShowA
                   href={getImageLinkUrl()}
                   target="_blank"
                   rel="noopener noreferrer"
-                  sx={{ display: 'flex', justifyContent: 'center' }}
+                  sx={{ display: 'flex', justifyContent: 'center', width: '100%' }}
                 >
                   <img
                     src={imageUrl}
                     alt={randomImage.title || randomImage.description || 'Artwork'}
                     style={{
-                      maxWidth: '100%',
+                      width: '100%',
                       height: 'auto',
-                      maxHeight: '400px',
+                      maxHeight: '600px',
                       objectFit: 'contain',
                       borderRadius: '4px',
                       cursor: 'pointer',
@@ -517,9 +517,9 @@ const QuizImageDisplay = ({ imagesByCollection, countryName, countryISO, onShowA
                   src={imageUrl}
                   alt={randomImage.title || randomImage.description || 'Artwork'}
                   style={{
-                    maxWidth: '100%',
+                    width: '100%',
                     height: 'auto',
-                    maxHeight: '400px',
+                    maxHeight: '600px',
                     objectFit: 'contain',
                     borderRadius: '4px',
                   }}

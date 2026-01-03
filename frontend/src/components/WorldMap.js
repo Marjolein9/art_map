@@ -504,19 +504,23 @@ const WorldMap = ({
     if (mode === 'quiz' && onManualCountrySelect) {
       onManualCountrySelect(selectedCountry);
     } else if (mode === 'explore') {
-      // In explore mode, zoom to the country's subregion
+      // In explore mode, zoom to the country's center (like "Show" button)
       setExploreSelectedCountry(iso3);
 
-      // Get the subregion view
-      const subregion = selectedCountry.subregion;
-      const targetView = REGION_VIEWS[subregion] || REGION_VIEWS['default'];
+      // Find the country feature in our data
+      const targetFeature = countries.features.find(f => getCountryIsoCode(f) === iso3);
+      if (!targetFeature) return;
 
-      // Zoom to the subregion
+      // Calculate center of the country
+      const centroid = calculateCentroid(targetFeature.geometry.coordinates);
+      if (!centroid) return;
+
+      // Zoom to country's center (same as "Show" button)
       if (globeEl.current) {
         globeEl.current.pointOfView({
-          lat: targetView.lat,
-          lng: targetView.lng,
-          altitude: targetView.altitude
+          lat: centroid.lat,
+          lng: centroid.lng,
+          altitude: 1.0  // Medium zoom
         }, 1000);
       }
     }
@@ -577,8 +581,21 @@ const WorldMap = ({
       });
     }
 
+    // Layer 4: Explore mode selection (highlights the selected country in explore mode)
+    if (mode === 'explore' && exploreSelectedCountry) {
+      countryPaths.forEach(path => {
+        const iso3 = getCountryIsoCode(path);
+        if (iso3 === exploreSelectedCountry) paths.push({
+          ...path,
+          isHintOverlay: false,
+          isShowMeOverlay: true,  // Use same highlight as "Show Me"
+          _updateKey: timestamp
+        });
+      });
+    }
+
     return paths;
-  }, [countryPaths, activeHints, showMeActivated, targetCountry]);
+  }, [countryPaths, activeHints, showMeActivated, targetCountry, mode, exploreSelectedCountry]);
   // Only recalculate when these dependencies change
 
   /**
@@ -739,7 +756,7 @@ const WorldMap = ({
                   )
                   .map(c => (
                     <MenuItem key={c.iso3} value={c.iso3}>
-                      {getDisplayName(c)} {c.subregion && `(${c.subregion})`}
+                      {getDisplayName(c)}
                     </MenuItem>
                   ))}
               </Select>
@@ -749,20 +766,22 @@ const WorldMap = ({
                 </Typography>
               )}
 
-              {/* Settings Button - opens settings/help overlay */}
-              <IconButton
-                onClick={() => setShowWelcome(true)}
-                title="Settings & Help"
-                sx={{
-                  padding: '4px',
-                  color: 'var(--text-color)',
-                  '&:hover': {
-                    backgroundColor: 'transparent',
-                  }
-                }}
-              >
-                <SettingsIcon fontSize="small" />
-              </IconButton>
+              {/* Settings Button - shows in explore mode next to dropdown */}
+              {mode !== 'quiz' && (
+                <IconButton
+                  onClick={() => setShowWelcome(true)}
+                  title="Settings & Help"
+                  sx={{
+                    padding: '4px',
+                    color: 'var(--text-color)',
+                    '&:hover': {
+                      backgroundColor: 'transparent',
+                    }
+                  }}
+                >
+                  <SettingsIcon fontSize="small" />
+                </IconButton>
+              )}
             </Box>
           </div>
 
