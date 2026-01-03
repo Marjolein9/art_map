@@ -523,6 +523,11 @@ const WorldMap = ({
           altitude: 1.0  // Medium zoom
         }, 1000);
       }
+
+      // Trigger the country click to show artwork overlay after 3 seconds
+      setTimeout(() => {
+        onCountryClick(iso3);
+      }, 3000);
     }
   };
 
@@ -723,7 +728,7 @@ const WorldMap = ({
         }}>
           {/* Title area - shows dropdown in both quiz and explore modes */}
           <div className="overlay-title">
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, flexWrap: 'wrap' }}>
+            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 1, flexWrap: 'wrap' }}>
               <Select
                 value={
                   mode === 'quiz'
@@ -781,6 +786,13 @@ const WorldMap = ({
                 >
                   <SettingsIcon fontSize="small" />
                 </IconButton>
+              )}
+
+              {/* Explore mode instruction text */}
+              {mode === 'explore' && (
+                <Typography variant="body2" sx={{ color: 'var(--text-color)', fontStyle: 'italic', ml: 1 }}>
+                  Click or select a country to see public domain images
+                </Typography>
               )}
             </Box>
           </div>
