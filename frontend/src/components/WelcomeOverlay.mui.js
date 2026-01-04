@@ -400,7 +400,6 @@ const WelcomeOverlay = ({
                             onRegionChange();
                           }
                         }}
-                        disabled={mode !== 'quiz'}
                         size="small"
                       />
                     }

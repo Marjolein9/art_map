@@ -199,24 +199,29 @@ const apiCall = async (endpoint, options = {}, responseMapping = null) => {
 /**
  * Fetch a random country that has artwork
  *
- * ENDPOINT: GET /game/random-country?region=Africa (optional)
+ * ENDPOINT: GET /game/random-country?region=Africa&countriesOnly=true (optional)
  * RETURNS: Country object with {iso, name, continent, subregion}
  *
  * @param {string|null} region - Optional region filter (Africa, Americas, Asia, Europe, Oceania)
+ * @param {boolean} countriesOnly - Only include sovereign countries (default: true)
  *
  * Python equivalent using requests library:
  *   import requests
- *   response = requests.get('http://localhost:5000/api/game/random-country?region=Africa')
+ *   response = requests.get('http://localhost:5000/api/game/random-country?region=Africa&countriesOnly=true')
  *   return response.json()['country']
  */
-export const fetchRandomCountry = async (region = null) => {
-  // Arrow function with optional parameter
+export const fetchRandomCountry = async (region = null, countriesOnly = true) => {
+  // Arrow function with optional parameters
   // async makes it return a Promise
 
-  // Build endpoint with optional region query parameter
-  const endpoint = region
-    ? `/game/random-country?region=${encodeURIComponent(region)}`
-    : '/game/random-country';
+  // Build endpoint with optional query parameters
+  const params = new URLSearchParams();
+  if (region) {
+    params.append('region', region);
+  }
+  params.append('countriesOnly', countriesOnly.toString());
+
+  const endpoint = `/game/random-country?${params.toString()}`;
 
   // Using response mapping to extract just the 'country' field from response
   // If backend returns {country: {...}, other: ...}, we get just the country object
@@ -237,32 +242,36 @@ export const fetchCountries = async () => {
 /**
  * Fetch images for a specific country from all three collections
  *
- * ENDPOINT: GET /images/{iso3}
+ * ENDPOINT: GET /images/{iso3}?showNudity=true
  *
  * @param {string} iso3 - Country ISO3 code (e.g., "USA", "DEU", "JPN")
+ * @param {boolean} showNudity - Include images with nudity (default: false)
  * @returns {Promise<object>} - Images grouped by collection type
  *                              Example: {albert_kahn: [...], children_artwork: [...]}
  */
-export const fetchImages = async (iso3) => {
+export const fetchImages = async (iso3, showNudity = false) => {
   // Template literal in endpoint: `/images/${iso3}`
   // Example: iso3="USA" → endpoint becomes "/images/USA"
-  return apiCall(`/images/${iso3}`, {}, 'images');
+  const endpoint = `/images/${iso3}?showNudity=${showNudity}`;
+  return apiCall(endpoint, {}, 'images');
 };
 
 /**
  * Fetch one random image for a specific country
  *
- * ENDPOINT: GET /images/{iso3}/random
+ * ENDPOINT: GET /images/{iso3}/random?showNudity=true
  *
  * This is optimized for quiz mode - only fetches one image instead of all images.
  * Significantly improves performance for countries with many images (like Italy).
  *
  * @param {string} iso3 - Country ISO3 code (e.g., "USA", "DEU", "JPN")
+ * @param {boolean} showNudity - Include images with nudity (default: false)
  * @returns {Promise<object>} - Single random image with its collection
  *                              Example: {image: {...}, collection: 'Albert Kahn'}
  */
-export const fetchRandomImage = async (iso3) => {
-  return apiCall(`/images/${iso3}/random`);
+export const fetchRandomImage = async (iso3, showNudity = false) => {
+  const endpoint = `/images/${iso3}/random?showNudity=${showNudity}`;
+  return apiCall(endpoint);
 };
 
 /**

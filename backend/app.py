@@ -147,11 +147,12 @@ def random_country():
     Return a random sovereign country (is_country = true).
 
     HTTP Method: GET
-    URL: http://localhost:5000/api/game/random-country?region=Africa (optional)
+    URL: http://localhost:5000/api/game/random-country?region=Africa&countriesOnly=true
     Purpose: Used by quiz game to select which country to show
 
     Query Parameters:
     - region (optional): Filter countries by continent (Africa, Americas, Asia, Europe, Oceania)
+    - countriesOnly (optional): Only include sovereign countries (default: true)
 
     Returns: JSON with one random country's details
     Example: {"country": {"iso": "JPN", "name": "Japan", ...}}
@@ -161,19 +162,28 @@ def random_country():
     - 404: Country not found (shouldn't happen)
     - 500: No countries available in database
 
-    REFACTORING: Updated to use standardized error handling and support region filtering.
+    REFACTORING: Updated to use standardized error handling and support region and countries-only filtering.
     """
     try:
-        # Get optional region query parameter
+        # Get optional query parameters
         region = request.args.get('region')
+        countries_only = request.args.get('countriesOnly', 'true').lower() == 'true'
 
-        # Get all countries/territories marked for quiz inclusion
-        # This includes sovereign countries AND selected overseas territories
+        # Build filter clauses
         query_params = []
         region_filter = ''
+        countries_filter = ''
+
         if region:
-            region_filter = 'AND continent = %s'
+            region_filter = 'AND c.continent = %s'
             query_params.append(region)
+
+        if countries_only:
+            # Only include sovereign countries (exclude territories)
+            countries_filter = 'AND c.is_country = TRUE'
+        else:
+            # Include all countries/territories marked for quiz inclusion
+            pass  # include_in_quiz already filters this
 
         countries = execute_query(f'''
             SELECT c.iso3, c.name, c.common_name, c.continent, c.subregion,
@@ -182,6 +192,7 @@ def random_country():
             FROM countries c
             LEFT JOIN countries p ON c.parent_country_iso3 = p.iso3
             WHERE c.include_in_quiz = TRUE
+            {countries_filter}
             {region_filter}
         ''', tuple(query_params))
 
@@ -324,14 +335,21 @@ def get_random_image(iso3):
     Performance: O(1) instead of O(n) where n = total images for country
 
     HTTP Method: GET
-    URL: http://localhost:5000/api/images/USA/random
+    URL: http://localhost:5000/api/images/USA/random?showNudity=true
     URL Parameter: iso3 (required) - three-letter country code
+    Query Parameter: showNudity (optional) - include images with nudity (default: false)
 
     Returns: JSON with one random image and its collection
     """
+    # Get showNudity query parameter (default false)
+    show_nudity = request.args.get('showNudity', 'false').lower() == 'true'
+
+    # Build nudity filter clause
+    nudity_filter = '' if show_nudity else "AND (nudity IS NULL OR nudity != 'Yes')"
+
     # Use UNION ALL to combine all collections, then ORDER BY RANDOM() LIMIT 1
     # This is more efficient than fetching all images then picking one in Python
-    random_image = execute_query('''
+    random_image = execute_query(f'''
         SELECT * FROM (
             (SELECT 'Albert Kahn' as collection_type,
                    filepath, title_en as title, location, date,
@@ -355,7 +373,7 @@ def get_random_image(iso3):
                    NULL as description, NULL as object_date, NULL as medium,
                    NULL as department, NULL as culture, NULL as object_url
             FROM children_artwork_images
-            WHERE artist_iso3 = %s)
+            WHERE artist_iso3 = %s {nudity_filter})
 
             UNION ALL
 
@@ -381,7 +399,7 @@ def get_random_image(iso3):
                    NULL as description, object_date, medium,
                    department, culture, object_url
             FROM met_images
-            WHERE iso3 = %s)
+            WHERE iso3 = %s {nudity_filter})
         ) AS combined_images
         ORDER BY RANDOM()
         LIMIT 1

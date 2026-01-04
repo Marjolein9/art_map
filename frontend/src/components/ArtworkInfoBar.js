@@ -61,7 +61,8 @@ const ArtworkInfoBar = ({
   onClose,         // Function to call when closing the dialog
   onNext,          // Function to call when clicking "Next" button
   selectedCollections = ['Albert Kahn', 'Children in Art', 'Public Domain Review', 'Met Museum'], // Selected collections to display
-  onCollectionsChange  // Function to update selected collections
+  onCollectionsChange,  // Function to update selected collections
+  showNudity = false    // Whether to include images with nudity (default: false)
 }) => {
   /**
    * STATE VARIABLES
@@ -134,8 +135,8 @@ const ArtworkInfoBar = ({
       return;
     }
 
-    // Always fetch all images
-    fetchImages(countryISO)
+    // Always fetch all images, filtering by nudity setting
+    fetchImages(countryISO, showNudity)
       .then(data => {
         // Filter out empty collections and randomize order within each collection
         const filtered = {};
@@ -171,7 +172,7 @@ const ArtworkInfoBar = ({
         setImagesByCollection({});
         setOverlayVisible(true);
       });
-  }, [countryISO, mode]); // Re-run when country or mode changes
+  }, [countryISO, mode, showNudity]); // Re-run when country, mode, or nudity setting changes
 
   /**
    * IMAGE NAVIGATION FUNCTIONS

@@ -27,9 +27,10 @@ import { fetchRandomCountry, checkAnswer } from '../services/api';
  *
  * @param {boolean} backendReady - Whether the backend server is ready
  * @param {string|null} selectedRegion - Selected region to filter countries (null = all regions)
+ * @param {boolean} quizCountriesOnly - Only quiz on sovereign countries (exclude territories)
  * @returns {Object} - Object containing state and functions for quiz management
  */
-export const useQuiz = (backendReady, selectedRegion = null) => {
+export const useQuiz = (backendReady, selectedRegion = null, quizCountriesOnly = true) => {
   /**
    * STATE VARIABLES
    *
@@ -92,8 +93,8 @@ export const useQuiz = (backendReady, selectedRegion = null) => {
 
       // await: Pause here until fetchRandomCountry() completes
       // fetchRandomCountry() returns a Promise that resolves to country data
-      // Pass selectedRegion to filter by continent/region
-      const country = await fetchRandomCountry(selectedRegion);
+      // Pass selectedRegion and quizCountriesOnly to filter countries
+      const country = await fetchRandomCountry(selectedRegion, quizCountriesOnly);
 
       // Create new country object with preferred display name
       const countryWithDisplayName = {

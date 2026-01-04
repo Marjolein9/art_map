@@ -771,22 +771,20 @@ const WorldMap = ({
                 </Typography>
               )}
 
-              {/* Settings Button - shows in explore mode next to dropdown */}
-              {mode !== 'quiz' && (
-                <IconButton
-                  onClick={() => setShowWelcome(true)}
-                  title="Settings & Help"
-                  sx={{
-                    padding: '4px',
-                    color: 'var(--text-color)',
-                    '&:hover': {
-                      backgroundColor: 'transparent',
-                    }
-                  }}
-                >
-                  <SettingsIcon fontSize="small" />
-                </IconButton>
-              )}
+              {/* Settings Button - always visible */}
+              <IconButton
+                onClick={() => setShowWelcome(true)}
+                title="Settings & Help"
+                sx={{
+                  padding: '4px',
+                  color: 'var(--text-color)',
+                  '&:hover': {
+                    backgroundColor: 'transparent',
+                  }
+                }}
+              >
+                <SettingsIcon fontSize="small" />
+              </IconButton>
 
               {/* Explore mode instruction text */}
               {mode === 'explore' && (
