@@ -34,6 +34,10 @@ const WelcomeOverlay = ({
   setHintsEnabled,
   selectedQuizRegion,
   setSelectedQuizRegion,
+  showNudity,
+  setShowNudity,
+  quizCountriesOnly,
+  setQuizCountriesOnly,
   onRegionChange
 }) => {
   const [isClosing, setIsClosing] = useState(false);
@@ -381,6 +385,46 @@ const WelcomeOverlay = ({
                   </Select>
                   <Typography variant="caption" color="textSecondary" sx={{ textAlign: 'center' }}>
                     Filter quiz questions by region
+                  </Typography>
+                </Box>
+
+                {/* Quiz Countries Only Toggle */}
+                <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 0.5 }}>
+                  <FormControlLabel
+                    control={
+                      <Switch
+                        checked={quizCountriesOnly}
+                        onChange={(e) => {
+                          setQuizCountriesOnly(e.target.checked);
+                          if (onRegionChange) {
+                            onRegionChange();
+                          }
+                        }}
+                        disabled={mode !== 'quiz'}
+                        size="small"
+                      />
+                    }
+                    label="Countries Only"
+                  />
+                  <Typography variant="caption" color="textSecondary" sx={{ textAlign: 'center' }}>
+                    Quiz only on sovereign countries (excludes territories)
+                  </Typography>
+                </Box>
+
+                {/* Show Nudity Toggle */}
+                <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 0.5 }}>
+                  <FormControlLabel
+                    control={
+                      <Switch
+                        checked={showNudity}
+                        onChange={(e) => setShowNudity(e.target.checked)}
+                        size="small"
+                      />
+                    }
+                    label="Show Nudity"
+                  />
+                  <Typography variant="caption" color="textSecondary" sx={{ textAlign: 'center' }}>
+                    Include artwork containing nudity
                   </Typography>
                 </Box>
 

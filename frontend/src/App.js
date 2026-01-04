@@ -100,6 +100,14 @@ function App() {
   // Selected region for quiz filtering (null = all regions)
   const [selectedQuizRegion, setSelectedQuizRegion] = useState(null);
 
+  // Controls whether to show artwork with nudity (default OFF)
+  const [showNudity, setShowNudity] = useState(false);
+
+  // Controls whether quiz only includes sovereign countries (default ON)
+  // When ON: only quiz on is_country=true
+  // When OFF: quiz on all territories with include_in_quiz=true
+  const [quizCountriesOnly, setQuizCountriesOnly] = useState(true);
+
   // Color scheme constants (not state because they never change)
   const COLORS = COLOR_SCHEME;
 
@@ -237,7 +245,7 @@ function App() {
     fetchNewCountry,         // Function to get next quiz question
     resetGameStatus,         // Function to reset game state
     setManualTargetCountry   // Function to set target country manually
-  } = useQuiz(backendReady, selectedQuizRegion); // Pass backendReady and selected region
+  } = useQuiz(backendReady, selectedQuizRegion, quizCountriesOnly); // Pass backendReady, selected region, and quiz countries only flag
 
   // Fetch initial target country when starting in quiz mode (but not while OnLoadOverlay is showing)
   useEffect(() => {
@@ -423,6 +431,10 @@ function App() {
                     setHintsEnabled={setHintsEnabled}
                     selectedQuizRegion={selectedQuizRegion}
                     setSelectedQuizRegion={setSelectedQuizRegion}
+                    showNudity={showNudity}
+                    setShowNudity={setShowNudity}
+                    quizCountriesOnly={quizCountriesOnly}
+                    setQuizCountriesOnly={setQuizCountriesOnly}
                     onRegionChange={() => {
                       if (mode === 'quiz') {
                         // Small delay to ensure state has updated
@@ -488,6 +500,7 @@ function App() {
                     onNext={handleNextCountry}
                     selectedCollections={selectedCollections}
                     onCollectionsChange={setSelectedCollections}
+                    showNudity={showNudity}
                   />
                 )}
               </div>

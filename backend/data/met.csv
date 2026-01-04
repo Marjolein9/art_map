@@ -1,4 +1,4 @@
-id,iso3,title,country,source_link,,,,,
+id,iso3,title,country,source_link,Nudity,,,,
 ,ASM,,American Samoa,,,,,,
 ,AND,,Andorra,,,,,,
 ,AGO,,Angola,https://www.metmuseum.org/art/collection/search/316173,,,,,1988.157
@@ -12,7 +12,7 @@ id,iso3,title,country,source_link,,,,,
 ,AZE,,Azerbaijan,https://www.metmuseum.org/art/collection/search/447577,,,,,
 ,BHS,,Bahamas,,,,,,
 ,BHR,,Bahrain,,,,,,
-,BGD,,Bangladesh,https://www.metmuseum.org/art/collection/search/76737,,,,,
+,BGD,,Bangladesh,https://www.metmuseum.org/art/collection/search/76737,Yes,,,,
 ,BRB,,Barbados,,,,,,
 ,BLR,,Belarus,,,,,,
 ,BEL,,Belgium,https://www.metmuseum.org/art/collection/search/679686,,,,,
@@ -31,7 +31,7 @@ id,iso3,title,country,source_link,,,,,
 ,BDI,,Burundi,,,,,,
 ,CPV,,Cabo Verde,,,,,,
 ,KHM,,Cambodia,https://www.metmuseum.org/art/collection/search/38451,,,,,
-,CMR,,Cameroon,https://www.metmuseum.org/art/collection/search/311021,https://www.metmuseum.org/art/collection/search/735917,,,,1979.206.121
+,CMR,,Cameroon,https://www.metmuseum.org/art/collection/search/311021,,,,,1979.206.121
 ,CYM,,Cayman Islands,,,,,,
 ,CAF,,Central African Republic,,,,,,
 ,KHM,,Cambodia,https://www.metmuseum.org/art/collection/search/38451,,,,,
@@ -48,13 +48,13 @@ id,iso3,title,country,source_link,,,,,
 ,CUW,,Curaçao,,,,,,
 ,CIV,,Côte d’Ivoire,https://www.metmuseum.org/art/collection/search/643506,,,,,
 ,PRK,,Democratic People's Republic of Korea,,,,,,
-,COD,,Democratic Republic of the Congo,https://www.metmuseum.org/art/collection/search/314034,,,,,1979.290
+,COD,,Democratic Republic of the Congo,https://www.metmuseum.org/art/collection/search/314034,Yes,,,,1979.290
 ,DJI,,Djibouti,,,,,,
 ,DMA,,Dominica,,,,,,
 ,DOM,,Dominican Republic,https://www.metmuseum.org/art/collection/search/320631,,,,,
-,ECU,,Ecuador,https://www.metmuseum.org/art/collection/search/316004,,,,,
+,ECU,,Ecuador,https://www.metmuseum.org/art/collection/search/316004,Yes,,,,
 ,SLV,,El Salvador,https://www.metmuseum.org/art/collection/search/317120,,,,,
-,GNQ,,Equatorial Guinea,https://www.metmuseum.org/art/collection/search/310870,,,,,1978.412.441
+,GNQ,,Equatorial Guinea,https://www.metmuseum.org/art/collection/search/310870,Yes,,,,1978.412.441
 ,ERI,,Eritrea,,,,,,
 ,EST,,Estonia,,,,,,
 ,SWZ,,Eswatini,,,,,,
@@ -102,25 +102,25 @@ id,iso3,title,country,source_link,,,,,
 ,LIE,,Liechtenstein,,,,,,
 ,LTU,,Lithuania,,,,,,
 ,LUX,,Luxembourg,,,,,,
-,MDG,,Madagascar,https://www.metmuseum.org/art/collection/search/318764,,,,,2001.408
+,MDG,,Madagascar,https://www.metmuseum.org/art/collection/search/318764,Yes,,,,2001.408
 ,MWI,,Malawi,https://www.metmuseum.org/art/collection/search/503641,,,,,
 ,MYS,,Malaysia,https://www.metmuseum.org/art/collection/search/123890,,,,,
 ,MDV,,Maldives,,,,,,
-,MLI,,Mali,https://www.metmuseum.org/art/collection/search/310765,https://www.metmuseum.org/art/collection/search/314362,https://www.metmuseum.org/art/collection/search/314704,,,1981.218
+,MLI,,Mali,https://www.metmuseum.org/art/collection/search/314362,https://www.metmuseum.org/art/collection/search/314362,https://www.metmuseum.org/art/collection/search/314704,,,1981.218
 ,MLT,,Malta,https://www.metmuseum.org/art/collection/search/268882,,,,,
 ,MHL,,Marshall Islands,https://www.metmuseum.org/art/collection/search/501419,,,,,
 ,MTQ,,Martinique,,,,,,
 ,MRT,,Mauritania,,,,,,
 ,MUS,,Mauritius,,,,,,
 ,MYT,,Mayotte,,,,,,
-,FSM,,Micronesia (Federated States of),https://www.metmuseum.org/art/collection/search/501419,,,,,
+,FSM,,Micronesia (Federated States of),,,,,,
 ,MCO,,Monaco,,,,,,
 ,MSR,,Montserrat,https://www.metmuseum.org/art/collection/search/292003,,,,,
 ,MOZ,,Mozambique,https://www.metmuseum.org/art/collection/search/635753,,,,,
 ,MMR,,Myanmar,https://www.metmuseum.org/art/collection/search/39116,,,,,
 ,NAM,,Namibia,,,,,,
 ,NRU,,Nauru,https://www.metmuseum.org/art/collection/search/314318,,,,,
-,NPL,,Nepal,https://www.metmuseum.org/art/collection/search/50799,,,,,66.179
+,NPL,,Nepal,https://www.metmuseum.org/art/collection/search/50799,Yes,,,,66.179
 ,NCL,,New Caledonia,,,,,,
 ,NIC,,Nicaragua,,,,,,
 ,NER,,Niger,,,,,,
@@ -132,7 +132,7 @@ id,iso3,title,country,source_link,,,,,
 ,PAK,,Pakistan,https://www.metmuseum.org/art/collection/search/38498,,,,,
 ,PLW,,Palau,,,,,,
 ,PAN,,Panama,https://www.metmuseum.org/art/collection/search/309419,,,,,
-,PNG,,Papua New Guinea,https://www.metmuseum.org/art/collection/search/311294,,,,,
+,PNG,,Papua New Guinea,https://www.metmuseum.org/art/collection/search/311294,Yes,,,,
 ,PRY,,Paraguay,https://www.metmuseum.org/art/collection/search/215300,,,,,
 ,PHL,,Philippines,https://www.metmuseum.org/art/collection/search/503200,,,,,1982.32
 ,PCN,,Pitcairn,,,,,,
@@ -161,7 +161,7 @@ id,iso3,title,country,source_link,,,,,
 ,SLB,,Solomon Islands,https://www.metmuseum.org/art/collection/search/762069,,,,,2017.734a
 ,SOM,,Somalia,,,,,,
 ,SGS,,South Georgia and the South Sandwich Islands,,,,,,
-,SSD,,South Sudan,https://www.metmuseum.org/art/collection/search/309909,,,,,1973.264
+,SSD,,South Sudan,https://www.metmuseum.org/art/collection/search/309909,Yes,,,,1973.264
 ,LKA,,Sri Lanka,https://www.metmuseum.org/art/collection/search/889442,,,,,2022.386
 ,SDN,,Sudan,https://www.metmuseum.org/art/collection/search/316784,,,,,1993.370
 ,SJM,,Svalbard and Jan Mayen Islands,,,,,,
@@ -170,19 +170,19 @@ id,iso3,title,country,source_link,,,,,
 ,TLS,,Timor-Leste,https://www.metmuseum.org/art/collection/search/502064,,,,,89.4.1489
 ,TGO,,Togo,,,,,,
 ,TKL,,Tokelau,,,,,,
-,TON,,Tonga,https://www.metmuseum.org/art/collection/search/313658,,,,,1979.206.1470
+,TON,,Tonga,https://www.metmuseum.org/art/collection/search/313658,Yes,,,,1979.206.1470
 ,TTO,,Trinidad and Tobago,,,,,,
 ,TKM,,Turkmenistan,https://www.metmuseum.org/art/collection/search/453840,,,,,1999.141
 ,TCA,,Turks and Caicos Islands,,,,,,
 ,TUV,,Tuvalu,,,,,,
-,UGA,,Uganda,https://www.metmuseum.org/art/collection/search/502219,89.4.1656,,,,89.4.1656
+,UGA,,Uganda,https://www.metmuseum.org/art/collection/search/502219,,,,,89.4.1656
 ,ARE,,United Arab Emirates,,,,,,
 ,TZA,,United Republic of Tanzania,https://www.metmuseum.org/art/collection/search/502222,,,,,89.4.1659
 ,UMI,,United States Minor Outlying Islands,,,,,,
 ,VIR,,United States Virgin Islands,,,,,,
-,URY,,Uruguay,https://www.metmuseum.org/art/collection/search/764772,,,,,2017.68.23
+,URY,,Uruguay,https://www.metmuseum.org/art/collection/search/764772,Yes,,,,2017.68.23
 ,UZB,,Uzbekistan,https://www.metmuseum.org/art/collection/search/85552,,,,,C.I.51.100
-,VUT,,Vanuatu,https://www.metmuseum.org/art/collection/search/313546,,,,,1979.206.1697
+,VUT,,Vanuatu,,,,,,1979.206.1697
 ,VEN,,Venezuela (Bolivarian Republic of),,,,,,
 ,VNM,,Viet Nam,https://www.metmuseum.org/art/collection/search/37558,,,,,1992.72.1
 ,WLF,,Wallis and Futuna Islands,,,,,,

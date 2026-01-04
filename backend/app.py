@@ -255,11 +255,18 @@ def get_images(iso3):
        - Always close connections to prevent connection pool exhaustion
 
     HTTP Method: GET (idempotent - safe to call multiple times)
-    URL: http://localhost:5000/api/images/USA
+    URL: http://localhost:5000/api/images/USA?showNudity=true
     URL Parameter: iso3 (required) - three-letter country code in URL path
+    Query Parameter: showNudity (optional) - include images with nudity (default: false)
 
     Returns: JSON with images grouped by collection type
     """
+    # Get showNudity query parameter (default false)
+    show_nudity = request.args.get('showNudity', 'false').lower() == 'true'
+
+    # Build nudity filter clause
+    nudity_filter = '' if show_nudity else "AND (nudity IS NULL OR nudity != 'Yes')"
+
     # Query all collections using execute_query utility
     albert_kahn = execute_query('''
         SELECT 'Albert Kahn' as collection_type,
@@ -269,12 +276,12 @@ def get_images(iso3):
         WHERE iso3 = %s
     ''', (iso3,))
 
-    children_art = execute_query('''
+    children_art = execute_query(f'''
         SELECT 'Children in Art' as collection_type,
                filepath, title, artist_name,
                artist_nationality, author_wikilink, work_url, source
         FROM children_artwork_images
-        WHERE artist_iso3 = %s
+        WHERE artist_iso3 = %s {nudity_filter}
     ''', (iso3,))
     print(f"Children Art: {children_art}")  # Debug logging
 
@@ -286,12 +293,12 @@ def get_images(iso3):
         WHERE iso3 = %s
     ''', (iso3,))
 
-    met_museum = execute_query('''
+    met_museum = execute_query(f'''
         SELECT 'Met Museum' as collection_type,
                filepath, title, artist_name, object_date,
                medium, department, culture, object_url
         FROM met_images
-        WHERE iso3 = %s
+        WHERE iso3 = %s {nudity_filter}
     ''', (iso3,))
 
     # Return JSON response

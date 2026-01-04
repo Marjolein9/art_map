@@ -686,6 +686,7 @@ def init_database():
             subject_iso3 TEXT,
             title TEXT,
             keep TEXT,
+            nudity TEXT,
             image_url TEXT,
             work_url TEXT,
             location_reason TEXT,
@@ -736,6 +737,7 @@ def init_database():
             medium TEXT,
             department TEXT,
             culture TEXT,
+            nudity TEXT,
             object_url TEXT,
             image_url TEXT,
             filepath TEXT,
@@ -988,10 +990,10 @@ def init_database():
             cursor.execute('''
                 INSERT INTO children_artwork_images (
                     artist_name, author_wikilink, artist_nationality, artist_iso3,
-                    country_of_subject, subject_iso3, title, keep, image_url, work_url,
+                    country_of_subject, subject_iso3, title, keep, nudity, image_url, work_url,
                     location_reason, author_background, birth_date, death_date, birth_place,
                     source, tags, more_info, is_local, filepath
-                ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+                ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
             ''', (
                 row.get('artist_name', ''),
                 row.get('Author WikiLink', ''),
@@ -1001,6 +1003,7 @@ def init_database():
                 row.get('subject_iso3', ''),
                 row.get('title', ''),
                 row.get('Keep', ''),
+                row.get('Nudity', ''),
                 row.get('image_url', ''),
                 row.get('work_url', ''),
                 row.get('Location Reason', ''),
@@ -1160,9 +1163,9 @@ def init_database():
                 cursor.execute('''
                     INSERT INTO met_images (
                         object_id, iso3, country_name, title, artist_name,
-                        object_date, medium, department, culture, object_url,
+                        object_date, medium, department, culture, nudity, object_url,
                         image_url, filepath, json_file
-                    ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+                    ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
                 ''', (
                     row.get('object_id', ''),
                     iso3,
@@ -1173,6 +1176,7 @@ def init_database():
                     row.get('medium', ''),
                     row.get('department', ''),
                     row.get('culture', ''),
+                    row.get('nudity', ''),
                     row.get('object_url', ''),
                     row.get('image_url', ''),
                     filepath,
