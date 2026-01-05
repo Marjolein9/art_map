@@ -31,10 +31,15 @@ This pattern handles edge cases gracefully:
 """
 
 from typing import List, Dict, Optional
+import logging
+
 try:
     import pycountry
 except ImportError:
     pycountry = None
+
+# Configure logging
+logger = logging.getLogger(__name__)
 
 
 class CountryNameNormalizer:
@@ -137,8 +142,8 @@ class CountryNameNormalizer:
                     country = pycountry.countries.get(alpha_2=iso2.upper())
                     if country:
                         return getattr(country, 'common_name', country.name)
-                except Exception:
-                    pass
+                except (KeyError, AttributeError, LookupError) as e:
+                    logger.debug(f"ISO2 lookup failed for {iso2}: {e}")
 
             # Try ISO3 lookup if ISO2 failed
             if iso3:
@@ -146,8 +151,8 @@ class CountryNameNormalizer:
                     country = pycountry.countries.get(alpha_3=iso3.upper())
                     if country:
                         return getattr(country, 'common_name', country.name)
-                except Exception:
-                    pass
+                except (KeyError, AttributeError, LookupError) as e:
+                    logger.debug(f"ISO3 lookup failed for {iso3}: {e}")
 
         # Strategy 3: Fall back to string cleanup on official name
         return CountryNameNormalizer._cleanup_official_name(official_name)

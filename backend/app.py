@@ -70,6 +70,13 @@ import os  # For checking if database file exists
 from db_utils import execute_query, get_collection_counts  # Database utilities
 from config import PORT, DEBUG  # Configuration constants
 from error_handler import APIError, ValidationError, NotFoundError, InternalError, handle_api_error  # Standardized error handling
+from validators import (
+    validate_iso3,
+    validate_region,
+    validate_json_body,
+    validate_boolean,
+    ValidationError as InputValidationError
+)  # Input validation utilities
 
 # Create Flask application instance
 # __name__ tells Flask the name of the current module
@@ -84,9 +91,15 @@ from config import ALLOWED_ORIGINS
 
 CORS(app, origins=ALLOWED_ORIGINS)
 
-# REFACTORING: Register error handler for standardized error responses
+# REFACTORING: Register error handlers for standardized error responses
 # This ensures all APIError exceptions are automatically converted to JSON responses
 app.register_error_handler(APIError, handle_api_error)
+
+# Register handler for input validation errors
+@app.errorhandler(InputValidationError)
+def handle_validation_error(error):
+    """Handle validation errors from validators.py"""
+    return jsonify({'error': error.message}), error.status_code
 
 # ==============================================================================
 # API ROUTES (Endpoints)
@@ -165,9 +178,15 @@ def random_country():
     REFACTORING: Updated to use standardized error handling and support region and countries-only filtering.
     """
     try:
-        # Get optional query parameters
-        region = request.args.get('region')
-        countries_only = request.args.get('countriesOnly', 'true').lower() == 'true'
+        # Get and validate optional query parameters
+        region_param = request.args.get('region')
+        countries_only_param = request.args.get('countriesOnly', 'true')
+
+        # Validate region if provided
+        region = validate_region(region_param) if region_param else None
+
+        # Validate boolean parameter
+        countries_only = validate_boolean(countries_only_param, 'countriesOnly')
 
         # Build filter clauses
         query_params = []
@@ -272,8 +291,12 @@ def get_images(iso3):
 
     Returns: JSON with images grouped by collection type
     """
-    # Get showNudity query parameter (default false)
-    show_nudity = request.args.get('showNudity', 'false').lower() == 'true'
+    # Validate ISO3 parameter
+    iso3 = validate_iso3(iso3)
+
+    # Get and validate showNudity query parameter (default false)
+    show_nudity_param = request.args.get('showNudity', 'false')
+    show_nudity = validate_boolean(show_nudity_param, 'showNudity')
 
     # Build nudity filter clause
     nudity_filter = '' if show_nudity else "AND (nudity IS NULL OR nudity != 'Yes')"
@@ -341,8 +364,12 @@ def get_random_image(iso3):
 
     Returns: JSON with one random image and its collection
     """
-    # Get showNudity query parameter (default false)
-    show_nudity = request.args.get('showNudity', 'false').lower() == 'true'
+    # Validate ISO3 parameter
+    iso3 = validate_iso3(iso3)
+
+    # Get and validate showNudity query parameter (default false)
+    show_nudity_param = request.args.get('showNudity', 'false')
+    show_nudity = validate_boolean(show_nudity_param, 'showNudity')
 
     # Build nudity filter clause
     nudity_filter = '' if show_nudity else "AND (nudity IS NULL OR nudity != 'Yes')"
@@ -464,16 +491,18 @@ def check_answer():
     Returns: JSON with whether answer is correct
     {"correct": true, "selectedCountry": "FRA", "targetCountry": "FRA"}
     """
-    # Get JSON data from request body
+    # Get and validate JSON data from request body
     # request.get_json() parses JSON string → Python dict
     # Example: '{"selectedCountryIso": "USA"}' → {'selectedCountryIso': 'USA'}
     # Frontend sends this in the body of the POST request
     data = request.get_json()
 
-    # Extract values from the parsed JSON dict
-    # .get() returns None if key doesn't exist (safer than data['key'])
-    selected_iso = data.get('selectedCountryIso')
-    target_iso = data.get('targetCountryIso')
+    # Validate that JSON body exists and has required fields
+    data = validate_json_body(data, ['selectedCountryIso', 'targetCountryIso'])
+
+    # Extract and validate ISO3 codes
+    selected_iso = validate_iso3(data.get('selectedCountryIso'))
+    target_iso = validate_iso3(data.get('targetCountryIso'))
 
     # Simple comparison: are they the same string?
     # == in Python compares values (not memory addresses like some languages)

@@ -15,9 +15,17 @@ import requests
 import json
 import os
 import re
+import logging
 from urllib.parse import urljoin, urlparse
 import time
 from pathlib import Path
+
+# Configure logging
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(levelname)s - %(message)s'
+)
+logger = logging.getLogger(__name__)
 
 
 def setup_driver(headless=True):
@@ -199,7 +207,8 @@ def extract_all_metadata(url):
                 if size > max_size:
                     max_size = size
                     largest_img = src
-            except:
+            except (ValueError, TypeError, AttributeError) as e:
+                logger.debug(f"Could not get dimensions for image {src}: {e}")
                 if not largest_img:
                     largest_img = src
 

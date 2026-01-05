@@ -22,6 +22,7 @@ Collections checked:
 """
 
 import os
+from psycopg2 import sql
 from db_utils import get_db_connection
 from config import BASE_DIR
 
@@ -43,7 +44,10 @@ def get_all_image_filepaths_from_db():
 
     for table in tables:
         try:
-            cursor.execute(f'SELECT filepath FROM {table} WHERE filepath IS NOT NULL')
+            query = sql.SQL('SELECT filepath FROM {} WHERE filepath IS NOT NULL').format(
+                sql.Identifier(table)
+            )
+            cursor.execute(query)
             rows = cursor.fetchall()
             for row in rows:
                 # filepath is stored as relative path like "images/USA/children_artwork/foo.jpg"

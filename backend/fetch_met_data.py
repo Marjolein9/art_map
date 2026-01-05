@@ -9,10 +9,18 @@ import os
 import csv
 import json
 import time
+import logging
 import requests
 from pathlib import Path
 from PIL import Image
 from io import BytesIO
+
+# Configure logging
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(levelname)s - %(message)s'
+)
+logger = logging.getLogger(__name__)
 
 # Configuration
 MET_API_BASE = "https://collectionapi.metmuseum.org/public/collection/v1/objects"
@@ -132,8 +140,9 @@ def process_met_data():
                             'object_id': object_id,
                             'accession_number': row.get('Object_id', '').strip()
                         })
-                except:
-                    pass
+                except (ValueError, TypeError) as e:
+                    logger.warning(f"Invalid object ID format in row: {row.get('Object_id', 'N/A')}, error: {e}")
+                    continue
 
     print(f"✓ Found {len(met_entries)} entries with object IDs")
 

@@ -25,6 +25,7 @@ Environment Variables Required:
 
 import os
 import psycopg2
+from psycopg2 import sql
 from psycopg2.extras import RealDictCursor
 import csv
 import json
@@ -540,7 +541,8 @@ def export_table_to_csv(conn, table_name, output_dir):
     cursor = conn.cursor()
 
     # Get all data from table
-    cursor.execute(f'SELECT * FROM {table_name}')
+    query = sql.SQL('SELECT * FROM {}').format(sql.Identifier(table_name))
+    cursor.execute(query)
     rows = cursor.fetchall()
 
     if not rows:
