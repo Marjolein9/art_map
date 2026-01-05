@@ -10,6 +10,11 @@ import {
 } from '@mui/material';
 import COLOR_SCHEME from '../styles/colorSchemes';
 import { API_BASE } from '../utils/apiConfig';
+import {
+  getSourceInfo,
+  getSourceDisplayName,
+  getSourceUrl
+} from '../utils/sourceHelpers';
 
 /**
  * QuizImageDisplay Component
@@ -30,6 +35,8 @@ const QuizImageDisplay = ({ imagesByCollection, countryName, countryISO, onShowA
   const [randomImage, setRandomImage] = useState(null);
   const [collectionName, setCollectionName] = useState(null);
   const [isMounted, setIsMounted] = useState(false);
+  const [mapError, setMapError] = useState(false);
+  const [imageError, setImageError] = useState(false);
 
   // Trigger fade-in after 0.5s delay on mount
   useEffect(() => {
@@ -39,6 +46,12 @@ const QuizImageDisplay = ({ imagesByCollection, countryName, countryISO, onShowA
 
     return () => clearTimeout(timer);
   }, []);
+
+  // Reset error states when country or image changes
+  useEffect(() => {
+    setMapError(false);
+    setImageError(false);
+  }, [countryISO, randomImage]);
 
   // Select a random image when imagesByCollection changes
   useEffect(() => {
@@ -73,18 +86,7 @@ const QuizImageDisplay = ({ imagesByCollection, countryName, countryISO, onShowA
 
   const hasImages = randomImage && collectionName;
 
-  const getSourceInfo = (source) => {
-    switch(source?.toLowerCase()) {
-      case 'smithsonian':
-        return { name: 'Smithsonian', url: 'https://www.si.edu/explore/art' };
-      case 'wiki commons':
-        return { name: 'Wikimedia Commons', url: 'https://commons.wikimedia.org/wiki/Main_Page' };
-      case 'chicago':
-        return { name: 'Art Institute of Chicago', url: 'https://www.artic.edu/' };
-      default:
-        return null;
-    }
-  };
+  // Source mapping functions imported from shared utility
 
   const getCollectionDisplayName = (collection) => {
     // Map backend collection names to display names for switch cases
@@ -100,26 +102,6 @@ const QuizImageDisplay = ({ imagesByCollection, countryName, countryISO, onShowA
       public_domain_images: 'Public Domain Review'
     };
     return displayNames[collection] || collection;
-  };
-
-  // Helper function to map source field to display names
-  const getSourceDisplayName = (source) => {
-    const mapping = {
-      'wiki commons': 'Wikimedia Commons',
-      'chicago': 'Art Institute of Chicago',
-      'smithsonian': 'Smithsonian American Art Museum'
-    };
-    return mapping[source?.toLowerCase()] || source;
-  };
-
-  // Helper function to get source URL for Children in Art
-  const getSourceUrl = (source) => {
-    const mapping = {
-      'wiki commons': 'https://commons.wikimedia.org/',
-      'chicago': 'https://www.artic.edu/',
-      'smithsonian': 'https://www.si.edu/'
-    };
-    return mapping[source?.toLowerCase()] || null;
   };
 
   // Helper function to get image link URL based on collection type
@@ -398,34 +380,33 @@ const QuizImageDisplay = ({ imagesByCollection, countryName, countryISO, onShowA
               overflow: 'hidden',
               borderRadius: 1
             }}>
-              <img
-                src={`${API_BASE}/api/maps/${countryISO}`}
-                alt={`Map of ${countryName}`}
-                style={{
+              {!mapError ? (
+                <img
+                  src={`${API_BASE}/api/maps/${countryISO}`}
+                  alt={`Map of ${countryName}`}
+                  style={{
+                    width: '100%',
+                    height: '100%',
+                    display: 'block'
+                  }}
+                  onError={() => setMapError(true)}
+                />
+              ) : (
+                <Box sx={{
+                  display: 'flex',
                   width: '100%',
                   height: '100%',
-                  display: 'block'
-                }}
-                onError={(e) => {
-                  // Fallback: show placeholder if map not found
-                  e.target.style.display = 'none';
-                  e.target.nextSibling.style.display = 'flex';
-                }}
-              />
-              <Box sx={{
-                display: 'none',
-                width: '100%',
-                height: '100%',
-                backgroundColor: '#e8f4f8',
-                border: `2px solid ${COLOR_SCHEME.border}`,
-                borderRadius: 1,
-                alignItems: 'center',
-                justifyContent: 'center',
-                fontSize: '0.875rem',
-                color: '#666'
-              }}>
-                Map not available
-              </Box>
+                  backgroundColor: '#e8f4f8',
+                  border: `2px solid ${COLOR_SCHEME.border}`,
+                  borderRadius: 1,
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  fontSize: '0.875rem',
+                  color: '#666'
+                }}>
+                  Map not available
+                </Box>
+              )}
             </Box>
         </Box>
       </Paper>
@@ -488,13 +469,30 @@ const QuizImageDisplay = ({ imagesByCollection, countryName, countryISO, onShowA
                 overflow: 'hidden',
               }}
             >
-              {getImageLinkUrl() ? (
-                <Link
-                  href={getImageLinkUrl()}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  sx={{ display: 'flex', justifyContent: 'center', width: '100%' }}
-                >
+              {!imageError ? (
+                getImageLinkUrl() ? (
+                  <Link
+                    href={getImageLinkUrl()}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    sx={{ display: 'flex', justifyContent: 'center', width: '100%' }}
+                  >
+                    <img
+                      src={imageUrl}
+                      alt={randomImage.title || randomImage.description || 'Artwork'}
+                      style={{
+                        width: '100%',
+                        height: 'auto',
+                        maxHeight: '600px',
+                        objectFit: 'contain',
+                        borderRadius: '4px',
+                        cursor: 'pointer',
+                      }}
+                      onLoad={() => {}}
+                      onError={() => setImageError(true)}
+                    />
+                  </Link>
+                ) : (
                   <img
                     src={imageUrl}
                     alt={randomImage.title || randomImage.description || 'Artwork'}
@@ -504,30 +502,27 @@ const QuizImageDisplay = ({ imagesByCollection, countryName, countryISO, onShowA
                       maxHeight: '600px',
                       objectFit: 'contain',
                       borderRadius: '4px',
-                      cursor: 'pointer',
                     }}
                     onLoad={() => {}}
-                    onError={(e) => {
-                      e.target.style.display = 'none';
-                    }}
+                    onError={() => setImageError(true)}
                   />
-                </Link>
+                )
               ) : (
-                <img
-                  src={imageUrl}
-                  alt={randomImage.title || randomImage.description || 'Artwork'}
-                  style={{
+                <Box
+                  sx={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
                     width: '100%',
-                    height: 'auto',
-                    maxHeight: '600px',
-                    objectFit: 'contain',
+                    minHeight: '200px',
+                    backgroundColor: '#f5f5f5',
+                    border: `2px solid ${COLOR_SCHEME.border}`,
                     borderRadius: '4px',
+                    color: '#666',
                   }}
-                  onLoad={() => {}}
-                  onError={(e) => {
-                    e.target.style.display = 'none';
-                  }}
-                />
+                >
+                  Image unavailable
+                </Box>
               )}
             </Box>
 

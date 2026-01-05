@@ -18,17 +18,35 @@ import COLOR_SCHEME from './styles/colorSchemes';
 import { useQuiz } from './hooks/useQuiz';
 import { fetchCountries } from './services/api';
 import { getDisplayName } from './utils/displayHelpers';
+import { debug, info, error as logError } from './utils/logger';
+import { GameSettingsProvider, useGameSettings } from './contexts/GameSettingsContext';
+import { ContentSettingsProvider } from './contexts/ContentSettingsContext';
 
 /**
- * APP COMPONENT
+ * APP CONTENT COMPONENT
  *
- * Interview Note: This is the root component of the application
- * - Manages global state (mode, countries, UI state)
- * - Coordinates communication between child components
- * - Handles data fetching and error recovery
- * - Implements two modes: Quiz mode and Explore mode
+ * Interview Note: This component contains the application logic
+ * - Separated from App so it can use context hooks
+ * - App renders providers, AppContent consumes context
+ * - This is a common pattern to avoid prop drilling
  */
-function App() {
+function AppContent() {
+  // ===========================================================================
+  // CONTEXT HOOKS
+  // ===========================================================================
+
+  /**
+   * Interview Note: Context Hooks
+   *
+   * Game and content settings are now managed via React Context.
+   * Child components (WorldMap, WelcomeOverlay, ArtworkInfoBar) access these
+   * directly using useGameSettings() and useContentSettings() hooks.
+   * This eliminates prop drilling - no need to pass props through AppContent.
+   */
+
+  // Get only the values needed in AppContent
+  const { selectedQuizRegion, quizCountriesOnly } = useGameSettings();
+
   // ===========================================================================
   // STATE MANAGEMENT
   // ===========================================================================
@@ -86,27 +104,10 @@ function App() {
   // Controls welcome/settings overlay visibility (opened via gear icon)
   const [showWelcome, setShowWelcome] = useState(false);
 
-  // Controls whether hints (neighboring countries) are shown in quiz mode
-  const [hintsEnabled, setHintsEnabled] = useState(true);
-
-  // Selected image collections to display (all selected by default)
-  const [selectedCollections, setSelectedCollections] = useState([
-    'Albert Kahn',
-    'Children in Art',
-    'Public Domain Review',
-    'Met Museum'
-  ]);
-
-  // Selected region for quiz filtering (null = all regions)
-  const [selectedQuizRegion, setSelectedQuizRegion] = useState(null);
-
-  // Controls whether to show artwork with nudity (default OFF)
-  const [showNudity, setShowNudity] = useState(false);
-
-  // Controls whether quiz only includes sovereign countries (default ON)
-  // When ON: only quiz on is_country=true
-  // When OFF: quiz on all territories with include_in_quiz=true
-  const [quizCountriesOnly, setQuizCountriesOnly] = useState(true);
+  // Note: The following state has been moved to React Context to eliminate prop drilling:
+  // - Game settings (hints, region, quiz countries) -> GameSettingsContext
+  // - Content settings (nudity filter, collections) -> ContentSettingsContext
+  // Components now access these directly via useGameSettings() and useContentSettings()
 
   // Color scheme constants (not state because they never change)
   const COLORS = COLOR_SCHEME;
@@ -141,25 +142,22 @@ function App() {
    *    - Uses exponential backoff pattern (10s retry)
    */
   useEffect(() => {
-    // Race condition prevention: tracks if component is still mounted
-    let cancelled = false;
+    // Modern cancellation pattern using AbortController
+    const controller = new AbortController();
     let retryTimeoutId = null;
 
     /**
      * Async function to load countries from backend
      *
      * Interview Note: Why define function inside useEffect?
-     * - Allows access to useEffect's closure variables (cancelled)
+     * - Allows access to useEffect's closure variables (controller)
      * - Keeps async logic organized
      * - Can be called recursively for retries
      */
     const loadCountries = async () => {
       try {
-        console.log('[API] Trying to fetch countries...');
-        const countries = await fetchCountries();
-
-        // Check if component unmounted during fetch
-        if (cancelled) return;
+        debug('[API] Trying to fetch countries...');
+        const countries = await fetchCountries({ signal: controller.signal });
 
         /**
          * Build lookup object for O(1) country name access
@@ -180,8 +178,14 @@ function App() {
 
         setExploreLoading(false);
         setBackendReady(true);
-        console.log('[API] Backend available, explore mode ready');
+        info('[API] Backend available, explore mode ready');
       } catch (error) {
+        // Don't retry if the request was aborted (component unmounted)
+        if (error.name === 'AbortError') {
+          debug('[API] Fetch aborted');
+          return;
+        }
+
         /**
          * Retry logic: Backend might still be starting up
          *
@@ -190,7 +194,7 @@ function App() {
          * - setInterval could stack requests if response is slow
          * - Prevents overwhelming the backend with concurrent requests
          */
-        console.error('[API] Backend unavailable, retrying in 10s...', error);
+        logError('[API] Backend unavailable, retrying in 10s...', error);
         retryTimeoutId = setTimeout(loadCountries, 10000);
       }
     };
@@ -204,11 +208,11 @@ function App() {
      * Interview Note: Why is cleanup important?
      * - Prevents memory leaks
      * - Cancels pending timeouts when component unmounts
-     * - Sets 'cancelled' flag to prevent state updates after unmount
+     * - Aborts in-flight requests using AbortController
      * - Runs before component unmounts AND before next effect runs
      */
     return () => {
-      cancelled = true;
+      controller.abort();
       if (retryTimeoutId) clearTimeout(retryTimeoutId);
     };
   }, []); // Empty dependency array = run once on mount
@@ -427,14 +431,6 @@ function App() {
                     colors={COLORS}
                     mode={mode}
                     onModeToggle={handleModeToggle}
-                    hintsEnabled={hintsEnabled}
-                    setHintsEnabled={setHintsEnabled}
-                    selectedQuizRegion={selectedQuizRegion}
-                    setSelectedQuizRegion={setSelectedQuizRegion}
-                    showNudity={showNudity}
-                    setShowNudity={setShowNudity}
-                    quizCountriesOnly={quizCountriesOnly}
-                    setQuizCountriesOnly={setQuizCountriesOnly}
                     onRegionChange={() => {
                       if (mode === 'quiz') {
                         // Small delay to ensure state has updated
@@ -462,8 +458,6 @@ function App() {
                   onManualCountrySelect={setManualTargetCountry}
                   countryLookup={countryLookup}
                   setShowWelcome={setShowWelcome}
-                  hintsEnabled={hintsEnabled}
-                  selectedQuizRegion={selectedQuizRegion}
                 />
 
                 {(!backendReady || (loading && mode === 'quiz') || (exploreLoading && mode === 'explore')) && (
@@ -498,14 +492,10 @@ function App() {
                     isCorrectAnswer={clickedCountry === targetCountry?.iso}
                     onClose={handleCloseInfoBar}
                     onNext={handleNextCountry}
-                    selectedCollections={selectedCollections}
-                    onCollectionsChange={setSelectedCollections}
-                    showNudity={showNudity}
                   />
                 )}
               </div>
             </div>
-          </div>
 
           {/* Disclaimer Modal */}
           {disclaimerOpen && (
@@ -540,7 +530,24 @@ function App() {
             </button>
           </div>
         </div>
+      </div>
     </ThemeProvider>
+  );
+}
+
+/**
+ * APP COMPONENT
+ *
+ * Root component that wraps AppContent with context providers
+ * This separation allows AppContent to use context hooks
+ */
+function App() {
+  return (
+    <GameSettingsProvider>
+      <ContentSettingsProvider>
+        <AppContent />
+      </ContentSettingsProvider>
+    </GameSettingsProvider>
   );
 }
 

@@ -52,6 +52,36 @@ import { API_URL_FULL as API_URL } from '../utils/apiConfig';
 // Import with alias: "import { X as Y }" - imports X but names it Y locally
 // This is called "named import with aliasing"
 
+// Import logger utility
+import { error as logError } from '../utils/logger';
+
+/**
+ * @typedef {Object} Country
+ * @property {string} iso3 - ISO 3166-1 alpha-3 country code
+ * @property {string} name - Country name
+ * @property {string} continent - Continent name
+ * @property {string} subregion - Geographic subregion
+ * @property {string} [wikipedia_url] - Wikipedia URL for the country
+ */
+
+/**
+ * @typedef {Object} Image
+ * @property {string} filepath - Path to the image file
+ * @property {string} [title] - Image title
+ * @property {string} [description] - Image description
+ * @property {string} [source] - Image source attribution
+ * @property {string} [year] - Year the image was created
+ * @property {boolean} [has_nudity] - Whether the image contains nudity
+ */
+
+/**
+ * @typedef {Object} ImageCollection
+ * @property {Image[]} [albert_kahn_images] - Images from Albert Kahn collection
+ * @property {Image[]} [children_artwork_images] - Images from Children in Art collection
+ * @property {Image[]} [met_images] - Images from Metropolitan Museum
+ * @property {Image[]} [public_domain_images] - Images from Public Domain Review
+ */
+
 /**
  * CORE API CALL UTILITY
  *
@@ -157,8 +187,8 @@ const apiCall = async (endpoint, options = {}, responseMapping = null) => {
      */
 
     // Enhanced error logging for debugging
-    console.error(`API Error [${endpoint}]:`, {
-      // console.error: Like console.log but for errors (appears red in browser console)
+    logError(`API Error [${endpoint}]:`, {
+      // logError: Environment-aware error logging (always logs errors even in production)
 
       message: error.message,  // Error message text
       endpoint,                // Which API endpoint failed
@@ -200,10 +230,14 @@ const apiCall = async (endpoint, options = {}, responseMapping = null) => {
  * Fetch a random country that has artwork
  *
  * ENDPOINT: GET /game/random-country?region=Africa&countriesOnly=true (optional)
- * RETURNS: Country object with {iso, name, continent, subregion}
  *
  * @param {string|null} region - Optional region filter (Africa, Americas, Asia, Europe, Oceania)
- * @param {boolean} countriesOnly - Only include sovereign countries (default: true)
+ * @param {boolean} [countriesOnly=true] - Only include sovereign countries
+ * @returns {Promise<{iso3: string, name: string, continent: string, subregion: string}>} Country object
+ *
+ * @example
+ * const country = await fetchRandomCountry('Europe', true);
+ * // Returns: { iso3: 'ITA', name: 'Italy', continent: 'Europe', subregion: 'Southern Europe' }
  *
  * Python equivalent using requests library:
  *   import requests
@@ -232,22 +266,33 @@ export const fetchRandomCountry = async (region = null, countriesOnly = true) =>
  * Fetch all countries with their regions
  *
  * ENDPOINT: GET /countries
- * RETURNS: Array of country objects
+ *
+ * @param {Object} [options={}] - Optional fetch options (e.g., signal for AbortController)
+ * @param {AbortSignal} [options.signal] - AbortSignal for cancelling the request
+ * @returns {Promise<Array<{iso3: string, name: string, continent: string, subregion: string}>>} Array of country objects
+ *
+ * @example
+ * const controller = new AbortController();
+ * const countries = await fetchCountries({ signal: controller.signal });
+ * // Returns: [{ iso3: 'USA', name: 'United States', ... }, ...]
  */
-export const fetchCountries = async () => {
+export const fetchCountries = async (options = {}) => {
   // Maps response.countries → returns just the array of countries
-  return apiCall('/countries', {}, 'countries');
+  return apiCall('/countries', options, 'countries');
 };
 
 /**
- * Fetch images for a specific country from all three collections
+ * Fetch images for a specific country from all collections
  *
  * ENDPOINT: GET /images/{iso3}?showNudity=true
  *
  * @param {string} iso3 - Country ISO3 code (e.g., "USA", "DEU", "JPN")
- * @param {boolean} showNudity - Include images with nudity (default: false)
- * @returns {Promise<object>} - Images grouped by collection type
- *                              Example: {albert_kahn: [...], children_artwork: [...]}
+ * @param {boolean} [showNudity=false] - Include images with nudity
+ * @returns {Promise<ImageCollection>} Images grouped by collection type
+ *
+ * @example
+ * const images = await fetchImages('ITA', false);
+ * // Returns: { albert_kahn_images: [...], met_images: [...], ... }
  */
 export const fetchImages = async (iso3, showNudity = false) => {
   // Template literal in endpoint: `/images/${iso3}`
@@ -265,9 +310,12 @@ export const fetchImages = async (iso3, showNudity = false) => {
  * Significantly improves performance for countries with many images (like Italy).
  *
  * @param {string} iso3 - Country ISO3 code (e.g., "USA", "DEU", "JPN")
- * @param {boolean} showNudity - Include images with nudity (default: false)
- * @returns {Promise<object>} - Single random image with its collection
- *                              Example: {image: {...}, collection: 'Albert Kahn'}
+ * @param {boolean} [showNudity=false] - Include images with nudity
+ * @returns {Promise<{image: Image, collection: string}>} Single random image with its collection
+ *
+ * @example
+ * const result = await fetchRandomImage('FRA', false);
+ * // Returns: { image: { filepath: '...', title: '...' }, collection: 'Albert Kahn' }
  */
 export const fetchRandomImage = async (iso3, showNudity = false) => {
   const endpoint = `/images/${iso3}/random?showNudity=${showNudity}`;
@@ -288,6 +336,14 @@ export const fetchRandomImage = async (iso3, showNudity = false) => {
  * - PUT: Update existing resource
  * - DELETE: Remove resource
  *
+ * @param {string} selectedCountryIso - The country the user clicked
+ * @param {string} targetCountryIso - The correct answer
+ * @returns {Promise<{correct: boolean, selectedCountry: string, targetCountry: string}>} Result of the answer check
+ *
+ * @example
+ * const result = await checkAnswer('ITA', 'FRA');
+ * // Returns: { correct: false, selectedCountry: 'Italy', targetCountry: 'France' }
+ *
  * Python equivalent using requests library:
  *   import requests
  *   response = requests.post(
@@ -295,10 +351,6 @@ export const fetchRandomImage = async (iso3, showNudity = false) => {
  *       json={'selectedCountryIso': selected_iso, 'targetCountryIso': target_iso}
  *   )
  *   return response.json()
- *
- * @param {string} selectedCountryIso - The country the user clicked
- * @param {string} targetCountryIso - The correct answer
- * @returns {Promise<object>} - {correct: boolean, selectedCountry: string, targetCountry: string}
  */
 export const checkAnswer = async (selectedCountryIso, targetCountryIso) => {
   return apiCall('/game/check-answer', {

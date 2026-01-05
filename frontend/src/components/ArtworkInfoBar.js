@@ -44,6 +44,9 @@ import QuizImageDisplay from './QuizImageDisplay.mui';
 import muiTheme from '../theme/muiTheme';
 // muiTheme: Custom theme configuration for MUI components
 
+import { useContentSettings } from '../contexts/ContentSettingsContext';
+// Context hook for accessing content settings without prop drilling
+
 /**
  * ArtworkInfoBar Component
  *
@@ -60,10 +63,13 @@ const ArtworkInfoBar = ({
   isCorrectAnswer, // Whether the submitted answer was correct
   onClose,         // Function to call when closing the dialog
   onNext,          // Function to call when clicking "Next" button
-  selectedCollections = ['Albert Kahn', 'Children in Art', 'Public Domain Review', 'Met Museum'], // Selected collections to display
-  onCollectionsChange,  // Function to update selected collections
-  showNudity = false    // Whether to include images with nudity (default: false)
 }) => {
+  // Get content settings from context
+  const {
+    showNudity,
+    selectedCollections,
+    setSelectedCollections
+  } = useContentSettings();
   /**
    * STATE VARIABLES
    *
@@ -136,14 +142,19 @@ const ArtworkInfoBar = ({
     }
 
     // Always fetch all images, filtering by nudity setting
+    console.log('🔍 Fetching images for:', countryISO, 'showNudity:', showNudity);
     fetchImages(countryISO, showNudity)
       .then(data => {
+        console.log('📦 Raw API response (already unwrapped by apiCall):', data);
+
         // Filter out empty collections and randomize order within each collection
         const filtered = {};
 
         // Object.entries(obj): Converts object to array of [key, value] pairs
         // Example: {a: 1, b: 2} becomes [["a", 1], ["b", 2]]
+        // Note: apiCall already extracts data.images, so 'data' is the images object
         Object.entries(data || {}).forEach(([collection, images]) => {
+          console.log(`📚 Processing collection "${collection}":`, images?.length, 'images');
           // Destructuring in parameters: [collection, images] extracts key and value
 
           // Only keep collections that have images, and shuffle them
@@ -152,6 +163,8 @@ const ArtworkInfoBar = ({
           }
         });
 
+        console.log('✅ Filtered images:', filtered);
+        console.log('📊 Collections with images:', Object.keys(filtered));
         setImagesByCollection(filtered);
 
         // Initialize image index to 0 for each collection
@@ -251,6 +264,37 @@ const ArtworkInfoBar = ({
   const totalImages = Object.values(imagesByCollection).reduce((total, images) => {
     return total + (images?.length || 0);
   }, 0);
+
+  /**
+   * CountryTitle Helper Component
+   *
+   * Renders the country name with appropriate prefix and link based on quiz state.
+   * Extracted to improve readability and avoid deeply nested ternaries.
+   */
+  const CountryTitle = () => {
+    // Create the country display (with or without link)
+    const countryDisplay = wikipediaUrl ? (
+      <a
+        href={wikipediaUrl}
+        target="_blank"
+        rel="noopener noreferrer"
+        style={{ color: '#1976d2', textDecoration: 'underline' }}
+      >
+        {countryName || countryISO}
+      </a>
+    ) : (
+      countryName || countryISO
+    );
+
+    // If not in quiz mode or answer not submitted, show plain country name
+    if (mode !== 'quiz' || !answerSubmitted) {
+      return countryDisplay;
+    }
+
+    // In quiz mode with submitted answer, add prefix
+    const prefix = isCorrectAnswer ? 'Correct: ' : 'Incorrect: ';
+    return <>{prefix}{countryDisplay}</>;
+  };
 
   /**
    * EVENT HANDLERS
@@ -354,28 +398,7 @@ const ArtworkInfoBar = ({
                 fontWeight: 600,   // Semi-bold font
               }}
             >
-              {/*
-                NESTED TERNARY OPERATORS
-
-                This creates dynamic text based on quiz mode and answer correctness.
-                Format: condition1 ? value1 : (condition2 ? value2 : value3)
-              */}
-              {mode === 'quiz' && answerSubmitted
-                ? isCorrectAnswer
-                  ? wikipediaUrl ? (
-                      <>
-                        Correct: <a href={wikipediaUrl} target="_blank" rel="noopener noreferrer" style={{ color: '#1976d2', textDecoration: 'underline' }}>{countryName || countryISO}</a>
-                      </>
-                    ) : `Correct: ${countryName || countryISO}`
-                  : wikipediaUrl ? (
-                      <>
-                        Incorrect: <a href={wikipediaUrl} target="_blank" rel="noopener noreferrer" style={{ color: '#1976d2', textDecoration: 'underline' }}>{countryName || countryISO}</a>
-                      </>
-                    ) : `Incorrect: ${countryName || countryISO}`
-                : wikipediaUrl ? (
-                    <a href={wikipediaUrl} target="_blank" rel="noopener noreferrer" style={{ color: '#1976d2', textDecoration: 'underline' }}>{countryName || countryISO}</a>
-                  ) : (countryName || countryISO)}
-              {/* Logical OR (||): Returns first truthy value (fallback pattern) */}
+              <CountryTitle />
             </Typography>
 
 
@@ -419,14 +442,14 @@ const ArtworkInfoBar = ({
         {/* DIALOG CONTENT */}
         <DialogContent sx={{ pt: 1, pb: 1 }}>
           {/* Collection Filter - Only visible in test mode */}
-          {process.env.REACT_APP_TEST && onCollectionsChange && (
+          {process.env.REACT_APP_TEST && setSelectedCollections && (
             <Box sx={{ mb: 2 }}>
               <FormControl fullWidth size="small">
                 <InputLabel>Image Collections</InputLabel>
                 <Select
                   multiple
                   value={selectedCollections}
-                  onChange={(e) => onCollectionsChange(e.target.value)}
+                  onChange={(e) => setSelectedCollections(e.target.value)}
                   renderValue={(selected) => selected.join(', ')}
                   label="Image Collections"
                 >
@@ -474,6 +497,8 @@ const ArtworkInfoBar = ({
 
                 {/* Show all images without maps - ordered by priority */}
                 {(() => {
+                  console.log('🎨 Rendering images. imagesByCollection state:', imagesByCollection);
+                  console.log('🎨 Total entries:', Object.entries(imagesByCollection).length);
                   // Priority order: Children in Art → Albert Kahn → Met Museum → Public Domain Review
                   const priorityOrder = ['Children in Art', 'Albert Kahn', 'Met Museum', 'Public Domain Review'];
                   const sortedEntries = Object.entries(imagesByCollection).sort(([collectionA], [collectionB]) => {

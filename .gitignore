@@ -36,6 +36,11 @@ Thumbs.db
 *.swo
 *~
 
+# macOS iWork files
+*.numbers
+*.pages
+*.key
+
 # IDE and Editor files
 .vscode/
 .idea/
