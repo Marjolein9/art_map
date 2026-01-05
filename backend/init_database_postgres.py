@@ -625,6 +625,7 @@ def init_database():
             subregion TEXT NOT NULL,
             is_country BOOLEAN NOT NULL DEFAULT FALSE,
             include_in_quiz BOOLEAN DEFAULT FALSE,
+            has_children_artwork BOOLEAN DEFAULT FALSE,
             parent_country_iso3 TEXT,
             wikipedia_url TEXT,
             CONSTRAINT fk_parent_country FOREIGN KEY (parent_country_iso3) REFERENCES countries(iso3)
@@ -1022,6 +1023,20 @@ def init_database():
             children_artwork_count += 1
 
     print(f"✅ Inserted {children_artwork_count} children artwork images")
+
+    # Update has_children_artwork flag for countries with children artwork
+    print("🏁 Updating has_children_artwork flags...")
+    cursor.execute('''
+        UPDATE countries
+        SET has_children_artwork = TRUE
+        WHERE iso3 IN (
+            SELECT DISTINCT artist_iso3
+            FROM children_artwork_images
+            WHERE artist_iso3 IS NOT NULL
+        )
+    ''')
+    updated_count = cursor.rowcount
+    print(f"✅ Updated {updated_count} countries with has_children_artwork = TRUE")
 
     # Load Public Domain images (skip rows with Remove="yes") - use local_path column
     print(f"📚 Loading Public Domain images from: {PUBLIC_DOMAIN_CSV_PATH}")

@@ -160,12 +160,13 @@ def random_country():
     Return a random sovereign country (is_country = true).
 
     HTTP Method: GET
-    URL: http://localhost:5000/api/game/random-country?region=Africa&countriesOnly=true
+    URL: http://localhost:5000/api/game/random-country?region=Africa&countriesOnly=true&requireChildrenArtwork=true
     Purpose: Used by quiz game to select which country to show
 
     Query Parameters:
     - region (optional): Filter countries by continent (Africa, Americas, Asia, Europe, Oceania)
     - countriesOnly (optional): Only include sovereign countries (default: true)
+    - requireChildrenArtwork (optional): Only include countries with children artwork (default: false)
 
     Returns: JSON with one random country's details
     Example: {"country": {"iso": "JPN", "name": "Japan", ...}}
@@ -181,17 +182,20 @@ def random_country():
         # Get and validate optional query parameters
         region_param = request.args.get('region')
         countries_only_param = request.args.get('countriesOnly', 'true')
+        require_children_artwork_param = request.args.get('requireChildrenArtwork', 'false')
 
         # Validate region if provided
         region = validate_region(region_param) if region_param else None
 
-        # Validate boolean parameter
+        # Validate boolean parameters
         countries_only = validate_boolean(countries_only_param, 'countriesOnly')
+        require_children_artwork = validate_boolean(require_children_artwork_param, 'requireChildrenArtwork')
 
         # Build filter clauses
         query_params = []
         region_filter = ''
         countries_filter = ''
+        children_artwork_filter = ''
 
         if region:
             region_filter = 'AND c.continent = %s'
@@ -204,6 +208,10 @@ def random_country():
             # Include all countries/territories marked for quiz inclusion
             pass  # include_in_quiz already filters this
 
+        if require_children_artwork:
+            # Only include countries with children artwork (for first 2 questions)
+            children_artwork_filter = 'AND c.has_children_artwork = TRUE'
+
         countries = execute_query(f'''
             SELECT c.iso3, c.name, c.common_name, c.continent, c.subregion,
                    c.parent_country_iso3, c.wikipedia_url,
@@ -213,6 +221,7 @@ def random_country():
             WHERE c.include_in_quiz = TRUE
             {countries_filter}
             {region_filter}
+            {children_artwork_filter}
         ''', tuple(query_params))
 
         # Error handling: ensure countries exist

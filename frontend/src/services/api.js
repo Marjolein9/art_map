@@ -229,22 +229,23 @@ const apiCall = async (endpoint, options = {}, responseMapping = null) => {
 /**
  * Fetch a random country that has artwork
  *
- * ENDPOINT: GET /game/random-country?region=Africa&countriesOnly=true (optional)
+ * ENDPOINT: GET /game/random-country?region=Africa&countriesOnly=true&requireChildrenArtwork=true
  *
  * @param {string|null} region - Optional region filter (Africa, Americas, Asia, Europe, Oceania)
  * @param {boolean} [countriesOnly=true] - Only include sovereign countries
+ * @param {boolean} [requireChildrenArtwork=false] - Only include countries with children artwork
  * @returns {Promise<{iso3: string, name: string, continent: string, subregion: string}>} Country object
  *
  * @example
- * const country = await fetchRandomCountry('Europe', true);
+ * const country = await fetchRandomCountry('Europe', true, true);
  * // Returns: { iso3: 'ITA', name: 'Italy', continent: 'Europe', subregion: 'Southern Europe' }
  *
  * Python equivalent using requests library:
  *   import requests
- *   response = requests.get('http://localhost:5000/api/game/random-country?region=Africa&countriesOnly=true')
+ *   response = requests.get('http://localhost:5000/api/game/random-country?region=Africa&countriesOnly=true&requireChildrenArtwork=true')
  *   return response.json()['country']
  */
-export const fetchRandomCountry = async (region = null, countriesOnly = true) => {
+export const fetchRandomCountry = async (region = null, countriesOnly = true, requireChildrenArtwork = false) => {
   // Arrow function with optional parameters
   // async makes it return a Promise
 
@@ -254,6 +255,7 @@ export const fetchRandomCountry = async (region = null, countriesOnly = true) =>
     params.append('region', region);
   }
   params.append('countriesOnly', countriesOnly.toString());
+  params.append('requireChildrenArtwork', requireChildrenArtwork.toString());
 
   const endpoint = `/game/random-country?${params.toString()}`;
 

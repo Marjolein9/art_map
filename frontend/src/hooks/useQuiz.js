@@ -17,6 +17,9 @@ import { useState, useRef } from 'react';
 // useState: Manages state that triggers re-renders when updated
 // useRef: Creates persistent references that don't trigger re-renders
 
+// Import logger utility
+import { error as logError } from '../utils/logger';
+
 // Import API functions
 import { fetchRandomCountry, checkAnswer } from '../services/api';
 // fetchRandomCountry: Gets a random country from the backend
@@ -48,6 +51,9 @@ export const useQuiz = (backendReady, selectedRegion = null, quizCountriesOnly =
   // gameStatus: Current quiz state
   // Possible values: 'playing' (awaiting answer), 'correct' (right answer), 'incorrect' (wrong answer)
   const [gameStatus, setGameStatus] = useState('playing');
+
+  // questionNumber: Track which question we're on (1-based, for first 2 questions use children artwork)
+  const [questionNumber, setQuestionNumber] = useState(1);
 
   /**
    * REF VARIABLE
@@ -91,10 +97,16 @@ export const useQuiz = (backendReady, selectedRegion = null, quizCountriesOnly =
       // Reset to playing state
       setGameStatus('playing');
 
+      // For first 2 questions, only select countries with children artwork
+      const requireChildrenArtwork = questionNumber <= 2;
+
       // await: Pause here until fetchRandomCountry() completes
       // fetchRandomCountry() returns a Promise that resolves to country data
-      // Pass selectedRegion and quizCountriesOnly to filter countries
-      const country = await fetchRandomCountry(selectedRegion, quizCountriesOnly);
+      // Pass selectedRegion, quizCountriesOnly, and requireChildrenArtwork to filter countries
+      const country = await fetchRandomCountry(selectedRegion, quizCountriesOnly, requireChildrenArtwork);
+
+      // Increment question number for next question
+      setQuestionNumber(prev => prev + 1);
 
       // Create new country object with preferred display name
       const countryWithDisplayName = {
@@ -119,7 +131,7 @@ export const useQuiz = (backendReady, selectedRegion = null, quizCountriesOnly =
       // catch: Runs if any error occurs in the try block
       // err: The error object containing details about what went wrong
 
-      console.error('Error fetching random country:', err);
+      logError('Error fetching random country:', err);
 
       // Make sure to hide loading screen even if error occurs
       if (isInitialLoad.current) setLoading(false);
@@ -148,7 +160,7 @@ export const useQuiz = (backendReady, selectedRegion = null, quizCountriesOnly =
       // result.correct is a boolean (true/false)
       setGameStatus(result.correct ? 'correct' : 'incorrect');
     } catch (err) {
-      console.error('Error checking answer:', err);
+      logError('Error checking answer:', err);
     }
   };
 
