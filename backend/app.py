@@ -329,7 +329,7 @@ def get_images(iso3):
 
     met_museum = execute_query(f'''
         SELECT 'Met Museum' as collection_type,
-               filepath, title, artist_name, object_date,
+               object_url as filepath, title, artist_name, object_date,
                medium, department, culture, object_url
         FROM met_images
         WHERE iso3 = %s {nudity_filter}
@@ -418,7 +418,7 @@ def get_random_image(iso3):
             UNION ALL
 
             (SELECT 'Met Museum' as collection_type,
-                   filepath, title, NULL as location, NULL as date,
+                   object_url as filepath, title, NULL as location, NULL as date,
                    NULL as operator, NULL as inventory_number, NULL as page_url, NULL as mission, NULL as license,
                    artist_name, NULL as artist_nationality,
                    NULL as author_wikilink, NULL as work_url, NULL as source,
