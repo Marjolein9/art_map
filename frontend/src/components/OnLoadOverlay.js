@@ -203,7 +203,7 @@ const OnLoadOverlay = ({ onStartQuiz, onExplore, onClose }) => {
              * - component: Controls semantic HTML (for SEO and accessibility)
              * - Example: Want h4 styling but h1 semantics for page title
              */}
-            <Typography variant="h4" component="h1" sx={{ fontWeight: 600 }}>
+            <Typography variant="h4" component="h1" sx={{ fontWeight: 600, textAlign: 'center' }}>
               Geography & Public Domain
             </Typography>
 
