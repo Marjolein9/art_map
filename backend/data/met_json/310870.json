@@ -48,18 +48,18 @@
   "dimensions": "H. 25 3/16 x W. 7 7/8 x D. 6 1/2 in. (64 x 20 x 16.5 cm)",
   "measurements": [
     {
-      "elementName": "Other",
-      "elementDescription": null,
-      "elementMeasurements": {
-        "Width": 19.99
-      }
-    },
-    {
       "elementName": "Overall",
       "elementDescription": null,
       "elementMeasurements": {
         "Depth": 16.51,
         "Height": 64.008,
+        "Width": 19.99
+      }
+    },
+    {
+      "elementName": "Other",
+      "elementDescription": null,
+      "elementMeasurements": {
         "Width": 19.99
       }
     }

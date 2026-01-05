@@ -356,20 +356,20 @@ const ArtworkInfoBar = ({
             minHeight: totalImages === 0 ? '300px' : '80vh',
             maxHeight: totalImages === 0 ? '300px' : '80vh',
 
-            // Custom scrollbar styling - wider and more visible
+            // Custom scrollbar styling - wider and darker
             '&::-webkit-scrollbar': {
-              width: '14px',
+              width: '20px',
             },
             '&::-webkit-scrollbar-track': {
-              backgroundColor: '#e0e0e0',
-              borderRadius: '7px',
+              backgroundColor: '#d0d0d0',
+              borderRadius: '10px',
             },
             '&::-webkit-scrollbar-thumb': {
-              backgroundColor: '#666',
-              borderRadius: '7px',
-              border: '2px solid #e0e0e0',
+              backgroundColor: '#444',
+              borderRadius: '10px',
+              border: '3px solid #d0d0d0',
               '&:hover': {
-                backgroundColor: '#444',
+                backgroundColor: '#222',
               },
             },
           }

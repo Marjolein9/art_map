@@ -287,29 +287,10 @@ const QuizImageDisplay = ({ imagesByCollection, countryName, countryISO, onShowA
         case 'Public Domain Review':
           return (
             <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0.5 }}>
-              {/* Description with Public Domain Review article link to source_link */}
+              {/* Description with Source link to source_url */}
               {randomImage.description && (
                 <Typography variant="body2">
                   {randomImage.description}
-                  {randomImage.source_link && (
-                    <>
-                      {' - '}
-                      <Link
-                        href={randomImage.source_link}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        sx={{ color: COLOR_SCHEME.linkColor, textDecoration: 'underline' }}
-                      >
-                        Public Domain Review article
-                      </Link>
-                    </>
-                  )}
-                </Typography>
-              )}
-              {/* Title (italicized) with Source link to source_url */}
-              {randomImage.title && (
-                <Typography variant="body2">
-                  <em>{randomImage.title}</em>
                   {randomImage.source_url && (
                     <>
                       {' - '}
@@ -320,6 +301,25 @@ const QuizImageDisplay = ({ imagesByCollection, countryName, countryISO, onShowA
                         sx={{ color: COLOR_SCHEME.linkColor, textDecoration: 'underline' }}
                       >
                         Source
+                      </Link>
+                    </>
+                  )}
+                </Typography>
+              )}
+              {/* Title (italicized) with Public Domain Review article link to source_link */}
+              {randomImage.title && (
+                <Typography variant="body2">
+                  <em>{randomImage.title}</em>
+                  {randomImage.source_link && (
+                    <>
+                      {' - '}
+                      <Link
+                        href={randomImage.source_link}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        sx={{ color: COLOR_SCHEME.linkColor, textDecoration: 'underline' }}
+                      >
+                        Public Domain Review article
                       </Link>
                     </>
                   )}

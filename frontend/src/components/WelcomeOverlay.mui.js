@@ -162,29 +162,10 @@ const WelcomeOverlay = ({
       case 'Public Domain Review':
         return (
           <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1, textAlign: 'center' }}>
-            {/* Description with Public Domain Review article link to source_link */}
+            {/* Description with Source link to source_url */}
             {image.description && (
               <Typography variant="body2">
                 {image.description}
-                {image.source_link && (
-                  <>
-                    {' - '}
-                    <MuiLink
-                      href={image.source_link}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      sx={{ color: colors.linkColor, textDecoration: 'underline' }}
-                    >
-                      Public Domain Review article
-                    </MuiLink>
-                  </>
-                )}
-              </Typography>
-            )}
-            {/* Title (italicized) with Source link to source_url */}
-            {image.title && (
-              <Typography variant="body2">
-                <em>{image.title}</em>
                 {image.source_url && (
                   <>
                     {' - '}
@@ -195,6 +176,25 @@ const WelcomeOverlay = ({
                       sx={{ color: colors.linkColor, textDecoration: 'underline' }}
                     >
                       Source
+                    </MuiLink>
+                  </>
+                )}
+              </Typography>
+            )}
+            {/* Title (italicized) with Public Domain Review article link to source_link */}
+            {image.title && (
+              <Typography variant="body2">
+                <em>{image.title}</em>
+                {image.source_link && (
+                  <>
+                    {' - '}
+                    <MuiLink
+                      href={image.source_link}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      sx={{ color: colors.linkColor, textDecoration: 'underline' }}
+                    >
+                      Public Domain Review article
                     </MuiLink>
                   </>
                 )}

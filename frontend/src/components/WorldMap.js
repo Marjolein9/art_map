@@ -79,7 +79,7 @@ const WorldMap = ({
   setShowWelcome,         // Function to show/hide the welcome overlay
 }) => {
   // Get game settings from context instead of props
-  const { hintsEnabled, selectedQuizRegion } = useGameSettings();
+  const { hintsEnabled, selectedQuizRegion, quizCountriesOnly } = useGameSettings();
   // Store colors in a constant for easy access throughout the component
   const COLORS = colors;
 
@@ -225,9 +225,14 @@ const WorldMap = ({
         initializeCountryMapping(dbCountries);
 
         // Filter to only include countries/territories that are marked for quiz inclusion
-        // This includes all sovereign countries AND the 7 territories with clickable geometries
-        // (Greenland, Puerto Rico, French Polynesia, New Caledonia, Guam, Curaçao, Aruba)
-        const validCountries = dbCountries.filter(c => c.include_in_quiz);
+        // When quizCountriesOnly is true, only include sovereign countries (is_country = true)
+        // When quizCountriesOnly is false, include all entities with include_in_quiz = true
+        // (sovereign countries + territories like Greenland, Puerto Rico, French Polynesia, etc.)
+        const validCountries = dbCountries.filter(c => {
+          if (!c.include_in_quiz) return false;
+          if (quizCountriesOnly) return c.is_country;
+          return true;
+        });
         setAllCountries(validCountries);
 
         // Load TopoJSON map data
@@ -274,7 +279,7 @@ const WorldMap = ({
 
     // Call the async function we just defined
     loadData();
-  }, [backendReady]); // Re-run this effect when backendReady changes
+  }, [backendReady, quizCountriesOnly]); // Re-run this effect when backendReady or quizCountriesOnly changes
 
   /**
    * HINTS SYSTEM

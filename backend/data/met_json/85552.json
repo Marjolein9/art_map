@@ -38,13 +38,6 @@
   "dimensions": "Length at CB: 60 in. (152.4 cm)",
   "measurements": [
     {
-      "elementName": "Width",
-      "elementDescription": null,
-      "elementMeasurements": {
-        "Width": 274.3205
-      }
-    },
-    {
       "elementName": "Length at CF",
       "elementDescription": null,
       "elementMeasurements": {
@@ -56,6 +49,13 @@
       "elementDescription": null,
       "elementMeasurements": {
         "Length": 152.4003
+      }
+    },
+    {
+      "elementName": "Width",
+      "elementDescription": null,
+      "elementMeasurements": {
+        "Width": 274.3205
       }
     }
   ],

@@ -44,20 +44,20 @@
   "dimensions": "18 13/16 × 23 1/2 in. (47.8 × 59.7 cm)",
   "measurements": [
     {
-      "elementName": "Overall",
-      "elementDescription": "Canvas",
-      "elementMeasurements": {
-        "Height": 47.8,
-        "Width": 59.7
-      }
-    },
-    {
       "elementName": "Framed",
       "elementDescription": null,
       "elementMeasurements": {
         "Depth": 2.8575058,
         "Height": 66.99264,
         "Width": 78.74016
+      }
+    },
+    {
+      "elementName": "Overall",
+      "elementDescription": "Canvas",
+      "elementMeasurements": {
+        "Height": 47.8,
+        "Width": 59.7
       }
     }
   ],

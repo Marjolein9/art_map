@@ -59,6 +59,7 @@ ECU,EC,Ecuador,Ecuador,218,Americas,South America,True,True,False,,https://en.wi
 SLV,SV,El Salvador,El Salvador,222,Americas,Central America,True,True,False,,https://en.wikipedia.org/wiki/El_Salvador
 GNQ,GQ,Equatorial Guinea,Equatorial Guinea,226,Africa,Middle Africa,True,True,False,,https://en.wikipedia.org/wiki/Equatorial_Guinea
 ERI,ER,Eritrea,Eritrea,232,Africa,Eastern Africa,True,True,False,,https://en.wikipedia.org/wiki/Eritrea
+EST,EE,Estonia,Estonia,233,Europe,Northern Europe,True,True,False,,https://en.wikipedia.org/wiki/Estonia
 SWZ,SZ,Eswatini,Eswatini,748,Africa,Southern Africa,True,True,False,,https://en.wikipedia.org/wiki/Eswatini
 ETH,ET,Ethiopia,Ethiopia,231,Africa,Eastern Africa,True,True,False,,https://en.wikipedia.org/wiki/Ethiopia
 FLK,FK,Falkland Islands (Malvinas),Falkland Islands (Malvinas),238,Americas,South America,False,True,False,,https://en.wikipedia.org/wiki/Falkland_Islands_%28Malvinas%29
@@ -214,7 +215,6 @@ COL,CO,Colombia,Colombia,170,Americas,South America,True,True,True,,https://en.w
 CZE,CZ,Czechia,Czechia,203,Europe,Eastern Europe,True,True,True,,https://en.wikipedia.org/wiki/Czechia
 DNK,DK,Denmark,Denmark,208,Europe,Northern Europe,True,True,True,,https://en.wikipedia.org/wiki/Denmark
 EGY,EG,Egypt,Egypt,818,Africa,Northern Africa,True,True,True,,https://en.wikipedia.org/wiki/Egypt
-EST,EE,Estonia,Estonia,233,Europe,Northern Europe,True,True,True,,https://en.wikipedia.org/wiki/Estonia
 FIN,FI,Finland,Finland,246,Europe,Northern Europe,True,True,True,,https://en.wikipedia.org/wiki/Finland
 FRA,FR,France,France,250,Europe,Western Europe,True,True,True,,https://en.wikipedia.org/wiki/France
 GEO,GE,Georgia,Georgia,268,Asia,Western Asia,True,True,True,,https://en.wikipedia.org/wiki/Georgia
@@ -238,7 +238,7 @@ KOR,KR,Republic of Korea,South Korea,410,Asia,Eastern Asia,True,True,True,,https
 ROU,RO,Romania,Romania,642,Europe,Eastern Europe,True,True,True,,https://en.wikipedia.org/wiki/Romania
 RUS,RU,Russian Federation,Russia,643,Europe,Eastern Europe,True,True,True,,https://en.wikipedia.org/wiki/Russia
 SVN,SI,Slovenia,Slovenia,705,Europe,Southern Europe,True,True,True,,https://en.wikipedia.org/wiki/Slovenia
-PSE,PS,State of Palestine,Palestine,275,Asia,Western Asia,True,True,True,,https://en.wikipedia.org/wiki/Palestine
+PSE,PS,State of Palestine,Palestine,275,Asia,Western Asia,False,True,True,,https://en.wikipedia.org/wiki/Palestine
 SWE,SE,Sweden,Sweden,752,Europe,Northern Europe,True,True,True,,https://en.wikipedia.org/wiki/Sweden
 CHE,CH,Switzerland,Switzerland,756,Europe,Western Europe,True,True,True,,https://en.wikipedia.org/wiki/Switzerland
 TUR,TR,Türkiye,Türkiye,792,Asia,Western Asia,True,True,True,,https://en.wikipedia.org/wiki/T%C3%BCrkiye
