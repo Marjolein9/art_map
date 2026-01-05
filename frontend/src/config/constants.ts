@@ -11,7 +11,7 @@ export const TIMING = {
   /** Time between backend reconnection attempts */
   BACKEND_RETRY_DELAY: 10000,
   /** Delay before triggering country click in explore mode */
-  COUNTRY_CLICK_DELAY: 3000,
+  COUNTRY_CLICK_DELAY: 1000,
   /** Timeout for hints fetch operation */
   HINTS_TIMEOUT: 5000,
 } as const;
