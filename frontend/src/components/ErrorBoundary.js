@@ -50,6 +50,7 @@
 
 import React from 'react';
 import COLOR_SCHEME from '../styles/colorSchemes';
+import { error as logError } from '../utils/logger';
 
 class ErrorBoundary extends React.Component {
   /**
@@ -122,9 +123,9 @@ class ErrorBoundary extends React.Component {
     }));
 
     // Log error for debugging
-    console.error('Error caught by ErrorBoundary:');
-    console.error('Error:', error);
-    console.error('Component Stack:', errorInfo.componentStack);
+    logError('Error caught by ErrorBoundary:');
+    logError('Error:', error);
+    logError('Component Stack:', errorInfo.componentStack);
 
     // In production, you'd send this to an error reporting service
     // Example: Sentry, LogRocket, Bugsnag

@@ -42,6 +42,7 @@
  */
 
 import { useState, useEffect, useCallback } from 'react';
+import { warn, error as logError } from '../utils/logger';
 
 /**
  * Custom hook for handling async API calls with standardized error management.
@@ -142,7 +143,7 @@ const useAsyncError = (asyncFunction, dependencies = [], maxRetries = 3) => {
         // Wait before retrying (exponential backoff)
         // 1st retry: wait 1s, 2nd retry: wait 2s, etc.
         const delay = Math.pow(2, retryAttempt) * 1000;
-        console.warn(`Retrying in ${delay}ms (attempt ${retryAttempt + 1}/${maxRetries})`);
+        warn(`Retrying in ${delay}ms (attempt ${retryAttempt + 1}/${maxRetries})`);
 
         setTimeout(() => {
           executeAsync(retryAttempt + 1);
@@ -165,7 +166,7 @@ const useAsyncError = (asyncFunction, dependencies = [], maxRetries = 3) => {
         setState(errorState);
 
         // Log error for debugging
-        console.error('Async operation failed:', {
+        logError('Async operation failed:', {
           error: err,
           retryAttempt,
           maxRetries

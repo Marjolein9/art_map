@@ -38,6 +38,13 @@
   "measurements": [
     {
       "elementName": "Length at CB",
+      "elementDescription": "a",
+      "elementMeasurements": {
+        "Length": 81.28016
+      }
+    },
+    {
+      "elementName": "Length at CB",
       "elementDescription": "d",
       "elementMeasurements": {
         "Length": 55.88011
@@ -55,13 +62,6 @@
       "elementDescription": "b",
       "elementMeasurements": {
         "Length": 63.500126
-      }
-    },
-    {
-      "elementName": "Length at CB",
-      "elementDescription": "a",
-      "elementMeasurements": {
-        "Length": 81.28016
       }
     }
   ],

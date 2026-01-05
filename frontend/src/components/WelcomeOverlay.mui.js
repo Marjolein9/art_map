@@ -24,43 +24,36 @@ import {
 import { ThemeProvider } from '@mui/material/styles';
 import { welcomeExamples } from '../data/welcomeExamples';
 import muiTheme from '../theme/muiTheme';
+import { getSourceDisplayName, getSourceUrl } from '../utils/sourceHelpers';
+import { useGameSettings } from '../contexts/GameSettingsContext';
+import { useContentSettings } from '../contexts/ContentSettingsContext';
 
 const WelcomeOverlay = ({
   onClose,
   colors,
   mode,
   onModeToggle,
-  hintsEnabled,
-  setHintsEnabled,
-  selectedQuizRegion,
-  setSelectedQuizRegion,
-  showNudity,
-  setShowNudity,
-  quizCountriesOnly,
-  setQuizCountriesOnly,
   onRegionChange
 }) => {
+  // Get game settings from context
+  const {
+    hintsEnabled,
+    setHintsEnabled,
+    selectedQuizRegion,
+    setSelectedQuizRegion,
+    quizCountriesOnly,
+    setQuizCountriesOnly,
+  } = useGameSettings();
+
+  // Get content settings from context
+  const {
+    showNudity,
+    setShowNudity,
+  } = useContentSettings();
+
   const [isClosing, setIsClosing] = useState(false);
 
-  // Helper function to map source field to display names
-  const getSourceDisplayName = (source) => {
-    const mapping = {
-      'wiki commons': 'Wikimedia Commons',
-      'chicago': 'Art Institute of Chicago',
-      'smithsonian': 'Smithsonian American Art Museum'
-    };
-    return mapping[source?.toLowerCase()] || source;
-  };
-
-  // Helper function to get source URL for Children in Art
-  const getSourceUrl = (source) => {
-    const mapping = {
-      'wiki commons': 'https://commons.wikimedia.org/',
-      'chicago': 'https://www.artic.edu/',
-      'smithsonian': 'https://www.si.edu/'
-    };
-    return mapping[source?.toLowerCase()] || null;
-  };
+  // Source mapping functions imported from shared utility
 
   // Helper function to get image link URL based on collection type
   const getImageLinkUrl = (image) => {

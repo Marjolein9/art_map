@@ -47,7 +47,13 @@ import { getPathColor, getPathStrokeColor } from '../utils/pastelColorPalette';
 // Functions that determine what colors to use for country borders
 
 import { getDisplayName } from '../utils/displayHelpers';
+
+import { debug, error as logError } from '../utils/logger';
+// Logger utility for environment-aware logging
 // Helper function to format country/territory names as "Territory (Parent Country)"
+
+import { useGameSettings } from '../contexts/GameSettingsContext';
+// Context hook for accessing game settings without prop drilling
 
 /**
  * WorldMap Component Definition
@@ -71,9 +77,9 @@ const WorldMap = ({
   countryLookup = {},     // Object mapping country codes to country data
   backendReady = false,   // Whether the backend server is ready to accept requests
   setShowWelcome,         // Function to show/hide the welcome overlay
-  hintsEnabled = false,   // Whether hints are enabled (show neighboring countries)
-  selectedQuizRegion = null, // Selected region for filtering quiz questions
 }) => {
+  // Get game settings from context instead of props
+  const { hintsEnabled, selectedQuizRegion } = useGameSettings();
   // Store colors in a constant for easy access throughout the component
   const COLORS = colors;
 
@@ -262,7 +268,7 @@ const WorldMap = ({
         setCountryPaths(paths);
       } catch (err) {
         // If any error occurs in the try block, this code runs
-        console.error('Error loading country data:', err);
+        logError('Error loading country data:', err);
       }
     };
 
@@ -325,21 +331,21 @@ const WorldMap = ({
 
           highlightM49s.push(...subregionM49s);
 
-          console.log(`🎯 Highlighting entire ${targetSubregion} subregion (${subregionM49s.length} countries)`);
+          debug(`🎯 Highlighting entire ${targetSubregion} subregion (${subregionM49s.length} countries)`);
 
           // Template literal (`string ${variable}`) embeds variables in strings
-          console.log(`✅ HINTS FETCHED for ${targetCountry}: ${highlightM49s.length} countries (including target)`, highlightM49s);
+          debug(`✅ HINTS FETCHED for ${targetCountry}: ${highlightM49s.length} countries (including target)`, highlightM49s);
           setHintNeighborsM49(highlightM49s);
 
           // Remember which country we fetched hints for
           hintCountryRef.current = targetCountry;
 
         } catch (err) {
-          console.error('❌ Error fetching hints:', err);
+          logError('❌ Error fetching hints:', err);
         }
       } else {
         // Clear hints when not in quiz mode or hints disabled
-        console.log(`🚫 HINTS DISABLED or not in quiz mode`);
+        debug(`🚫 HINTS DISABLED or not in quiz mode`);
         setHintNeighborsM49([]);
         hintCountryRef.current = null;
       }

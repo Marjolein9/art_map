@@ -9,6 +9,8 @@
  * which uses the UN M49 standard as single source of truth.
  */
 
+import { warn } from './logger';
+
 // Store the M49→ISO3 mapping built from API data
 let m49ToIso3Mapping = {};
 
@@ -28,7 +30,7 @@ export const initializeCountryMapping = (countries) => {
   warnedM49Codes.clear(); // Clear warnings on re-initialization
 
   if (!countries || !Array.isArray(countries)) {
-    console.warn('⚠️ No countries data provided for mapping');
+    warn('⚠️ No countries data provided for mapping');
     return;
   }
 
@@ -68,7 +70,7 @@ export const getCountryIsoCode = (feature) => {
   // Only warn once per unique M49 code to avoid spam
   if (paddedM49 && !warnedM49Codes.has(paddedM49)) {
     warnedM49Codes.add(paddedM49);
-    console.warn(`⚠️ No M49 mapping for country: ${name || 'Unknown'} (M49: ${paddedM49})`);
+    warn(`⚠️ No M49 mapping for country: ${name || 'Unknown'} (M49: ${paddedM49})`);
   }
 
   return null;

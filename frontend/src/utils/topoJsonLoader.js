@@ -9,6 +9,7 @@
 
 import * as topojson from 'topojson-client';
 import { getCountryIsoCode } from './countryCodeMapping';
+import { warn } from './logger';
 
 // Cache for TopoJSON files to avoid reloading
 const topoJSONCache = {
@@ -150,7 +151,7 @@ export const loadTopoJSON = async (countriesFromDB = []) => {
 
     const stillMissing = missingCountries.filter(iso => !addedCountries.includes(iso));
     if (stillMissing.length > 0) {
-      console.warn(`⚠️  Still missing ${stillMissing.length} countries:`, stillMissing);
+      warn(`⚠️  Still missing ${stillMissing.length} countries:`, stillMissing);
     }
   } else {
   }

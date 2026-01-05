@@ -12,6 +12,12 @@ import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import COLOR_SCHEME from '../styles/colorSchemes';
 import { API_BASE } from '../utils/apiConfig';
+import { debug, warn, error as logError } from '../utils/logger';
+import {
+  getSourceInfo as getSourceInfoUtil,
+  getSourceDisplayName as getSourceDisplayNameUtil,
+  getSourceUrl as getSourceUrlUtil
+} from '../utils/sourceHelpers';
 
 /**
  * ImageGallery Component (MUI Version)
@@ -65,7 +71,7 @@ const ImageGallery = ({
     Promise.all(imagePromises).then((heights) => {
       const tallest = Math.max(...heights, 150);
       setMaxHeight(tallest);
-      console.log(`📏 Carousel max height set to ${tallest}px for ${collection}`);
+      debug(`📏 Carousel max height set to ${tallest}px for ${collection}`);
     });
   }, [images, collection]);
 
@@ -74,38 +80,10 @@ const ImageGallery = ({
   const currentImage = images[currentIndex] || images[0];
   const hasMultiple = images.length > 1;
 
-  const getSourceInfo = (source) => {
-    switch(source?.toLowerCase()) {
-      case 'smithsonian':
-        return { name: 'Smithsonian', url: 'https://www.si.edu/explore/art' };
-      case 'wiki commons':
-        return { name: 'Wikimedia Commons', url: 'https://commons.wikimedia.org/wiki/Main_Page' };
-      case 'chicago':
-        return { name: 'Art Institute of Chicago', url: 'https://www.artic.edu/' };
-      default:
-        return null;
-    }
-  };
-
-  // Helper function to map source field to display names
-  const getSourceDisplayName = (source) => {
-    const mapping = {
-      'wiki commons': 'Wikimedia Commons',
-      'chicago': 'Art Institute of Chicago',
-      'smithsonian': 'Smithsonian American Art Museum'
-    };
-    return mapping[source?.toLowerCase()] || source;
-  };
-
-  // Helper function to get source URL for Children in Art
-  const getSourceUrl = (source) => {
-    const mapping = {
-      'wiki commons': 'https://commons.wikimedia.org/',
-      'chicago': 'https://www.artic.edu/',
-      'smithsonian': 'https://www.si.edu/'
-    };
-    return mapping[source?.toLowerCase()] || null;
-  };
+  // Use shared utility functions for source mapping
+  const getSourceInfo = getSourceInfoUtil;
+  const getSourceDisplayName = getSourceDisplayNameUtil;
+  const getSourceUrl = getSourceUrlUtil;
 
   // Helper function to get type subtitle based on collection
   const getTypeSubtitle = (collectionType) => {
@@ -418,7 +396,7 @@ const ImageGallery = ({
                   ? currentImage.filepath
                   : `${API_BASE}/${currentImage.filepath}`;
 
-                console.log('✅ Image loaded:', {
+                debug('✅ Image loaded:', {
                   title: currentImage.title || 'Untitled',
                   collection: collection,
                   naturalDimensions: `${img.naturalWidth}x${img.naturalHeight}`,
@@ -429,7 +407,7 @@ const ImageGallery = ({
                 });
 
                 if (img.naturalWidth > 2000 || img.naturalHeight > 2000) {
-                  console.warn('⚠️ Large image detected:', currentImage.filepath,
+                  warn('⚠️ Large image detected:', currentImage.filepath,
                     `${img.naturalWidth}x${img.naturalHeight}`);
                 }
               }}
@@ -438,7 +416,7 @@ const ImageGallery = ({
                   ? currentImage.filepath
                   : `${API_BASE}/${currentImage.filepath}`;
 
-                console.error('❌ Image failed to load:', {
+                logError('❌ Image failed to load:', {
                   title: currentImage.title || 'Untitled',
                   collection: collection,
                   filepath: currentImage.filepath,
