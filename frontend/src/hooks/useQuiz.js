@@ -98,7 +98,7 @@ export const useQuiz = (backendReady, selectedRegion = null, quizCountriesOnly =
       setGameStatus('playing');
 
       // For first 2 questions, only select countries with children artwork
-      const requireChildrenArtwork = questionNumber <= 2;
+      const requireChildrenArtwork = questionNumber <= 3;
 
       // await: Pause here until fetchRandomCountry() completes
       // fetchRandomCountry() returns a Promise that resolves to country data

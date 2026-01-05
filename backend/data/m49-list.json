@@ -3381,7 +3381,7 @@
       "nameRU": "Государство Палестина",
       "nameZH": "巴勒斯坦国",
       "nameAR": " دولة فلسطين",
-      "is_country": false,
+      "is_country": true,
       "common_name": "Palestine"
     },
     {
