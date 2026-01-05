@@ -287,7 +287,7 @@ const QuizImageDisplay = ({ imagesByCollection, countryName, countryISO, onShowA
         case 'Public Domain Review':
           return (
             <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0.5 }}>
-              {/* Description with Source link to source_link */}
+              {/* Description with Public Domain Review article link to source_link */}
               {randomImage.description && (
                 <Typography variant="body2">
                   {randomImage.description}
@@ -300,16 +300,16 @@ const QuizImageDisplay = ({ imagesByCollection, countryName, countryISO, onShowA
                         rel="noopener noreferrer"
                         sx={{ color: COLOR_SCHEME.linkColor, textDecoration: 'underline' }}
                       >
-                        Source
+                        Public Domain Review article
                       </Link>
                     </>
                   )}
                 </Typography>
               )}
-              {/* Title with Source link to source_url */}
+              {/* Title (italicized) with Source link to source_url */}
               {randomImage.title && (
                 <Typography variant="body2">
-                  {randomImage.title}
+                  <em>{randomImage.title}</em>
                   {randomImage.source_url && (
                     <>
                       {' - '}

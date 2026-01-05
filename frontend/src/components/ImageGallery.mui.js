@@ -209,39 +209,44 @@ const ImageGallery = ({
       case 'Public Domain Review':
         return (
           <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
-            {/* Description (plain text, NOT linked) */}
+            {/* Description with Public Domain Review article link to source_link */}
             {image.description && (
               <Typography variant="body2" sx={{ color: COLOR_SCHEME.textPrimary }}>
                 {image.description}
+                {image.source_link && (
+                  <>
+                    {' - '}
+                    <Link
+                      href={image.source_link}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      sx={{ color: COLOR_SCHEME.linkColor, textDecoration: 'underline' }}
+                    >
+                      Public Domain Review article
+                    </Link>
+                  </>
+                )}
               </Typography>
             )}
-            {/* Source - Public Domain Review: Title (source and PDR linked, title plain text) */}
-            <Typography variant="body2" sx={{ color: COLOR_SCHEME.textPrimary }}>
-              {image.source_link && (
-                <>
-                  <Link
-                    href={image.source_link}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    sx={{ color: COLOR_SCHEME.linkColor, textDecoration: 'underline' }}
-                  >
-                    Source
-                  </Link>
-                  {' - '}
-                </>
-              )}
-              {image.source_url && (
-                <Link
-                  href={image.source_url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  sx={{ color: COLOR_SCHEME.linkColor, textDecoration: 'underline' }}
-                >
-                  Public Domain Review
-                </Link>
-              )}
-              {image.title && `: ${image.title}`}
-            </Typography>
+            {/* Title (italicized) with Source link to source_url */}
+            {image.title && (
+              <Typography variant="body2" sx={{ color: COLOR_SCHEME.textPrimary }}>
+                <em>{image.title}</em>
+                {image.source_url && (
+                  <>
+                    {' - '}
+                    <Link
+                      href={image.source_url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      sx={{ color: COLOR_SCHEME.linkColor, textDecoration: 'underline' }}
+                    >
+                      Source
+                    </Link>
+                  </>
+                )}
+              </Typography>
+            )}
           </Box>
         );
       case 'Met Museum':

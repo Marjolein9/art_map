@@ -124,11 +124,13 @@ def process_met_data():
     # Read met.csv
     print(f"\n📖 Reading {MET_CSV_PATH}...")
     met_entries = []
+    nudity_map = {}  # Map object_id to nudity value
     with open(MET_CSV_PATH, 'r', encoding='utf-8') as f:
         reader = csv.DictReader(f)
         for row in reader:
             # Extract object_id from source_link URL
             source_link = row.get('source_link', '').strip()
+            nudity_value = row.get('Nudity', '').strip()
             if source_link and '/search/' in source_link:
                 # Extract numeric ID from URL like: https://www.metmuseum.org/art/collection/search/316173
                 try:
@@ -140,11 +142,15 @@ def process_met_data():
                             'object_id': object_id,
                             'accession_number': row.get('Object_id', '').strip()
                         })
+                        # Store nudity value for this object_id
+                        if nudity_value:
+                            nudity_map[object_id] = nudity_value
                 except (ValueError, TypeError) as e:
                     logger.warning(f"Invalid object ID format in row: {row.get('Object_id', 'N/A')}, error: {e}")
                     continue
 
     print(f"✓ Found {len(met_entries)} entries with object IDs")
+    print(f"✓ Found {len(nudity_map)} entries with nudity data")
 
     if len(met_entries) == 0:
         print("⚠️  No entries with object IDs found in met.csv")
@@ -195,6 +201,7 @@ def process_met_data():
                 'medium': data.get('medium', ''),
                 'department': data.get('department', ''),
                 'culture': data.get('culture', ''),
+                'nudity': nudity_map.get(object_id, ''),
                 'object_url': data.get('objectURL', ''),
                 'primary_image_url': primary_image,
                 'filepath': '',
@@ -237,6 +244,7 @@ def process_met_data():
             'medium': data.get('medium', ''),
             'department': data.get('department', ''),
             'culture': data.get('culture', ''),
+            'nudity': nudity_map.get(object_id, ''),
             'object_url': data.get('objectURL', ''),
             'primary_image_url': primary_image,
             'filepath': image_path,
@@ -255,7 +263,7 @@ def process_met_data():
         with open(OUTPUT_CSV_PATH, 'w', newline='', encoding='utf-8') as f:
             fieldnames = [
                 'object_id', 'iso3', 'country_name', 'title', 'artist_name',
-                'object_date', 'medium', 'department', 'culture', 'object_url',
+                'object_date', 'medium', 'department', 'culture', 'nudity', 'object_url',
                 'primary_image_url', 'filepath', 'json_file'
             ]
             writer = csv.DictWriter(f, fieldnames=fieldnames)

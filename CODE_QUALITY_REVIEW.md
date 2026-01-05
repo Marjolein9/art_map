@@ -418,7 +418,7 @@ def get_images(iso3):
 export const TIMING = {
   STATE_UPDATE_DELAY: 100,  // ms - Give React time to batch state updates
   BACKEND_RETRY_DELAY: 10000,  // ms - 10 seconds between backend reconnection attempts
-  COUNTRY_CLICK_DELAY: 3000,  // ms - Delay before triggering country click in explore mode
+  COUNTRY_CLICK_DELAY: 1000,  // ms - Delay before triggering country click in explore mode
   HINTS_TIMEOUT: 5000,  // ms - Timeout for hints fetch operation
 };
 
