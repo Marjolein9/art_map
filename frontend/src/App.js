@@ -528,6 +528,7 @@ function AppContent() {
             <button className="disclaimer-link" onClick={() => setDisclaimerOpen(true)}>
               Disclaimer
             </button>
+              <span className="footer-author">Created by: Marjolein Oostrom</span>
           </div>
         </div>
       </div>
