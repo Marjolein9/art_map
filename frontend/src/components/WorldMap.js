@@ -392,7 +392,8 @@ const WorldMap = ({
   }, [targetCountry, targetCountryName, mode]);
 
   // Determine which hints to show (empty if "Show Me" was clicked)
-  const activeHints = showMeActivated ? [] : hintNeighborsM49;
+  // Moved activeHints calculation into useMemo to fix dependency warning
+  // const activeHints = showMeActivated ? [] : hintNeighborsM49;
 
   // Clear explore selection when switching modes
   useEffect(() => {
@@ -554,6 +555,7 @@ const WorldMap = ({
   // Build layered paths for rendering (base countries + hint overlays + show-me overlay)
   const layeredPaths = useMemo(() => {
     const paths = [];
+    const activeHints = showMeActivated ? [] : hintNeighborsM49;
 
     // Timestamp ensures paths update when needed (forces re-render in Globe component)
     const timestamp = Date.now();
@@ -611,7 +613,7 @@ const WorldMap = ({
     }
 
     return paths;
-  }, [countryPaths, activeHints, showMeActivated, targetCountry, mode, exploreSelectedCountry]);
+  }, [countryPaths, showMeActivated, targetCountry, mode, exploreSelectedCountry, hintNeighborsM49]);
   // Only recalculate when these dependencies change
 
   /**

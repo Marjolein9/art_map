@@ -216,11 +216,13 @@ export const getPathStrokeColor = (path, isHintOverlay, isShowMeOverlay, hintsEn
  * This file uses both! Named exports for individual functions,
  * and a default export that bundles them together.
  */
-export default {
+const pastelColorPalette = {
   getPastelColorForCountry,
   getPathColor,
   getPathStrokeColor,
 };
+
+export default pastelColorPalette;
 
 /**
  * USAGE EXAMPLES:

@@ -83,6 +83,7 @@ const ArtworkInfoBar = ({
 
   // currentImageIndex: Object tracking which image is displayed for each collection
   // Example: { "albert_kahn": 2, "children_artwork": 0 } means showing 3rd and 1st images
+  // eslint-disable-next-line no-unused-vars
   const [currentImageIndex, setCurrentImageIndex] = useState({});
 
   // overlayVisible: Controls whether the overlay is shown
@@ -195,6 +196,7 @@ const ArtworkInfoBar = ({
    */
 
   // Navigate to next image in a collection
+  // eslint-disable-next-line no-unused-vars
   const nextImage = (collection) => {
     const images = imagesByCollection[collection];
     if (!images) return;
@@ -210,6 +212,7 @@ const ArtworkInfoBar = ({
   };
 
   // Navigate to previous image in a collection
+  // eslint-disable-next-line no-unused-vars
   const prevImage = (collection) => {
     const images = imagesByCollection[collection];
     if (!images) return;
@@ -256,6 +259,7 @@ const ArtworkInfoBar = ({
   if (!countryISO) return null;
 
   // Extract collection names and filter by selected collections
+  // eslint-disable-next-line no-unused-vars
   const collections = Object.keys(imagesByCollection).filter(collection =>
     selectedCollections.includes(collection)
   );

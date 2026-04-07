@@ -11,7 +11,6 @@ import {
 import COLOR_SCHEME from '../styles/colorSchemes';
 import { API_BASE } from '../utils/apiConfig';
 import {
-  getSourceInfo,
   getSourceDisplayName,
   getSourceUrl
 } from '../utils/sourceHelpers';

@@ -51,6 +51,7 @@ const WelcomeOverlay = ({
     setShowNudity,
   } = useContentSettings();
 
+  // eslint-disable-next-line no-unused-vars
   const [isClosing, setIsClosing] = useState(false);
 
   // Source mapping functions imported from shared utility

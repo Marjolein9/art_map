@@ -14,7 +14,9 @@ export const API_BASE = API_URL.replace('/api', '');
 // Full API URL (with /api suffix) - used for API calls
 export const API_URL_FULL = API_URL;
 
-export default {
+const apiConfig = {
   API_BASE,
   API_URL: API_URL_FULL,
 };
+
+export default apiConfig;
