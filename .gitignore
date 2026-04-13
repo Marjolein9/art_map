@@ -75,3 +75,8 @@ temp/
 
 # Project-specific
 background_work/
+
+# Large image collections (from iNaturalist API scraping)
+backend/images/*/inaturalist/
+backend/data/observations-*.csv
+
