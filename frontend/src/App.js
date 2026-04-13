@@ -8,6 +8,7 @@
 import { useState, useEffect } from 'react';
 import { ThemeProvider } from '@mui/material/styles';
 import { SpeedInsights } from '@vercel/speed-insights/react';
+import { Analytics } from '@vercel/analytics/react';
 import muiTheme from './theme/muiTheme';
 import './styles/App.css';
 import './styles/components.css';
@@ -549,6 +550,7 @@ function App() {
       <ContentSettingsProvider>
         <AppContent />
         <SpeedInsights />
+        <Analytics />
       </ContentSettingsProvider>
     </GameSettingsProvider>
   );
