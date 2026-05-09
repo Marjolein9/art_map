@@ -1,88 +1,109 @@
 import { createTheme } from '@mui/material/styles';
 import COLOR_SCHEME from '../styles/colorSchemes';
 
-/**
- * MUI Theme - Black & White Color Scheme
- * 
- * Uses the single source of truth from COLOR_SCHEME
- * Customizes Material-UI components to use black/white palette
- */
 const muiTheme = createTheme({
   palette: {
     primary: {
-      main: COLOR_SCHEME.textPrimary,      // Black
-      light: COLOR_SCHEME.textSecondary,   // Gray-600
-      dark: COLOR_SCHEME.textPrimary,      // Black
-      contrastText: COLOR_SCHEME.bgPrimary, // White
+      main: COLOR_SCHEME.textPrimary,
+      light: COLOR_SCHEME.textSecondary,
+      dark: COLOR_SCHEME.textPrimary,
+      contrastText: COLOR_SCHEME.paper,
     },
     secondary: {
-      main: COLOR_SCHEME.linkColor,        // Blue for links
-      light: COLOR_SCHEME.linkColor,
-      dark: COLOR_SCHEME.textPrimary,
-      contrastText: COLOR_SCHEME.white,
+      main: COLOR_SCHEME.accent,
+      light: COLOR_SCHEME.accentAlt,
+      dark: '#7a2c14',
+      contrastText: COLOR_SCHEME.paper,
     },
     background: {
-      default: COLOR_SCHEME.bgPrimary,     // White
-      paper: COLOR_SCHEME.bgSecondary,     // Light gray
+      default: COLOR_SCHEME.bgPrimary,
+      paper: COLOR_SCHEME.bgSecondary,
     },
     text: {
-      primary: COLOR_SCHEME.textPrimary,   // Black
-      secondary: COLOR_SCHEME.textSecondary, // Gray-600
-      disabled: COLOR_SCHEME.textTertiary,   // Gray-500
+      primary: COLOR_SCHEME.textPrimary,
+      secondary: COLOR_SCHEME.textSecondary,
+      disabled: COLOR_SCHEME.textTertiary,
     },
-    divider: COLOR_SCHEME.borderSecondary, // Light border
+    divider: COLOR_SCHEME.borderSecondary,
     success: {
-      main: COLOR_SCHEME.correct,          // Green
+      main: COLOR_SCHEME.correct,
     },
     error: {
-      main: COLOR_SCHEME.incorrect,        // Red
+      main: COLOR_SCHEME.incorrect,
     },
   },
   typography: {
-    fontFamily: "'Roboto', 'Helvetica', 'Arial', sans-serif",
-    fontSize: 16, // Base font size (1rem = 16px)
+    fontFamily: "'Manrope', ui-sans-serif, system-ui, sans-serif",
+    fontSize: 16,
     h2: {
-      fontSize: '18pt',
-      fontWeight: 300,
-      letterSpacing: '1.5px',
+      fontFamily: "'Cormorant Garamond', Georgia, serif",
+      fontSize: '2rem',
+      fontWeight: 500,
+      fontStyle: 'italic',
+      letterSpacing: '-0.01em',
     },
     h3: {
-      fontSize: '1rem',
+      fontFamily: "'JetBrains Mono', ui-monospace, monospace",
+      fontSize: '10px',
       fontWeight: 600,
       textTransform: 'uppercase',
-      letterSpacing: '1px',
+      letterSpacing: '0.22em',
+      color: COLOR_SCHEME.textTertiary,
+    },
+    h4: {
+      fontFamily: "'Cormorant Garamond', Georgia, serif",
+      fontSize: '1.5rem',
+      fontWeight: 500,
+      fontStyle: 'italic',
+    },
+    subtitle1: {
+      fontFamily: "'JetBrains Mono', ui-monospace, monospace",
+      fontSize: '10px',
+      fontWeight: 500,
+      textTransform: 'uppercase',
+      letterSpacing: '0.18em',
+      color: COLOR_SCHEME.textTertiary,
     },
     button: {
       textTransform: 'none',
       fontWeight: 500,
+      fontFamily: "'Manrope', ui-sans-serif, system-ui, sans-serif",
     },
   },
   components: {
     MuiButton: {
       styleOverrides: {
         root: {
-          borderRadius: '6px',
-          padding: '8px 16px',
-          border: `1px solid ${COLOR_SCHEME.borderPrimary}`,
-          transition: 'all 0.2s ease',
+          borderRadius: '999px',
+          padding: '8px 18px',
+          border: `1px solid ${COLOR_SCHEME.borderSecondary}`,
+          transition: 'all 0.15s ease',
+          fontFamily: "'JetBrains Mono', ui-monospace, monospace",
+          fontSize: '11px',
+          letterSpacing: '0.1em',
+          textTransform: 'uppercase',
           '&:hover': {
-            backgroundColor: COLOR_SCHEME.hover,
-            boxShadow: `0 0 8px ${COLOR_SCHEME.shadowLight}`,
+            backgroundColor: COLOR_SCHEME.paperAlt,
+            borderColor: COLOR_SCHEME.textPrimary,
           },
         },
         contained: {
-          backgroundColor: COLOR_SCHEME.bgSecondary,
-          color: COLOR_SCHEME.textPrimary,
+          backgroundColor: COLOR_SCHEME.textPrimary,
+          color: COLOR_SCHEME.paper,
+          borderColor: COLOR_SCHEME.textPrimary,
           '&:hover': {
-            backgroundColor: COLOR_SCHEME.hover,
+            backgroundColor: COLOR_SCHEME.accent,
+            borderColor: COLOR_SCHEME.accent,
           },
         },
         outlined: {
-          borderColor: COLOR_SCHEME.borderPrimary,
-          color: COLOR_SCHEME.textPrimary,
+          borderColor: COLOR_SCHEME.borderSecondary,
+          color: COLOR_SCHEME.textSecondary,
+          backgroundColor: COLOR_SCHEME.paper,
           '&:hover': {
             borderColor: COLOR_SCHEME.textPrimary,
-            backgroundColor: COLOR_SCHEME.hover,
+            backgroundColor: COLOR_SCHEME.paperAlt,
+            color: COLOR_SCHEME.textPrimary,
           },
         },
       },
@@ -91,9 +112,9 @@ const muiTheme = createTheme({
       styleOverrides: {
         paper: {
           backgroundColor: COLOR_SCHEME.bgPrimary,
-          borderRadius: '8px',
-          border: `5px solid ${COLOR_SCHEME.borderPrimary}`,
-          boxShadow: `0 0 20px ${COLOR_SCHEME.shadowMedium}`,
+          borderRadius: '6px',
+          border: `1px solid rgba(0,0,0,0.08)`,
+          boxShadow: `0 40px 80px ${COLOR_SCHEME.shadowHeavy}`,
         },
       },
     },
@@ -101,12 +122,14 @@ const muiTheme = createTheme({
       styleOverrides: {
         root: {
           color: COLOR_SCHEME.textPrimary,
-          fontFamily: "'Roboto Condensed', sans-serif",
-          fontWeight: 300,
-          fontSize: '18pt',
-          letterSpacing: '1.5px',
-          paddingBottom: '8px',
+          fontFamily: "'Cormorant Garamond', Georgia, serif",
+          fontWeight: 500,
+          fontStyle: 'italic',
+          fontSize: '1.75rem',
+          letterSpacing: '-0.01em',
+          paddingBottom: '12px',
           borderBottom: `1px solid ${COLOR_SCHEME.borderSecondary}`,
+          backgroundColor: COLOR_SCHEME.paperAlt,
         },
       },
     },
@@ -114,13 +137,14 @@ const muiTheme = createTheme({
       styleOverrides: {
         root: {
           color: COLOR_SCHEME.textPrimary,
+          backgroundColor: COLOR_SCHEME.bgPrimary,
           maxHeight: 'calc(100vh - 200px)',
           overflowY: 'auto',
           '&::-webkit-scrollbar': {
             width: '8px',
           },
           '&::-webkit-scrollbar-track': {
-            backgroundColor: COLOR_SCHEME.bgSecondary,
+            backgroundColor: 'transparent',
           },
           '&::-webkit-scrollbar-thumb': {
             backgroundColor: COLOR_SCHEME.borderSecondary,
@@ -136,6 +160,39 @@ const muiTheme = createTheme({
         },
       },
     },
+    MuiCard: {
+      styleOverrides: {
+        root: {
+          backgroundColor: COLOR_SCHEME.bgPrimary,
+          border: `1px solid ${COLOR_SCHEME.borderSecondary}`,
+          borderRadius: '4px',
+          boxShadow: `0 4px 20px ${COLOR_SCHEME.shadowLight}`,
+        },
+      },
+    },
+    MuiCardHeader: {
+      styleOverrides: {
+        root: {
+          borderBottom: `1px solid ${COLOR_SCHEME.borderSecondary}`,
+          backgroundColor: COLOR_SCHEME.paperAlt,
+          padding: '14px 18px',
+        },
+        title: {
+          fontFamily: "'Cormorant Garamond', Georgia, serif",
+          fontStyle: 'italic',
+          fontWeight: 500,
+          fontSize: '1.2rem',
+          color: COLOR_SCHEME.textPrimary,
+        },
+        subheader: {
+          fontFamily: "'JetBrains Mono', ui-monospace, monospace",
+          fontSize: '9px',
+          letterSpacing: '0.18em',
+          textTransform: 'uppercase',
+          color: COLOR_SCHEME.textTertiary,
+        },
+      },
+    },
     MuiSwitch: {
       styleOverrides: {
         root: {
@@ -144,6 +201,29 @@ const muiTheme = createTheme({
           },
           '& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track': {
             backgroundColor: COLOR_SCHEME.correct,
+          },
+        },
+      },
+    },
+    MuiSelect: {
+      styleOverrides: {
+        root: {
+          fontFamily: "'JetBrains Mono', ui-monospace, monospace",
+          fontSize: '11px',
+          letterSpacing: '0.05em',
+        },
+      },
+    },
+    MuiMenuItem: {
+      styleOverrides: {
+        root: {
+          fontFamily: "'Manrope', ui-sans-serif, system-ui, sans-serif",
+          fontSize: '13px',
+          '&:hover': {
+            backgroundColor: COLOR_SCHEME.paperAlt,
+          },
+          '&.Mui-selected': {
+            backgroundColor: COLOR_SCHEME.selected,
           },
         },
       },

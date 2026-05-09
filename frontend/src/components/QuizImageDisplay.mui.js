@@ -30,7 +30,7 @@ import {
  * @param {boolean} showMap - Whether to show the map (default: true)
  * @param {boolean} hideNoImagesMessage - Whether to hide "No images available" message (default: false)
  */
-const QuizImageDisplay = ({ imagesByCollection, countryName, countryISO, onShowAll, totalImagesAvailable = 0, showMap = true, hideNoImagesMessage = false, hideMainTitle = false }) => {
+const QuizImageDisplay = ({ imagesByCollection, countryName, countryISO, onShowAll, totalImagesAvailable = 0, showMap = true, hideNoImagesMessage = false }) => {
   const [randomImage, setRandomImage] = useState(null);
   const [collectionName, setCollectionName] = useState(null);
   const [isMounted, setIsMounted] = useState(false);
@@ -126,13 +126,13 @@ const QuizImageDisplay = ({ imagesByCollection, countryName, countryISO, onShowA
   const getTypeSubtitle = (collection) => {
     switch(collection) {
       case 'Albert Kahn':
-        return 'Historical Photograph';
+        return 'Albert Kahn: Historical Photograph';
       case 'Public Domain Review':
         return 'Public Domain Review';
       case 'Met Museum':
       case 'Metropolitan Museum of Art':
         return 'Museum Artwork';
-      case 'Children in Art':
+      case 'Children':
         return 'Children Depicted in Art';
       default:
         return null;
@@ -142,199 +142,164 @@ const QuizImageDisplay = ({ imagesByCollection, countryName, countryISO, onShowA
   const renderCaption = () => {
     const displayName = getCollectionDisplayName(collectionName);
 
-    // Unified caption rendering with all metadata in one block
-    const renderImageCaption = () => {
-      switch(displayName) {
-        case 'Albert Kahn':
-          return (
-            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0.5 }}>
-              {/* Title (linked to page_url) */}
-              {randomImage.title && randomImage.page_url && (
-                <Link
-                  href={randomImage.page_url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  variant="body2"
-                  sx={{ color: COLOR_SCHEME.linkColor, textDecoration: 'underline' }}
-                >
-                  {randomImage.title}
-                </Link>
-              )}
-              {/* Mission (plain text, no hyperlink) */}
-              {randomImage.mission && (
-                <Typography variant="body2">
-                  {randomImage.mission}
-                </Typography>
-              )}
-              {/* License information */}
-              {randomImage.license === 'Librement réutilisable (CC-BY-4.0)' && (
-                <Typography variant="body2">
-                  CC-BY-4.0
-                </Typography>
-              )}
-              {randomImage.license === 'No known copyright restrictions' && (
-                <Typography variant="body2">
-                  No known copyright restrictions
-                </Typography>
-              )}
-              {/* Organization (conditionally display based on license) */}
-              {randomImage.license !== 'No known copyright restrictions' && (
-                <Link
-                  href="https://albert-kahn.hauts-de-seine.fr/en/"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  variant="body2"
-                  sx={{ color: COLOR_SCHEME.linkColor, textDecoration: 'underline' }}
-                >
-                  Musée départemental Albert-Kahn
-                </Link>
-              )}
-            </Box>
-          );
+    // Spec row: mono uppercase key on left, right-aligned value
+    const SpecRow = ({ label, children, last }) => (
+      <Box sx={{
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'baseline',
+        gap: 1.5,
+        py: 0.625,
+        borderBottom: last ? 'none' : '1px dotted var(--rule, #cfc4a8)',
+      }}>
+        <Typography component="span" sx={{
+          fontFamily: 'var(--font-mono, "JetBrains Mono", monospace)',
+          fontSize: '9px',
+          letterSpacing: '.18em',
+          textTransform: 'uppercase',
+          color: 'var(--ink-3, #6c6356)',
+          whiteSpace: 'nowrap',
+          flexShrink: 0,
+        }}>
+          {label}
+        </Typography>
+        <Box sx={{ textAlign: 'right', fontSize: '11px', color: 'var(--ink-2, #3a322a)', lineHeight: 1.4, wordBreak: 'break-word', overflowWrap: 'break-word' }}>
+          {children}
+        </Box>
+      </Box>
+    );
 
-        case 'Metropolitan Museum of Art':
-          return (
-            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0.5 }}>
-              {/* Title (linked to object_url) */}
-              {randomImage.title && (
-                <Link
-                  href={randomImage.object_url || 'https://www.metmuseum.org/exhibitions'}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  variant="body2"
-                  sx={{ color: COLOR_SCHEME.linkColor, textDecoration: 'underline' }}
-                >
-                  {randomImage.title}
-                </Link>
-              )}
-              {/* Artist/Culture, Date (combined on one line) */}
-              {(randomImage.artist_name || randomImage.culture || randomImage.object_date) && (
-                <Typography variant="body2">
-                  {randomImage.artist_name || randomImage.culture}
-                  {randomImage.object_date && (randomImage.artist_name || randomImage.culture ? `, ${randomImage.object_date}` : randomImage.object_date)}
-                </Typography>
-              )}
-              {/* Medium */}
-              {randomImage.medium && (
-                <Typography variant="body2">
-                  {randomImage.medium}
-                </Typography>
-              )}
-              {/* Organization (link to exhibitions page) */}
-              <Link
-                href="https://www.metmuseum.org/exhibitions"
-                target="_blank"
-                rel="noopener noreferrer"
-                variant="body2"
-                sx={{ color: COLOR_SCHEME.linkColor, textDecoration: 'underline' }}
-              >
-                Metropolitan Museum of Art
-              </Link>
-            </Box>
-          );
+    // Italic serif title, optionally linked
+    const ArtTitle = ({ href, children }) => (
+      <Typography component="h3" sx={{
+        fontFamily: '"Cormorant Garamond", Georgia, serif',
+        fontSize: '1.2rem',
+        fontStyle: 'italic',
+        fontWeight: 500,
+        color: 'var(--ink, #1a1612)',
+        lineHeight: 1.15,
+        mb: 0.75,
+        mt: 0,
+      }}>
+        {href ? (
+          <Link href={href} target="_blank" rel="noopener noreferrer" sx={{
+            color: 'inherit',
+            textDecoration: 'none',
+            borderBottom: '1px solid var(--rule, #cfc4a8)',
+            transition: 'border-color .15s, color .15s',
+            '&:hover': { borderColor: 'var(--accent, #b34727)', color: 'var(--accent, #b34727)' },
+          }}>
+            {children}
+          </Link>
+        ) : children}
+      </Typography>
+    );
 
-        case 'Children in Art':
-          return (
-            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0.5 }}>
-              {/* Title (linked to work_url) */}
-              {randomImage.title && randomImage.work_url && (
-                <Link
-                  href={randomImage.work_url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  variant="body2"
-                  sx={{ color: COLOR_SCHEME.linkColor, textDecoration: 'underline' }}
-                >
-                  {randomImage.title}
-                </Link>
-              )}
-              {/* Artist Name (Nationality) - parentheses, not comma */}
-              {randomImage.artist_name && (
-                <Typography variant="body2">
-                  {randomImage.author_wikilink ? (
-                    <Link
-                      href={randomImage.author_wikilink}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      sx={{ color: COLOR_SCHEME.linkColor, textDecoration: 'underline' }}
-                    >
-                      {randomImage.artist_name}
-                    </Link>
-                  ) : (
-                    randomImage.artist_name
-                  )}
-                  {randomImage.artist_nationality && ` (${randomImage.artist_nationality})`}
-                </Typography>
-              )}
-              {/* via Source Name (with hyperlink) */}
-              {randomImage.source && getSourceUrl(randomImage.source) && (
-                <Typography variant="body2">
-                  via{' '}
-                  <Link
-                    href={getSourceUrl(randomImage.source)}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    sx={{ color: COLOR_SCHEME.linkColor, textDecoration: 'underline' }}
-                  >
-                    {getSourceDisplayName(randomImage.source)}
-                  </Link>
-                </Typography>
-              )}
+    // "by Artist · nationality" line
+    const ByLine = ({ artist, artistHref, nationality }) => {
+      if (!artist) return null;
+      return (
+        <Typography sx={{
+          fontFamily: 'var(--font-sans, "Manrope", sans-serif)',
+          fontSize: '12px',
+          lineHeight: 1.5,
+          color: 'var(--ink-3, #6c6356)',
+          mb: 1.25,
+        }}>
+          {'by '}
+          {artistHref ? (
+            <Link href={artistHref} target="_blank" rel="noopener noreferrer" sx={{
+              fontWeight: 600,
+              color: 'var(--ink-2, #3a322a)',
+              textDecoration: 'none',
+              borderBottom: '1px solid var(--rule, #cfc4a8)',
+              '&:hover': { borderColor: 'var(--accent, #b34727)' },
+            }}>
+              {artist}
+            </Link>
+          ) : (
+            <Box component="b" sx={{ color: 'var(--ink-2, #3a322a)' }}>{artist}</Box>
+          )}
+          {nationality && (
+            <Box component="span" sx={{ fontStyle: 'italic', color: 'var(--ink-3, #6c6356)' }}>
+              {' · '}{nationality}
             </Box>
-          );
-
-        case 'Public Domain Review':
-          return (
-            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0.5 }}>
-              {/* Description with Source link to source_url */}
-              {randomImage.description && (
-                <Typography variant="body2">
-                  {randomImage.description}
-                  {randomImage.source_url && (
-                    <>
-                      {' - '}
-                      <Link
-                        href={randomImage.source_url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        sx={{ color: COLOR_SCHEME.linkColor, textDecoration: 'underline' }}
-                      >
-                        Source
-                      </Link>
-                    </>
-                  )}
-                </Typography>
-              )}
-              {/* Title (italicized) with Public Domain Review article link to source_link */}
-              {randomImage.title && (
-                <Typography variant="body2">
-                  <em>{randomImage.title}</em>
-                  {randomImage.source_link && (
-                    <>
-                      {' - '}
-                      <Link
-                        href={randomImage.source_link}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        sx={{ color: COLOR_SCHEME.linkColor, textDecoration: 'underline' }}
-                      >
-                        Public Domain Review article
-                      </Link>
-                    </>
-                  )}
-                </Typography>
-              )}
-            </Box>
-          );
-
-        default:
-          return null;
-      }
+          )}
+        </Typography>
+      );
     };
 
+    // Accent source link with arrow
+    const SourceLink = ({ href, children }) => href ? (
+      <Link href={href} target="_blank" rel="noopener noreferrer" sx={{
+        color: 'var(--accent, #b34727)',
+        textDecoration: 'none',
+        borderBottom: '1px solid rgba(179,71,39,.3)',
+        fontSize: '11px',
+        '&:hover': { borderColor: 'var(--accent, #b34727)' },
+      }}>
+        {children} ↗
+      </Link>
+    ) : (
+      <Box component="span" sx={{ fontSize: '11px', color: 'var(--ink-2, #3a322a)' }}>{children}</Box>
+    );
+
+    // Build metadata for each collection
+    let title = null, titleHref = null, artist = null, artistHref = null,
+        nationality = null, specs = [];
+
+    switch(displayName) {
+      case 'Albert Kahn':
+        title = randomImage.title;
+        titleHref = randomImage.page_url;
+        if (randomImage.mission) specs.push({ label: 'Mission', value: randomImage.mission });
+        if (randomImage.license) specs.push({ label: 'License', value: randomImage.license });
+        specs.push({ label: 'Source', value: <SourceLink href="https://albert-kahn.hauts-de-seine.fr/en/">Musée Albert-Kahn</SourceLink> });
+        break;
+
+      case 'Metropolitan Museum of Art':
+        title = randomImage.title;
+        titleHref = randomImage.object_url || 'https://www.metmuseum.org/exhibitions';
+        artist = randomImage.artist_name || randomImage.culture;
+        if (randomImage.object_date) specs.push({ label: 'Date', value: randomImage.object_date });
+        if (randomImage.medium) specs.push({ label: 'Medium', value: randomImage.medium });
+        specs.push({ label: 'Source', value: <SourceLink href={titleHref}>Met Museum</SourceLink> });
+        break;
+
+      case 'Children in Art':
+        title = randomImage.title;
+        titleHref = randomImage.work_url;
+        artist = randomImage.artist_name;
+        artistHref = randomImage.author_wikilink;
+        nationality = randomImage.artist_nationality;
+        if (randomImage.source && getSourceUrl(randomImage.source)) {
+          specs.push({ label: 'Via', value: <SourceLink href={getSourceUrl(randomImage.source)}>{getSourceDisplayName(randomImage.source)}</SourceLink> });
+        }
+        break;
+
+      case 'Public Domain Review':
+        title = randomImage.title;
+        titleHref = randomImage.source_url;
+        if (randomImage.description) specs.push({ label: 'Description', value: randomImage.description });
+        if (randomImage.source_url) specs.push({ label: 'Source', value: <SourceLink href={randomImage.source_url}>View image</SourceLink> });
+        if (randomImage.source_link) specs.push({ label: 'Article', value: <SourceLink href={randomImage.source_link}>Public Domain Review</SourceLink> });
+        break;
+
+      default:
+        return null;
+    }
+
     return (
-      <Box sx={{ display: 'flex', flexDirection: 'column', textAlign: 'center' }}>
-        {renderImageCaption()}
+      <Box sx={{ pt: 2 }}>
+        {title && <ArtTitle href={titleHref}>{title}</ArtTitle>}
+        <ByLine artist={artist} artistHref={artistHref} nationality={nationality} />
+        {specs.length > 0 && (
+          <Box sx={{ borderTop: '1px dotted var(--rule, #cfc4a8)', mt: 1.25 }}>
+            {specs.map(({ label, value }, i) => (
+              <SpecRow key={i} label={label} last={i === specs.length - 1}>{value}</SpecRow>
+            ))}
+          </Box>
+        )}
       </Box>
     );
   };
@@ -423,39 +388,46 @@ const QuizImageDisplay = ({ imagesByCollection, countryName, countryISO, onShowA
           }}
         >
           <CardContent sx={{ p: 2, '&:last-child': { pb: 2 } }}>
-            {/* Type Subtitle */}
+            {/* Section title — dr-secttitle pattern */}
             {collectionName && getTypeSubtitle(collectionName) && (
-              <Box
-                sx={{
-                  mb: 2,
-                  display: 'flex',
-                  flexDirection: 'column',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  gap: 1,
-                }}
-              >
-                <Typography sx={{ fontSize: '1rem', color: COLOR_SCHEME.text }}>
-                  {!hideMainTitle && onShowAll && <span style={{ fontWeight: 'normal' }}>Random Image: </span>}
-                  <span style={{ fontWeight: 600 }}>{getTypeSubtitle(collectionName)}</span>
+              <Box sx={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                pb: 0.75,
+                mb: 2,
+                borderBottom: '1px solid var(--rule, #cfc4a8)',
+              }}>
+                <Typography sx={{
+                  fontFamily: 'var(--font-mono, "JetBrains Mono", monospace)',
+                  fontSize: '10px',
+                  fontWeight: 600,
+                  letterSpacing: '.22em',
+                  textTransform: 'uppercase',
+                  color: 'var(--ink-3, #6c6356)',
+                }}>
+                  {getTypeSubtitle(collectionName)}
                 </Typography>
-                {onShowAll && (
+                {onShowAll ? (
                   <Button
-                    variant="outlined"
+                    variant="text"
                     size="small"
                     onClick={onShowAll}
                     sx={{
-                      color: COLOR_SCHEME.linkColor,
-                      borderColor: COLOR_SCHEME.border,
-                      '&:hover': {
-                        borderColor: COLOR_SCHEME.linkColor,
-                        backgroundColor: 'rgba(0, 0, 0, 0.04)',
-                      },
+                      fontFamily: 'var(--font-mono, "JetBrains Mono", monospace)',
+                      fontSize: '10px',
+                      fontWeight: 400,
+                      letterSpacing: '.1em',
+                      color: 'var(--ink-3, #6c6356)',
+                      textTransform: 'none',
+                      minWidth: 'auto',
+                      p: 0,
+                      '&:hover': { color: 'var(--accent, #b34727)', background: 'none' },
                     }}
                   >
-                    Show all ({totalImagesAvailable})
+                    show all ({totalImagesAvailable})
                   </Button>
-                )}
+                ) : null}
               </Box>
             )}
             {/* Image */}

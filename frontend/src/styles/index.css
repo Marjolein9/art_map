@@ -1,13 +1,27 @@
+:root {
+  --serif: "Cormorant Garamond", Georgia, serif;
+  --sans: "Manrope", ui-sans-serif, system-ui, sans-serif;
+  --mono: "JetBrains Mono", ui-monospace, monospace;
+
+  --paper: #f1ead9;
+  --paper-2: #e8dfc8;
+  --ink: #1a1612;
+  --ink-2: #3a322a;
+  --ink-3: #6c6356;
+  --rule: #cfc4a8;
+  --accent: #b34727;
+  --accent-2: #d77a4b;
+}
+
 body {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
+  font-family: var(--sans);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  background: var(--paper);
+  color: var(--ink);
 }
 
 code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+  font-family: var(--mono);
 }

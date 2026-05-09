@@ -63,48 +63,69 @@
  * - JavaScript can modify them dynamically
  */
 :root {
-  /* Base colors */
+  /* Base */
   --white: #FFFFFF;
   --black: #000000;
 
-  /* Text colors */
-  --text-primary: #000000;
-  --text-secondary: #525252;
-  --text-tertiary: #737373;
+  /* Typography */
+  --font-serif: "Cormorant Garamond", Georgia, serif;
+  --font-sans: "Manrope", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, monospace;
+
+  /* Paper tones */
+  --paper: #f1ead9;
+  --paper-2: #e8dfc8;
+
+  /* Ink tones */
+  --ink: #1a1612;
+  --ink-2: #3a322a;
+  --ink-3: #6c6356;
+
+  /* Rule / dividers */
+  --rule: #cfc4a8;
+
+  /* Accent — terracotta */
+  --accent: #b34727;
+  --accent-2: #d77a4b;
+
+  /* Text colors (mapped to ink) */
+  --text-primary: #1a1612;
+  --text-secondary: #3a322a;
+  --text-tertiary: #6c6356;
 
   /* Background colors */
-  --bg-primary: #FFFFFF;
-  --bg-secondary: #F5F5F5;
-  --bg-overlay: #FFFFFF;
+  --bg-primary: #f1ead9;
+  --bg-secondary: #e8dfc8;
+  --bg-overlay: rgba(241,234,217,0.92);
 
   /* Borders */
-  --border-primary: #000000;
-  --border-secondary: #E5E5E5;
+  --border-primary: #1a1612;
+  --border-secondary: #cfc4a8;
 
   /* Interactive states */
-  --hover-color: #E5E5E5;
-  --selected-color: #D4D4D4;
+  --hover-color: #e8dfc8;
+  --selected-color: #cfc4a8;
 
   /* Semantic colors */
-  --correct-color: #22C55E;
-  --incorrect-color: #EF4444;
-  --warning-color: #F5F5F5;
+  --correct-color: #5a7849;
+  --incorrect-color: #a25636;
+  --warning-color: #e8dfc8;
 
   /* Links */
-  --link-color: #3B82F6;
-  --link-hover: #2563EB;
+  --link-color: #b34727;
+  --link-hover: #7a2c14;
 
-  /* Shadows */
-  --shadow-light: rgba(0, 0, 0, 0.1);
-  --shadow-medium: var(--shadow-medium);
-  --shadow-heavy: var(--shadow-heavy);
+  /* Shadows — warm, no color glow */
+  --shadow-light: rgba(26,22,18,0.08);
+  --shadow-medium: rgba(26,22,18,0.18);
+  --shadow-heavy: rgba(26,22,18,0.35);
 
-  /* Globe/Map specific */
+  /* Globe/Map specific — keep globe neutral */
   --ocean-color: #FFFFFF;
   --land-color: #FFFFFF;
   --atmosphere-color: #E5E5E5;
 
-  /* Candle colors */
+  /* Candle colors (unchanged) */
   --candle-orange: #ff6a00;
   --candle-orange-yellow: #ff9224;
   --candle-dark: #2c2b39;
@@ -123,7 +144,10 @@
  * Applies baseline font size for the entire page
  */
 body {
-  font-size: 16px;  /* pixels: fixed unit, doesn't change with zoom */
+  font-size: 16px;
+  font-family: var(--font-sans);
+  background: var(--bg-primary);
+  color: var(--text-primary);
 }
 
 /**
@@ -219,13 +243,11 @@ body {
 /* Map container - Full width with relative positioning for overlay */
 .map-container {
   flex: 1;
-  border-radius: 8px;
+  border-radius: 6px;
   padding: 10px;
-  border: 2px solid;
-  backdrop-filter: blur(10px);
-  background-color: var(--card-bg);
-  box-shadow: 0 0 20px var(--glow-color), 0 4px 6px var(--shadow-heavy);
-  border-color: var(--border-color);
+  border: 1px solid var(--border-secondary);
+  background-color: var(--bg-primary);
+  box-shadow: 0 4px 20px var(--shadow-light);
 }
 
 .map-container-full {
@@ -395,7 +417,7 @@ body {
    SHARED OVERLAY STYLES (Welcome + Info Bar)
    ============================================================================== */
 
-@import url('https://fonts.googleapis.com/css2?family=Roboto+Condensed:wght@300;400;700&family=Roboto:wght@100;300;400;700;900&display=swap');
+/* Fonts now loaded via public/index.html for better performance */
 
 /* NOTE: Overlay container, header, section, caption classes removed - now using MUI Card, CardHeader, CardContent, Box components */
 
@@ -441,20 +463,24 @@ body {
 
 /* Control Button Styles */
 .control-button {
-  padding: 8px 16px;
-  border: 1px solid var(--border-primary);
-  border-radius: 4px;
-  background-color: var(--bg-secondary);
-  color: var(--button-text-color, var(--text-primary));
+  padding: 7px 16px;
+  border: 1px solid var(--border-secondary);
+  border-radius: 999px;
+  background-color: var(--bg-primary);
+  color: var(--text-secondary);
   cursor: pointer;
   font-weight: 500;
-  transition: all 0.2s ease;
-  font-size: 1rem;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  transition: all 0.15s ease;
 }
 
 .control-button:hover {
-  background-color: var(--hover, #E5E5E5);
-  box-shadow: 0 0 8px var(--shadow-light);
+  background-color: var(--hover-color);
+  border-color: var(--text-primary);
+  color: var(--text-primary);
 }
 
 .button-group {
@@ -686,23 +712,22 @@ a.collection-subtitle:hover {
 
 .artwork-details {
   padding: 15px;
-  color: var(--text-color);
-  font-family: 'Roboto', Helvetica, sans-serif;
+  color: var(--text-primary);
+  font-family: var(--font-sans);
 }
 
 .artwork-artist {
-  font-weight: 700;
+  font-family: var(--font-sans);
+  font-weight: 600;
   margin-bottom: 5px;
   overflow: hidden;
   text-overflow: ellipsis;
-  color: var(--text-primary);
-  font-family: 'Roboto Condensed', Helvetica, sans-serif;
-  font-size: 1rem;
-    /* Text wrapping */
+  color: var(--text-secondary);
+  font-size: 0.875rem;
   white-space: normal;
-  overflow-wrap: break-word;   /* modern */
-  word-wrap: break-word;       /* legacy */
-  word-break: break-word;      /* fallback for very long strings */
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  word-break: break-word;
 }
 
 
@@ -790,13 +815,15 @@ a.collection-subtitle:hover {
   margin-top: 20px;
   padding-top: 20px;
   border-top: 1px solid var(--border-secondary);
-  color: var(--text-primary);
-  font-size: 12pt;
-  font-family: 'Roboto', Helvetica, sans-serif;
+  color: var(--text-tertiary);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
 }
 
 .artwork-count-footer strong {
-  color: var(--glow-color);
+  color: var(--accent);
 }
 
 /* ==============================================================================
@@ -844,17 +871,19 @@ a.collection-subtitle:hover {
   top: 10px;
   left: 50%;
   transform: translateX(-50%);
-  padding: 10px 16px;
-  border-radius: 8px;
+  padding: 8px 14px;
+  border-radius: 20px;
   z-index: 1000;
-  background-color: rgba(255, 255, 255, 0.85);
-  backdrop-filter: blur(5px);
-  box-shadow: 0 0 20px var(--glow-color), 0 4px 6px rgba(0,0,0,0.3);
-  border: 2px solid var(--border-color);
+  background: rgba(241,234,217,0.92);
+  backdrop-filter: blur(20px) saturate(140%);
+  -webkit-backdrop-filter: blur(20px) saturate(140%);
+  box-shadow: 0 8px 30px var(--shadow-medium);
+  border: 2px solid var(--ink-2, #3a322a);
   display: flex;
   flex-direction: column;
-  gap: 8px;
-  align-items: center;
+  gap: 4px;
+  align-items: stretch;
+  white-space: nowrap;
 }
 
 /* Wider control overlay on larger screens */
@@ -864,24 +893,50 @@ a.collection-subtitle:hover {
   }
 }
 
+/* Mobile: drop pill shape when content wraps */
+@media (max-width: 768px) {
+  .control-overlay {
+    left: 8px;
+    right: 8px;
+    transform: none;
+    width: auto;
+    max-width: none;
+    border-radius: 14px;
+    padding: 10px 12px;
+    white-space: normal;
+  }
+}
+
 /* Bottom control overlay for zoom and rotation */
 .control-overlay-bottom {
   position: absolute;
   bottom: 10px;
   left: 50%;
   transform: translateX(-50%);
-  padding: 8px 12px;
-  border-radius: 8px;
+  padding: 8px 14px;
+  border-radius: 999px;
   z-index: 1000;
-  background-color: rgba(255, 255, 255, 0.85);
-  backdrop-filter: blur(5px);
-  box-shadow: 0 0 20px var(--glow-color), 0 4px 6px rgba(0,0,0,0.3);
-  border: 2px solid var(--border-color);
+  background: rgba(241,234,217,0.92);
+  backdrop-filter: blur(20px) saturate(140%);
+  -webkit-backdrop-filter: blur(20px) saturate(140%);
+  box-shadow: 0 8px 30px var(--shadow-medium);
+  border: 2px solid var(--ink-2, #3a322a);
   display: flex;
   align-items: center;
   justify-content: center;
+  gap: 6px;
   -webkit-text-size-adjust: 100%;
   text-size-adjust: 100%;
+}
+
+@media (max-width: 768px) {
+  .control-overlay-bottom {
+    left: 8px;
+    right: 8px;
+    transform: none;
+    border-radius: 14px;
+    padding: 8px 10px;
+  }
 }
 
 .control-overlay-bottom button {
@@ -890,11 +945,15 @@ a.collection-subtitle:hover {
 }
 
 .overlay-title {
-  font-size: 16pt;
-  font-weight: bold;
-  font-family: system-ui;
+  font-family: var(--font-serif);
+  font-size: 1.4rem;
+  font-weight: 500;
+  font-style: italic;
   color: var(--text-primary);
   text-align: center;
+  letter-spacing: -0.01em;
+  display: flex;
+  justify-content: center;
 }
 
 .overlay-controls {
@@ -902,7 +961,7 @@ a.collection-subtitle:hover {
   gap: 6px;
   align-items: center;
   flex-wrap: wrap;
-  justify-content: center;
+  width: 100%;
 }
 
 /* NOTE: .globe-control-btn-small and .controls-divider removed - now using MUI Button component */
@@ -1133,20 +1192,23 @@ input:checked + .toggle-slider:before {
   display: flex;
   flex-direction: column;
   align-items: stretch;
-  padding: 15px 20px;
-  background: var(--shadow-heavy);
-  border-bottom: 1px solid var(--link-underline);
+  padding: 18px 20px;
+  background: var(--bg-secondary);
+  border-bottom: 1px solid var(--border-secondary);
   flex-shrink: 0;
   gap: 12px;
 }
 
 .welcome-bar-title {
-  font-size: 18px;
-  font-weight: 600;
+  font-family: var(--font-serif);
+  font-size: 1.4rem;
+  font-weight: 500;
+  font-style: italic;
   color: var(--text-primary);
   margin: 0;
   flex-shrink: 0;
   text-align: center;
+  letter-spacing: -0.01em;
 }
 /* BUTTONS - SIDE BY SIDE */
 .welcome-buttons-stack {
@@ -1162,7 +1224,7 @@ input:checked + .toggle-slider:before {
 
 /* MAIN CONTENT - Right Scrollable Panel */
 .welcome-main-content {
-  background-color: var(--bg-secondary);
+  background-color: var(--bg-primary);
   flex: 1;
   display: flex;
   flex-direction: column;
@@ -1183,12 +1245,12 @@ input:checked + .toggle-slider:before {
 
 .welcome-section-header h3 {
   margin: 0;
-  font-size: 18px;
+  font-family: var(--font-mono);
+  font-size: 10px;
   font-weight: 600;
-  color: var(--text-primary);
-  font-family: 'Roboto Condensed', Helvetica, sans-serif;
+  color: var(--text-tertiary);
   text-transform: uppercase;
-  letter-spacing: 1.5px;
+  letter-spacing: 0.22em;
 }
 .welcome-section-header-text p {
   
@@ -1196,20 +1258,20 @@ input:checked + .toggle-slider:before {
 }
 
 .welcome-main-content::-webkit-scrollbar {
-  width: 12px;
+  width: 8px;
 }
 
 .welcome-main-content::-webkit-scrollbar-track {
-  background: #FFFFFF;
+  background: transparent;
 }
 
 .welcome-main-content::-webkit-scrollbar-thumb {
-  background: var(--link-color);
+  background: var(--border-secondary);
   border-radius: 4px;
 }
 
 .welcome-main-content::-webkit-scrollbar-thumb:hover {
-  background: var(--link-hover);
+  background: var(--ink-3);
 }
 
 /* Welcome intro text */
@@ -1231,16 +1293,19 @@ input:checked + .toggle-slider:before {
 /* Section Headers with Blurbs - Educational Context */
 .welcome-section {
   padding: 15px;
-  background: var(--shadow-medium);
-  border-radius: 6px;
-  border-left: 3px solid var(--link-color);
+  background: var(--bg-secondary);
+  border-radius: 4px;
+  border-left: 3px solid var(--rule);
 }
 
 .welcome-section-title {
-  font-size: 16px;
+  font-family: var(--font-mono);
+  font-size: 10px;
   font-weight: 600;
-  color: var(--text-primary);
+  color: var(--text-tertiary);
   margin: 0 0 8px 0;
+  text-transform: uppercase;
+  letter-spacing: 0.22em;
 }
 
 .welcome-section-blurb {
@@ -1270,23 +1335,28 @@ input:checked + .toggle-slider:before {
 }
 
 .artwork-subtitle {
+  font-family: var(--font-serif);
   font-style: italic;
-  font-size: 1rem;
+  font-size: 1.1rem;
+  font-weight: 500;
   color: var(--text-primary);
   margin-bottom: 4px;
-  font-weight: 500;
 }
 
 .artwork-title {
-  font-weight: 600;
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-weight: 500;
   color: var(--text-primary);
   margin-bottom: 4px;
-  font-size: 1rem;
+  font-size: 1.1rem;
+  line-height: 1.2;
 }
 
 .artwork-artist {
-  font-size: 1rem;
-  color: var(--text-primary);
+  font-family: var(--font-sans);
+  font-size: 0.875rem;
+  color: var(--text-secondary);
   margin-bottom: 2px;
 }
 
@@ -1336,62 +1406,65 @@ input:checked + .toggle-slider:before {
   position: absolute;
   top: 15px;
   right: 15px;
-  width: 40px;
-  height: 40px;
-  border: 2px solid var(--text-primary);
-  background: var(--bg-primary);
-  color: var(--text-primary);
+  width: 34px;
+  height: 34px;
+  border: 1px solid var(--border-secondary);
+  background: transparent;
+  color: var(--text-secondary);
   border-radius: 50%;
-  font-size: 24px;
+  font-size: 18px;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: all 0.2s ease;
+  transition: all 0.15s ease;
   z-index: 100;
 }
 
 .welcome-close-button:hover {
-  background: #FFFFFF;
-  box-shadow: 0 0 12px var(--link-color);
-  transform: scale(1.1);
+  background: var(--ink);
+  color: var(--paper);
+  border-color: var(--ink);
 }
 
-/* Top Control Buttons - Top Bar (BIGGER) */
+/* Top Control Buttons - Top Bar */
 .welcome-control-button {
-  padding: 14px 28px;
-  font-size: 1rem;
-  font-weight: 600;
-  border: 2px solid var(--text-primary);
-  background: var(--bg-secondary);
-  color: var(--text-primary);
-  border-radius: 6px;
+  padding: 10px 22px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  border: 1px solid var(--rule);
+  background: var(--bg-primary);
+  color: var(--text-secondary);
+  border-radius: 999px;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: all 0.15s ease;
   text-transform: uppercase;
-  letter-spacing: 1px;
   box-sizing: border-box;
   width: 100%;
 }
 
 .welcome-control-button:hover {
-  background: var(--hover, #E5E5E5);
-  box-shadow: 0 0 12px rgba(0, 0, 0, 0.2);
-  transform: translateY(-2px);
+  background: var(--hover-color);
+  border-color: var(--text-primary);
+  color: var(--text-primary);
+  transform: translateY(-1px);
 }
 
 .explore-button {
-  border-color: var(--text-primary);
-  color: var(--text-primary);
+  border-color: var(--rule);
+  color: var(--text-secondary);
 }
 
 .explore-button:hover {
-  box-shadow: 0 0 12px rgba(0, 0, 0, 0.2);
+  border-color: var(--text-primary);
 }
 
 .quiz-button {
-  border-color: var(--selected-color);
-  color: var(--selected-color);
+  border-color: var(--rule);
+  color: var(--text-secondary);
+  background: var(--bg-primary);
 }
 
 .quiz-button:hover {

@@ -921,6 +921,9 @@ const WorldMap = ({
                 sx={{
                   minWidth: '180px',
                   backgroundColor: 'var(--card-bg)',
+                  '& .MuiSelect-select': {
+                    fontSize: { xs: '16px', sm: '17px' },
+                  },
                   '& .MuiOutlinedInput-notchedOutline': {
                     borderColor: 'var(--border-color)',
                   },
@@ -951,21 +954,6 @@ const WorldMap = ({
                 </Typography>
               )}
 
-              {/* Settings Button - always visible */}
-              <IconButton
-                onClick={() => setShowWelcome(true)}
-                title="Settings & Help"
-                sx={{
-                  padding: '4px',
-                  color: 'var(--text-color)',
-                  '&:hover': {
-                    backgroundColor: 'transparent',
-                  }
-                }}
-              >
-                <SettingsIcon fontSize="small" />
-              </IconButton>
-
               {/* Explore mode instruction text */}
               {mode === 'explore' && (
                 <Typography variant="body2" sx={{ color: 'var(--text-color)', fontStyle: 'italic', ml: 1 }}>
@@ -981,8 +969,8 @@ const WorldMap = ({
               display: 'flex',
               alignItems: 'center',
               gap: 1,
-              mb: 1,
-              flexWrap: 'wrap'
+              flexWrap: 'wrap',
+              width: '100%',
             }}>
               {/* Quiz Mode Toggle Switch */}
               <FormControlLabel
@@ -1029,6 +1017,22 @@ const WorldMap = ({
                   </Button>
                 </>
               )}
+
+              {/* Settings Button - bottom right of overlay */}
+              <IconButton
+                onClick={() => setShowWelcome(true)}
+                title="Settings & Help"
+                sx={{
+                  padding: '4px',
+                  ml: 'auto',
+                  color: 'var(--text-color)',
+                  '&:hover': {
+                    backgroundColor: 'transparent',
+                  }
+                }}
+              >
+                <SettingsIcon fontSize="small" />
+              </IconButton>
             </Box>
           </div>
         </div>

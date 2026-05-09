@@ -972,7 +972,23 @@ cd backend
 source venv/bin/activate
 
 # Use EXTERNAL URL for initialization (allows connection from your computer)
-export DATABASE_URL="<paste-external-database-url-here>"
+export DATABASE_URL="postgresql://artmap_user:jjurIu17RbDREmQElxSNl8WVA0ODkY2Z@dpg-d4v6stmr433s73e00eo0-a.oregon-postgres.render.com/artmap"
+
+Based on the README, the local database is **PostgreSQL**.
+
+During local development setup, you create a local PostgreSQL database named `artmap_dev` and connect to it using:
+
+```
+DATABASE_URL=postgresql://localhost/artmap_dev
+```
+
+The setup instructions show:
+```bash
+# Create database
+createdb artmap_dev
+```
+
+This is a PostgreSQL instance running on your local machine (via `brew install postgresql` on macOS), not a file-based database like SQLite.
 
 # Run initialization
 python3 init_database_postgres.py

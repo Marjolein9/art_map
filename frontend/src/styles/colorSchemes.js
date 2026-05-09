@@ -1,49 +1,57 @@
 // Centralized Color Scheme for the App
-// Single source of truth for ALL colors in the application
+// Warm parchment / ink palette
 
 export const COLOR_SCHEME = {
-  name: 'Simple Black & White',
+  name: 'Warm Parchment',
 
   // Base colors
   white: '#FFFFFF',
   black: '#000000',
 
-  // Text
-  textPrimary: '#000000',
-  textSecondary: '#525252',    // gray-600
-  textTertiary: '#737373',     // gray-500
+  // Paper tones
+  paper: '#f1ead9',
+  paperAlt: '#e8dfc8',
+
+  // Text / ink
+  textPrimary: '#1a1612',
+  textSecondary: '#3a322a',
+  textTertiary: '#6c6356',
 
   // Backgrounds
-  bgPrimary: '#FFFFFF',
-  bgSecondary: '#F5F5F5',      // gray-100
-  bgOverlay: '#FFFFFF',        // solid white, no transparency
+  bgPrimary: '#f1ead9',
+  bgSecondary: '#e8dfc8',
+  bgOverlay: '#f1ead9',
 
   // Borders
-  borderPrimary: '#000000',
-  borderSecondary: '#E5E5E5',   // gray-200
+  borderPrimary: '#1a1612',
+  borderSecondary: '#cfc4a8',
 
   // Interactive states
-  hover: '#E5E5E5',            // gray-200
-  selected: '#D4D4D4',         // gray-300
+  hover: '#e8dfc8',
+  selected: '#cfc4a8',
+
+  // Accent — terracotta
+  accent: '#b34727',
+  accentAlt: '#d77a4b',
 
   // Semantic colors
-  correct: '#22C55E',          // green-500
-  incorrect: '#EF4444',        // red-500
-  warning: '#F5F5F5',          // light gray for errors
+  correct: '#5a7849',
+  incorrect: '#a25636',
+  warning: '#e8dfc8',
 
-  // Links
-  linkColor: '#3B82F6',        // blue-500
-  linkHover: '#2563EB',        // blue-600
+  // Links — use accent
+  linkColor: '#b34727',
+  linkHover: '#7a2c14',
 
-  // Globe/Map specific
-  oceanColor: '#FFFFFF',       // white ocean
-  landColor: '#FFFFFF',        // white land
-  atmosphereColor: '#E5E5E5', // light gray atmosphere
+  // Globe/Map specific — keep globe itself white/neutral
+  oceanColor: '#FFFFFF',
+  landColor: '#FFFFFF',
+  atmosphereColor: '#E5E5E5',
 
-  // Shadows and effects
-  shadowLight: 'rgba(0, 0, 0, 0.1)',
-  shadowMedium: 'rgba(0, 0, 0, 0.2)',
-  shadowHeavy: 'rgba(0, 0, 0, 0.3)',
+  // Shadows — warm-tinted, no colored glow
+  shadowLight: 'rgba(26,22,18,0.08)',
+  shadowMedium: 'rgba(26,22,18,0.18)',
+  shadowHeavy: 'rgba(26,22,18,0.35)',
 
   // Distinct vibrant colors for hints (designed for clear differentiation)
   pastelColors: [
@@ -90,10 +98,10 @@ export const COLOR_SCHEME = {
   ],
 
   // Deprecated (keeping for backward compatibility during migration)
-  glow: 'rgba(0, 0, 0, 0.2)',
-  border: '#000000',
-  text: '#000000',
-  cardBg: '#FFFFFF',
+  glow: 'rgba(26,22,18,0.18)',
+  border: '#cfc4a8',
+  text: '#1a1612',
+  cardBg: '#f1ead9',
   backgroundGradient: 'none'
 };
 

@@ -340,9 +340,8 @@ const ArtworkInfoBar = ({
         slotProps={{
           backdrop: {
             sx: {
-              // Semi-transparent white backdrop with blur effect
-              backgroundColor: 'rgba(255, 255, 255, 0.3)',
-              backdropFilter: 'blur(3px)',  // CSS backdrop-filter: blurs content behind
+              backgroundColor: 'rgba(26,22,18,0.45)',
+              backdropFilter: 'blur(6px)',
             }
           }
         }}
@@ -384,62 +383,93 @@ const ArtworkInfoBar = ({
 
           JSX Comments: Use {curly braces} with standard comments inside
         */}
-        <DialogTitle
-          sx={{
-            display: 'flex',           // Flexbox layout
-            justifyContent: 'space-between',  // Push items to edges
-            alignItems: 'center',      // Vertically center items
-            gap: 2,                    // 16px gap (2 * 8px theme spacing)
-          }}
-        >
-          {/* Country name title and subtitle container */}
-          <Box sx={{ flex: 1, textAlign: 'center' }}>
-            {/* Country name title */}
-            <Typography
-              variant="h6"     // MUI variant for heading level 6
-              component="div"  // Render as <div> instead of default <h6>
-              sx={{
-                fontWeight: 600,   // Semi-bold font
-              }}
-            >
-              <CountryTitle />
+        <DialogTitle sx={{ p: 0 }}>
+          <Box sx={{
+            px: { xs: 2, sm: 3.5 },
+            pt: { xs: 2.5, sm: 3 },
+            pb: { xs: 2, sm: 2.5 },
+            background: 'var(--paper-2, #e8dfc8)',
+            borderBottom: '1px solid var(--rule, #cfc4a8)',
+            position: 'relative',
+          }}>
+            {/* Status badge — quiz mode only */}
+            {mode === 'quiz' && answerSubmitted && (
+              <Box sx={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: 0.75,
+                mb: 1.5,
+                px: 1.25,
+                py: 0.75,
+                borderRadius: '999px',
+                background: isCorrectAnswer ? '#e8efe2' : '#f3dfd6',
+                color: isCorrectAnswer ? '#2d4422' : '#7a2c14',
+                border: `1px solid ${isCorrectAnswer ? 'rgba(45,68,34,.25)' : 'rgba(122,44,20,.2)'}`,
+                fontFamily: 'var(--font-mono, "JetBrains Mono", monospace)',
+                fontSize: '10px',
+                fontWeight: 500,
+                letterSpacing: '.22em',
+                textTransform: 'uppercase',
+              }}>
+                {/* Check or X icon */}
+                <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
+                  {isCorrectAnswer
+                    ? <path d="M2,5 L4,7 L8,3" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/>
+                    : <path d="M2,2 L8,8 M8,2 L2,8" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round"/>}
+                </svg>
+                {isCorrectAnswer ? 'Correct' : 'Not quite'}
+              </Box>
+            )}
+
+            {/* Country name — large serif italic */}
+            <Typography component="h1" sx={{
+              fontFamily: '"Cormorant Garamond", Georgia, serif',
+              fontSize: { xs: '2.25rem', sm: '3rem' },
+              fontWeight: 500,
+              lineHeight: 1,
+              color: 'var(--ink, #1a1612)',
+              letterSpacing: '-0.01em',
+              mb: 0,
+            }}>
+              {mode === 'quiz' && answerSubmitted && !isCorrectAnswer
+                ? <>That was <em style={{ color: 'var(--accent, #b34727)', fontWeight: 400 }}>{countryName || countryISO}</em></>
+                : <em>{countryName || countryISO}</em>}
             </Typography>
 
-
-          </Box>
-
-          {/* Button container */}
-          <Box sx={{ display: 'flex', gap: 1 }}>
-            {/*
-              CONDITIONAL RENDERING
-
-              Ternary operator chains to show different buttons based on mode and state
-            */}
-            {mode === 'quiz' && answerSubmitted && isCorrectAnswer && onNext ? (
-              // Show "Next" button when answer is correct
-              <Button
-                variant="contained"  // MUI variant: filled button
-                onClick={onNext}
-                size="small"
-              >
-                Next
-              </Button>
-            ) : onClose ? (
-              // Show close/"Try Again" button otherwise
-              <Button
-                variant="outlined"   // MUI variant: outlined button
-                onClick={onClose}
-                size="small"
-                sx={{
-                  minWidth: 'auto',
-                  padding: '4px 8px'
-                }}
-              >
-                {/* Dynamic button text */}
-                {mode === 'quiz' && answerSubmitted && !isCorrectAnswer ? 'Try Again' : '✕'}
-              </Button>
-            ) : null}
-            {/* null: Renders nothing */}
+            {/* Close / Next buttons — top-right corner */}
+            <Box sx={{ position: 'absolute', top: 14, right: 14, display: 'flex', gap: 1 }}>
+              {mode === 'quiz' && answerSubmitted && isCorrectAnswer && onNext ? (
+                <Button variant="contained" onClick={onNext} size="small">
+                  Next →
+                </Button>
+              ) : onClose ? (
+                <Box
+                  component="button"
+                  onClick={onClose}
+                  sx={{
+                    width: 40,
+                    height: 40,
+                    borderRadius: '50%',
+                    border: '1px solid var(--rule, #cfc4a8)',
+                    background: 'transparent',
+                    color: 'var(--ink-2, #3a322a)',
+                    display: 'grid',
+                    placeItems: 'center',
+                    cursor: 'pointer',
+                    fontSize: '20px',
+                    lineHeight: 1,
+                    transition: 'all .15s',
+                    '&:hover': {
+                      background: 'var(--ink, #1a1612)',
+                      color: 'var(--paper, #f1ead9)',
+                      borderColor: 'var(--ink, #1a1612)',
+                    },
+                  }}
+                >
+                  {mode === 'quiz' && answerSubmitted && !isCorrectAnswer ? '↩' : '×'}
+                </Box>
+              ) : null}
+            </Box>
           </Box>
         </DialogTitle>
 

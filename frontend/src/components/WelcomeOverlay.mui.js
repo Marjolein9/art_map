@@ -72,183 +72,172 @@ const WelcomeOverlay = ({
     }
   };
 
-  // Render collection-specific caption
-  const renderCaption = (image, countryName) => {
+  // Shared sub-components for the reference metadata layout
+
+  // Spec row: mono uppercase key left / right-aligned value
+  const SpecRow = ({ label, children, last }) => (
+    <Box sx={{
+      display: 'flex',
+      justifyContent: 'space-between',
+      alignItems: 'baseline',
+      gap: 1.5,
+      py: 0.625,
+      borderBottom: last ? 'none' : '1px dotted var(--rule, #cfc4a8)',
+    }}>
+      <Typography component="span" sx={{
+        fontFamily: 'var(--font-mono, "JetBrains Mono", monospace)',
+        fontSize: '9px',
+        letterSpacing: '.18em',
+        textTransform: 'uppercase',
+        color: 'var(--ink-3, #6c6356)',
+        whiteSpace: 'nowrap',
+        flexShrink: 0,
+      }}>
+        {label}
+      </Typography>
+      <Box sx={{ textAlign: 'right', fontSize: '11px', color: 'var(--ink-2, #3a322a)', lineHeight: 1.4, wordBreak: 'break-word', overflowWrap: 'break-word' }}>
+        {children}
+      </Box>
+    </Box>
+  );
+
+  // Italic serif title, optionally linked
+  const ArtTitle = ({ href, children }) => (
+    <Typography component="h3" sx={{
+      fontFamily: '"Cormorant Garamond", Georgia, serif',
+      fontSize: '1.2rem',
+      fontStyle: 'italic',
+      fontWeight: 500,
+      color: 'var(--ink, #1a1612)',
+      lineHeight: 1.15,
+      mb: 0.75,
+      mt: 0,
+    }}>
+      {href ? (
+        <MuiLink href={href} target="_blank" rel="noopener noreferrer" sx={{
+          color: 'inherit',
+          textDecoration: 'none',
+          borderBottom: '1px solid var(--rule, #cfc4a8)',
+          transition: 'border-color .15s, color .15s',
+          '&:hover': { borderColor: 'var(--accent, #b34727)', color: 'var(--accent, #b34727)' },
+        }}>
+          {children}
+        </MuiLink>
+      ) : children}
+    </Typography>
+  );
+
+  // "by Artist · nationality" line
+  const ByLine = ({ artist, artistHref, nationality }) => {
+    if (!artist) return null;
+    return (
+      <Typography sx={{
+        fontFamily: 'var(--font-sans, "Manrope", sans-serif)',
+        fontSize: '12px',
+        lineHeight: 1.5,
+        color: 'var(--ink-3, #6c6356)',
+        mb: 1.25,
+      }}>
+        {'by '}
+        {artistHref ? (
+          <MuiLink href={artistHref} target="_blank" rel="noopener noreferrer" sx={{
+            fontWeight: 600,
+            color: 'var(--ink-2, #3a322a)',
+            textDecoration: 'none',
+            borderBottom: '1px solid var(--rule, #cfc4a8)',
+            '&:hover': { borderColor: 'var(--accent, #b34727)' },
+          }}>
+            {artist}
+          </MuiLink>
+        ) : (
+          <Box component="b" sx={{ color: 'var(--ink-2, #3a322a)' }}>{artist}</Box>
+        )}
+        {nationality && (
+          <Box component="span" sx={{ fontStyle: 'italic', color: 'var(--ink-3, #6c6356)' }}>
+            {' · '}{nationality}
+          </Box>
+        )}
+      </Typography>
+    );
+  };
+
+  // Accent source link with arrow
+  const SourceLink = ({ href, children }) => href ? (
+    <MuiLink href={href} target="_blank" rel="noopener noreferrer" sx={{
+      color: 'var(--accent, #b34727)',
+      textDecoration: 'none',
+      borderBottom: '1px solid rgba(179,71,39,.3)',
+      fontSize: '11px',
+      '&:hover': { borderColor: 'var(--accent, #b34727)' },
+    }}>
+      {children} ↗
+    </MuiLink>
+  ) : (
+    <Box component="span" sx={{ fontSize: '11px', color: 'var(--ink-2, #3a322a)' }}>{children}</Box>
+  );
+
+  // Render collection-specific caption using the reference art card layout
+  const renderCaption = (image) => {
+    let title = null, titleHref = null, artist = null, artistHref = null,
+        nationality = null, specs = [];
+
     switch (image.collection_type) {
       case 'Albert Kahn':
-        return (
-          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1, textAlign: 'center' }}>
-            {/* Title (linked to page_url) */}
-            {image.title && image.page_url && (
-              <MuiLink
-                href={image.page_url}
-                target="_blank"
-                rel="noopener noreferrer"
-                variant="body2"
-                sx={{ color: colors.linkColor, textDecoration: 'underline' }}
-              >
-                {image.title}
-              </MuiLink>
-            )}
-            {/* Location, Date (combined on one line) */}
-            {(image.location || image.date) && (
-              <Typography variant="body2">
-                {image.location && image.date
-                  ? `${image.location}, ${image.date}`
-                  : image.location || image.date}
-              </Typography>
-            )}
-            {/* Mission (plain text, no hyperlink) */}
-            {image.mission && (
-              <Typography variant="body2">
-                {image.mission}
-              </Typography>
-            )}
-            {/* Organization (always link to homepage) */}
-            <MuiLink
-              href="https://albert-kahn.hauts-de-seine.fr/en/"
-              target="_blank"
-              rel="noopener noreferrer"
-              variant="body2"
-              sx={{ color: colors.linkColor, textDecoration: 'underline' }}
-            >
-              Musée départemental Albert-Kahn
-            </MuiLink>
-          </Box>
-        );
+        title = image.title;
+        titleHref = image.page_url;
+        if (image.location || image.date) {
+          specs.push({ label: 'Location', value: [image.location, image.date].filter(Boolean).join(', ') });
+        }
+        if (image.mission) specs.push({ label: 'Mission', value: image.mission });
+        specs.push({ label: 'Source', value: <SourceLink href="https://albert-kahn.hauts-de-seine.fr/en/">Musée Albert-Kahn</SourceLink> });
+        break;
 
       case 'Children in Art':
-        return (
-          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1, textAlign: 'center' }}>
-            {/* Title (linked to work_url) */}
-            {image.title && image.work_url && (
-              <MuiLink
-                href={image.work_url}
-                target="_blank"
-                rel="noopener noreferrer"
-                variant="body2"
-                sx={{ color: colors.linkColor, textDecoration: 'underline' }}
-              >
-                {image.title}
-              </MuiLink>
-            )}
-            {/* Artist Name (Nationality) - parentheses, not comma */}
-            {image.artist_name && (
-              <Typography variant="body2">
-                {image.artist_name}
-                {image.artist_nationality && ` (${image.artist_nationality})`}
-              </Typography>
-            )}
-            {/* via Source Name (with hyperlink) */}
-            {image.source && getSourceUrl(image.source) && (
-              <Typography variant="body2">
-                via{' '}
-                <MuiLink
-                  href={getSourceUrl(image.source)}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  sx={{ color: colors.linkColor, textDecoration: 'underline' }}
-                >
-                  {getSourceDisplayName(image.source)}
-                </MuiLink>
-              </Typography>
-            )}
-            {/* Artists from Country: Children in Art */}
-            <Typography variant="body2">
-             Children in Art
-            </Typography>
-          </Box>
-        );
+        title = image.title;
+        titleHref = image.work_url;
+        artist = image.artist_name;
+        artistHref = image.author_wikilink;
+        nationality = image.artist_nationality;
+        if (image.source && getSourceUrl(image.source)) {
+          specs.push({ label: 'Via', value: <SourceLink href={getSourceUrl(image.source)}>{getSourceDisplayName(image.source)}</SourceLink> });
+        }
+        specs.push({ label: 'Collection', value: 'Children in Art' });
+        break;
 
       case 'Public Domain Review':
-        return (
-          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1, textAlign: 'center' }}>
-            {/* Description with Source link to source_url */}
-            {image.description && (
-              <Typography variant="body2">
-                {image.description}
-                {image.source_url && (
-                  <>
-                    {' - '}
-                    <MuiLink
-                      href={image.source_url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      sx={{ color: colors.linkColor, textDecoration: 'underline' }}
-                    >
-                      Source
-                    </MuiLink>
-                  </>
-                )}
-              </Typography>
-            )}
-            {/* Title (italicized) with Public Domain Review article link to source_link */}
-            {image.title && (
-              <Typography variant="body2">
-                <em>{image.title}</em>
-                {image.source_link && (
-                  <>
-                    {' - '}
-                    <MuiLink
-                      href={image.source_link}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      sx={{ color: colors.linkColor, textDecoration: 'underline' }}
-                    >
-                      Public Domain Review article
-                    </MuiLink>
-                  </>
-                )}
-              </Typography>
-            )}
-          </Box>
-        );
+        title = image.title;
+        titleHref = image.source_url;
+        if (image.description) specs.push({ label: 'Description', value: image.description });
+        if (image.source_url) specs.push({ label: 'Source', value: <SourceLink href={image.source_url}>View image</SourceLink> });
+        if (image.source_link) specs.push({ label: 'Article', value: <SourceLink href={image.source_link}>Public Domain Review</SourceLink> });
+        break;
 
       case 'Met Museum':
-        return (
-          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1, textAlign: 'center' }}>
-            {/* Title (linked to object_url) */}
-            {image.title && image.object_url && (
-              <MuiLink
-                href={image.object_url}
-                target="_blank"
-                rel="noopener noreferrer"
-                variant="body2"
-                sx={{ color: colors.linkColor, textDecoration: 'underline' }}
-              >
-                {image.title}
-              </MuiLink>
-            )}
-            {/* Artist/Culture, Date (combined on one line) */}
-            {(image.artist_name || image.culture || image.object_date) && (
-              <Typography variant="body2">
-                {(image.artist_name || image.culture) && image.object_date
-                  ? `${image.artist_name || image.culture}, ${image.object_date}`
-                  : image.artist_name || image.culture || image.object_date}
-              </Typography>
-            )}
-            {/* Medium */}
-            {image.medium && (
-              <Typography variant="body2">
-                {image.medium}
-              </Typography>
-            )}
-            {/* Organization (link to exhibitions page) */}
-            <MuiLink
-              href="https://www.metmuseum.org/exhibitions"
-              target="_blank"
-              rel="noopener noreferrer"
-              variant="body2"
-              sx={{ color: colors.linkColor, textDecoration: 'underline' }}
-            >
-              Metropolitan Museum of Art
-            </MuiLink>
-          </Box>
-        );
+        title = image.title;
+        titleHref = image.object_url;
+        artist = image.artist_name || image.culture;
+        if (image.object_date) specs.push({ label: 'Date', value: image.object_date });
+        if (image.medium) specs.push({ label: 'Medium', value: image.medium });
+        specs.push({ label: 'Source', value: <SourceLink href={image.object_url || 'https://www.metmuseum.org'}>Met Museum</SourceLink> });
+        break;
 
       default:
         return null;
     }
+
+    return (
+      <Box sx={{ pt: 2 }}>
+        {title && <ArtTitle href={titleHref}>{title}</ArtTitle>}
+        <ByLine artist={artist} artistHref={artistHref} nationality={nationality} />
+        {specs.length > 0 && (
+          <Box sx={{ borderTop: '1px dotted var(--rule, #cfc4a8)', mt: 1.25 }}>
+            {specs.map(({ label, value }, i) => (
+              <SpecRow key={i} label={label} last={i === specs.length - 1}>{value}</SpecRow>
+            ))}
+          </Box>
+        )}
+      </Box>
+    );
   };
 
   const handleClose = () => {
@@ -271,44 +260,81 @@ const WelcomeOverlay = ({
         onClose={handleBackdropClick}
         maxWidth="sm"
         fullWidth
-
+        slotProps={{
+          backdrop: {
+            sx: {
+              backgroundColor: 'rgba(26,22,18,0.45)',
+              backdropFilter: 'blur(6px)',
+            }
+          }
+        }}
       >
         {/* Dialog Header */}
-        <DialogTitle
-          sx={{
-            display: 'flex',
-            flexDirection: 'column',
-            gap: 2,
-            paddingBottom: 2,
-          }}
-        >
-          {/* Close button in top right */}
-          <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
-            <Button
-              variant="outlined"
+        <DialogTitle sx={{ p: 0 }}>
+          <Box sx={{
+            px: { xs: 2, sm: 3.5 },
+            pt: { xs: 2.5, sm: 3 },
+            pb: { xs: 2, sm: 2.5 },
+            background: 'var(--paper-2, #e8dfc8)',
+            borderBottom: '1px solid var(--rule, #cfc4a8)',
+            position: 'relative',
+          }}>
+            {/* Eyebrow label */}
+            <Typography sx={{
+              fontFamily: 'var(--font-mono, "JetBrains Mono", monospace)',
+              fontSize: '10px',
+              fontWeight: 500,
+              letterSpacing: '.22em',
+              textTransform: 'uppercase',
+              color: 'var(--accent, #b34727)',
+              mb: 1,
+            }}>
+              Guide
+            </Typography>
+
+            {/* Main title — large serif italic */}
+            <Typography component="h1" sx={{
+              fontFamily: '"Cormorant Garamond", Georgia, serif',
+              fontSize: { xs: '2.25rem', sm: '3rem' },
+              fontWeight: 500,
+              fontStyle: 'italic',
+              lineHeight: 1,
+              color: 'var(--ink, #1a1612)',
+              letterSpacing: '-0.01em',
+            }}>
+              Help & Settings
+            </Typography>
+
+            {/* Circle close button — top-right */}
+            <Box
+              component="button"
               onClick={handleClose}
-              size="small"
               sx={{
-                minWidth: 'auto',
-                padding: '4px 8px'
+                position: 'absolute',
+                top: 14,
+                right: 14,
+                width: 40,
+                height: 40,
+                borderRadius: '50%',
+                border: '1px solid var(--rule, #cfc4a8)',
+                background: 'transparent',
+                color: 'var(--ink-2, #3a322a)',
+                display: 'grid',
+                placeItems: 'center',
+                cursor: 'pointer',
+                fontSize: '20px',
+                lineHeight: 1,
+                transition: 'all .15s',
+                '&:hover': {
+                  background: 'var(--ink, #1a1612)',
+                  color: 'var(--paper, #f1ead9)',
+                  borderColor: 'var(--ink, #1a1612)',
+                },
               }}
             >
-              ✕
-            </Button>
+              ×
+            </Box>
           </Box>
-
-          {/* Main Title */}
-          <Typography
-            component="div"
-            variant="h5"
-            sx={{
-              fontWeight: 600,
-              textAlign: 'center',
-              mb: 2
-            }}
-          >
-            Help & Settings
-          </Typography>
         </DialogTitle>
 
         {/* Dialog Content */}
@@ -316,12 +342,39 @@ const WelcomeOverlay = ({
           {/* Settings Section */}
           <Card sx={{ mb: 3 }}>
             <CardHeader
-              title="Game Settings"
+              title={
+                <Box sx={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                }}>
+                  <Typography sx={{
+                    fontFamily: 'var(--font-mono, "JetBrains Mono", monospace)',
+                    fontSize: '10px',
+                    fontWeight: 600,
+                    letterSpacing: '.22em',
+                    textTransform: 'uppercase',
+                    color: 'var(--ink-3, #6c6356)',
+                  }}>
+                    Game Settings
+                  </Typography>
+                  <Typography sx={{
+                    fontFamily: 'var(--font-mono, "JetBrains Mono", monospace)',
+                    fontSize: '10px',
+                    fontWeight: 400,
+                    letterSpacing: '.1em',
+                    color: 'var(--ink-3, #6c6356)',
+                  }}>
+                    i
+                  </Typography>
+                </Box>
+              }
               sx={{
-                bgcolor: 'background.paper',
-                borderBottom: '1px solid',
-                borderColor: 'divider',
-                textAlign: 'center',
+                bgcolor: 'var(--paper-2, #e8dfc8)',
+                borderBottom: '1px solid var(--rule, #cfc4a8)',
+                py: 1,
+                px: 2,
+                '& .MuiCardHeader-content': { width: '100%' },
               }}
             />
             <CardContent>
@@ -465,18 +518,36 @@ const WelcomeOverlay = ({
             </CardContent>
           </Card>
 
-          {/* Image Types Section Header */}
-          <Typography
-            variant="h6"
-            sx={{
+          {/* Image Types Section Header — dr-secttitle pattern */}
+          <Box sx={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            pb: 0.75,
+            mb: 2,
+            mt: 1,
+            borderBottom: '1px solid var(--rule, #cfc4a8)',
+          }}>
+            <Typography sx={{
+              fontFamily: 'var(--font-mono, "JetBrains Mono", monospace)',
+              fontSize: '10px',
               fontWeight: 600,
-              textAlign: 'center',
-              mb: 2,
-              mt: 1
-            }}
-          >
-            Image Types
-          </Typography>
+              letterSpacing: '.22em',
+              textTransform: 'uppercase',
+              color: 'var(--ink-3, #6c6356)',
+            }}>
+              Image Types
+            </Typography>
+            <Typography sx={{
+              fontFamily: 'var(--font-mono, "JetBrains Mono", monospace)',
+              fontSize: '10px',
+              fontWeight: 400,
+              letterSpacing: '.1em',
+              color: 'var(--ink-3, #6c6356)',
+            }}>
+              ii
+            </Typography>
+          </Box>
 
           {/* Country Examples */}
           {welcomeExamples.countries.map((country) => (
@@ -487,19 +558,51 @@ const WelcomeOverlay = ({
                     key={collectionName}
                     sx={{
                       mb: 2,
-                      border: '1px solid',
-                      borderColor: 'divider',
+                      border: '1px solid var(--rule, #cfc4a8)',
+                      borderRadius: '4px',
+                      boxShadow: 'none',
                     }}
                   >
-                    {/* Card Content */}
-                    <CardContent>
+                    {/* Collection type header — dr-secttitle pattern */}
+                    <Box sx={{
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      alignItems: 'center',
+                      px: 2,
+                      py: 0.875,
+                      background: 'var(--paper-2, #e8dfc8)',
+                      borderBottom: '1px solid var(--rule, #cfc4a8)',
+                    }}>
+                      <Typography sx={{
+                        fontFamily: 'var(--font-mono, "JetBrains Mono", monospace)',
+                        fontSize: '10px',
+                        fontWeight: 600,
+                        letterSpacing: '.22em',
+                        textTransform: 'uppercase',
+                        color: 'var(--ink-3, #6c6356)',
+                      }}>
+                        {collectionName}
+                      </Typography>
+                      <Typography sx={{
+                        fontFamily: 'var(--font-mono, "JetBrains Mono", monospace)',
+                        fontSize: '10px',
+                        fontWeight: 400,
+                        letterSpacing: '.1em',
+                        color: 'var(--ink-3, #6c6356)',
+                        fontStyle: 'italic',
+                      }}>
+                        {country.name}
+                      </Typography>
+                    </Box>
+
+                    <CardContent sx={{ p: 2, '&:last-child': { pb: 2 } }}>
                       {/* Image */}
                       {getImageLinkUrl(image) ? (
                         <MuiLink
                           href={getImageLinkUrl(image)}
                           target="_blank"
                           rel="noopener noreferrer"
-                          sx={{ display: 'block', mb: 2 }}
+                          sx={{ display: 'block', mb: 0 }}
                         >
                           <CardMedia
                             component="img"
@@ -518,23 +621,28 @@ const WelcomeOverlay = ({
                           image={image.filepath}
                           alt={image.title || collectionName}
                           sx={{
-                            mb: 2,
                             borderRadius: '4px',
                             objectFit: 'contain',
                           }}
                         />
                       )}
 
-                      {/* Caption */}
-                      {renderCaption(image, country.name)}
+                      {/* Caption — reference metadata layout */}
+                      {renderCaption(image)}
 
-                      {/* Collection Description */}
+                      {/* Collection description */}
                       {image.collection_description && (
-                        <Box sx={{ mt: 2, p: 2, backgroundColor: 'rgba(0, 0, 0, 0.03)', borderRadius: 1 }}>
-                          <Typography variant="body2" sx={{ fontWeight: 600, mb: 0.5 }}>
-                            {collectionName}
-                          </Typography>
-                          <Typography variant="body2" color="text.secondary">
+                        <Box sx={{
+                          mt: 2,
+                          pt: 1.5,
+                          borderTop: '1px solid var(--rule, #cfc4a8)',
+                        }}>
+                          <Typography sx={{
+                            fontFamily: 'var(--font-sans, "Manrope", sans-serif)',
+                            fontSize: '12px',
+                            lineHeight: 1.5,
+                            color: 'var(--ink-2, #3a322a)',
+                          }}>
                             {image.collection_description}
                           </Typography>
                         </Box>
