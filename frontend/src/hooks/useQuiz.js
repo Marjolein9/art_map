@@ -198,6 +198,8 @@ export const useQuiz = (backendReady, selectedRegion = null, quizCountriesOnly =
    * Object property shorthand: { targetCountry } is equivalent to { targetCountry: targetCountry }
    * When key and value have the same name, you can write it once.
    */
+  const clearTargetCountry = () => setTargetCountry(null);
+
   return {
     targetCountry,          // Current target country object
     loading,                // Loading state
@@ -205,7 +207,8 @@ export const useQuiz = (backendReady, selectedRegion = null, quizCountriesOnly =
     handleCountryClick,     // Function to check user's answer
     fetchNewCountry,        // Function to get a new random country
     resetGameStatus,        // Function to reset game to 'playing' state
-    setManualTargetCountry  // Function to manually set target country
+    setManualTargetCountry, // Function to manually set target country
+    clearTargetCountry      // Function to immediately clear target (prevents stale flash on mode switch)
   };
 };
 

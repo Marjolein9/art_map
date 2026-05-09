@@ -250,7 +250,8 @@ function AppContent() {
     handleCountryClick,      // Function to check user's answer
     fetchNewCountry,         // Function to get next quiz question
     resetGameStatus,         // Function to reset game state
-    setManualTargetCountry   // Function to set target country manually
+    setManualTargetCountry,  // Function to set target country manually
+    clearTargetCountry       // Function to clear target before fetching new one
   } = useQuiz(backendReady, selectedQuizRegion, quizCountriesOnly); // Pass backendReady, selected region, and quiz countries only flag
 
   // Fetch initial target country when starting in quiz mode (but not while OnLoadOverlay is showing)
@@ -289,9 +290,9 @@ function AppContent() {
   const handleModeToggle = () => {
     const newMode = mode === 'quiz' ? 'explore' : 'quiz';
     setMode(newMode);
-    // Clear explore selection and fetch new target country when switching to quiz mode
     if (newMode === 'quiz') {
       setExploreCountry(null);
+      clearTargetCountry(); // Null out stale target immediately so it can't flash before new one arrives
       fetchNewCountry();
     }
   };

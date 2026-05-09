@@ -297,7 +297,17 @@ const WorldMap = ({
       // Only show hints in quiz mode when hints are enabled and there's a target country
       if (targetCountry && mode === 'quiz' && hintsEnabled) {
         // Skip if we already fetched hints for this country
-        if (hintCountryRef.current === targetCountry) return;
+        if (hintCountryRef.current === targetCountry) {
+          console.log(`⏭️  Skipping hints fetch (already fetched for ${targetCountry})`);
+          return;
+        }
+
+        console.log(`
+📡 HINTS SYSTEM: Fetching hints for ${targetCountry}
+   - Mode: ${mode}
+   - Hints Enabled: ${hintsEnabled}
+   - Previous hint country: ${hintCountryRef.current}
+        `);
 
         try {
           // Find the target country's data from the GeoJSON features
@@ -339,7 +349,12 @@ const WorldMap = ({
           debug(`🎯 Highlighting entire ${targetSubregion} subregion (${subregionM49s.length} countries)`);
 
           // Template literal (`string ${variable}`) embeds variables in strings
-          debug(`✅ HINTS FETCHED for ${targetCountry}: ${highlightM49s.length} countries (including target)`, highlightM49s);
+          console.log(`
+✅ HINTS FETCHED for ${targetCountry}
+   - Subregion: ${targetSubregion}
+   - Total hint M49 codes: ${highlightM49s.length}
+   - M49 codes: ${highlightM49s.slice(0, 5).join(', ')}${highlightM49s.length > 5 ? '...' : ''}
+          `);
           setHintNeighborsM49(highlightM49s);
 
           // Remember which country we fetched hints for
@@ -350,9 +365,17 @@ const WorldMap = ({
         }
       } else {
         // Clear hints when not in quiz mode or hints disabled
-        debug(`🚫 HINTS DISABLED or not in quiz mode`);
-        setHintNeighborsM49([]);
-        hintCountryRef.current = null;
+        if (hintNeighborsM49.length > 0) {
+          console.log(`
+🚫 HINTS CLEARED
+   - Reason: ${!targetCountry ? 'No target country' : !hintsEnabled ? 'Hints disabled' : 'Not in quiz mode'}
+   - Mode: ${mode}
+   - targetCountry: ${targetCountry}
+   - hintsEnabled: ${hintsEnabled}
+          `);
+          setHintNeighborsM49([]);
+          hintCountryRef.current = null;
+        }
       }
     };
 
@@ -365,12 +388,25 @@ const WorldMap = ({
   useEffect(() => {
     // Check if target country changed (and wasn't just set initially)
     if (prevTargetCountryRef.current && prevTargetCountryRef.current !== targetCountry) {
+      console.log(`
+🎯 TARGET COUNTRY CHANGED (QUIZ MODE JUMP DETECTION)
+   - Previous targetCountry: ${prevTargetCountryRef.current}
+   - New targetCountry: ${targetCountry}
+   - Mode: ${mode}
+   - Clearing clickedCountry and showMeActivated
+      `);
       setClickedCountry(null);
       setShowMeActivated(false);
+    } else if (!prevTargetCountryRef.current && targetCountry) {
+      console.log(`
+🎯 INITIAL TARGET COUNTRY SET
+   - targetCountry: ${targetCountry}
+   - Mode: ${mode}
+      `);
     }
     // Update our record of the previous target
     prevTargetCountryRef.current = targetCountry;
-  }, [targetCountry]);
+  }, [targetCountry, mode]);
 
   // Show "Find: [Country]" overlay when target country changes in quiz mode
   useEffect(() => {
@@ -398,7 +434,15 @@ const WorldMap = ({
   // Clear explore selection when switching modes
   useEffect(() => {
     if (mode === 'quiz') {
+      console.log('📋 MODE SWITCH DETECTED: Switching to QUIZ mode');
+      console.log(`   - Current targetCountry: ${targetCountry}`);
+      console.log(`   - Current exploreSelectedCountry: ${exploreSelectedCountry}`);
+      console.log(`   ⚠️  This effect runs when mode changes. targetCountry may not be updated yet!`);
       setExploreSelectedCountry('');
+    } else {
+      console.log('🔍 MODE SWITCH DETECTED: Switching to EXPLORE mode');
+      console.log(`   - Current targetCountry: ${targetCountry}`);
+      console.log(`   - Current exploreSelectedCountry: ${exploreSelectedCountry}`);
     }
   }, [mode]);
 
@@ -560,33 +604,61 @@ const WorldMap = ({
     // Timestamp ensures paths update when needed (forces re-render in Globe component)
     const timestamp = Date.now();
 
-    // Layer 1: Base country paths (all countries, no special styling)
-    countryPaths.forEach(path => paths.push({
-      ...path,  // Spread all existing path properties
-      isHintOverlay: false,
-      isShowMeOverlay: false,
-      _updateKey: timestamp  // Internal key for tracking updates
-    }));
-
-    // Layer 2: Hint overlays (colored countries that are hints)
+    // Assign each unique country a stable altitude index based on its order in countryPaths.
+    // This gives every country a unique depth so adjacent borders never share the same altitude,
+    // eliminating z-fighting along shared edges. The spread (426 countries × 0.000002 ≈ 0.00085)
+    // is imperceptible visually but large enough for the 24-bit depth buffer to distinguish.
+    const countryAltMap = {};
+    let countryAltCounter = 0;
     countryPaths.forEach(path => {
-      // Get M49 code for this path
+      const iso3 = getCountryIsoCode(path);
+      if (!(iso3 in countryAltMap)) {
+        countryAltMap[iso3] = countryAltCounter++ * 0.000002;
+      }
+    });
+
+    // Layer 1: Base country paths (all countries, no special styling)
+    const islandIndex = {};
+    countryPaths.forEach(path => {
+      const iso3 = getCountryIsoCode(path);
+      const currentIslandIdx = (islandIndex[iso3] || 0);
+      islandIndex[iso3] = currentIslandIdx + 1;
+
+      paths.push({
+        ...path,
+        isHintOverlay: false,
+        isShowMeOverlay: false,
+        _updateKey: timestamp,
+        _order: 0,
+        // Per-country unique base (0.002+) + per-island micro-offset to prevent all forms of z-fighting
+        pathAltitude: 0.002 + countryAltMap[iso3] + currentIslandIdx * 0.000001
+      });
+    });
+
+    // Layer 2: Hint overlays — same per-country altitude logic, shifted up by 0.002
+    const hintIslandIndex = {};
+    countryPaths.forEach(path => {
       const m49 = path.id || path.properties?.id;
       const paddedM49 = m49 ? String(m49).padStart(3, '0') : null;
 
-      // If this country should be highlighted as a hint
       if (paddedM49 && activeHints.includes(paddedM49)) {
-        const hintPath = {
+        const iso3 = getCountryIsoCode(path);
+        const currentIslandIdx = (hintIslandIndex[iso3] || 0);
+        hintIslandIndex[iso3] = currentIslandIdx + 1;
+
+        paths.push({
           ...path,
-          isHintOverlay: true,   // Flag this as a hint
+          isHintOverlay: true,
           isShowMeOverlay: false,
-          _updateKey: timestamp
-        };
-        paths.push(hintPath);
+          _updateKey: timestamp,
+          _order: 1,
+          pathAltitude: 0.004 + countryAltMap[iso3] + currentIslandIdx * 0.000001
+        });
       }
     });
 
     // Layer 3: "Show Me" overlay (highlights the correct answer)
+    // Order 2, altitude 0.004
     if (showMeActivated && targetCountry) {
       countryPaths.forEach(path => {
         const iso3 = getCountryIsoCode(path);
@@ -594,12 +666,15 @@ const WorldMap = ({
           ...path,
           isHintOverlay: false,
           isShowMeOverlay: true,  // Flag this as the revealed answer
-          _updateKey: timestamp
+          _updateKey: timestamp,
+          _order: 2,              // Render last, always on top
+          pathAltitude: 0.006     // Above hint layer (0.004)
         });
       });
     }
 
     // Layer 4: Explore mode selection (highlights the selected country in explore mode)
+    // Order 2, altitude 0.004
     if (mode === 'explore' && exploreSelectedCountry) {
       countryPaths.forEach(path => {
         const iso3 = getCountryIsoCode(path);
@@ -607,14 +682,93 @@ const WorldMap = ({
           ...path,
           isHintOverlay: false,
           isShowMeOverlay: true,  // Use same highlight as "Show Me"
-          _updateKey: timestamp
+          _updateKey: timestamp,
+          _order: 2,              // Same order as "Show Me"
+          pathAltitude: 0.006     // Above hint layer (0.004)
         });
       });
     }
 
+    // DEBUG: Log path composition and altitude distribution
+    const basePaths = paths.filter(p => p._order === 0).length;
+    const hintPaths = paths.filter(p => p._order === 1).length;
+    const overlayPaths = paths.filter(p => p._order === 2).length;
+    
+    // Check if we have z-fighting risk (multiple paths for same country at same altitude)
+    const pathsByCountry = {};
+    paths.forEach(p => {
+      const iso3 = getCountryIsoCode(p);
+      if (!pathsByCountry[iso3]) pathsByCountry[iso3] = [];
+      pathsByCountry[iso3].push({ order: p._order, altitude: p.pathAltitude });
+    });
+    
+    const duplicateAltitudes = Object.entries(pathsByCountry).filter(([iso3, pList]) => {
+      const altitudes = pList.map(p => p.altitude);
+      return new Set(altitudes).size < altitudes.length;
+    });
+    
+    console.log(`
+╔════════════════════════════════════════════════════════╗
+║         LAYERED PATHS COMPOSITION (DEBUG)              ║
+╠════════════════════════════════════════════════════════╣
+║ Mode: ${mode}
+║ Total Paths: ${paths.length}
+║   - Base Layer (_order=0): ${basePaths} paths @ altitude≈0.002
+║   - Hint Layer (_order=1): ${hintPaths} paths @ altitude≈0.004
+║   - Overlay Layer (_order=2): ${overlayPaths} paths @ altitude=0.006
+║ Show Me Activated: ${showMeActivated}
+║ Target Country: ${targetCountry}
+║ Explore Selected: ${exploreSelectedCountry}
+║ Active Hints Count: ${activeHints.length}
+║ ⚠️  Z-Fighting Risk (same country, same altitude): ${duplicateAltitudes.length} countries
+║ Island Micro-Altitude Offset: 0.00001 per island
+║ Timestamp: ${timestamp}
+╚════════════════════════════════════════════════════════╝
+    `);
+
+    // DEBUG: Sample altitudes from each layer
+    const sampleAltitudes = {
+      baseSamples: paths.filter(p => p._order === 0).slice(0, 2).map((p, i) => `Path${i}: alt=${p.pathAltitude}`),
+      hintSamples: paths.filter(p => p._order === 1).slice(0, 2).map((p, i) => `Path${i}: alt=${p.pathAltitude}`),
+      overlaySamples: paths.filter(p => p._order === 2).slice(0, 2).map((p, i) => `Path${i}: alt=${p.pathAltitude}`)
+    };
+    console.log('🎨 Altitude Sample Distribution:', sampleAltitudes);
+    
+    // Log if duplicate altitudes found
+    if (duplicateAltitudes.length > 0) {
+      console.warn('⚠️  Z-FIGHTING DETECTED! Countries rendered at same altitude:', duplicateAltitudes.slice(0, 5).map(([iso3]) => iso3));
+    }
+
     return paths;
   }, [countryPaths, showMeActivated, targetCountry, mode, exploreSelectedCountry, hintNeighborsM49]);
-  // Only recalculate when these dependencies change
+
+  // three-globe recreates all LineMaterial objects from scratch whenever pathsData changes
+  // (because our spread objects have new references each render, so ThreeDigest treats them as new).
+  // setTimeout(0) fires too early — before three-globe finishes creating materials.
+  // Solution: patch on every animation frame so we catch new materials the moment they appear.
+  // The check `depthWrite !== false` is a no-op in steady state, so frame cost is just a traversal.
+  useEffect(() => {
+    if (!globeEl.current) return;
+    let frameId;
+    const patchEveryFrame = () => {
+      const scene = globeEl.current?.scene?.();
+      if (scene) {
+        scene.traverse(obj => {
+          if (obj.__globeObjType === 'path') {
+            obj.children.forEach(child => {
+              if (child.material && child.material.depthWrite !== false) {
+                child.material.depthWrite = false;
+                child.material.needsUpdate = true;
+              }
+            });
+          }
+        });
+      }
+      frameId = requestAnimationFrame(patchEveryFrame);
+    };
+    frameId = requestAnimationFrame(patchEveryFrame);
+    return () => cancelAnimationFrame(frameId);
+  }, []); // run once — the loop itself handles all future path updates
 
   /**
    * JSX RENDERING
@@ -658,6 +812,19 @@ const WorldMap = ({
           pathPoints={d => Array.isArray(d.coords[0]) ? d.coords[0] : d.coords}
           pathPointLat={p => p[1]}  // Latitude is 2nd element in coordinate pair
           pathPointLng={p => p[0]}  // Longitude is 1st element in coordinate pair
+          // pathAltitude: Z-position (depth) of each path layer
+          // Higher altitude = rendered on top, prevents Z-fighting during zoom
+          // This ensures consistent rendering order regardless of camera angle
+          pathAltitude={d => {
+            // DEBUG: Verify altitudes are being set correctly
+            const altitude = d.pathAltitude || 0;
+            // Log a sample on each render to track altitude values
+            if (Math.random() < 0.002) { // Log ~0.2% of paths per render
+              const iso3 = getCountryIsoCode(d);
+              console.log(`🎨 Path Altitude: Order=${d._order}, Alt=${altitude}, ISO3=${iso3}, isHint=${d.isHintOverlay}, isShowMe=${d.isShowMeOverlay}`);
+            }
+            return altitude;
+          }}
           // pathColor: Function that returns the color for each path
           // Arrow function with implicit return: d => expression
           pathColor={d => {
