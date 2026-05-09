@@ -145,11 +145,23 @@ export const loadTopoJSON = async (countriesFromDB = []) => {
     detailedGeoJSON.features.forEach(feature => {
       const iso = getCountryIsoCode(feature);
       if (iso && needsUpgrade.includes(iso)) {
-        // Remove the imprecise 110m feature and substitute the 50m one
+        // Remove the imprecise 110m feature
         simpleGeoJSON.features = simpleGeoJSON.features.filter(
           f => getCountryIsoCode(f) !== iso
         );
-        simpleGeoJSON.features.push(filterLargestIslands(feature));
+        // Split MultiPolygon into individual Polygon features so each sub-territory
+        // gets its own hit-test in react-globe.gl (fixes click detection for Gaza, etc.)
+        const filtered = filterLargestIslands(feature);
+        if (filtered.geometry.type === 'MultiPolygon') {
+          filtered.geometry.coordinates.forEach(polygonCoords => {
+            simpleGeoJSON.features.push({
+              ...filtered,
+              geometry: { type: 'Polygon', coordinates: polygonCoords }
+            });
+          });
+        } else {
+          simpleGeoJSON.features.push(filtered);
+        }
       }
     });
 
