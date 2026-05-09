@@ -968,6 +968,7 @@ const WorldMap = ({
             <Box sx={{
               display: 'flex',
               alignItems: 'center',
+              justifyContent: 'center',
               gap: 1,
               flexWrap: 'wrap',
               width: '100%',
@@ -1024,7 +1025,6 @@ const WorldMap = ({
                 title="Settings & Help"
                 sx={{
                   padding: '4px',
-                  ml: 'auto',
                   color: 'var(--text-color)',
                   '&:hover': {
                     backgroundColor: 'transparent',
