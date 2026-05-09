@@ -33,20 +33,10 @@ import {
 const QuizImageDisplay = ({ imagesByCollection, countryName, countryISO, onShowAll, totalImagesAvailable = 0, showMap = true, hideNoImagesMessage = false }) => {
   const [randomImage, setRandomImage] = useState(null);
   const [collectionName, setCollectionName] = useState(null);
-  const [isMounted, setIsMounted] = useState(false);
   const [mapError, setMapError] = useState(false);
   const [imageError, setImageError] = useState(false);
 
-  // Trigger fade-in after 0.5s delay on mount
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setIsMounted(true);
-    }, 500);
-
-    return () => clearTimeout(timer);
-  }, []);
-
-  // Reset error states when country or image changes
+  // Reset error state when country or image changes
   useEffect(() => {
     setMapError(false);
     setImageError(false);
@@ -117,23 +107,6 @@ const QuizImageDisplay = ({ imagesByCollection, countryName, countryISO, onShowA
       case 'Met Museum':
       case 'Metropolitan Museum of Art':
         return randomImage.object_url;
-      default:
-        return null;
-    }
-  };
-
-  // Helper function to get type subtitle based on collection
-  const getTypeSubtitle = (collection) => {
-    switch(collection) {
-      case 'Albert Kahn':
-        return 'Albert Kahn: Historical Photograph';
-      case 'Public Domain Review':
-        return 'Public Domain Review';
-      case 'Met Museum':
-      case 'Metropolitan Museum of Art':
-        return 'Museum Artwork';
-      case 'Children in Art':
-        return 'Children Depicted in Art';
       default:
         return null;
     }
@@ -320,13 +293,7 @@ const QuizImageDisplay = ({ imagesByCollection, countryName, countryISO, onShowA
     : null;
 
   return (
-    <Box sx={{
-      display: 'flex',
-      flexDirection: 'column',
-      gap: 2,
-      opacity: isMounted ? 1 : 0,
-      transition: 'opacity 0.5s ease-in-out',
-    }}>
+    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
       {/* Map View Section - Only show if showMap prop is true */}
       {showMap && (
         <Paper
@@ -398,7 +365,7 @@ const QuizImageDisplay = ({ imagesByCollection, countryName, countryISO, onShowA
         >
           <CardContent sx={{ p: 2, '&:last-child': { pb: 2 } }}>
             {/* Section title — dr-secttitle pattern */}
-            {collectionName && getTypeSubtitle(collectionName) && (
+            {collectionName && (
               <Box sx={{
                 display: 'flex',
                 justifyContent: 'space-between',
@@ -415,7 +382,7 @@ const QuizImageDisplay = ({ imagesByCollection, countryName, countryISO, onShowA
                   textTransform: 'uppercase',
                   color: 'var(--ink-3, #6c6356)',
                 }}>
-                  {getTypeSubtitle(collectionName)}
+                  {countryName ? `Public Domain Image from ${countryName}` : 'Public Domain Image'}
                 </Typography>
                 {onShowAll ? (
                   <Button
@@ -439,7 +406,7 @@ const QuizImageDisplay = ({ imagesByCollection, countryName, countryISO, onShowA
                 ) : null}
               </Box>
             )}
-            {/* Image */}
+            {/* Image — CSS animation handles fade-in reliably for both fresh and cached loads */}
             <Box
               sx={{
                 display: 'flex',
@@ -447,6 +414,8 @@ const QuizImageDisplay = ({ imagesByCollection, countryName, countryISO, onShowA
                 mb: 2,
                 maxHeight: '600px',
                 overflow: 'hidden',
+                '@keyframes imgFadeIn': { from: { opacity: 0 }, to: { opacity: 1 } },
+                '& img': { animation: 'imgFadeIn 0.3s ease both' },
               }}
             >
               {!imageError ? (
@@ -468,7 +437,6 @@ const QuizImageDisplay = ({ imagesByCollection, countryName, countryISO, onShowA
                         borderRadius: '4px',
                         cursor: 'pointer',
                       }}
-                      onLoad={() => {}}
                       onError={() => setImageError(true)}
                     />
                   </Link>
@@ -483,7 +451,6 @@ const QuizImageDisplay = ({ imagesByCollection, countryName, countryISO, onShowA
                       objectFit: 'contain',
                       borderRadius: '4px',
                     }}
-                    onLoad={() => {}}
                     onError={() => setImageError(true)}
                   />
                 )

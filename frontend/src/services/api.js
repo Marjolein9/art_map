@@ -245,7 +245,7 @@ const apiCall = async (endpoint, options = {}, responseMapping = null) => {
  *   response = requests.get('http://localhost:5000/api/game/random-country?region=Africa&countriesOnly=true&requireChildrenArtwork=true')
  *   return response.json()['country']
  */
-export const fetchRandomCountry = async (region = null, countriesOnly = true, requireChildrenArtwork = false) => {
+export const fetchRandomCountry = async (region = null, countriesOnly = false, requireChildrenArtwork = false) => {
   // Arrow function with optional parameters
   // async makes it return a Promise
 

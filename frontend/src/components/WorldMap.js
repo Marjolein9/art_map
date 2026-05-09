@@ -79,7 +79,7 @@ const WorldMap = ({
   setShowWelcome,         // Function to show/hide the welcome overlay
 }) => {
   // Get game settings from context instead of props
-  const { hintsEnabled, selectedQuizRegion, quizCountriesOnly } = useGameSettings();
+  const { hintsEnabled, selectedQuizRegion } = useGameSettings();
   // Store colors in a constant for easy access throughout the component
   const COLORS = colors;
 
@@ -224,15 +224,7 @@ const WorldMap = ({
         // Initialize mapping between country codes
         initializeCountryMapping(dbCountries);
 
-        // Filter to only include countries/territories that are marked for quiz inclusion
-        // When quizCountriesOnly is true, only include sovereign countries (is_country = true)
-        // When quizCountriesOnly is false, include all entities with include_in_quiz = true
-        // (sovereign countries + territories like Greenland, Puerto Rico, French Polynesia, etc.)
-        const validCountries = dbCountries.filter(c => {
-          if (!c.include_in_quiz) return false;
-          if (quizCountriesOnly) return c.is_country;
-          return true;
-        });
+        const validCountries = dbCountries.filter(c => c.include_in_quiz);
         setAllCountries(validCountries);
 
         // Load TopoJSON map data
@@ -279,7 +271,7 @@ const WorldMap = ({
 
     // Call the async function we just defined
     loadData();
-  }, [backendReady, quizCountriesOnly]); // Re-run this effect when backendReady or quizCountriesOnly changes
+  }, [backendReady]);
 
   /**
    * HINTS SYSTEM
@@ -298,16 +290,10 @@ const WorldMap = ({
       if (targetCountry && mode === 'quiz' && hintsEnabled) {
         // Skip if we already fetched hints for this country
         if (hintCountryRef.current === targetCountry) {
-          console.log(`⏭️  Skipping hints fetch (already fetched for ${targetCountry})`);
           return;
         }
 
-        console.log(`
-📡 HINTS SYSTEM: Fetching hints for ${targetCountry}
-   - Mode: ${mode}
-   - Hints Enabled: ${hintsEnabled}
-   - Previous hint country: ${hintCountryRef.current}
-        `);
+        console.log(`[Map] 📡 Fetching hints for ${targetCountry} (prev: ${hintCountryRef.current})`);
 
         try {
           // Find the target country's data from the GeoJSON features
@@ -349,12 +335,7 @@ const WorldMap = ({
           debug(`🎯 Highlighting entire ${targetSubregion} subregion (${subregionM49s.length} countries)`);
 
           // Template literal (`string ${variable}`) embeds variables in strings
-          console.log(`
-✅ HINTS FETCHED for ${targetCountry}
-   - Subregion: ${targetSubregion}
-   - Total hint M49 codes: ${highlightM49s.length}
-   - M49 codes: ${highlightM49s.slice(0, 5).join(', ')}${highlightM49s.length > 5 ? '...' : ''}
-          `);
+          console.log(`[Map] ✅ Hints for ${targetCountry}: ${targetSubregion} — ${highlightM49s.length} countries`);
           setHintNeighborsM49(highlightM49s);
 
           // Remember which country we fetched hints for
@@ -366,13 +347,7 @@ const WorldMap = ({
       } else {
         // Clear hints when not in quiz mode or hints disabled
         if (hintNeighborsM49.length > 0) {
-          console.log(`
-🚫 HINTS CLEARED
-   - Reason: ${!targetCountry ? 'No target country' : !hintsEnabled ? 'Hints disabled' : 'Not in quiz mode'}
-   - Mode: ${mode}
-   - targetCountry: ${targetCountry}
-   - hintsEnabled: ${hintsEnabled}
-          `);
+          console.log(`[Map] 🚫 Hints cleared — ${!targetCountry ? 'no target' : !hintsEnabled ? 'hints off' : 'not quiz mode'}`);
           setHintNeighborsM49([]);
           hintCountryRef.current = null;
         }
@@ -388,21 +363,11 @@ const WorldMap = ({
   useEffect(() => {
     // Check if target country changed (and wasn't just set initially)
     if (prevTargetCountryRef.current && prevTargetCountryRef.current !== targetCountry) {
-      console.log(`
-🎯 TARGET COUNTRY CHANGED (QUIZ MODE JUMP DETECTION)
-   - Previous targetCountry: ${prevTargetCountryRef.current}
-   - New targetCountry: ${targetCountry}
-   - Mode: ${mode}
-   - Clearing clickedCountry and showMeActivated
-      `);
+      console.log(`[Map] 🎯 Target changed: ${prevTargetCountryRef.current} → ${targetCountry}`);
       setClickedCountry(null);
       setShowMeActivated(false);
     } else if (!prevTargetCountryRef.current && targetCountry) {
-      console.log(`
-🎯 INITIAL TARGET COUNTRY SET
-   - targetCountry: ${targetCountry}
-   - Mode: ${mode}
-      `);
+      console.log(`[Map] 🎯 Initial target set: ${targetCountry}`);
     }
     // Update our record of the previous target
     prevTargetCountryRef.current = targetCountry;
@@ -434,15 +399,7 @@ const WorldMap = ({
   // Clear explore selection when switching modes
   useEffect(() => {
     if (mode === 'quiz') {
-      console.log('📋 MODE SWITCH DETECTED: Switching to QUIZ mode');
-      console.log(`   - Current targetCountry: ${targetCountry}`);
-      console.log(`   - Current exploreSelectedCountry: ${exploreSelectedCountry}`);
-      console.log(`   ⚠️  This effect runs when mode changes. targetCountry may not be updated yet!`);
       setExploreSelectedCountry('');
-    } else {
-      console.log('🔍 MODE SWITCH DETECTED: Switching to EXPLORE mode');
-      console.log(`   - Current targetCountry: ${targetCountry}`);
-      console.log(`   - Current exploreSelectedCountry: ${exploreSelectedCountry}`);
     }
   }, [mode]);
 
@@ -689,54 +646,18 @@ const WorldMap = ({
       });
     }
 
-    // DEBUG: Log path composition and altitude distribution
-    const basePaths = paths.filter(p => p._order === 0).length;
-    const hintPaths = paths.filter(p => p._order === 1).length;
-    const overlayPaths = paths.filter(p => p._order === 2).length;
-    
-    // Check if we have z-fighting risk (multiple paths for same country at same altitude)
+    // Warn only if z-fighting actually occurs
     const pathsByCountry = {};
     paths.forEach(p => {
       const iso3 = getCountryIsoCode(p);
       if (!pathsByCountry[iso3]) pathsByCountry[iso3] = [];
-      pathsByCountry[iso3].push({ order: p._order, altitude: p.pathAltitude });
+      pathsByCountry[iso3].push(p.pathAltitude);
     });
-    
-    const duplicateAltitudes = Object.entries(pathsByCountry).filter(([iso3, pList]) => {
-      const altitudes = pList.map(p => p.altitude);
-      return new Set(altitudes).size < altitudes.length;
-    });
-    
-    console.log(`
-╔════════════════════════════════════════════════════════╗
-║         LAYERED PATHS COMPOSITION (DEBUG)              ║
-╠════════════════════════════════════════════════════════╣
-║ Mode: ${mode}
-║ Total Paths: ${paths.length}
-║   - Base Layer (_order=0): ${basePaths} paths @ altitude≈0.002
-║   - Hint Layer (_order=1): ${hintPaths} paths @ altitude≈0.004
-║   - Overlay Layer (_order=2): ${overlayPaths} paths @ altitude=0.006
-║ Show Me Activated: ${showMeActivated}
-║ Target Country: ${targetCountry}
-║ Explore Selected: ${exploreSelectedCountry}
-║ Active Hints Count: ${activeHints.length}
-║ ⚠️  Z-Fighting Risk (same country, same altitude): ${duplicateAltitudes.length} countries
-║ Island Micro-Altitude Offset: 0.00001 per island
-║ Timestamp: ${timestamp}
-╚════════════════════════════════════════════════════════╝
-    `);
-
-    // DEBUG: Sample altitudes from each layer
-    const sampleAltitudes = {
-      baseSamples: paths.filter(p => p._order === 0).slice(0, 2).map((p, i) => `Path${i}: alt=${p.pathAltitude}`),
-      hintSamples: paths.filter(p => p._order === 1).slice(0, 2).map((p, i) => `Path${i}: alt=${p.pathAltitude}`),
-      overlaySamples: paths.filter(p => p._order === 2).slice(0, 2).map((p, i) => `Path${i}: alt=${p.pathAltitude}`)
-    };
-    console.log('🎨 Altitude Sample Distribution:', sampleAltitudes);
-    
-    // Log if duplicate altitudes found
+    const duplicateAltitudes = Object.entries(pathsByCountry).filter(([, alts]) =>
+      new Set(alts).size < alts.length
+    );
     if (duplicateAltitudes.length > 0) {
-      console.warn('⚠️  Z-FIGHTING DETECTED! Countries rendered at same altitude:', duplicateAltitudes.slice(0, 5).map(([iso3]) => iso3));
+      console.warn('[Map] ⚠️ Z-fighting:', duplicateAltitudes.slice(0, 5).map(([iso3]) => iso3));
     }
 
     return paths;
@@ -815,16 +736,7 @@ const WorldMap = ({
           // pathAltitude: Z-position (depth) of each path layer
           // Higher altitude = rendered on top, prevents Z-fighting during zoom
           // This ensures consistent rendering order regardless of camera angle
-          pathAltitude={d => {
-            // DEBUG: Verify altitudes are being set correctly
-            const altitude = d.pathAltitude || 0;
-            // Log a sample on each render to track altitude values
-            if (Math.random() < 0.002) { // Log ~0.2% of paths per render
-              const iso3 = getCountryIsoCode(d);
-              console.log(`🎨 Path Altitude: Order=${d._order}, Alt=${altitude}, ISO3=${iso3}, isHint=${d.isHintOverlay}, isShowMe=${d.isShowMeOverlay}`);
-            }
-            return altitude;
-          }}
+          pathAltitude={d => d.pathAltitude || 0}
           // pathColor: Function that returns the color for each path
           // Arrow function with implicit return: d => expression
           pathColor={d => {

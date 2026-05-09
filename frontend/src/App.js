@@ -47,7 +47,7 @@ function AppContent() {
    */
 
   // Get only the values needed in AppContent
-  const { selectedQuizRegion, quizCountriesOnly } = useGameSettings();
+  const { selectedQuizRegion } = useGameSettings();
 
   // ===========================================================================
   // STATE MANAGEMENT
@@ -252,7 +252,7 @@ function AppContent() {
     resetGameStatus,         // Function to reset game state
     setManualTargetCountry,  // Function to set target country manually
     clearTargetCountry       // Function to clear target before fetching new one
-  } = useQuiz(backendReady, selectedQuizRegion, quizCountriesOnly); // Pass backendReady, selected region, and quiz countries only flag
+  } = useQuiz(selectedQuizRegion);
 
   // Fetch initial target country when starting in quiz mode (but not while OnLoadOverlay is showing)
   useEffect(() => {

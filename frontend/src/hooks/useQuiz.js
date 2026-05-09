@@ -30,10 +30,9 @@ import { fetchRandomCountry, checkAnswer } from '../services/api';
  *
  * @param {boolean} backendReady - Whether the backend server is ready
  * @param {string|null} selectedRegion - Selected region to filter countries (null = all regions)
- * @param {boolean} quizCountriesOnly - Only quiz on sovereign countries (exclude territories)
  * @returns {Object} - Object containing state and functions for quiz management
  */
-export const useQuiz = (backendReady, selectedRegion = null, quizCountriesOnly = true) => {
+export const useQuiz = (selectedRegion = null) => {
   /**
    * STATE VARIABLES
    *
@@ -67,6 +66,9 @@ export const useQuiz = (backendReady, selectedRegion = null, quizCountriesOnly =
   // Used to show loading screen only on first load, not subsequent loads
   const isInitialLoad = useRef(true);
 
+  // isFetching: Prevents concurrent fetchNewCountry calls (StrictMode fires effects twice)
+  const isFetching = useRef(false);
+
   /**
    * HELPER FUNCTIONS
    */
@@ -86,11 +88,13 @@ export const useQuiz = (backendReady, selectedRegion = null, quizCountriesOnly =
    * - This lets us write async code that looks like synchronous code
    */
   const fetchNewCountry = async () => {
+    if (isFetching.current) {
+      console.log('[Quiz] ⛔ fetchNewCountry blocked — already in flight');
+      return;
+    }
+    isFetching.current = true;
+    console.log('[Quiz] 🎲 fetchNewCountry start — q#', questionNumber, '| region:', selectedRegion ?? 'all');
     try {
-      // TRY/CATCH: Error handling pattern
-      // try block: Code that might fail
-      // catch block: Handles errors if they occur
-
       // Show loading screen only on initial load
       if (isInitialLoad.current) setLoading(true);
 
@@ -100,41 +104,27 @@ export const useQuiz = (backendReady, selectedRegion = null, quizCountriesOnly =
       // For first 2 questions, only select countries with children artwork
       const requireChildrenArtwork = questionNumber <= 3;
 
-      // await: Pause here until fetchRandomCountry() completes
-      // fetchRandomCountry() returns a Promise that resolves to country data
-      // Pass selectedRegion, quizCountriesOnly, and requireChildrenArtwork to filter countries
-      const country = await fetchRandomCountry(selectedRegion, quizCountriesOnly, requireChildrenArtwork);
+      const country = await fetchRandomCountry(selectedRegion, undefined, requireChildrenArtwork);
 
       // Increment question number for next question
       setQuestionNumber(prev => prev + 1);
 
-      // Create new country object with preferred display name
       const countryWithDisplayName = {
-        ...country,  // Spread operator: Copy all properties from country object (includes wikipedia_url)
+        ...country,
         name: country.common_name || country.name
-        // Logical OR (||): Use common_name if it exists, otherwise fallback to name
-        // This overwrites the 'name' property from the spread
       };
 
-      // Update target country state
       setTargetCountry(countryWithDisplayName);
 
-      // On initial load, hide loading screen
       if (isInitialLoad.current) {
-        // Mark that initial load is complete
         isInitialLoad.current = false;
-
-        // Hide loading screen
         setLoading(false);
       }
     } catch (err) {
-      // catch: Runs if any error occurs in the try block
-      // err: The error object containing details about what went wrong
-
       logError('Error fetching random country:', err);
-
-      // Make sure to hide loading screen even if error occurs
       if (isInitialLoad.current) setLoading(false);
+    } finally {
+      isFetching.current = false;
     }
   };
 

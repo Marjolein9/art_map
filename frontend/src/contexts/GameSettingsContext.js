@@ -24,7 +24,6 @@ const GameSettingsContext = createContext(null);
 export const GameSettingsProvider = ({ children }) => {
   const [hintsEnabled, setHintsEnabled] = useState(true);
   const [selectedQuizRegion, setSelectedQuizRegion] = useState(null);
-  const [quizCountriesOnly, setQuizCountriesOnly] = useState(true);
 
   // Package all state and setters into value object
   const value = {
@@ -32,8 +31,6 @@ export const GameSettingsProvider = ({ children }) => {
     setHintsEnabled,
     selectedQuizRegion,
     setSelectedQuizRegion,
-    quizCountriesOnly,
-    setQuizCountriesOnly,
   };
 
   return (

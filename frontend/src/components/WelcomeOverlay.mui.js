@@ -41,8 +41,6 @@ const WelcomeOverlay = ({
     setHintsEnabled,
     selectedQuizRegion,
     setSelectedQuizRegion,
-    quizCountriesOnly,
-    setQuizCountriesOnly,
   } = useGameSettings();
 
   // Get content settings from context
@@ -437,28 +435,6 @@ const WelcomeOverlay = ({
                   </Select>
                   <Typography variant="caption" color="textSecondary" sx={{ textAlign: 'center' }}>
                     Filter quiz questions by region
-                  </Typography>
-                </Box>
-
-                {/* Include Territories Toggle */}
-                <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 0.5 }}>
-                  <FormControlLabel
-                    control={
-                      <Switch
-                        checked={!quizCountriesOnly}
-                        onChange={(e) => {
-                          setQuizCountriesOnly(!e.target.checked);
-                          if (onRegionChange) {
-                            onRegionChange();
-                          }
-                        }}
-                        size="small"
-                      />
-                    }
-                    label="Include Territories"
-                  />
-                  <Typography variant="caption" color="textSecondary" sx={{ textAlign: 'center' }}>
-                    Include territories (e.g. Palestine, Greenland) in the quiz
                   </Typography>
                 </Box>
 

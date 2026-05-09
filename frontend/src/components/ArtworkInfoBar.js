@@ -86,8 +86,17 @@ const ArtworkInfoBar = ({
   // eslint-disable-next-line no-unused-vars
   const [currentImageIndex, setCurrentImageIndex] = useState({});
 
-  // overlayVisible: Controls whether the overlay is shown
-  const [overlayVisible, setOverlayVisible] = useState(false);
+  // imagesLoading: true while the image fetch is in flight
+  const [imagesLoading, setImagesLoading] = useState(false);
+
+  // seeAllVisible: delayed — appears 3s after images finish loading
+  const [seeAllVisible, setSeeAllVisible] = useState(false);
+
+  // showAll: Whether to show all images or just one featured image
+  const [showAll, setShowAll] = useState(false);
+
+  // featuredImage: The randomly selected image to show in single-item mode
+  const [featuredImage, setFeaturedImage] = useState(null);
 
   /**
    * REFS (Persistent References)
@@ -135,57 +144,66 @@ const ArtworkInfoBar = ({
    * - .finally(callback) runs regardless of success/failure
    */
   useEffect(() => {
+    // StrictMode runs effects twice in dev — this flag ensures only the last run commits state
+    let cancelled = false;
+
     // Reset images if no country selected
     if (!countryISO) {
       setImagesByCollection({});
-      setOverlayVisible(false);
+      setImagesLoading(false);
+      setShowAll(false);
+      setFeaturedImage(null);
       return;
     }
 
-    // Always fetch all images, filtering by nudity setting
-    console.log('🔍 Fetching images for:', countryISO, 'showNudity:', showNudity);
+    console.log('[InfoBar] 🔄 Country changed to', countryISO);
+    setShowAll(false);
+    setFeaturedImage(null);
+    setImagesByCollection({});
+    setImagesLoading(true);
+
     fetchImages(countryISO, showNudity)
       .then(data => {
-        console.log('📦 Raw API response (already unwrapped by apiCall):', data);
+        if (cancelled) {
+          console.log('[InfoBar] 🚫 Stale response discarded for', countryISO);
+          return;
+        }
 
-        // Filter out empty collections and randomize order within each collection
         const filtered = {};
-
-        // Object.entries(obj): Converts object to array of [key, value] pairs
-        // Example: {a: 1, b: 2} becomes [["a", 1], ["b", 2]]
-        // Note: apiCall already extracts data.images, so 'data' is the images object
         Object.entries(data || {}).forEach(([collection, images]) => {
-          console.log(`📚 Processing collection "${collection}":`, images?.length, 'images');
-          // Destructuring in parameters: [collection, images] extracts key and value
-
-          // Only keep collections that have images, and shuffle them
           if (images && images.length > 0) {
             filtered[collection] = shuffleArray(images);
           }
         });
 
-        console.log('✅ Filtered images:', filtered);
-        console.log('📊 Collections with images:', Object.keys(filtered));
-        setImagesByCollection(filtered);
+        const totalFiltered = Object.values(filtered).reduce((n, arr) => n + arr.length, 0);
+        console.log('[InfoBar] ✅', Object.keys(filtered).join(', ') || 'no images', '—', totalFiltered, 'total');
 
-        // Initialize image index to 0 for each collection
-        const initialIndex = {};
-
-        // Object.keys(obj): Returns array of object's keys
-        // Example: {a: 1, b: 2} becomes ["a", "b"]
-        Object.keys(filtered).forEach(c => {
-          initialIndex[c] = 0;  // Start at first image (index 0)
+        const allImages = [];
+        Object.entries(filtered).forEach(([collection, images]) => {
+          images.forEach(image => allImages.push({ collection, image }));
         });
-        setCurrentImageIndex(initialIndex);
+        const featured = allImages.length > 0
+          ? allImages[Math.floor(Math.random() * allImages.length)]
+          : null;
+        console.log('[InfoBar] 🎲 Featured:', featured?.collection, featured?.image?.title || featured?.image?.filepath);
 
-        // Show overlay after images are loaded to prevent size changes
-        setOverlayVisible(true);
+        setImagesByCollection(filtered);
+        setFeaturedImage(featured);
+
+        const initialIndex = {};
+        Object.keys(filtered).forEach(c => { initialIndex[c] = 0; });
+        setCurrentImageIndex(initialIndex);
+        setImagesLoading(false);
       })
-      .catch(() => {
-        // If fetching fails, reset to empty and show overlay
+      .catch((err) => {
+        if (cancelled) return;
+        console.error('[InfoBar] ❌ Fetch failed:', err);
         setImagesByCollection({});
-        setOverlayVisible(true);
+        setImagesLoading(false);
       });
+
+    return () => { cancelled = true; };
   }, [countryISO, mode, showNudity]); // Re-run when country, mode, or nudity setting changes
 
   /**
@@ -231,6 +249,16 @@ const ArtworkInfoBar = ({
    * This effect cleans up image references when component unmounts or country changes.
    * Prevents memory leaks by clearing image sources.
    */
+  // Delay "See all" button by 3s after images finish loading
+  useEffect(() => {
+    if (imagesLoading) {
+      setSeeAllVisible(false);
+      return;
+    }
+    const timer = setTimeout(() => setSeeAllVisible(true), 500);
+    return () => clearTimeout(timer);
+  }, [imagesLoading]);
+
   useEffect(() => {
     // Return a cleanup function that runs when:
     // 1. Component unmounts
@@ -268,6 +296,8 @@ const ArtworkInfoBar = ({
   const totalImages = Object.values(imagesByCollection).reduce((total, images) => {
     return total + (images?.length || 0);
   }, 0);
+
+  console.log('[InfoBar] 🖼 render — country:', countryISO, '| showAll:', showAll, '| featuredImage:', featuredImage?.collection ?? 'none', '| totalImages:', totalImages);
 
   /**
    * CountryTitle Helper Component
@@ -333,7 +363,7 @@ const ArtworkInfoBar = ({
         - sx: MUI's styling system (CSS-in-JS) - lets you write CSS in JavaScript
       */}
       <Dialog
-        open={overlayVisible}
+        open={!!countryISO}
         onClose={handleBackdropClick}
         maxWidth="sm"
         fullWidth
@@ -347,17 +377,17 @@ const ArtworkInfoBar = ({
         }}
         sx={{
           '& .MuiBackdrop-root': {
-            // Add 5px margin around backdrop
             top: '5px',
             left: '5px',
             right: '5px',
             bottom: '5px',
           },
           '& .MuiDialog-paper': {
-            // Fixed height to prevent layout shifts during loading
-            // Smaller height when no images available
-            minHeight: totalImages === 0 ? '300px' : '80vh',
-            maxHeight: totalImages === 0 ? '300px' : '80vh',
+            // Reserve full height while loading or when images are present.
+            // Only collapse after we've confirmed there are none.
+            minHeight: !imagesLoading && totalImages === 0 ? '300px' : '80vh',
+            maxHeight: !imagesLoading && totalImages === 0 ? '300px' : '80vh',
+            transition: 'min-height 0.4s ease, max-height 0.4s ease',
 
             // Custom scrollbar styling - wider and darker
             '&::-webkit-scrollbar': {
@@ -518,7 +548,7 @@ const ArtworkInfoBar = ({
                   gap: 3,
                 }}
               >
-                {/* Show map once at the top */}
+                {/* Map always at the top */}
                 <QuizImageDisplay
                   imagesByCollection={{}}
                   countryName={countryName}
@@ -529,35 +559,104 @@ const ArtworkInfoBar = ({
                   hideMainTitle={true}
                 />
 
-                {/* Show all images without maps - ordered by priority */}
-                {(() => {
-                  console.log('🎨 Rendering images. imagesByCollection state:', imagesByCollection);
-                  console.log('🎨 Total entries:', Object.entries(imagesByCollection).length);
-                  // Priority order: Children in Art → Albert Kahn → Met Museum → Public Domain Review
-                  const priorityOrder = ['Children in Art', 'Albert Kahn', 'Met Museum', 'Public Domain Review'];
-                  const sortedEntries = Object.entries(imagesByCollection).sort(([collectionA], [collectionB]) => {
-                    const indexA = priorityOrder.indexOf(collectionA);
-                    const indexB = priorityOrder.indexOf(collectionB);
-                    // If not in priority list, put at end
-                    const orderA = indexA === -1 ? 999 : indexA;
-                    const orderB = indexB === -1 ? 999 : indexB;
-                    return orderA - orderB;
-                  });
+                {/* Skeleton + image section share the same space.
+                    Skeleton is position:absolute so it never affects layout height.
+                    Content keeps its natural height; skeleton overlays it while fading. */}
+                <Box sx={{ position: 'relative', minHeight: imagesLoading ? 320 : 0 }}>
 
-                  return sortedEntries.flatMap(([collection, images]) =>
-                    images?.map((image, index) => (
+                  {/* Skeleton — absolutely overlaid, fades out on load */}
+                  <Box sx={{
+                    position: 'absolute',
+                    inset: 0,
+                    borderRadius: 2,
+                    bgcolor: '#f1ead9',
+                    opacity: imagesLoading ? 1 : 0,
+                    transition: 'opacity 0.35s ease-in-out',
+                    pointerEvents: 'none',
+                    '@keyframes pulse': {
+                      '0%, 100%': { opacity: 1 },
+                      '50%': { opacity: 0.45 },
+                    },
+                    animation: imagesLoading ? 'pulse 1.6s ease-in-out infinite' : 'none',
+                  }} />
+
+                  {/* Image section — fades in when loaded */}
+                  <Box sx={{
+                    opacity: imagesLoading ? 0 : 1,
+                    transition: 'opacity 0.35s ease-in-out',
+                  }}>
+                  {showAll ? (
+                    /* All images — ordered by priority */
+                    (() => {
+                      const priorityOrder = ['Children in Art', 'Albert Kahn', 'Met Museum', 'Public Domain Review'];
+                      const sortedEntries = Object.entries(imagesByCollection).sort(([a], [b]) => {
+                        const ia = priorityOrder.indexOf(a);
+                        const ib = priorityOrder.indexOf(b);
+                        return (ia === -1 ? 999 : ia) - (ib === -1 ? 999 : ib);
+                      });
+                      return sortedEntries.flatMap(([collection, images]) =>
+                        images?.map((image, index) => (
+                          <QuizImageDisplay
+                            key={`${collection}-${index}`}
+                            imagesByCollection={{ [collection]: [image] }}
+                            countryName={countryName}
+                            countryISO={countryISO}
+                            onShowAll={null}
+                            showMap={false}
+                            hideNoImagesMessage={true}
+                            hideMainTitle={true}
+                          />
+                        )) || []
+                      );
+                    })()
+                  ) : (
+                    /* Single featured image */
+                    featuredImage && (
                       <QuizImageDisplay
-                        key={`${collection}-${index}`}
-                        imagesByCollection={{ [collection]: [image] }}
+                        key={`featured-${featuredImage.collection}`}
+                        imagesByCollection={{ [featuredImage.collection]: [featuredImage.image] }}
                         countryName={countryName}
                         countryISO={countryISO}
                         onShowAll={null}
                         showMap={false}
+                        hideNoImagesMessage={true}
                         hideMainTitle={true}
                       />
-                    )) || []
-                  );
-                })()}
+                    )
+                  )}
+                  </Box>{/* end fade wrapper */}
+                </Box>{/* end relative container */}
+
+                {/* See all / Show less button — appears 3s after images load */}
+                {(seeAllVisible || showAll) && totalImages > 1 && (
+                  <Box sx={{ display: 'flex', justifyContent: 'center', pb: 1 }}>
+                    <Box
+                      component="button"
+                      onClick={() => setShowAll(prev => !prev)}
+                      sx={{
+                        background: 'none',
+                        border: '1px solid var(--rule, #cfc4a8)',
+                        borderRadius: '999px',
+                        px: 2.5,
+                        py: 0.75,
+                        fontFamily: 'var(--font-mono, "JetBrains Mono", monospace)',
+                        fontSize: '10px',
+                        fontWeight: 500,
+                        letterSpacing: '.18em',
+                        textTransform: 'uppercase',
+                        color: 'var(--ink-3, #6c6356)',
+                        cursor: 'pointer',
+                        transition: 'all .15s',
+                        '&:hover': {
+                          borderColor: 'var(--accent, #b34727)',
+                          color: 'var(--accent, #b34727)',
+                        },
+                      }}
+                    >
+                      {showAll ? 'Show less' : `See all (${totalImages})`}
+                    </Box>
+                  </Box>
+                )}
               </Box>
             </Box>
           )}
