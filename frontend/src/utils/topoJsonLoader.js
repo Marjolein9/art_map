@@ -17,6 +17,10 @@ const topoJSONCache = {
   detailed: null
 };
 
+// Countries where 110m omits part of their territory — replace with 50m geometry.
+// PSE: 110m only has the West Bank as a single Polygon; 50m has both West Bank + Gaza as MultiPolygon.
+const PREFER_50M_ISOS = new Set(['PSE', 'ISR']);
+
 /**
  * Calculate the area of a polygon using the shoelace formula
  * @param {Array} coordinates - Array of [lng, lat] coordinates
@@ -108,7 +112,7 @@ export const loadTopoJSON = async (countriesFromDB = []) => {
     return simpleGeoJSON;
   }
 
-  // Check for missing countries
+  // Check for missing countries AND countries that need higher-resolution geometry
   const simpleCountryISOs = new Set(
     simpleGeoJSON.features
       .map(f => getCountryIsoCode(f))
@@ -119,8 +123,10 @@ export const loadTopoJSON = async (countriesFromDB = []) => {
 
   const missingCountries = [...dbCountryISOs].filter(iso => !simpleCountryISOs.has(iso));
 
+  // Countries that need 50m even though they appear in 110m (fragmented territories)
+  const needsUpgrade = [...dbCountryISOs].filter(iso => PREFER_50M_ISOS.has(iso));
 
-  if (missingCountries.length > 0) {
+  if (missingCountries.length > 0 || needsUpgrade.length > 0) {
 
     // Load detailed topology (use cache if available)
     if (!topoJSONCache.detailed) {
@@ -134,6 +140,18 @@ export const loadTopoJSON = async (countriesFromDB = []) => {
       detailedTopology,
       detailedTopology.objects.countries
     );
+
+    // Replace incomplete 110m features with accurate 50m versions
+    detailedGeoJSON.features.forEach(feature => {
+      const iso = getCountryIsoCode(feature);
+      if (iso && needsUpgrade.includes(iso)) {
+        // Remove the imprecise 110m feature and substitute the 50m one
+        simpleGeoJSON.features = simpleGeoJSON.features.filter(
+          f => getCountryIsoCode(f) !== iso
+        );
+        simpleGeoJSON.features.push(filterLargestIslands(feature));
+      }
+    });
 
 
     // Find missing countries in detailed topology

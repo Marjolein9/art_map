@@ -16,6 +16,10 @@ PADDING = 0.05  # 5% padding
 # Cache for 50m TopoJSON (loaded only if needed for small islands)
 _topojson_50m_cache = None
 
+# Countries where 110m omits part of their territory — force 50m for these
+# PSE: 110m only shows the West Bank; 50m has both West Bank + Gaza as MultiPolygon
+PREFER_50M_M49 = {'275', '376'}  # Palestine, Israel
+
 def load_topojson():
     """Load the TopoJSON data"""
     # Use the same TopoJSON file that the frontend uses
@@ -135,8 +139,9 @@ def get_country_geometry_with_fallback(topojson_110m, m49_code):
     """
     Get country geometry from TopoJSON with automatic 50m fallback.
 
-    Tries 110m resolution first for performance. If not found, falls back
-    to 50m resolution to capture small island nations.
+    Tries 110m resolution first for performance. If not found, or if the
+    country is in PREFER_50M_M49 (fragmented territories incomplete at 110m),
+    falls back to 50m resolution.
 
     Args:
         topojson_110m: The 110m resolution TopoJSON data
@@ -145,6 +150,13 @@ def get_country_geometry_with_fallback(topojson_110m, m49_code):
     Returns:
         GeoJSON geometry dict, or None if not found in either resolution
     """
+    m49_str = str(m49_code).zfill(3)
+
+    # For countries known to be incomplete at 110m, go straight to 50m
+    if m49_str in PREFER_50M_M49:
+        topojson_50m = load_topojson_50m()
+        return get_country_geometry_geojson(topojson_50m, m49_code)
+
     # Try 110m first
     geometry = get_country_geometry_geojson(topojson_110m, m49_code)
 
@@ -153,9 +165,7 @@ def get_country_geometry_with_fallback(topojson_110m, m49_code):
 
     # Not found in 110m, try 50m
     topojson_50m = load_topojson_50m()
-    geometry = get_country_geometry_geojson(topojson_50m, m49_code)
-
-    return geometry
+    return get_country_geometry_geojson(topojson_50m, m49_code)
 
 def calculate_bounds(features):
     """Calculate bounding box for a list of geometries"""

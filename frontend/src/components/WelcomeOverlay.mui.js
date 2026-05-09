@@ -440,14 +440,14 @@ const WelcomeOverlay = ({
                   </Typography>
                 </Box>
 
-                {/* Quiz Countries Only Toggle */}
+                {/* Include Territories Toggle */}
                 <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 0.5 }}>
                   <FormControlLabel
                     control={
                       <Switch
-                        checked={quizCountriesOnly}
+                        checked={!quizCountriesOnly}
                         onChange={(e) => {
-                          setQuizCountriesOnly(e.target.checked);
+                          setQuizCountriesOnly(!e.target.checked);
                           if (onRegionChange) {
                             onRegionChange();
                           }
@@ -455,10 +455,10 @@ const WelcomeOverlay = ({
                         size="small"
                       />
                     }
-                    label="Countries Only"
+                    label="Include Territories"
                   />
                   <Typography variant="caption" color="textSecondary" sx={{ textAlign: 'center' }}>
-                    Quiz only on sovereign countries (excludes territories)
+                    Include territories (e.g. Palestine, Greenland) in the quiz
                   </Typography>
                 </Box>
 

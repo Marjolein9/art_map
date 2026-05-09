@@ -263,26 +263,35 @@ const QuizImageDisplay = ({ imagesByCollection, countryName, countryISO, onShowA
         artist = randomImage.artist_name || randomImage.culture;
         if (randomImage.object_date) specs.push({ label: 'Date', value: randomImage.object_date });
         if (randomImage.medium) specs.push({ label: 'Medium', value: randomImage.medium });
+        specs.push({ label: 'License', value: 'CC0 / Open Access' });
         specs.push({ label: 'Source', value: <SourceLink href={titleHref}>Met Museum</SourceLink> });
         break;
 
-      case 'Children in Art':
+      case 'Children in Art': {
         title = randomImage.title;
         titleHref = randomImage.work_url;
         artist = randomImage.artist_name;
         artistHref = randomImage.author_wikilink;
         nationality = randomImage.artist_nationality;
-        if (randomImage.source && getSourceUrl(randomImage.source)) {
-          specs.push({ label: 'Via', value: <SourceLink href={getSourceUrl(randomImage.source)}>{getSourceDisplayName(randomImage.source)}</SourceLink> });
+        const sourceUrl = randomImage.source && getSourceUrl(randomImage.source)
+          ? getSourceUrl(randomImage.source)
+          : randomImage.work_url || null;
+        const sourceName = randomImage.source
+          ? getSourceDisplayName(randomImage.source)
+          : 'View work';
+        if (sourceUrl) {
+          specs.push({ label: 'Source', value: <SourceLink href={sourceUrl}>{sourceName}</SourceLink> });
         }
         break;
+      }
 
       case 'Public Domain Review':
         title = randomImage.title;
         titleHref = randomImage.source_url;
         if (randomImage.description) specs.push({ label: 'Description', value: randomImage.description });
-        if (randomImage.source_url) specs.push({ label: 'Source', value: <SourceLink href={randomImage.source_url}>View image</SourceLink> });
-        if (randomImage.source_link) specs.push({ label: 'Article', value: <SourceLink href={randomImage.source_link}>Public Domain Review</SourceLink> });
+        specs.push({ label: 'License', value: 'Public Domain' });
+        if (randomImage.source_link) specs.push({ label: 'Source', value: <SourceLink href={randomImage.source_link}>View image</SourceLink> });
+        if (randomImage.source_url) specs.push({ label: 'Article', value: <SourceLink href={randomImage.source_url}>Public Domain Review</SourceLink> });
         break;
 
       default:
