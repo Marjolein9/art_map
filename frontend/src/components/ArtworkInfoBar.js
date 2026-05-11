@@ -477,17 +477,18 @@ const ArtworkInfoBar = ({
                   component="button"
                   onClick={onClose}
                   sx={{
-                    width: 40,
-                    height: 40,
+                    width: 36,
+                    height: 36,
                     borderRadius: '50%',
                     border: '1px solid var(--rule, #cfc4a8)',
                     background: 'transparent',
                     color: 'var(--ink-2, #3a322a)',
-                    display: 'grid',
-                    placeItems: 'center',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    padding: 0,
                     cursor: 'pointer',
-                    fontSize: '20px',
-                    lineHeight: 1,
+                    flexShrink: 0,
                     transition: 'all .15s',
                     '&:hover': {
                       background: 'var(--ink, #1a1612)',
@@ -496,7 +497,16 @@ const ArtworkInfoBar = ({
                     },
                   }}
                 >
-                  {mode === 'quiz' && answerSubmitted && !isCorrectAnswer ? '↩' : '×'}
+                  {mode === 'quiz' && answerSubmitted && !isCorrectAnswer ? (
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true" style={{ display: 'block' }}>
+                      <path d="M3 7.5H10C12 7.5 13 9 13 10.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+                      <path d="M6 4.5L3 7.5L6 10.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                    </svg>
+                  ) : (
+                    <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true" style={{ display: 'block' }}>
+                      <path d="M2 2l10 10M12 2L2 12" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round"/>
+                    </svg>
+                  )}
                 </Box>
               ) : null}
             </Box>

@@ -923,6 +923,7 @@ const WorldMap = ({
                   />
                 }
                 label="Quiz"
+                sx={{ '& .MuiFormControlLabel-label': { fontFamily: 'var(--font-mono)', fontSize: '11px', letterSpacing: '0.1em' } }}
               />
 
               {/* Region selector (quiz mode only) */}
@@ -948,19 +949,15 @@ const WorldMap = ({
                 </Select>
               )}
 
-              {/* Next and Show buttons (only in quiz mode) */}
+              {/* Next, Show, Found tracker + Reset — always one line */}
               {mode === 'quiz' && (
-                <>
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, flexWrap: 'nowrap', flexShrink: 0 }}>
                   <Button
                     variant="outlined"
                     size="small"
                     onClick={onStartOver}
                     title="Next Country"
-                    sx={{
-                      minWidth: 'auto',
-                      padding: '2px 8px',
-                      fontSize: '1rem'
-                    }}
+                    sx={{ minWidth: 'auto', padding: '2px 8px', textTransform: 'none' }}
                   >
                     Next
                   </Button>
@@ -970,53 +967,44 @@ const WorldMap = ({
                     onClick={handleShowMe}
                     title="Show Me"
                     disabled={showMeActivated}
-                    sx={{
-                      opacity: showMeActivated ? 0.5 : 1,
-                      minWidth: 'auto',
-                      padding: '2px 8px',
-                      fontSize: '1rem'
-                    }}
+                    sx={{ opacity: showMeActivated ? 0.5 : 1, minWidth: 'auto', padding: '2px 8px', textTransform: 'none' }}
                   >
                     {showMeActivated ? 'Shown' : 'Show'}
                   </Button>
-                </>
-              )}
-
-              {/* Countries Found Tracker + Reset */}
-              {mode === 'quiz' && (
-                <Box ref={foundTrackerRef} sx={{ position: 'relative', display: 'flex', alignItems: 'center', gap: '2px' }}>
-                  <button
-                    className="control-button found-tracker-btn"
-                    onClick={() => setShowFoundList(prev => !prev)}
-                    title="Countries correctly identified"
-                  >
-                    {correctCountries.length} found
-                  </button>
-                  <IconButton
-                    size="small"
-                    onClick={() => { clearCorrectCountries(); setShowFoundList(false); }}
-                    title="Reset found countries"
-                    sx={{ padding: '2px', color: 'var(--ink-3)', '&:hover': { color: 'var(--accent)', backgroundColor: 'transparent' } }}
-                  >
-                    <RestartAltIcon sx={{ fontSize: '16px' }} />
-                  </IconButton>
-                  {showFoundList && (
-                    <div className="found-countries-panel">
-                      <p className="found-countries-heading">
-                        {correctCountries.length === 0 ? 'No countries found yet' : `${correctCountries.length} countries found`}
-                      </p>
-                      {correctCountries.length > 0 && (
-                        <ul className="found-countries-list">
-                          {correctCountries
-                            .map(iso => countryLookup[iso] || iso)
-                            .sort((a, b) => a.localeCompare(b))
-                            .map((name) => (
-                              <li key={name}>{name}</li>
-                            ))}
-                        </ul>
-                      )}
-                    </div>
-                  )}
+                  <Box ref={foundTrackerRef} sx={{ position: 'relative', display: 'flex', alignItems: 'center', gap: '2px' }}>
+                    <button
+                      className="control-button found-tracker-btn"
+                      onClick={() => setShowFoundList(prev => !prev)}
+                      title="Countries correctly identified"
+                    >
+                      {correctCountries.length} found
+                    </button>
+                    <IconButton
+                      size="small"
+                      onClick={() => { clearCorrectCountries(); setShowFoundList(false); }}
+                      title="Reset found countries"
+                      sx={{ padding: '2px', color: 'var(--ink-3)', '&:hover': { color: 'var(--accent)', backgroundColor: 'transparent' } }}
+                    >
+                      <RestartAltIcon sx={{ fontSize: '16px' }} />
+                    </IconButton>
+                    {showFoundList && (
+                      <div className="found-countries-panel">
+                        <p className="found-countries-heading">
+                          {correctCountries.length === 0 ? 'No countries found yet' : `${correctCountries.length} countries found`}
+                        </p>
+                        {correctCountries.length > 0 && (
+                          <ul className="found-countries-list">
+                            {correctCountries
+                              .map(iso => countryLookup[iso] || iso)
+                              .sort((a, b) => a.localeCompare(b))
+                              .map((name) => (
+                                <li key={name}>{name}</li>
+                              ))}
+                          </ul>
+                        )}
+                      </div>
+                    )}
+                  </Box>
                 </Box>
               )}
             </Box>
