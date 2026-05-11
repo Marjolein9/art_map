@@ -202,7 +202,9 @@ def random_country():
         children_artwork_filter = ''
         exclude_filter = ''
 
-        if region:
+        if region == 'not_africa':
+            region_filter = "AND c.continent != 'Africa'"
+        elif region:
             # Filter by continent OR subregion (supports both broad regions like "Asia" and specific subregions like "Southern Asia")
             region_filter = 'AND (c.continent = %s OR c.subregion = %s)'
             query_params.append(region)
