@@ -18,8 +18,7 @@ VALID_REGIONS = {
     'Asia',
     'Europe',
     'Oceania',
-    'Antarctica',
-    'not_africa',
+    'Antarctica'
 }
 
 

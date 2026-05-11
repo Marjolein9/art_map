@@ -24,7 +24,7 @@ const GameSettingsContext = createContext(null);
  */
 export const GameSettingsProvider = ({ children }) => {
   const [hintsEnabled, setHintsEnabled] = useLocalStorage('artmap_hints_enabled', true);
-  const [selectedQuizRegion, setSelectedQuizRegion] = useLocalStorage('artmap_quiz_region', null);
+  const [selectedQuizRegion, setSelectedQuizRegion] = useLocalStorage('artmap_quiz_region_v2', null);
   // Array of ISO3 codes the user has correctly identified — persists across sessions
   const [correctCountries, setCorrectCountries] = useLocalStorage('artmap_correct_countries', []);
 

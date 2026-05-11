@@ -1,7 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import {
   Card,
-  CardHeader,
   CardContent,
   Box,
   Typography,
@@ -85,23 +84,7 @@ const ImageGallery = ({
   const getSourceDisplayName = getSourceDisplayNameUtil;
   const getSourceUrl = getSourceUrlUtil;
 
-  // Helper function to get type subtitle based on collection
-  const getTypeSubtitle = (collectionType) => {
-    switch(collectionType) {
-      case 'Albert Kahn':
-        return 'Historical Photograph';
-      case 'Public Domain Review':
-        return 'Public Domain Review';
-      case 'Met Museum':
-        return 'Museum Artwork';
-      case 'Children in Art':
-        return `Artists from ${countryName || 'this country'}`;
-      default:
-        return null;
-    }
-  };
-
-  const renderCaption = (image, collectionType) => {
+const renderCaption = (image, collectionType) => {
     switch(collectionType) {
       case 'Albert Kahn':
         return (
@@ -298,23 +281,7 @@ const ImageGallery = ({
     }
   };
 
-  const getCollectionTitle = (collectionType) => {
-    // All images are public domain, so show unified title based on count
-    return images.length === 1 ? 'A Public Domain Image:' : 'All Public Domain Images';
-  };
-
-  const getCollectionSubtitle = (collectionType) => {
-    const subtitle = getTypeSubtitle(collectionType);
-    if (!subtitle) return null;
-
-    return (
-      <Typography variant="body2" sx={{ color: COLOR_SCHEME.textPrimary }}>
-        {subtitle}
-      </Typography>
-    );
-  };
-
-  // Get the appropriate link URL for the image based on collection type
+// Get the appropriate link URL for the image based on collection type
   const getImageLinkUrl = (image, collectionType) => {
     switch(collectionType) {
       case 'Albert Kahn':
@@ -332,17 +299,6 @@ const ImageGallery = ({
 
   return (
     <Card sx={{ borderRadius: 1, backgroundColor: COLOR_SCHEME.bgPrimary }}>
-      <CardHeader
-        title={getCollectionTitle(collection)}
-        subheader={getCollectionSubtitle(collection)}
-        titleTypographyProps={{ variant: 'h6', sx: { fontWeight: 600, color: COLOR_SCHEME.textPrimary } }}
-        sx={{
-          backgroundColor: COLOR_SCHEME.bgSecondary,
-          borderBottom: `1px solid ${COLOR_SCHEME.borderSecondary}`,
-          padding: 2,
-          textAlign: 'center'
-        }}
-      />
 
       <CardContent sx={{ padding: 2 }}>
         <Box
