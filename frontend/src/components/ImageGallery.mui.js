@@ -26,7 +26,6 @@ import {
  *
  * @param {string} collection - Collection name
  * @param {Array} images - Array of image objects
- * @param {string} countryName - Name of the country (for Children in Art subtitle)
  * @param {number} currentIndex - Current image index
  * @param {Function} onPrev - Handler for previous image
  * @param {Function} onNext - Handler for next image
@@ -35,7 +34,6 @@ import {
 const ImageGallery = ({
   collection,
   images,
-  countryName,
   currentIndex,
   onPrev,
   onNext,
