@@ -235,7 +235,6 @@ const QuizImageDisplay = ({ imagesByCollection, countryName, countryISO, onShowA
         artist = randomImage.artist_name || randomImage.culture;
         if (randomImage.object_date) specs.push({ label: 'Date', value: randomImage.object_date });
         if (randomImage.medium) specs.push({ label: 'Medium', value: randomImage.medium });
-        specs.push({ label: 'License', value: 'CC0 / Open Access' });
         specs.push({ label: 'Source', value: <SourceLink href={titleHref}>Met Museum</SourceLink> });
         break;
 
@@ -245,6 +244,13 @@ const QuizImageDisplay = ({ imagesByCollection, countryName, countryISO, onShowA
         artist = randomImage.artist_name;
         artistHref = randomImage.author_wikilink;
         nationality = randomImage.artist_nationality;
+        const rawDate = randomImage.artwork_date || randomImage.object_date;
+        const date = rawDate ? rawDate.replace(/^(\d{4})-\d{2}-\d{2}T.*$/, '$1') : null;
+        if (date) specs.push({ label: 'Date', value: date });
+        if (randomImage.tags) specs.push({ label: 'Medium', value: randomImage.tags });
+        const licenseRaw = (randomImage.more_info || randomImage.license || '').trim();
+        const isFree = /^(cc|public.domain|open)/i.test(licenseRaw);
+        if (licenseRaw && !isFree) specs.push({ label: 'License', value: licenseRaw });
         const sourceUrl = randomImage.source && getSourceUrl(randomImage.source)
           ? getSourceUrl(randomImage.source)
           : randomImage.work_url || null;
@@ -381,7 +387,7 @@ const QuizImageDisplay = ({ imagesByCollection, countryName, countryISO, onShowA
                   textTransform: 'uppercase',
                   color: 'var(--ink-3, #6c6356)',
                 }}>
-                  {countryName ? `Public Domain Image from ${countryName}` : 'Public Domain Image'}
+                  {'Public Domain Image'}
                 </Typography>
                 {onShowAll ? (
                   <Button

@@ -694,6 +694,7 @@ def init_database():
             work_url TEXT,
             location_reason TEXT,
             author_background TEXT,
+            artwork_date TEXT,
             birth_date TEXT,
             death_date TEXT,
             birth_place TEXT,
@@ -994,9 +995,9 @@ def init_database():
                 INSERT INTO children_artwork_images (
                     artist_name, author_wikilink, artist_nationality, artist_iso3,
                     country_of_subject, subject_iso3, title, keep, nudity, image_url, work_url,
-                    location_reason, author_background, birth_date, death_date, birth_place,
+                    location_reason, author_background, artwork_date, birth_date, death_date, birth_place,
                     source, tags, more_info, is_local, filepath
-                ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+                ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
             ''', (
                 row.get('artist_name', ''),
                 row.get('Author WikiLink', ''),
@@ -1011,6 +1012,7 @@ def init_database():
                 row.get('work_url', ''),
                 row.get('Location Reason', ''),
                 row.get('Author Background', ''),
+                row.get('artwork_date', ''),
                 row.get('birth_date', ''),
                 row.get('death_date', ''),
                 row.get('birth_place', ''),

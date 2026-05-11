@@ -336,7 +336,7 @@ def get_images(iso3):
         SELECT 'Children in Art' as collection_type,
                filepath, title, artist_name,
                artist_nationality, author_wikilink, work_url, source,
-               birth_date, tags, more_info
+               artwork_date, tags, more_info
         FROM children_artwork_images
         WHERE artist_iso3 = %s {nudity_filter}
     ''', (iso3,))
@@ -416,11 +416,11 @@ def get_random_image(iso3):
 
             (SELECT 'Children in Art' as collection_type,
                    filepath, title, NULL as location, NULL as date,
-                   NULL as operator, NULL as inventory_number, NULL as page_url, NULL as mission, NULL as license,
+                   NULL as operator, NULL as inventory_number, NULL as page_url, NULL as mission, more_info as license,
                    artist_name, artist_nationality,
                    author_wikilink, work_url, source,
                    NULL as country, NULL as source_link, NULL as source_url,
-                   NULL as description, NULL as object_date, NULL as medium,
+                   NULL as description, artwork_date as object_date, tags as medium,
                    NULL as department, NULL as culture, NULL as object_url
             FROM children_artwork_images
             WHERE artist_iso3 = %s {nudity_filter})
