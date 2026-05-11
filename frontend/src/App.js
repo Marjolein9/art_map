@@ -5,7 +5,7 @@
  * - useState: Manages component state (data that changes over time)
  * - useEffect: Handles side effects (data fetching, subscriptions, DOM manipulation)
  */
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { ThemeProvider } from '@mui/material/styles';
 import { SpeedInsights } from '@vercel/speed-insights/react';
 import { Analytics } from '@vercel/analytics/react';
@@ -15,7 +15,6 @@ import './styles/components.css';
 import WorldMap from './components/WorldMap';
 import ArtworkInfoBar from './components/ArtworkInfoBar';
 import OnLoadOverlay from './components/OnLoadOverlay';
-import WelcomeOverlay from './components/WelcomeOverlay.mui';
 import COLOR_SCHEME from './styles/colorSchemes';
 import { useQuiz } from './hooks/useQuiz';
 import { fetchCountries } from './services/api';
@@ -47,7 +46,7 @@ function AppContent() {
    */
 
   // Get only the values needed in AppContent
-  const { selectedQuizRegion } = useGameSettings();
+  const { selectedQuizRegion, addCorrectCountry, correctCountries } = useGameSettings();
 
   // ===========================================================================
   // STATE MANAGEMENT
@@ -102,9 +101,6 @@ function AppContent() {
 
   // Controls on-load overlay visibility (shown once on initial load)
   const [showOnLoad, setShowOnLoad] = useState(true);
-
-  // Controls welcome/settings overlay visibility (opened via gear icon)
-  const [showWelcome, setShowWelcome] = useState(false);
 
   // Note: The following state has been moved to React Context to eliminate prop drilling:
   // - Game settings (hints, region, quiz countries) -> GameSettingsContext
@@ -252,7 +248,16 @@ function AppContent() {
     resetGameStatus,         // Function to reset game state
     setManualTargetCountry,  // Function to set target country manually
     clearTargetCountry       // Function to clear target before fetching new one
-  } = useQuiz(selectedQuizRegion);
+  } = useQuiz(selectedQuizRegion, correctCountries);
+
+  // Track correctly answered countries across sessions
+  const lastRecordedStatus = useRef(null);
+  useEffect(() => {
+    if (gameStatus === 'correct' && lastRecordedStatus.current !== 'correct' && targetCountry?.iso) {
+      addCorrectCountry(targetCountry.iso);
+    }
+    lastRecordedStatus.current = gameStatus;
+  }, [gameStatus, targetCountry, addCorrectCountry]);
 
   // Fetch initial target country when starting in quiz mode (but not while OnLoadOverlay is showing)
   useEffect(() => {
@@ -421,28 +426,6 @@ function AppContent() {
                   />
                 )}
 
-                {/* Welcome/Settings Overlay - Opened via gear icon */}
-                {showWelcome && (
-                  <WelcomeOverlay
-                    onClose={() => {
-                      setShowWelcome(false);
-                      // Auto-next when closing in quiz mode
-                      if (mode === 'quiz') {
-                        setTimeout(() => fetchNewCountry(), 100);
-                      }
-                    }}
-                    colors={COLORS}
-                    mode={mode}
-                    onModeToggle={handleModeToggle}
-                    onRegionChange={() => {
-                      if (mode === 'quiz') {
-                        // Small delay to ensure state has updated
-                        setTimeout(() => fetchNewCountry(), 100);
-                      }
-                    }}
-                  />
-                )}
-
                 {/* TESTING SUBREGION ZOOM: Only use subregion (no continent fallback)
                     TO REVERT: Change region line below back to (targetCountry?.subregion || targetCountry?.continent) */}
                 <WorldMap
@@ -460,7 +443,6 @@ function AppContent() {
                   loading={(loading && mode === 'quiz') || (exploreLoading && mode === 'explore')}
                   onManualCountrySelect={setManualTargetCountry}
                   countryLookup={countryLookup}
-                  setShowWelcome={setShowWelcome}
                 />
 
                 {(!backendReady || (loading && mode === 'quiz') || (exploreLoading && mode === 'explore')) && (

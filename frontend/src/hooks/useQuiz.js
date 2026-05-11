@@ -32,7 +32,7 @@ import { fetchRandomCountry, checkAnswer } from '../services/api';
  * @param {string|null} selectedRegion - Selected region to filter countries (null = all regions)
  * @returns {Object} - Object containing state and functions for quiz management
  */
-export const useQuiz = (selectedRegion = null) => {
+export const useQuiz = (selectedRegion = null, correctCountries = []) => {
   /**
    * STATE VARIABLES
    *
@@ -104,7 +104,7 @@ export const useQuiz = (selectedRegion = null) => {
       // For first 2 questions, only select countries with children artwork
       const requireChildrenArtwork = questionNumber <= 3;
 
-      const country = await fetchRandomCountry(selectedRegion, undefined, requireChildrenArtwork);
+      const country = await fetchRandomCountry(selectedRegion, undefined, requireChildrenArtwork, correctCountries);
 
       // Increment question number for next question
       setQuestionNumber(prev => prev + 1);

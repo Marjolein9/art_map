@@ -245,7 +245,7 @@ const apiCall = async (endpoint, options = {}, responseMapping = null) => {
  *   response = requests.get('http://localhost:5000/api/game/random-country?region=Africa&countriesOnly=true&requireChildrenArtwork=true')
  *   return response.json()['country']
  */
-export const fetchRandomCountry = async (region = null, countriesOnly = false, requireChildrenArtwork = false) => {
+export const fetchRandomCountry = async (region = null, countriesOnly = false, requireChildrenArtwork = false, exclude = []) => {
   // Arrow function with optional parameters
   // async makes it return a Promise
 
@@ -256,6 +256,9 @@ export const fetchRandomCountry = async (region = null, countriesOnly = false, r
   }
   params.append('countriesOnly', countriesOnly.toString());
   params.append('requireChildrenArtwork', requireChildrenArtwork.toString());
+  if (exclude && exclude.length > 0) {
+    params.append('exclude', exclude.join(','));
+  }
 
   const endpoint = `/game/random-country?${params.toString()}`;
 

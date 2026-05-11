@@ -8,7 +8,8 @@
  * are independent concerns. This follows the Single Responsibility Principle.
  */
 
-import { createContext, useContext, useState } from 'react';
+import { createContext, useContext } from 'react';
+import { useLocalStorage } from '../hooks/useLocalStorage';
 
 // Create context with default value
 const ContentSettingsContext = createContext(null);
@@ -17,8 +18,8 @@ const ContentSettingsContext = createContext(null);
  * Provider component that wraps the app and provides content settings
  */
 export const ContentSettingsProvider = ({ children }) => {
-  const [showNudity, setShowNudity] = useState(false);
-  const [selectedCollections, setSelectedCollections] = useState([
+  const [showNudity, setShowNudity] = useLocalStorage('artmap_show_nudity', false);
+  const [selectedCollections, setSelectedCollections] = useLocalStorage('artmap_collections', [
     'Albert Kahn',
     'Children in Art',
     'Public Domain Review',

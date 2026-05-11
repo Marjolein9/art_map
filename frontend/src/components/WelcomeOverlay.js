@@ -59,7 +59,7 @@ const WelcomeOverlay = ({ onStartQuiz, onExplore }) => {
             </Box>
 
             <Typography variant="caption" color="textSecondary" sx={{ textAlign: 'center', mt: 2 }}>
-              You can toggle between modes and adjust settings anytime
+              You can toggle between explore and quiz at any time
             </Typography>
           </Box>
         </DialogContent>

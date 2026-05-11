@@ -13,7 +13,8 @@
  * AFTER: SomeChild directly accesses useGameSettings()
  */
 
-import { createContext, useContext, useState } from 'react';
+import { createContext, useContext } from 'react';
+import { useLocalStorage } from '../hooks/useLocalStorage';
 
 // Create context with default value
 const GameSettingsContext = createContext(null);
@@ -22,8 +23,16 @@ const GameSettingsContext = createContext(null);
  * Provider component that wraps the app and provides game settings
  */
 export const GameSettingsProvider = ({ children }) => {
-  const [hintsEnabled, setHintsEnabled] = useState(true);
-  const [selectedQuizRegion, setSelectedQuizRegion] = useState(null);
+  const [hintsEnabled, setHintsEnabled] = useLocalStorage('artmap_hints_enabled', true);
+  const [selectedQuizRegion, setSelectedQuizRegion] = useLocalStorage('artmap_quiz_region', null);
+  // Array of ISO3 codes the user has correctly identified — persists across sessions
+  const [correctCountries, setCorrectCountries] = useLocalStorage('artmap_correct_countries', []);
+
+  const addCorrectCountry = (iso) => {
+    setCorrectCountries(prev => prev.includes(iso) ? prev : [...prev, iso]);
+  };
+
+  const clearCorrectCountries = () => setCorrectCountries([]);
 
   // Package all state and setters into value object
   const value = {
@@ -31,6 +40,9 @@ export const GameSettingsProvider = ({ children }) => {
     setHintsEnabled,
     selectedQuizRegion,
     setSelectedQuizRegion,
+    correctCountries,
+    addCorrectCountry,
+    clearCorrectCountries,
   };
 
   return (

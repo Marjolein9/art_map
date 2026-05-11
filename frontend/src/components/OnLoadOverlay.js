@@ -275,7 +275,7 @@ const OnLoadOverlay = ({ onStartQuiz, onExplore, onClose }) => {
                 mt: 2                 // Margin top for spacing
               }}
             >
-              You can toggle between modes and adjust settings anytime
+              You can toggle between explore and quiz at any time
             </Typography>
           </Box>
         </DialogContent>

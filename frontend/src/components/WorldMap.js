@@ -21,7 +21,7 @@ import Globe from 'react-globe.gl';
 // Globe: A 3D globe visualization library that renders an interactive Earth
 
 import { Button, Box, Select, MenuItem, FormControlLabel, Switch, IconButton, Typography } from '@mui/material';
-import SettingsIcon from '@mui/icons-material/Settings';
+import RestartAltIcon from '@mui/icons-material/RestartAlt';
 // Material-UI (MUI): A popular React component library that provides pre-built, styled components
 // Button: Clickable button component
 // Box: A flexible container component for layout
@@ -62,6 +62,8 @@ import { useGameSettings } from '../contexts/GameSettingsContext';
  * Props are like parameters passed to a function - they let parent components configure this component.
  * We use "destructuring" syntax ({ prop1, prop2 }) to extract individual props from the props object.
  */
+const QUIZ_REGIONS = ['Africa', 'Americas', 'Asia', 'Europe', 'Oceania'];
+
 const WorldMap = ({
   onCountryClick,          // Function to call when user clicks a country
   targetCountry = null,    // The country the user needs to find (ISO3 code)
@@ -76,10 +78,14 @@ const WorldMap = ({
   onManualCountrySelect = null, // Function to manually select a country from dropdown
   countryLookup = {},     // Object mapping country codes to country data
   backendReady = false,   // Whether the backend server is ready to accept requests
-  setShowWelcome,         // Function to show/hide the welcome overlay
 }) => {
   // Get game settings from context instead of props
-  const { hintsEnabled, selectedQuizRegion } = useGameSettings();
+  const { hintsEnabled, selectedQuizRegion, setSelectedQuizRegion, correctCountries, clearCorrectCountries } = useGameSettings();
+  const [showFoundList, setShowFoundList] = useState(false);
+  const foundTrackerRef = useRef(null);
+  // Ref to always have the latest onStartOver when region changes
+  const onStartOverRef = useRef(onStartOver);
+  useEffect(() => { onStartOverRef.current = onStartOver; });
   // Store colors in a constant for easy access throughout the component
   const COLORS = colors;
 
@@ -402,6 +408,28 @@ const WorldMap = ({
       setExploreSelectedCountry('');
     }
   }, [mode]);
+
+  // Close found-countries panel when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (foundTrackerRef.current && !foundTrackerRef.current.contains(e.target)) {
+        setShowFoundList(false);
+      }
+    };
+    if (showFoundList) document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [showFoundList]);
+
+  // Fetch a new country when quiz region changes (defer so React re-renders first)
+  const prevRegionRef = useRef(selectedQuizRegion);
+  useEffect(() => {
+    if (prevRegionRef.current !== selectedQuizRegion && mode === 'quiz') {
+      prevRegionRef.current = selectedQuizRegion;
+      setTimeout(() => onStartOverRef.current(), 50);
+    } else {
+      prevRegionRef.current = selectedQuizRegion;
+    }
+  }, [selectedQuizRegion, mode]);
 
   // Rotate to region on change OR when new country appears (to reset manual adjustments)
   useEffect(() => {
@@ -897,6 +925,29 @@ const WorldMap = ({
                 label="Quiz"
               />
 
+              {/* Region selector (quiz mode only) */}
+              {mode === 'quiz' && (
+                <Select
+                  value={selectedQuizRegion ?? ''}
+                  onChange={(e) => setSelectedQuizRegion(e.target.value || null)}
+                  size="small"
+                  displayEmpty
+                  sx={{
+                    minWidth: '110px',
+                    fontSize: '0.8rem',
+                    backgroundColor: 'var(--card-bg)',
+                    '& .MuiSelect-select': { padding: '2px 8px', fontSize: '0.8rem' },
+                    '& .MuiOutlinedInput-notchedOutline': { borderColor: 'var(--border-color)' },
+                    '&:hover .MuiOutlinedInput-notchedOutline': { borderColor: 'var(--glow-color)' },
+                  }}
+                >
+                  <MenuItem value="">All regions</MenuItem>
+                  {QUIZ_REGIONS.map(r => (
+                    <MenuItem key={r} value={r}>{r}</MenuItem>
+                  ))}
+                </Select>
+              )}
+
               {/* Next and Show buttons (only in quiz mode) */}
               {mode === 'quiz' && (
                 <>
@@ -931,20 +982,43 @@ const WorldMap = ({
                 </>
               )}
 
-              {/* Settings Button - bottom right of overlay */}
-              <IconButton
-                onClick={() => setShowWelcome(true)}
-                title="Settings & Help"
-                sx={{
-                  padding: '4px',
-                  color: 'var(--text-color)',
-                  '&:hover': {
-                    backgroundColor: 'transparent',
-                  }
-                }}
-              >
-                <SettingsIcon fontSize="small" />
-              </IconButton>
+              {/* Countries Found Tracker + Reset */}
+              {mode === 'quiz' && (
+                <Box ref={foundTrackerRef} sx={{ position: 'relative', display: 'flex', alignItems: 'center', gap: '2px' }}>
+                  <button
+                    className="control-button found-tracker-btn"
+                    onClick={() => setShowFoundList(prev => !prev)}
+                    title="Countries correctly identified"
+                  >
+                    {correctCountries.length} found
+                  </button>
+                  <IconButton
+                    size="small"
+                    onClick={() => { clearCorrectCountries(); setShowFoundList(false); }}
+                    title="Reset found countries"
+                    sx={{ padding: '2px', color: 'var(--ink-3)', '&:hover': { color: 'var(--accent)', backgroundColor: 'transparent' } }}
+                  >
+                    <RestartAltIcon sx={{ fontSize: '16px' }} />
+                  </IconButton>
+                  {showFoundList && (
+                    <div className="found-countries-panel">
+                      <p className="found-countries-heading">
+                        {correctCountries.length === 0 ? 'No countries found yet' : `${correctCountries.length} countries found`}
+                      </p>
+                      {correctCountries.length > 0 && (
+                        <ul className="found-countries-list">
+                          {correctCountries
+                            .map(iso => countryLookup[iso] || iso)
+                            .sort((a, b) => a.localeCompare(b))
+                            .map((name) => (
+                              <li key={name}>{name}</li>
+                            ))}
+                        </ul>
+                      )}
+                    </div>
+                  )}
+                </Box>
+              )}
             </Box>
           </div>
         </div>

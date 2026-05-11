@@ -183,6 +183,7 @@ def random_country():
         region_param = request.args.get('region')
         countries_only_param = request.args.get('countriesOnly', 'true')
         require_children_artwork_param = request.args.get('requireChildrenArtwork', 'false')
+        exclude_param = request.args.get('exclude', '')
 
         # Validate region if provided
         region = validate_region(region_param) if region_param else None
@@ -191,11 +192,15 @@ def random_country():
         countries_only = validate_boolean(countries_only_param, 'countriesOnly')
         require_children_artwork = validate_boolean(require_children_artwork_param, 'requireChildrenArtwork')
 
+        # Parse comma-separated exclude list (already-answered countries)
+        excluded_isos = [iso.strip().upper() for iso in exclude_param.split(',') if iso.strip()] if exclude_param else []
+
         # Build filter clauses
         query_params = []
         region_filter = ''
         countries_filter = ''
         children_artwork_filter = ''
+        exclude_filter = ''
 
         if region:
             # Filter by continent OR subregion (supports both broad regions like "Asia" and specific subregions like "Southern Asia")
@@ -214,6 +219,11 @@ def random_country():
             # Only include countries with children artwork (for first 2 questions)
             children_artwork_filter = 'AND c.has_children_artwork = TRUE'
 
+        if excluded_isos:
+            placeholders = ','.join(['%s'] * len(excluded_isos))
+            exclude_filter = f'AND c.iso3 NOT IN ({placeholders})'
+            query_params.extend(excluded_isos)
+
         countries = execute_query(f'''
             SELECT c.iso3, c.name, c.common_name, c.continent, c.subregion,
                    c.parent_country_iso3, c.wikipedia_url,
@@ -224,6 +234,7 @@ def random_country():
             {countries_filter}
             {region_filter}
             {children_artwork_filter}
+            {exclude_filter}
         ''', tuple(query_params))
 
         # Error handling: ensure countries exist
@@ -324,7 +335,8 @@ def get_images(iso3):
     children_art = execute_query(f'''
         SELECT 'Children in Art' as collection_type,
                filepath, title, artist_name,
-               artist_nationality, author_wikilink, work_url, source
+               artist_nationality, author_wikilink, work_url, source,
+               birth_date, tags, more_info
         FROM children_artwork_images
         WHERE artist_iso3 = %s {nudity_filter}
     ''', (iso3,))

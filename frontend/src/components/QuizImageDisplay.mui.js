@@ -179,8 +179,7 @@ const QuizImageDisplay = ({ imagesByCollection, countryName, countryISO, onShowA
           color: 'var(--ink-3, #6c6356)',
           mb: 1.25,
         }}>
-          {'by '}
-          {artistHref ? (
+            {artistHref ? (
             <Link href={artistHref} target="_blank" rel="noopener noreferrer" sx={{
               fontWeight: 600,
               color: 'var(--ink-2, #3a322a)',

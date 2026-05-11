@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 export function useLocalStorage(key, initialValue) {
   const [storedValue, setStoredValue] = useState(() => {
@@ -10,15 +10,16 @@ export function useLocalStorage(key, initialValue) {
     }
   });
 
-  const setValue = (value) => {
+  // Sync to localStorage whenever storedValue changes.
+  // This avoids closure-staleness bugs that occur when writing inside setValue.
+  useEffect(() => {
     try {
-      const valueToStore = typeof value === 'function' ? value(storedValue) : value;
-      setStoredValue(valueToStore);
-      window.localStorage.setItem(key, JSON.stringify(valueToStore));
+      window.localStorage.setItem(key, JSON.stringify(storedValue));
     } catch (error) {
       console.error('[useLocalStorage] Error saving to localStorage:', error);
     }
-  };
+  }, [key, storedValue]);
 
-  return [storedValue, setValue];
+  // Return the real React setter so functional updates (prev => ...) work correctly.
+  return [storedValue, setStoredValue];
 }

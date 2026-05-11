@@ -20,13 +20,29 @@ const SOURCE_MAP = {
     name: 'Wikimedia Commons',
     url: 'https://commons.wikimedia.org/wiki/Main_Page'
   },
+  'wikidata': {
+    name: 'Wikimedia Commons',
+    url: 'https://commons.wikimedia.org/wiki/Main_Page'
+  },
   'chicago': {
+    name: 'Art Institute of Chicago',
+    url: 'https://www.artic.edu/'
+  },
+  'aic': {
     name: 'Art Institute of Chicago',
     url: 'https://www.artic.edu/'
   },
   'cleveland': {
     name: 'Cleveland Museum of Art',
     url: 'https://www.clevelandart.org/'
+  },
+  'rijksmuseum': {
+    name: 'Rijksmuseum',
+    url: 'https://www.rijksmuseum.nl/en'
+  },
+  'europeana': {
+    name: 'Europeana',
+    url: 'https://www.europeana.eu/'
   },
   'lacma': {
     name: 'Los Angeles County Museum of Art',
