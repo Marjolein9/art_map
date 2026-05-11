@@ -369,26 +369,16 @@ const QuizImageDisplay = ({ imagesByCollection, countryName, countryISO, onShowA
           }}
         >
           <CardContent sx={{ p: 2, '&:last-child': { pb: 2 } }}>
-            {/* Section title — dr-secttitle pattern */}
-            {collectionName && (
+            {/* Show all button */}
+            {onShowAll && (
               <Box sx={{
                 display: 'flex',
-                justifyContent: 'space-between',
+                justifyContent: 'flex-end',
                 alignItems: 'center',
                 pb: 0.75,
                 mb: 2,
                 borderBottom: '1px solid var(--rule, #cfc4a8)',
               }}>
-                <Typography sx={{
-                  fontFamily: 'var(--font-mono, "JetBrains Mono", monospace)',
-                  fontSize: '10px',
-                  fontWeight: 600,
-                  letterSpacing: '.22em',
-                  textTransform: 'uppercase',
-                  color: 'var(--ink-3, #6c6356)',
-                }}>
-                  {'Public Domain Image'}
-                </Typography>
                 {onShowAll ? (
                   <Button
                     variant="text"
