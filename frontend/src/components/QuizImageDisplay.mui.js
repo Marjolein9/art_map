@@ -156,13 +156,13 @@ const QuizImageDisplay = ({ imagesByCollection, countryName, countryISO, onShowA
       }}>
         {href ? (
           <Link href={href} target="_blank" rel="noopener noreferrer" sx={{
-            color: 'inherit',
+            color: 'var(--accent, #b34727)',
             textDecoration: 'none',
-            borderBottom: '1px solid var(--rule, #cfc4a8)',
+            borderBottom: '1px solid rgba(179,71,39,.35)',
             transition: 'border-color .15s, color .15s',
-            '&:hover': { borderColor: 'var(--accent, #b34727)', color: 'var(--accent, #b34727)' },
+            '&:hover': { borderColor: 'var(--accent, #b34727)', color: 'var(--link-hover, #7a2c14)' },
           }}>
-            {children}
+            {children}<Box component="span" sx={{ fontSize: '0.7em', ml: '3px', opacity: 0.7, verticalAlign: 'middle' }}>↗</Box>
           </Link>
         ) : children}
       </Typography>
