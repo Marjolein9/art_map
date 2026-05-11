@@ -30,7 +30,7 @@ import {
  * @param {boolean} showMap - Whether to show the map (default: true)
  * @param {boolean} hideNoImagesMessage - Whether to hide "No images available" message (default: false)
  */
-const QuizImageDisplay = ({ imagesByCollection, countryName, countryISO, onShowAll, totalImagesAvailable = 0, showMap = true, hideNoImagesMessage = false }) => {
+const QuizImageDisplay = ({ imagesByCollection, countryName, countryISO, onShowAll, totalImagesAvailable = 0, showMap = true, hideNoImagesMessage = false, pihUrl = null }) => {
   const [randomImage, setRandomImage] = useState(null);
   const [collectionName, setCollectionName] = useState(null);
   const [mapError, setMapError] = useState(false);
@@ -227,6 +227,7 @@ const QuizImageDisplay = ({ imagesByCollection, countryName, countryISO, onShowA
         if (randomImage.mission) specs.push({ label: 'Mission', value: randomImage.mission });
         if (randomImage.license) specs.push({ label: 'License', value: randomImage.license });
         specs.push({ label: 'Source', value: <SourceLink href="https://albert-kahn.hauts-de-seine.fr/en/">Musée Albert-Kahn</SourceLink> });
+        specs.push({ label: 'More Context', value: <SourceLink href="https://publicdomainreview.org/essay/albert-kahns-archives-of-the-planet/">The Color of Memory</SourceLink> });
         break;
 
       case 'Metropolitan Museum of Art':
@@ -312,16 +313,18 @@ const QuizImageDisplay = ({ imagesByCollection, countryName, countryISO, onShowA
         >
           <Box sx={{
             display: 'flex',
-            flexDirection: 'column',
+            flexDirection: 'row',
             alignItems: 'center',
-            gap: 2
+            justifyContent: 'center',
+            gap: 3,
           }}>
             {/* Map Box - Load pre-generated SVG from backend */}
             <Box sx={{
               position: 'relative',
-              width: { xs: '100%', sm: 180 },
-              maxWidth: 180,
+              width: { xs: pihUrl ? 140 : '100%', sm: pihUrl ? 140 : 180 },
+              maxWidth: pihUrl ? 140 : 180,
               height: 130,
+              flexShrink: 0,
               overflow: 'hidden',
               borderRadius: 1
             }}>
@@ -353,6 +356,42 @@ const QuizImageDisplay = ({ imagesByCollection, countryName, countryISO, onShowA
                 </Box>
               )}
             </Box>
+
+            {/* Partners in Health link */}
+            {pihUrl && (
+              <Box sx={{
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'flex-start',
+              }}>
+                <Link
+                  href={pihUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  sx={{
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '3px',
+                    fontFamily: '"Cormorant Garamond", Georgia, serif',
+                    fontSize: '0.95rem',
+                    fontStyle: 'italic',
+                    fontWeight: 500,
+                    color: 'var(--accent, #b34727)',
+                    textDecoration: 'none',
+                    borderBottom: '1px solid rgba(179,71,39,.35)',
+                    lineHeight: 1.2,
+                    transition: 'border-color .15s, color .15s',
+                    '&:hover': {
+                      borderColor: 'var(--accent, #b34727)',
+                      color: 'var(--link-hover, #7a2c14)',
+                    },
+                  }}
+                >
+                  Partners in Health
+                  <Box component="span" sx={{ fontSize: '0.7em', opacity: 0.8 }}>↗</Box>
+                </Link>
+              </Box>
+            )}
         </Box>
       </Paper>
       )}

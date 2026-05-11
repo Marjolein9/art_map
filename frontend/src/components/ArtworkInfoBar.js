@@ -47,6 +47,9 @@ import muiTheme from '../theme/muiTheme';
 import { useContentSettings } from '../contexts/ContentSettingsContext';
 // Context hook for accessing content settings without prop drilling
 
+import pihCountries from '../data/pih-countries.json';
+const pihLookup = Object.fromEntries(pihCountries.map(c => [c.iso3, c.url]));
+
 /**
  * ArtworkInfoBar Component
  *
@@ -567,6 +570,7 @@ const ArtworkInfoBar = ({
                   showMap={true}
                   hideNoImagesMessage={true}
                   hideMainTitle={true}
+                  pihUrl={pihLookup[countryISO] || null}
                 />
 
                 {/* Skeleton + image section share the same space.
