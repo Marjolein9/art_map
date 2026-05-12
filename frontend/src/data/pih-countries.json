@@ -1,0 +1,12 @@
+[
+  { "name": "Haiti", "iso3": "HTI", "url": "https://www.pih.org/country/haiti" },
+  { "name": "Kazakhstan", "iso3": "KAZ", "url": "https://www.pih.org/country/kazakhstan" },
+  { "name": "Lesotho", "iso3": "LSO", "url": "https://www.pih.org/country/lesotho" },
+  { "name": "Liberia", "iso3": "LBR", "url": "https://www.pih.org/country/liberia" },
+  { "name": "Malawi", "iso3": "MWI", "url": "https://www.pih.org/country/malawi" },
+  { "name": "Mexico", "iso3": "MEX", "url": "https://www.pih.org/country/mexico" },
+  { "name": "Peru", "iso3": "PER", "url": "https://www.pih.org/country/peru" },
+  { "name": "Rwanda", "iso3": "RWA", "url": "https://www.pih.org/country/rwanda" },
+  { "name": "Sierra Leone", "iso3": "SLE", "url": "https://www.pih.org/country/sierra-leone" },
+  { "name": "United States", "iso3": "USA", "url": "https://www.pih.org/country/navajo-nation" }
+]
